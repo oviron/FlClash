@@ -718,51 +718,46 @@ Future<AccessControlProps> effectiveAccessControl(Ref ref) async {
   final guiAcl = ref.watch(
     vpnSettingProvider.select((state) => state.accessControlProps),
   );
-  if (guiAcl.enable) {
-    return guiAcl;
+  final profile = ref.watch(currentProfileProvider);
+
+  if (profile != null) {
+    try {
+      final raw = await coreController.getConfig(profile.id);
+      final tunMap = raw['tun'];
+      if (tunMap is Map) {
+        final include =
+            (tunMap['include-package'] as List?)?.whereType<String>().toList(
+              growable: false,
+            ) ??
+            const <String>[];
+        if (include.isNotEmpty) {
+          return guiAcl.copyWith(
+            enable: true,
+            mode: AccessControlMode.acceptSelected,
+            acceptList: include,
+          );
+        }
+        final exclude =
+            (tunMap['exclude-package'] as List?)?.whereType<String>().toList(
+              growable: false,
+            ) ??
+            const <String>[];
+        if (exclude.isNotEmpty) {
+          return guiAcl.copyWith(
+            enable: true,
+            mode: AccessControlMode.rejectSelected,
+            rejectList: exclude,
+          );
+        }
+      }
+    } catch (_) {
+      // fall through to next precedence layer
+    }
   }
 
-  final profileId = ref.watch(currentProfileIdProvider);
-  if (profileId == null) {
-    return guiAcl;
-  }
-
-  final Map<String, dynamic> raw;
-  try {
-    raw = await coreController.getConfig(profileId);
-  } catch (_) {
-    return guiAcl;
-  }
-
-  final tunMap = raw['tun'];
-  if (tunMap is! Map) {
-    return guiAcl;
-  }
-
-  final include =
-      (tunMap['include-package'] as List?)?.whereType<String>().toList(
-        growable: false,
-      ) ??
-      const <String>[];
-  if (include.isNotEmpty) {
-    return guiAcl.copyWith(
-      enable: true,
-      mode: AccessControlMode.acceptSelected,
-      acceptList: include,
-    );
-  }
-
-  final exclude =
-      (tunMap['exclude-package'] as List?)?.whereType<String>().toList(
-        growable: false,
-      ) ??
-      const <String>[];
-  if (exclude.isNotEmpty) {
-    return guiAcl.copyWith(
-      enable: true,
-      mode: AccessControlMode.rejectSelected,
-      rejectList: exclude,
-    );
+  final profileAcl = profile?.accessControlProps;
+  if (profileAcl != null && profileAcl.enable) {
+    return profileAcl;
   }
 
   return guiAcl;
