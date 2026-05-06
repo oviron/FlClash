@@ -953,7 +953,7 @@ final class PackageListSelectorStateProvider
 }
 
 String _$packageListSelectorStateHash() =>
-    r'1fa2bebbd8ee07910aa8d6e9c5d5d6128df5c13b';
+    r'250777c5b5a5caf080890db7a4497594631a68d8';
 
 @ProviderFor(moreToolsSelectorState)
 const moreToolsSelectorStateProvider = MoreToolsSelectorStateProvider._();
@@ -2177,7 +2177,7 @@ final class SharedStateProvider
   }
 }
 
-String _$sharedStateHash() => r'864fdf3f750fb6d1beadcb5f9226a614a9cb2caa';
+String _$sharedStateHash() => r'ed207524d9da9ad6d16c1b96cb479bee9ea78a77';
 
 @ProviderFor(overlayTopOffset)
 const overlayTopOffsetProvider = OverlayTopOffsetProvider._();
