@@ -128,6 +128,10 @@ extension AccessControlPropsExt on AccessControlProps {
 /// `tun.include-package` (acceptSelected) or `tun.exclude-package`
 /// (rejectSelected). Returns null when neither is present or the shape is
 /// unexpected. The [base] keeps the caller's view fields (sort, filters).
+///
+/// Android `VpnService.Builder` allows allow XOR disallow, never both, so
+/// when YAML defines both keys with non-empty lists we keep `include` and
+/// log a warning. This may diverge from upstream mihomo which honors both.
 AccessControlProps? aclFromTunYaml(
   Map<String, dynamic> raw, {
   AccessControlProps base = const AccessControlProps(),
@@ -136,27 +140,37 @@ AccessControlProps? aclFromTunYaml(
   if (tunMap is! Map) return null;
 
   final rawInclude = tunMap['include-package'];
-  if (rawInclude is List) {
-    final include = rawInclude.whereType<String>().toList(growable: false);
-    if (include.isNotEmpty) {
-      return base.copyWith(
-        enable: true,
-        mode: AccessControlMode.acceptSelected,
-        acceptList: include,
-      );
-    }
+  final rawExclude = tunMap['exclude-package'];
+
+  final include = rawInclude is List
+      ? rawInclude.whereType<String>().toList(growable: false)
+      : const <String>[];
+  final exclude = rawExclude is List
+      ? rawExclude.whereType<String>().toList(growable: false)
+      : const <String>[];
+
+  if (include.isNotEmpty && exclude.isNotEmpty) {
+    commonPrint.log(
+      'aclFromTunYaml: tun.include-package and tun.exclude-package are both '
+      'set; Android VpnService can only enforce one direction, applying '
+      'include-package and ignoring exclude-package.',
+    );
   }
 
-  final rawExclude = tunMap['exclude-package'];
-  if (rawExclude is List) {
-    final exclude = rawExclude.whereType<String>().toList(growable: false);
-    if (exclude.isNotEmpty) {
-      return base.copyWith(
-        enable: true,
-        mode: AccessControlMode.rejectSelected,
-        rejectList: exclude,
-      );
-    }
+  if (include.isNotEmpty) {
+    return base.copyWith(
+      enable: true,
+      mode: AccessControlMode.acceptSelected,
+      acceptList: include,
+    );
+  }
+
+  if (exclude.isNotEmpty) {
+    return base.copyWith(
+      enable: true,
+      mode: AccessControlMode.rejectSelected,
+      rejectList: exclude,
+    );
   }
 
   return null;

@@ -184,7 +184,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
       message: TextSpan(text: appLocalizations.saveChanges),
     );
     if (res == true) {
-      _handleSave();
+      await _handleSave();
     }
     if (mounted) {
       Navigator.of(context).pop();
@@ -198,18 +198,17 @@ class _AccessViewState extends ConsumerState<AccessView> {
     if (packages.isEmpty) {
       return accessControl;
     }
-    final viewPackageNames = packages
-        .getViewList(
-          pinedList: [],
-          sortType: accessControl.sort,
-          isFilterSystemApp: accessControl.isFilterSystemApp,
-          isFilterNonInternetApp: accessControl.isFilterNonInternetApp,
-        )
+    // Persist intersects with installed packages only, never with the
+    // currently visible view. Filtering by `isFilterSystemApp` /
+    // `isFilterNonInternetApp` here would silently drop entries the user
+    // imported (clipboard, intelligent select, YAML override) the moment
+    // they are hidden from the list, in both whitelist and blacklist mode.
+    final installedPackageNames = packages
         .map((item) => item.packageName)
         .toSet()
         .toList();
     return accessControl.copyWithNewList(
-      accessControl.currentList.intersection(viewPackageNames),
+      accessControl.currentList.intersection(installedPackageNames),
     );
   }
 
