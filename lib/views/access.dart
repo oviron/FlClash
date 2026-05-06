@@ -278,12 +278,6 @@ class _AccessViewState extends ConsumerState<AccessView> {
         },
         popup: CommonPopupMenu(
           items: [
-            if (widget.onResetToYaml != null)
-              PopupMenuItemData(
-                icon: Icons.restart_alt,
-                label: appLocalizations.accessControlResetToYaml,
-                onPressed: widget.onResetToYaml!,
-              ),
             PopupMenuItemData(
               icon: Icons.search,
               label: appLocalizations.search,
@@ -298,6 +292,12 @@ class _AccessViewState extends ConsumerState<AccessView> {
               icon: Icons.emergency_outlined,
               label: appLocalizations.action,
               subItems: [
+                if (widget.onResetToYaml != null)
+                  PopupMenuItemData(
+                    icon: Icons.restart_alt,
+                    label: appLocalizations.accessControlResetToYaml,
+                    onPressed: widget.onResetToYaml!,
+                  ),
                 PopupMenuItemData(
                   icon: Icons.auto_awesome,
                   label: appLocalizations.intelligentSelected,
