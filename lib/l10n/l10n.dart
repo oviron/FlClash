@@ -3529,6 +3529,26 @@ class AppLocalizations {
     );
   }
 
+  /// `App list is set by the active profile (tun.include-package / tun.exclude-package). GUI editing is disabled.`
+  String get accessControlProfileLock {
+    return Intl.message(
+      'App list is set by the active profile (tun.include-package / tun.exclude-package). GUI editing is disabled.',
+      name: 'accessControlProfileLock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restart VPN to apply the new app list.`
+  String get restartVpnToApply {
+    return Intl.message(
+      'Restart VPN to apply the new app list.',
+      name: 'restartVpnToApply',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Turn On`
   String get turnOn {
     return Intl.message('Turn On', name: 'turnOn', desc: '', args: []);

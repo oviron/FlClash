@@ -63,6 +63,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessControlNotAllowDesc": MessageLookupByLibrary.simpleMessage(
       "選択したアプリをVPNから除外",
     ),
+    "accessControlProfileLock": MessageLookupByLibrary.simpleMessage(
+      "アプリリストはアクティブなプロファイル (tun.include-package / tun.exclude-package) によって設定されています。GUI での編集は無効です。",
+    ),
     "accessControlSettings": MessageLookupByLibrary.simpleMessage("アクセス制御設定"),
     "account": MessageLookupByLibrary.simpleMessage("アカウント"),
     "action": MessageLookupByLibrary.simpleMessage("アクション"),
@@ -527,6 +530,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "restart": MessageLookupByLibrary.simpleMessage("再起動"),
     "restartCoreTip": MessageLookupByLibrary.simpleMessage("コアを再起動してもよろしいですか？"),
+    "restartVpnToApply": MessageLookupByLibrary.simpleMessage(
+      "新しいアプリリストを適用するには VPN を再起動してください。",
+    ),
     "restore": MessageLookupByLibrary.simpleMessage("復元"),
     "restoreAllData": MessageLookupByLibrary.simpleMessage("すべてのデータを復元する"),
     "restoreException": MessageLookupByLibrary.simpleMessage("復元例外"),

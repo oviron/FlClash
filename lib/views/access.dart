@@ -376,6 +376,13 @@ class _AccessViewState extends ConsumerState<AccessView> {
     final query = ref.watch(queryProvider(QueryTag.access));
     final packages = ref.watch(packagesProvider);
     final accessControl = ref.watch(accessControlStateProvider);
+    final guiAcl = ref.watch(
+      vpnSettingProvider.select((state) => state.accessControlProps),
+    );
+    final effectiveAcl =
+        ref.watch(effectiveAccessControlProvider).value ?? guiAcl;
+    final isProfileLocked =
+        !guiAcl.enable && effectiveAcl.enable && effectiveAcl != guiAcl;
     if (_isInit) {
       if (_lastMode != accessControl.mode) {
         _lastMode = accessControl.mode;
@@ -412,6 +419,12 @@ class _AccessViewState extends ConsumerState<AccessView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (isProfileLocked)
+              MaterialBanner(
+                leading: const Icon(Icons.lock_outline),
+                content: Text(appLocalizations.accessControlProfileLock),
+                actions: const [SizedBox.shrink()],
+              ),
             _buildBannerBar(mode, valueList.length),
             SizedBox(height: 8),
             Expanded(

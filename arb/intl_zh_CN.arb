@@ -452,6 +452,8 @@
   "justNow": "刚刚",
   "noLongerRemind": "不再提示",
   "accessControlSettings": "访问控制设置",
+  "accessControlProfileLock": "应用列表由当前配置文件指定 (tun.include-package / tun.exclude-package),GUI 编辑已禁用。",
+  "restartVpnToApply": "请重启 VPN 以应用新的应用列表。",
   "turnOn": "开启",
   "turnOff": "关闭",
   "coreConfigChangeDetected": "检测到核心配置更改",

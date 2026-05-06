@@ -460,6 +460,8 @@
   "justNow": "Только что",
   "noLongerRemind": "Больше не напоминать",
   "accessControlSettings": "Настройки контроля доступа",
+  "accessControlProfileLock": "Список приложений задан активным профилем (tun.include-package / tun.exclude-package). Редактирование через GUI отключено.",
+  "restartVpnToApply": "Перезапустите VPN чтобы применить новый список приложений.",
   "turnOn": "Включить",
   "turnOff": "Выключить",
   "coreConfigChangeDetected": "Обнаружено изменение конфигурации ядра",

@@ -70,6 +70,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessControlNotAllowDesc": MessageLookupByLibrary.simpleMessage(
       "The selected application will be excluded from VPN",
     ),
+    "accessControlProfileLock": MessageLookupByLibrary.simpleMessage(
+      "App list is set by the active profile (tun.include-package / tun.exclude-package). GUI editing is disabled.",
+    ),
     "accessControlSettings": MessageLookupByLibrary.simpleMessage(
       "Access Control Settings",
     ),
@@ -689,6 +692,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "restart": MessageLookupByLibrary.simpleMessage("Restart"),
     "restartCoreTip": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to restart the core?",
+    ),
+    "restartVpnToApply": MessageLookupByLibrary.simpleMessage(
+      "Restart VPN to apply the new app list.",
     ),
     "restore": MessageLookupByLibrary.simpleMessage("Restore"),
     "restoreAllData": MessageLookupByLibrary.simpleMessage("Restore all data"),

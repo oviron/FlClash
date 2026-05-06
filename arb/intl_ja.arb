@@ -452,6 +452,8 @@
   "justNow": "たった今",
   "noLongerRemind": "今後表示しない",
   "accessControlSettings": "アクセス制御設定",
+  "accessControlProfileLock": "アプリリストはアクティブなプロファイル (tun.include-package / tun.exclude-package) によって設定されています。GUI での編集は無効です。",
+  "restartVpnToApply": "新しいアプリリストを適用するには VPN を再起動してください。",
   "turnOn": "オン",
   "turnOff": "オフ",
   "coreConfigChangeDetected": "コア設定の変更が検出されました",

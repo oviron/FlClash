@@ -451,6 +451,8 @@
   "justNow": "Just now",
   "noLongerRemind": "Don't remind again",
   "accessControlSettings": "Access Control Settings",
+  "accessControlProfileLock": "App list is set by the active profile (tun.include-package / tun.exclude-package). GUI editing is disabled.",
+  "restartVpnToApply": "Restart VPN to apply the new app list.",
   "turnOn": "Turn On",
   "turnOff": "Turn Off",
   "coreConfigChangeDetected": "Core configuration change detected",
