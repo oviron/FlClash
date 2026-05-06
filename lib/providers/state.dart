@@ -720,46 +720,18 @@ Future<AccessControlProps> effectiveAccessControl(Ref ref) async {
   );
   final profile = ref.watch(currentProfileProvider);
 
-  // Profile UI override wins when explicitly enabled (user opted in via
-  // the override action on the profile App Access screen).
   final profileAcl = profile?.accessControlProps;
   if (profileAcl != null && profileAcl.enable) {
     return profileAcl;
   }
 
-  // Otherwise fall back to YAML config-as-code from the active profile.
   if (profile != null) {
     try {
       final raw = await coreController.getConfig(profile.id);
-      final tunMap = raw['tun'];
-      if (tunMap is Map) {
-        final include =
-            (tunMap['include-package'] as List?)?.whereType<String>().toList(
-              growable: false,
-            ) ??
-            const <String>[];
-        if (include.isNotEmpty) {
-          return guiAcl.copyWith(
-            enable: true,
-            mode: AccessControlMode.acceptSelected,
-            acceptList: include,
-          );
-        }
-        final exclude =
-            (tunMap['exclude-package'] as List?)?.whereType<String>().toList(
-              growable: false,
-            ) ??
-            const <String>[];
-        if (exclude.isNotEmpty) {
-          return guiAcl.copyWith(
-            enable: true,
-            mode: AccessControlMode.rejectSelected,
-            rejectList: exclude,
-          );
-        }
-      }
-    } catch (_) {
-      // fall through to global default
+      final yamlAcl = aclFromTunYaml(raw, base: guiAcl);
+      if (yamlAcl != null) return yamlAcl;
+    } catch (e) {
+      commonPrint.log('effectiveAccessControl: yaml read failed: $e');
     }
   }
 

@@ -13,18 +13,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AccessView extends ConsumerStatefulWidget {
-  final AccessControlProps initial;
-  final Future<void> Function(AccessControlProps) onSave;
+  final AccessControlProps? _explicitInitial;
+  final Future<void> Function(AccessControlProps)? _explicitOnSave;
   final bool showProfileLockBadge;
   final VoidCallback? onOverride;
 
-  const AccessView({
+  /// Default global Apps screen: seeds from and saves back to vpnSetting.
+  const AccessView({super.key})
+    : _explicitInitial = null,
+      _explicitOnSave = null,
+      showProfileLockBadge = true,
+      onOverride = null;
+
+  /// Per-profile App Access screen: caller controls seed value, save target,
+  /// and optional override action.
+  const AccessView.forProfile({
     super.key,
-    required this.initial,
-    required this.onSave,
+    required AccessControlProps initial,
+    required Future<void> Function(AccessControlProps) onSave,
     this.showProfileLockBadge = false,
     this.onOverride,
-  });
+  }) : _explicitInitial = initial,
+       _explicitOnSave = onSave;
 
   @override
   ConsumerState<AccessView> createState() => _AccessViewState();
@@ -39,17 +49,29 @@ class _AccessViewState extends ConsumerState<AccessView> {
 
   final _completer = Completer();
 
+  AccessControlProps get _seed =>
+      widget._explicitInitial ??
+      ref.read(vpnSettingProvider).accessControlProps;
+
+  Future<void> _persist(AccessControlProps acl) async {
+    final onSave = widget._explicitOnSave;
+    if (onSave != null) {
+      await onSave(acl);
+      return;
+    }
+    ref
+        .read(vpnSettingProvider.notifier)
+        .update((s) => s.copyWith(accessControlProps: acl));
+  }
+
   @override
   void initState() {
     super.initState();
     _controller = ScrollController();
     _completer.complete(appController.getPackages());
-    final accessControl = widget.initial.copyWith();
-    // Seed synchronously so the very first build sees the correct profile state.
-    // Going through addPostFrameCallback would let frame 1 render with stale
-    // singleton content from a previous visit, and the pinned-list cache below
-    // would freeze that wrong list at the top.
-    ref.read(accessControlStateProvider.notifier).value = accessControl;
+    // Sync seed: postFrameCallback would render frame 1 with stale singleton
+    // and freeze the wrong list in the pinned-list cache.
+    ref.read(accessControlStateProvider.notifier).value = _seed.copyWith();
     _isInit = true;
   }
 
@@ -190,15 +212,14 @@ class _AccessViewState extends ConsumerState<AccessView> {
 
   Future<void> _handleSave() async {
     final accessControl = ref.read(accessControlStateProvider);
-    await widget.onSave(_getRealAccessControlProps(accessControl));
+    await _persist(_getRealAccessControlProps(accessControl));
   }
 
   Widget _buildConfirm() {
     return Consumer(
       builder: (_, ref, child) {
         final accessControl = ref.watch(accessControlStateProvider);
-        final noSave =
-            widget.initial == _getRealAccessControlProps(accessControl);
+        final noSave = _seed == _getRealAccessControlProps(accessControl);
         if (noSave) {
           return SizedBox();
         }
@@ -424,15 +445,18 @@ class _AccessViewState extends ConsumerState<AccessView> {
               MaterialBanner(
                 leading: const Icon(Icons.lock_outline),
                 content: Text(appLocalizations.accessControlProfileLock),
-                actions: [
-                  if (widget.onOverride != null)
-                    TextButton(
-                      onPressed: widget.onOverride,
-                      child: Text(appLocalizations.accessControlOverrideYaml),
-                    )
-                  else
-                    const SizedBox.shrink(),
-                ],
+                // MaterialBanner asserts actions.isNotEmpty, so when there is
+                // no override callback we still pass a zero-sized placeholder.
+                actions: widget.onOverride != null
+                    ? [
+                        TextButton(
+                          onPressed: widget.onOverride,
+                          child: Text(
+                            appLocalizations.accessControlOverrideYaml,
+                          ),
+                        ),
+                      ]
+                    : const [SizedBox.shrink()],
               ),
             _buildBannerBar(mode, valueList.length),
             SizedBox(height: 8),

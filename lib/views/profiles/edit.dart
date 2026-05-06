@@ -8,9 +8,9 @@ import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
+import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/access.dart';
-import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -116,36 +116,9 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     AccessControlProps? yamlAcl;
     try {
       final raw = await coreController.getConfig(profile.id);
-      final tunMap = raw['tun'];
-      if (tunMap is Map) {
-        final include =
-            (tunMap['include-package'] as List?)?.whereType<String>().toList(
-              growable: false,
-            ) ??
-            const <String>[];
-        if (include.isNotEmpty) {
-          yamlAcl = const AccessControlProps().copyWith(
-            enable: true,
-            mode: AccessControlMode.acceptSelected,
-            acceptList: include,
-          );
-        } else {
-          final exclude =
-              (tunMap['exclude-package'] as List?)?.whereType<String>().toList(
-                growable: false,
-              ) ??
-              const <String>[];
-          if (exclude.isNotEmpty) {
-            yamlAcl = const AccessControlProps().copyWith(
-              enable: true,
-              mode: AccessControlMode.rejectSelected,
-              rejectList: exclude,
-            );
-          }
-        }
-      }
-    } catch (_) {
-      // YAML unreachable, fall back to UI-stored value
+      yamlAcl = aclFromTunYaml(raw);
+    } catch (e) {
+      commonPrint.log('profile App Access: yaml read failed: $e');
     }
     if (!mounted) return;
 
@@ -160,12 +133,14 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       context,
       Scaffold(
         appBar: AppBar(title: Text(appLocalizations.profileAppAccess)),
-        body: AccessView(
+        body: AccessView.forProfile(
           initial: initial,
           showProfileLockBadge: showLock,
           onOverride: showLock
               ? () {
-                  final overridden = profile.copyWith(accessControlProps: yamlAcl);
+                  final overridden = profile.copyWith(
+                    accessControlProps: yamlAcl,
+                  );
                   appController.putProfile(overridden);
                   if (mounted) Navigator.of(context).pop();
                 }

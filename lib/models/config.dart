@@ -124,6 +124,44 @@ extension AccessControlPropsExt on AccessControlProps {
   };
 }
 
+/// Derives an [AccessControlProps] from a parsed mihomo YAML map by reading
+/// `tun.include-package` (acceptSelected) or `tun.exclude-package`
+/// (rejectSelected). Returns null when neither is present or the shape is
+/// unexpected. The [base] keeps the caller's view fields (sort, filters).
+AccessControlProps? aclFromTunYaml(
+  Map<String, dynamic> raw, {
+  AccessControlProps base = const AccessControlProps(),
+}) {
+  final tunMap = raw['tun'];
+  if (tunMap is! Map) return null;
+
+  final rawInclude = tunMap['include-package'];
+  if (rawInclude is List) {
+    final include = rawInclude.whereType<String>().toList(growable: false);
+    if (include.isNotEmpty) {
+      return base.copyWith(
+        enable: true,
+        mode: AccessControlMode.acceptSelected,
+        acceptList: include,
+      );
+    }
+  }
+
+  final rawExclude = tunMap['exclude-package'];
+  if (rawExclude is List) {
+    final exclude = rawExclude.whereType<String>().toList(growable: false);
+    if (exclude.isNotEmpty) {
+      return base.copyWith(
+        enable: true,
+        mode: AccessControlMode.rejectSelected,
+        rejectList: exclude,
+      );
+    }
+  }
+
+  return null;
+}
+
 @freezed
 abstract class WindowProps with _$WindowProps {
   const factory WindowProps({
