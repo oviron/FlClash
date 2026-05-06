@@ -2570,3 +2570,45 @@ abstract class _$AccessControlState extends $Notifier<AccessControlProps> {
     element.handleValue(ref, created);
   }
 }
+
+@ProviderFor(effectiveAccessControl)
+const effectiveAccessControlProvider = EffectiveAccessControlProvider._();
+
+final class EffectiveAccessControlProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<AccessControlProps>,
+          AccessControlProps,
+          FutureOr<AccessControlProps>
+        >
+    with
+        $FutureModifier<AccessControlProps>,
+        $FutureProvider<AccessControlProps> {
+  const EffectiveAccessControlProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'effectiveAccessControlProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$effectiveAccessControlHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<AccessControlProps> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<AccessControlProps> create(Ref ref) {
+    return effectiveAccessControl(ref);
+  }
+}
+
+String _$effectiveAccessControlHash() =>
+    r'710af6f1bef48ecb87cca57f23762aa5187aaaed';

@@ -1,5 +1,6 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/state.dart';
@@ -705,4 +706,59 @@ class AccessControlState extends _$AccessControlState
     with AutoDisposeNotifierMixin {
   @override
   AccessControlProps build() => AccessControlProps();
+}
+
+@riverpod
+Future<AccessControlProps> effectiveAccessControl(Ref ref) async {
+  final guiAcl = ref.watch(
+    vpnSettingProvider.select((state) => state.accessControlProps),
+  );
+  if (guiAcl.enable) {
+    return guiAcl;
+  }
+
+  final profileId = ref.watch(currentProfileIdProvider);
+  if (profileId == null) {
+    return guiAcl;
+  }
+
+  final Map<String, dynamic> raw;
+  try {
+    raw = await coreController.getConfig(profileId);
+  } catch (_) {
+    return guiAcl;
+  }
+
+  final tunMap = raw['tun'];
+  if (tunMap is! Map) {
+    return guiAcl;
+  }
+
+  final include =
+      (tunMap['include-package'] as List?)?.whereType<String>().toList(
+        growable: false,
+      ) ??
+      const <String>[];
+  if (include.isNotEmpty) {
+    return guiAcl.copyWith(
+      enable: true,
+      mode: AccessControlMode.acceptSelected,
+      acceptList: include,
+    );
+  }
+
+  final exclude =
+      (tunMap['exclude-package'] as List?)?.whereType<String>().toList(
+        growable: false,
+      ) ??
+      const <String>[];
+  if (exclude.isNotEmpty) {
+    return guiAcl.copyWith(
+      enable: true,
+      mode: AccessControlMode.rejectSelected,
+      rejectList: exclude,
+    );
+  }
+
+  return guiAcl;
 }
