@@ -70,6 +70,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessControlNotAllowDesc": MessageLookupByLibrary.simpleMessage(
       "The selected application will be excluded from VPN",
     ),
+    "accessControlOverrideYaml": MessageLookupByLibrary.simpleMessage(
+      "Override",
+    ),
     "accessControlProfileLock": MessageLookupByLibrary.simpleMessage(
       "App list is set by the active profile (tun.include-package / tun.exclude-package). GUI editing is disabled.",
     ),

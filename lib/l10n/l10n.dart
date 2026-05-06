@@ -3559,6 +3559,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Override`
+  String get accessControlOverrideYaml {
+    return Intl.message(
+      'Override',
+      name: 'accessControlOverrideYaml',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Turn On`
   String get turnOn {
     return Intl.message('Turn On', name: 'turnOn', desc: '', args: []);

@@ -16,12 +16,14 @@ class AccessView extends ConsumerStatefulWidget {
   final AccessControlProps initial;
   final Future<void> Function(AccessControlProps) onSave;
   final bool showProfileLockBadge;
+  final VoidCallback? onOverride;
 
   const AccessView({
     super.key,
     required this.initial,
     required this.onSave,
     this.showProfileLockBadge = false,
+    this.onOverride,
   });
 
   @override
@@ -420,7 +422,15 @@ class _AccessViewState extends ConsumerState<AccessView> {
               MaterialBanner(
                 leading: const Icon(Icons.lock_outline),
                 content: Text(appLocalizations.accessControlProfileLock),
-                actions: const [SizedBox.shrink()],
+                actions: [
+                  if (widget.onOverride != null)
+                    TextButton(
+                      onPressed: widget.onOverride,
+                      child: Text(appLocalizations.accessControlOverrideYaml),
+                    )
+                  else
+                    const SizedBox.shrink(),
+                ],
               ),
             _buildBannerBar(mode, valueList.length),
             SizedBox(height: 8),

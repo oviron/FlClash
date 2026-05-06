@@ -456,6 +456,8 @@
   "restartVpnToApply": "请重启 VPN 以应用新的应用列表。",
   "profileAppAccess": "应用访问",
   "@profileAppAccess": {},
+  "accessControlOverrideYaml": "覆盖",
+  "@accessControlOverrideYaml": {},
   "turnOn": "开启",
   "turnOff": "关闭",
   "coreConfigChangeDetected": "检测到核心配置更改",

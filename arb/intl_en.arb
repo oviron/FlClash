@@ -455,6 +455,8 @@
   "restartVpnToApply": "Restart VPN to apply the new app list.",
   "profileAppAccess": "App access",
   "@profileAppAccess": {},
+  "accessControlOverrideYaml": "Override",
+  "@accessControlOverrideYaml": {},
   "turnOn": "Turn On",
   "turnOff": "Turn Off",
   "coreConfigChangeDetected": "Core configuration change detected",

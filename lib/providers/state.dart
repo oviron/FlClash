@@ -720,6 +720,14 @@ Future<AccessControlProps> effectiveAccessControl(Ref ref) async {
   );
   final profile = ref.watch(currentProfileProvider);
 
+  // Profile UI override wins when explicitly enabled (user opted in via
+  // the override action on the profile App Access screen).
+  final profileAcl = profile?.accessControlProps;
+  if (profileAcl != null && profileAcl.enable) {
+    return profileAcl;
+  }
+
+  // Otherwise fall back to YAML config-as-code from the active profile.
   if (profile != null) {
     try {
       final raw = await coreController.getConfig(profile.id);
@@ -751,13 +759,8 @@ Future<AccessControlProps> effectiveAccessControl(Ref ref) async {
         }
       }
     } catch (_) {
-      // fall through to next precedence layer
+      // fall through to global default
     }
-  }
-
-  final profileAcl = profile?.accessControlProps;
-  if (profileAcl != null && profileAcl.enable) {
-    return profileAcl;
   }
 
   return guiAcl;

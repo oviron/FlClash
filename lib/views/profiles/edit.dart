@@ -10,10 +10,12 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/access.dart';
+import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EditProfileView extends StatefulWidget {
+class EditProfileView extends ConsumerStatefulWidget {
   final Profile profile;
   final BuildContext context;
 
@@ -24,10 +26,10 @@ class EditProfileView extends StatefulWidget {
   });
 
   @override
-  State<EditProfileView> createState() => _EditProfileViewState();
+  ConsumerState<EditProfileView> createState() => _EditProfileViewState();
 }
 
-class _EditProfileViewState extends State<EditProfileView> {
+class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late final TextEditingController _labelController;
   late final TextEditingController _urlController;
   late final TextEditingController _autoUpdateDurationController;
@@ -107,9 +109,13 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   Future<void> _handleAppAccess() async {
+    final profile =
+        ref.read(profilesProvider).getProfile(widget.profile.id) ??
+        widget.profile;
+
     AccessControlProps? yamlAcl;
     try {
-      final raw = await coreController.getConfig(widget.profile.id);
+      final raw = await coreController.getConfig(profile.id);
       final tunMap = raw['tun'];
       if (tunMap is Map) {
         final include =
@@ -142,20 +148,30 @@ class _EditProfileViewState extends State<EditProfileView> {
       // YAML unreachable, fall back to UI-stored value
     }
     if (!mounted) return;
-    final hasYamlOverride = yamlAcl != null;
-    final initial =
-        yamlAcl ??
-        widget.profile.accessControlProps ??
-        const AccessControlProps();
+
+    final profileAcl = profile.accessControlProps;
+    final profileOverridesYaml = profileAcl != null && profileAcl.enable;
+    final showLock = yamlAcl != null && !profileOverridesYaml;
+    final initial = profileOverridesYaml
+        ? profileAcl
+        : (yamlAcl ?? profileAcl ?? const AccessControlProps());
+
     await BaseNavigator.push(
       context,
       Scaffold(
         appBar: AppBar(title: Text(appLocalizations.profileAppAccess)),
         body: AccessView(
           initial: initial,
-          showProfileLockBadge: hasYamlOverride,
+          showProfileLockBadge: showLock,
+          onOverride: showLock
+              ? () {
+                  final overridden = profile.copyWith(accessControlProps: yamlAcl);
+                  appController.putProfile(overridden);
+                  if (mounted) Navigator.of(context).pop();
+                }
+              : null,
           onSave: (acl) async {
-            final updated = widget.profile.copyWith(
+            final updated = profile.copyWith(
               accessControlProps: acl.enable ? acl : null,
             );
             appController.putProfile(updated);
