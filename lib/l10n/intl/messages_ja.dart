@@ -64,6 +64,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "選択したアプリをVPNから除外",
     ),
     "accessControlOverrideYaml": MessageLookupByLibrary.simpleMessage("上書き"),
+    "accessControlResetToYaml": MessageLookupByLibrary.simpleMessage(
+      "YAML に戻す",
+    ),
     "accessControlProfileLock": MessageLookupByLibrary.simpleMessage(
       "アプリリストはアクティブなプロファイル (tun.include-package / tun.exclude-package) によって設定されています。GUI での編集は無効です。",
     ),

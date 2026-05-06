@@ -464,6 +464,7 @@
   "restartVpnToApply": "Перезапустите VPN чтобы применить новый список приложений.",
   "profileAppAccess": "Доступ приложений",
   "accessControlOverrideYaml": "Переопределить",
+  "accessControlResetToYaml": "Сбросить к YAML",
   "turnOn": "Включить",
   "turnOff": "Выключить",
   "coreConfigChangeDetected": "Обнаружено изменение конфигурации ядра",

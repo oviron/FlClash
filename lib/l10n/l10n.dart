@@ -3569,6 +3569,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Reset to YAML`
+  String get accessControlResetToYaml {
+    return Intl.message(
+      'Reset to YAML',
+      name: 'accessControlResetToYaml',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Turn On`
   String get turnOn {
     return Intl.message('Turn On', name: 'turnOn', desc: '', args: []);

@@ -62,6 +62,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "选中应用将会被排除在VPN之外",
     ),
     "accessControlOverrideYaml": MessageLookupByLibrary.simpleMessage("覆盖"),
+    "accessControlResetToYaml": MessageLookupByLibrary.simpleMessage(
+      "恢复 YAML",
+    ),
     "accessControlProfileLock": MessageLookupByLibrary.simpleMessage(
       "应用列表由当前配置文件指定 (tun.include-package / tun.exclude-package),GUI 编辑已禁用。",
     ),

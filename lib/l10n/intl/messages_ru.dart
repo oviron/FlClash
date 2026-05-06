@@ -72,6 +72,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessControlOverrideYaml": MessageLookupByLibrary.simpleMessage(
       "Переопределить",
     ),
+    "accessControlResetToYaml": MessageLookupByLibrary.simpleMessage(
+      "Сбросить к YAML",
+    ),
     "accessControlProfileLock": MessageLookupByLibrary.simpleMessage(
       "Список приложений задан активным профилем (tun.include-package / tun.exclude-package). Редактирование через GUI отключено.",
     ),

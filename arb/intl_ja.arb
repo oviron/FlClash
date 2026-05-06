@@ -456,6 +456,7 @@
   "restartVpnToApply": "新しいアプリリストを適用するには VPN を再起動してください。",
   "profileAppAccess": "アプリアクセス",
   "accessControlOverrideYaml": "上書き",
+  "accessControlResetToYaml": "YAML に戻す",
   "turnOn": "オン",
   "turnOff": "オフ",
   "coreConfigChangeDetected": "コア設定の変更が検出されました",

@@ -281,8 +281,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
             if (widget.onResetToYaml != null)
               PopupMenuItemData(
                 icon: Icons.restart_alt,
-                // TODO: localize once intl_utils regen is wired up.
-                label: 'Reset to YAML',
+                label: appLocalizations.accessControlResetToYaml,
                 onPressed: widget.onResetToYaml!,
               ),
             PopupMenuItemData(
