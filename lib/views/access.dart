@@ -404,8 +404,9 @@ class _AccessViewState extends ConsumerState<AccessView> {
               package.packageName.contains(query),
         )
         .toList();
-    final mode = accessControl.mode;
-    final currentList = accessControl.currentList;
+    final displayAcl = isProfileLocked ? effectiveAcl : accessControl;
+    final mode = displayAcl.mode;
+    final currentList = displayAcl.currentList;
     final viewPackageNameList = viewPackages.map((e) => e.packageName).toList();
     final valueList = currentList.intersection(viewPackageNameList);
     return CommonScaffold(
