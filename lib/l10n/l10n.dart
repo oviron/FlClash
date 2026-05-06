@@ -3549,6 +3549,16 @@ class AppLocalizations {
     );
   }
 
+  /// `App access`
+  String get profileAppAccess {
+    return Intl.message(
+      'App access',
+      name: 'profileAppAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Turn On`
   String get turnOn {
     return Intl.message('Turn On', name: 'turnOn', desc: '', args: []);

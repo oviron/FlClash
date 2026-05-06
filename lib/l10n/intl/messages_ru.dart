@@ -644,6 +644,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "preview": MessageLookupByLibrary.simpleMessage("Предпросмотр"),
     "process": MessageLookupByLibrary.simpleMessage("процесс"),
     "profile": MessageLookupByLibrary.simpleMessage("Профиль"),
+    "profileAppAccess": MessageLookupByLibrary.simpleMessage(
+      "Доступ приложений",
+    ),
     "profileAutoUpdateIntervalInvalidValidationDesc":
         MessageLookupByLibrary.simpleMessage(
           "Пожалуйста, введите действительный формат интервала времени",

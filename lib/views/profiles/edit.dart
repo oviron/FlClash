@@ -9,6 +9,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/views/access.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -103,6 +104,27 @@ class _EditProfileViewState extends State<EditProfileView> {
     setState(() {
       _autoUpdate = value;
     });
+  }
+
+  Future<void> _handleAppAccess() async {
+    final initial =
+        widget.profile.accessControlProps ?? const AccessControlProps();
+    if (!mounted) return;
+    await BaseNavigator.push(
+      context,
+      Scaffold(
+        appBar: AppBar(title: Text(appLocalizations.profileAppAccess)),
+        body: AccessView(
+          initial: initial,
+          onSave: (acl) async {
+            final updated = widget.profile.copyWith(
+              accessControlProps: acl.enable ? acl : null,
+            );
+            appController.putProfile(updated);
+          },
+        ),
+      ),
+    );
   }
 
   Future<void> _handleSaveEdit(BuildContext context, String data) async {
@@ -281,6 +303,11 @@ class _EditProfileViewState extends State<EditProfileView> {
             ),
           ),
       ],
+      ListItem(
+        title: Text(appLocalizations.profileAppAccess),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: _handleAppAccess,
+      ),
       ValueListenableBuilder<FileInfo?>(
         valueListenable: _fileInfoNotifier,
         builder: (_, fileInfo, _) {
