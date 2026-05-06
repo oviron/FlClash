@@ -45,10 +45,12 @@ class _AccessViewState extends ConsumerState<AccessView> {
     _controller = ScrollController();
     _completer.complete(appController.getPackages());
     final accessControl = widget.initial.copyWith();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(accessControlStateProvider.notifier).value = accessControl;
-      _isInit = true;
-    });
+    // Seed synchronously so the very first build sees the correct profile state.
+    // Going through addPostFrameCallback would let frame 1 render with stale
+    // singleton content from a previous visit, and the pinned-list cache below
+    // would freeze that wrong list at the top.
+    ref.read(accessControlStateProvider.notifier).value = accessControl;
+    _isInit = true;
   }
 
   @override
