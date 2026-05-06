@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      android_only:
+        description: 'Build only Android APK'
+        type: boolean
+        default: true
 env:
   IS_STABLE: ${{ !contains(github.ref, '-') }}
 
