@@ -16,25 +16,32 @@ class AccessView extends ConsumerStatefulWidget {
   final AccessControlProps? _explicitInitial;
   final Future<void> Function(AccessControlProps)? _explicitOnSave;
   final bool showProfileLockBadge;
-  final VoidCallback? onOverride;
+  final bool yamlOverrideActive;
+  final ValueChanged<bool>? onToggleYamlOverride;
 
   /// Default global Apps screen: seeds from and saves back to vpnSetting.
+  /// Lock banner appears when an active profile YAML drives access control
+  /// instead of the global GUI list.
   const AccessView({super.key})
     : _explicitInitial = null,
       _explicitOnSave = null,
       showProfileLockBadge = true,
-      onOverride = null;
+      yamlOverrideActive = false,
+      onToggleYamlOverride = null;
 
-  /// Per-profile App Access screen: caller controls seed value, save target,
-  /// and optional override action.
+  /// Per-profile App Access screen: caller controls seed value and save
+  /// target. When the active profile has YAML-driven access (include or
+  /// exclude package), pass [onToggleYamlOverride] to expose a switch that
+  /// flips between YAML config and a UI-stored override.
   const AccessView.forProfile({
     super.key,
     required AccessControlProps initial,
     required Future<void> Function(AccessControlProps) onSave,
-    this.showProfileLockBadge = false,
-    this.onOverride,
+    this.yamlOverrideActive = false,
+    this.onToggleYamlOverride,
   }) : _explicitInitial = initial,
-       _explicitOnSave = onSave;
+       _explicitOnSave = onSave,
+       showProfileLockBadge = false;
 
   @override
   ConsumerState<AccessView> createState() => _AccessViewState();
@@ -397,13 +404,22 @@ class _AccessViewState extends ConsumerState<AccessView> {
     final query = ref.watch(queryProvider(QueryTag.access));
     final packages = ref.watch(packagesProvider);
     final accessControl = ref.watch(accessControlStateProvider);
-    final guiAcl = ref.watch(
-      vpnSettingProvider.select((state) => state.accessControlProps),
-    );
-    final effectiveAcl =
-        ref.watch(effectiveAccessControlProvider).value ?? guiAcl;
-    final isProfileLocked =
-        !guiAcl.enable && effectiveAcl.enable && effectiveAcl != guiAcl;
+    final isProfileMode = widget._explicitInitial != null;
+    // Lock banner is global-mode only: derive from the active profile's
+    // effective ACL vs. the global GUI list. In profile mode the caller
+    // already split YAML vs UI via the toggle, so this derivation is skipped.
+    final guiAcl = isProfileMode
+        ? const AccessControlProps()
+        : ref.watch(
+            vpnSettingProvider.select((state) => state.accessControlProps),
+          );
+    final effectiveAcl = isProfileMode
+        ? accessControl
+        : (ref.watch(effectiveAccessControlProvider).value ?? guiAcl);
+    final isProfileLocked = !isProfileMode &&
+        !guiAcl.enable &&
+        effectiveAcl.enable &&
+        effectiveAcl != guiAcl;
     if (_isInit) {
       if (_lastMode != accessControl.mode) {
         _lastMode = accessControl.mode;
@@ -430,6 +446,9 @@ class _AccessViewState extends ConsumerState<AccessView> {
     final currentList = displayAcl.currentList;
     final viewPackageNameList = viewPackages.map((e) => e.packageName).toList();
     final valueList = currentList.intersection(viewPackageNameList);
+    final yamlToggleVisible = widget.onToggleYamlOverride != null;
+    final editingDisabled = !accessControl.enable ||
+        (yamlToggleVisible && !widget.yamlOverrideActive);
     return CommonScaffold(
       key: _scaffoldKey,
       isLoading: isLoading,
@@ -437,26 +456,23 @@ class _AccessViewState extends ConsumerState<AccessView> {
       title: appLocalizations.appAccessControl,
       actions: _buildActions(enable: accessControl.enable),
       body: DisabledMask(
-        status: !accessControl.enable,
+        status: editingDisabled,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (widget.showProfileLockBadge && isProfileLocked)
+            if (yamlToggleVisible)
+              SwitchListTile(
+                secondary: const Icon(Icons.layers_outlined),
+                title: Text(appLocalizations.accessControlOverrideYaml),
+                value: widget.yamlOverrideActive,
+                onChanged: widget.onToggleYamlOverride,
+              )
+            else if (widget.showProfileLockBadge && isProfileLocked)
               MaterialBanner(
                 leading: const Icon(Icons.lock_outline),
                 content: Text(appLocalizations.accessControlProfileLock),
-                // MaterialBanner asserts actions.isNotEmpty, so when there is
-                // no override callback we still pass a zero-sized placeholder.
-                actions: widget.onOverride != null
-                    ? [
-                        TextButton(
-                          onPressed: widget.onOverride,
-                          child: Text(
-                            appLocalizations.accessControlOverrideYaml,
-                          ),
-                        ),
-                      ]
-                    : const [SizedBox.shrink()],
+                // MaterialBanner asserts actions.isNotEmpty.
+                actions: const [SizedBox.shrink()],
               ),
             _buildBannerBar(mode, valueList.length),
             SizedBox(height: 8),

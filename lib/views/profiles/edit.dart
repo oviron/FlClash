@@ -123,9 +123,9 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     if (!mounted) return;
 
     final profileAcl = profile.accessControlProps;
-    final profileOverridesYaml = profileAcl != null && profileAcl.enable;
-    final showLock = yamlAcl != null && !profileOverridesYaml;
-    final initial = profileOverridesYaml
+    final hasYaml = yamlAcl != null;
+    final overrideActive = profileAcl != null && profileAcl.enable;
+    final initial = overrideActive
         ? profileAcl
         : (yamlAcl ?? profileAcl ?? const AccessControlProps());
 
@@ -135,13 +135,13 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
         appBar: AppBar(title: Text(appLocalizations.profileAppAccess)),
         body: AccessView.forProfile(
           initial: initial,
-          showProfileLockBadge: showLock,
-          onOverride: showLock
-              ? () {
-                  final overridden = profile.copyWith(
-                    accessControlProps: yamlAcl,
+          yamlOverrideActive: overrideActive,
+          onToggleYamlOverride: hasYaml
+              ? (active) {
+                  final updated = profile.copyWith(
+                    accessControlProps: active ? yamlAcl : null,
                   );
-                  appController.putProfile(overridden);
+                  appController.putProfile(updated);
                   if (mounted) Navigator.of(context).pop();
                 }
               : null,
