@@ -348,9 +348,11 @@ ProxyGroupSelectorState proxyGroupSelectorState(
 @riverpod
 PackageListSelectorState packageListSelectorState(Ref ref) {
   final packages = ref.watch(packagesProvider);
-  final accessControlProps = ref.watch(
+  final guiAcl = ref.watch(
     vpnSettingProvider.select((state) => state.accessControlProps),
   );
+  final accessControlProps =
+      ref.watch(effectiveAccessControlProvider).value ?? guiAcl;
   return PackageListSelectorState(
     packages: packages,
     accessControlProps: accessControlProps,
@@ -610,6 +612,9 @@ SharedState sharedState(Ref ref) {
     ),
   );
   final vpnSetting = ref.watch(vpnSettingProvider);
+  final effectiveAcl =
+      ref.watch(effectiveAccessControlProvider).value ??
+      vpnSetting.accessControlProps;
   final currentProfileName = currentProfileVM2.a;
   final selectedMap = currentProfileVM2.b;
   final onlyStatisticsProxy = appSettingVM3.a;
@@ -632,7 +637,7 @@ SharedState sharedState(Ref ref) {
       port: port,
       ipv6: vpnSetting.ipv6,
       dnsHijacking: vpnSetting.dnsHijacking,
-      accessControlProps: vpnSetting.accessControlProps,
+      accessControlProps: effectiveAcl,
       allowBypass: vpnSetting.allowBypass,
       bypassDomain: bypassDomain,
     ),
