@@ -16,8 +16,6 @@ class AccessView extends ConsumerStatefulWidget {
   final AccessControlProps? _explicitInitial;
   final Future<void> Function(AccessControlProps)? _explicitOnSave;
   final bool showProfileLockBadge;
-  final bool yamlOverrideActive;
-  final ValueChanged<bool>? onToggleYamlOverride;
 
   /// Default global Apps screen: seeds from and saves back to vpnSetting.
   /// Lock banner appears when an active profile YAML drives access control
@@ -25,20 +23,16 @@ class AccessView extends ConsumerStatefulWidget {
   const AccessView({super.key})
     : _explicitInitial = null,
       _explicitOnSave = null,
-      showProfileLockBadge = true,
-      yamlOverrideActive = false,
-      onToggleYamlOverride = null;
+      showProfileLockBadge = true;
 
   /// Per-profile App Access screen: caller controls seed value and save
-  /// target. When the active profile has YAML-driven access (include or
-  /// exclude package), pass [onToggleYamlOverride] to expose a switch that
-  /// flips between YAML config and a UI-stored override.
+  /// target. The seed should already encode the desired starting state
+  /// (e.g. yamlAcl.copyWith(enable: false) when YAML is present but the
+  /// profile has not opted into a UI override).
   const AccessView.forProfile({
     super.key,
     required AccessControlProps initial,
     required Future<void> Function(AccessControlProps) onSave,
-    this.yamlOverrideActive = false,
-    this.onToggleYamlOverride,
   }) : _explicitInitial = initial,
        _explicitOnSave = onSave,
        showProfileLockBadge = false;
@@ -283,13 +277,6 @@ class _AccessViewState extends ConsumerState<AccessView> {
         popup: CommonPopupMenu(
           items: [
             PopupMenuItemData(
-              icon: Icons.swap_horiz,
-              label: enable
-                  ? appLocalizations.turnOff
-                  : appLocalizations.turnOn,
-              onPressed: _handleToggle,
-            ),
-            PopupMenuItemData(
               icon: Icons.search,
               label: appLocalizations.search,
               onPressed: _handleSearch,
@@ -446,9 +433,6 @@ class _AccessViewState extends ConsumerState<AccessView> {
     final currentList = displayAcl.currentList;
     final viewPackageNameList = viewPackages.map((e) => e.packageName).toList();
     final valueList = currentList.intersection(viewPackageNameList);
-    final yamlToggleVisible = widget.onToggleYamlOverride != null;
-    final editingDisabled = !accessControl.enable ||
-        (yamlToggleVisible && !widget.yamlOverrideActive);
     return CommonScaffold(
       key: _scaffoldKey,
       isLoading: isLoading,
@@ -456,18 +440,17 @@ class _AccessViewState extends ConsumerState<AccessView> {
       title: appLocalizations.appAccessControl,
       actions: _buildActions(enable: accessControl.enable),
       body: DisabledMask(
-        status: editingDisabled,
+        status: !accessControl.enable,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (yamlToggleVisible)
-              SwitchListTile(
-                secondary: const Icon(Icons.layers_outlined),
-                title: Text(appLocalizations.accessControlOverrideYaml),
-                value: widget.yamlOverrideActive,
-                onChanged: widget.onToggleYamlOverride,
-              )
-            else if (widget.showProfileLockBadge && isProfileLocked)
+            SwitchListTile(
+              secondary: const Icon(Icons.tune),
+              title: Text(appLocalizations.accessControl),
+              value: accessControl.enable,
+              onChanged: (_) => _handleToggle(),
+            ),
+            if (widget.showProfileLockBadge && isProfileLocked)
               MaterialBanner(
                 leading: const Icon(Icons.lock_outline),
                 content: Text(appLocalizations.accessControlProfileLock),

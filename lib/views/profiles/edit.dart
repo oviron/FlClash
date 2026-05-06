@@ -123,11 +123,16 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     if (!mounted) return;
 
     final profileAcl = profile.accessControlProps;
-    final hasYaml = yamlAcl != null;
     final overrideActive = profileAcl != null && profileAcl.enable;
+    // Seed strategy: if the profile already has an active UI override, start
+    // with that. Otherwise show the YAML-derived list under a disabled switch
+    // so the user sees what is currently in effect, and flipping the switch
+    // converts it into a stored override on save.
     final initial = overrideActive
         ? profileAcl
-        : (yamlAcl ?? profileAcl ?? const AccessControlProps());
+        : (yamlAcl?.copyWith(enable: false) ??
+              profileAcl ??
+              const AccessControlProps());
 
     await BaseNavigator.push(
       context,
@@ -135,16 +140,6 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
         appBar: AppBar(title: Text(appLocalizations.profileAppAccess)),
         body: AccessView.forProfile(
           initial: initial,
-          yamlOverrideActive: overrideActive,
-          onToggleYamlOverride: hasYaml
-              ? (active) {
-                  final updated = profile.copyWith(
-                    accessControlProps: active ? yamlAcl : null,
-                  );
-                  appController.putProfile(updated);
-                  if (mounted) Navigator.of(context).pop();
-                }
-              : null,
           onSave: (acl) async {
             final updated = profile.copyWith(
               accessControlProps: acl.enable ? acl : null,
