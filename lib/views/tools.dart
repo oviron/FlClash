@@ -222,7 +222,24 @@ class _AccessItem extends StatelessWidget {
       leading: const Icon(Icons.view_list),
       title: Text(context.appLocalizations.accessControl),
       subtitle: Text(context.appLocalizations.accessControlDesc),
-      delegate: OpenDelegate(widget: const AccessView()),
+      delegate: OpenDelegate(
+        widget: Consumer(
+          builder: (_, ref, _) {
+            final initial = ref.read(
+              vpnSettingProvider.select((s) => s.accessControlProps),
+            );
+            return AccessView(
+              initial: initial,
+              showProfileLockBadge: true,
+              onSave: (acl) async {
+                ref
+                    .read(vpnSettingProvider.notifier)
+                    .update((s) => s.copyWith(accessControlProps: acl));
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }

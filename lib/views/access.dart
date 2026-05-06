@@ -13,7 +13,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AccessView extends ConsumerStatefulWidget {
-  const AccessView({super.key});
+  final AccessControlProps initial;
+  final Future<void> Function(AccessControlProps) onSave;
+  final bool showProfileLockBadge;
+
+  const AccessView({
+    super.key,
+    required this.initial,
+    required this.onSave,
+    this.showProfileLockBadge = false,
+  });
 
   @override
   ConsumerState<AccessView> createState() => _AccessViewState();
@@ -33,9 +42,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
     super.initState();
     _controller = ScrollController();
     _completer.complete(appController.getPackages());
-    final accessControl = ref
-        .read(vpnSettingProvider.select((state) => state.accessControlProps))
-        .copyWith();
+    final accessControl = widget.initial.copyWith();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(accessControlStateProvider.notifier).value = accessControl;
       _isInit = true;
@@ -177,28 +184,24 @@ class _AccessViewState extends ConsumerState<AccessView> {
     );
   }
 
-  void _handleSave() {
+  Future<void> _handleSave() async {
     final accessControl = ref.read(accessControlStateProvider);
-    ref
-        .read(vpnSettingProvider.notifier)
-        .update(
-          (state) => state.copyWith(
-            accessControlProps: _getRealAccessControlProps(accessControl),
-          ),
-        );
+    await widget.onSave(_getRealAccessControlProps(accessControl));
   }
 
   Widget _buildConfirm() {
     return Consumer(
       builder: (_, ref, child) {
         final accessControl = ref.watch(accessControlStateProvider);
-        final noSave = ref.watch(
-          vpnSettingProvider.select(
-            (state) =>
-                state.accessControlProps ==
-                _getRealAccessControlProps(accessControl),
-          ),
-        );
+        final noSave = widget.showProfileLockBadge
+            ? ref.watch(
+                vpnSettingProvider.select(
+                  (state) =>
+                      state.accessControlProps ==
+                      _getRealAccessControlProps(accessControl),
+                ),
+              )
+            : widget.initial == _getRealAccessControlProps(accessControl);
         if (noSave) {
           return SizedBox();
         }
@@ -211,7 +214,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
         },
         child: CommonMinFilledButtonTheme(
           child: FilledButton.tonal(
-            onPressed: _handleSave,
+            onPressed: () => _handleSave(),
             child: Text(context.appLocalizations.save),
           ),
         ),
@@ -420,7 +423,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (isProfileLocked)
+            if (widget.showProfileLockBadge && isProfileLocked)
               MaterialBanner(
                 leading: const Icon(Icons.lock_outline),
                 content: Text(appLocalizations.accessControlProfileLock),
