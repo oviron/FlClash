@@ -16,6 +16,7 @@ class AccessView extends ConsumerStatefulWidget {
   final AccessControlProps? _explicitInitial;
   final Future<void> Function(AccessControlProps)? _explicitOnSave;
   final bool showProfileLockBadge;
+  final VoidCallback? onResetToYaml;
 
   /// Default global Apps screen: seeds from and saves back to vpnSetting.
   /// Lock banner appears when an active profile YAML drives access control
@@ -23,16 +24,17 @@ class AccessView extends ConsumerStatefulWidget {
   const AccessView({super.key})
     : _explicitInitial = null,
       _explicitOnSave = null,
-      showProfileLockBadge = true;
+      showProfileLockBadge = true,
+      onResetToYaml = null;
 
   /// Per-profile App Access screen: caller controls seed value and save
-  /// target. The seed should already encode the desired starting state
-  /// (e.g. yamlAcl.copyWith(enable: false) when YAML is present but the
-  /// profile has not opted into a UI override).
+  /// target. Pass [onResetToYaml] when the profile has a YAML config plus
+  /// an active UI override, to expose a one-tap revert to the YAML list.
   const AccessView.forProfile({
     super.key,
     required AccessControlProps initial,
     required Future<void> Function(AccessControlProps) onSave,
+    this.onResetToYaml,
   }) : _explicitInitial = initial,
        _explicitOnSave = onSave,
        showProfileLockBadge = false;
@@ -276,6 +278,13 @@ class _AccessViewState extends ConsumerState<AccessView> {
         },
         popup: CommonPopupMenu(
           items: [
+            if (widget.onResetToYaml != null)
+              PopupMenuItemData(
+                icon: Icons.restart_alt,
+                // TODO: localize once intl_utils regen is wired up.
+                label: 'Reset to YAML',
+                onPressed: widget.onResetToYaml!,
+              ),
             PopupMenuItemData(
               icon: Icons.search,
               label: appLocalizations.search,

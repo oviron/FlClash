@@ -134,12 +134,21 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
               profileAcl ??
               const AccessControlProps());
 
+    final canResetToYaml = yamlAcl != null && overrideActive;
+
     await BaseNavigator.push(
       context,
       Scaffold(
         appBar: AppBar(title: Text(appLocalizations.profileAppAccess)),
         body: AccessView.forProfile(
           initial: initial,
+          onResetToYaml: canResetToYaml
+              ? () {
+                  final reset = profile.copyWith(accessControlProps: null);
+                  appController.putProfile(reset);
+                  if (mounted) Navigator.of(context).pop();
+                }
+              : null,
           onSave: (acl) async {
             final updated = profile.copyWith(
               accessControlProps: acl.enable ? acl : null,
