@@ -32,8 +32,28 @@ class Profiles extends Table {
 
   IntColumn get order => integer().nullable()();
 
+  TextColumn get accessControlProps =>
+      text().map(const AccessControlPropsConverter()).nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
+}
+
+class AccessControlPropsConverter
+    extends TypeConverter<AccessControlProps?, String?> {
+  const AccessControlPropsConverter();
+
+  @override
+  AccessControlProps? fromSql(String? fromDb) {
+    if (fromDb == null) return null;
+    return AccessControlProps.fromJson(json.decode(fromDb));
+  }
+
+  @override
+  String? toSql(AccessControlProps? value) {
+    if (value == null) return null;
+    return json.encode(value.toJson());
+  }
 }
 
 class SubscriptionInfoConverter
@@ -143,6 +163,7 @@ extension RawProfilExt on RawProfile {
       overwriteType: overwriteType,
       scriptId: scriptId,
       order: order,
+      accessControlProps: accessControlProps,
     );
   }
 }
@@ -163,6 +184,7 @@ extension ProfilesCompanionExt on Profile {
       overwriteType: overwriteType,
       scriptId: Value(scriptId),
       order: Value(order ?? this.order),
+      accessControlProps: Value(accessControlProps),
     );
   }
 }

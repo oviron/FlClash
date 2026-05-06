@@ -141,6 +141,18 @@ class $ProfilesTable extends Profiles
     requiredDuringInsert: false,
   );
   @override
+  late final GeneratedColumnWithTypeConverter<AccessControlProps?, String>
+  accessControlProps =
+      GeneratedColumn<String>(
+        'access_control_props',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<AccessControlProps?>(
+        $ProfilesTable.$converteraccessControlProps,
+      );
+  @override
   List<GeneratedColumn> get $columns => [
     id,
     label,
@@ -155,6 +167,7 @@ class $ProfilesTable extends Profiles
     selectedMap,
     unfoldSet,
     order,
+    accessControlProps,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -305,6 +318,12 @@ class $ProfilesTable extends Profiles
         DriftSqlType.int,
         data['${effectivePrefix}order'],
       ),
+      accessControlProps: $ProfilesTable.$converteraccessControlProps.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}access_control_props'],
+        ),
+      ),
     );
   }
 
@@ -323,6 +342,8 @@ class $ProfilesTable extends Profiles
       const StringMapConverter();
   static TypeConverter<Set<String>, String> $converterunfoldSet =
       const StringSetConverter();
+  static TypeConverter<AccessControlProps?, String?>
+  $converteraccessControlProps = const AccessControlPropsConverter();
 }
 
 class RawProfile extends DataClass implements Insertable<RawProfile> {
@@ -339,6 +360,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
   final Map<String, String> selectedMap;
   final Set<String> unfoldSet;
   final int? order;
+  final AccessControlProps? accessControlProps;
   const RawProfile({
     required this.id,
     required this.label,
@@ -353,6 +375,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     required this.selectedMap,
     required this.unfoldSet,
     this.order,
+    this.accessControlProps,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -396,6 +419,11 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     if (!nullToAbsent || order != null) {
       map['order'] = Variable<int>(order);
     }
+    if (!nullToAbsent || accessControlProps != null) {
+      map['access_control_props'] = Variable<String>(
+        $ProfilesTable.$converteraccessControlProps.toSql(accessControlProps),
+      );
+    }
     return map;
   }
 
@@ -424,6 +452,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       order: order == null && nullToAbsent
           ? const Value.absent()
           : Value(order),
+      accessControlProps: accessControlProps == null && nullToAbsent
+          ? const Value.absent()
+          : Value(accessControlProps),
     );
   }
 
@@ -454,6 +485,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       ),
       unfoldSet: serializer.fromJson<Set<String>>(json['unfoldSet']),
       order: serializer.fromJson<int?>(json['order']),
+      accessControlProps: serializer.fromJson<AccessControlProps?>(
+        json['accessControlProps'],
+      ),
     );
   }
   @override
@@ -479,6 +513,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       'selectedMap': serializer.toJson<Map<String, String>>(selectedMap),
       'unfoldSet': serializer.toJson<Set<String>>(unfoldSet),
       'order': serializer.toJson<int?>(order),
+      'accessControlProps': serializer.toJson<AccessControlProps?>(
+        accessControlProps,
+      ),
     };
   }
 
@@ -496,6 +533,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     Map<String, String>? selectedMap,
     Set<String>? unfoldSet,
     Value<int?> order = const Value.absent(),
+    Value<AccessControlProps?> accessControlProps = const Value.absent(),
   }) => RawProfile(
     id: id ?? this.id,
     label: label ?? this.label,
@@ -517,6 +555,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     selectedMap: selectedMap ?? this.selectedMap,
     unfoldSet: unfoldSet ?? this.unfoldSet,
     order: order.present ? order.value : this.order,
+    accessControlProps: accessControlProps.present
+        ? accessControlProps.value
+        : this.accessControlProps,
   );
   RawProfile copyWithCompanion(ProfilesCompanion data) {
     return RawProfile(
@@ -547,6 +588,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
           : this.selectedMap,
       unfoldSet: data.unfoldSet.present ? data.unfoldSet.value : this.unfoldSet,
       order: data.order.present ? data.order.value : this.order,
+      accessControlProps: data.accessControlProps.present
+          ? data.accessControlProps.value
+          : this.accessControlProps,
     );
   }
 
@@ -565,7 +609,8 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
           ..write('autoUpdate: $autoUpdate, ')
           ..write('selectedMap: $selectedMap, ')
           ..write('unfoldSet: $unfoldSet, ')
-          ..write('order: $order')
+          ..write('order: $order, ')
+          ..write('accessControlProps: $accessControlProps')
           ..write(')'))
         .toString();
   }
@@ -585,6 +630,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     selectedMap,
     unfoldSet,
     order,
+    accessControlProps,
   );
   @override
   bool operator ==(Object other) =>
@@ -602,7 +648,8 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
           other.autoUpdate == this.autoUpdate &&
           other.selectedMap == this.selectedMap &&
           other.unfoldSet == this.unfoldSet &&
-          other.order == this.order);
+          other.order == this.order &&
+          other.accessControlProps == this.accessControlProps);
 }
 
 class ProfilesCompanion extends UpdateCompanion<RawProfile> {
@@ -619,6 +666,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
   final Value<Map<String, String>> selectedMap;
   final Value<Set<String>> unfoldSet;
   final Value<int?> order;
+  final Value<AccessControlProps?> accessControlProps;
   const ProfilesCompanion({
     this.id = const Value.absent(),
     this.label = const Value.absent(),
@@ -633,6 +681,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     this.selectedMap = const Value.absent(),
     this.unfoldSet = const Value.absent(),
     this.order = const Value.absent(),
+    this.accessControlProps = const Value.absent(),
   });
   ProfilesCompanion.insert({
     this.id = const Value.absent(),
@@ -648,6 +697,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     required Map<String, String> selectedMap,
     required Set<String> unfoldSet,
     this.order = const Value.absent(),
+    this.accessControlProps = const Value.absent(),
   }) : label = Value(label),
        url = Value(url),
        overwriteType = Value(overwriteType),
@@ -669,6 +719,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     Expression<String>? selectedMap,
     Expression<String>? unfoldSet,
     Expression<int>? order,
+    Expression<String>? accessControlProps,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -685,6 +736,8 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
       if (selectedMap != null) 'selected_map': selectedMap,
       if (unfoldSet != null) 'unfold_set': unfoldSet,
       if (order != null) 'order': order,
+      if (accessControlProps != null)
+        'access_control_props': accessControlProps,
     });
   }
 
@@ -702,6 +755,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     Value<Map<String, String>>? selectedMap,
     Value<Set<String>>? unfoldSet,
     Value<int?>? order,
+    Value<AccessControlProps?>? accessControlProps,
   }) {
     return ProfilesCompanion(
       id: id ?? this.id,
@@ -718,6 +772,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
       selectedMap: selectedMap ?? this.selectedMap,
       unfoldSet: unfoldSet ?? this.unfoldSet,
       order: order ?? this.order,
+      accessControlProps: accessControlProps ?? this.accessControlProps,
     );
   }
 
@@ -773,6 +828,13 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     if (order.present) {
       map['order'] = Variable<int>(order.value);
     }
+    if (accessControlProps.present) {
+      map['access_control_props'] = Variable<String>(
+        $ProfilesTable.$converteraccessControlProps.toSql(
+          accessControlProps.value,
+        ),
+      );
+    }
     return map;
   }
 
@@ -791,7 +853,8 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
           ..write('autoUpdate: $autoUpdate, ')
           ..write('selectedMap: $selectedMap, ')
           ..write('unfoldSet: $unfoldSet, ')
-          ..write('order: $order')
+          ..write('order: $order, ')
+          ..write('accessControlProps: $accessControlProps')
           ..write(')'))
         .toString();
   }
@@ -1657,6 +1720,7 @@ typedef $$ProfilesTableCreateCompanionBuilder =
       required Map<String, String> selectedMap,
       required Set<String> unfoldSet,
       Value<int?> order,
+      Value<AccessControlProps?> accessControlProps,
     });
 typedef $$ProfilesTableUpdateCompanionBuilder =
     ProfilesCompanion Function({
@@ -1673,6 +1737,7 @@ typedef $$ProfilesTableUpdateCompanionBuilder =
       Value<Map<String, String>> selectedMap,
       Value<Set<String>> unfoldSet,
       Value<int?> order,
+      Value<AccessControlProps?> accessControlProps,
     });
 
 final class $$ProfilesTableReferences
@@ -1785,6 +1850,16 @@ class $$ProfilesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnWithTypeConverterFilters<
+    AccessControlProps?,
+    AccessControlProps,
+    String
+  >
+  get accessControlProps => $composableBuilder(
+    column: $table.accessControlProps,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
   Expression<bool> profileRuleLinksRefs(
     Expression<bool> Function($$ProfileRuleLinksTableFilterComposer f) f,
   ) {
@@ -1884,6 +1959,11 @@ class $$ProfilesTableOrderingComposer
     column: $table.order,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get accessControlProps => $composableBuilder(
+    column: $table.accessControlProps,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ProfilesTableAnnotationComposer
@@ -1950,6 +2030,12 @@ class $$ProfilesTableAnnotationComposer
 
   GeneratedColumn<int> get order =>
       $composableBuilder(column: $table.order, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<AccessControlProps?, String>
+  get accessControlProps => $composableBuilder(
+    column: $table.accessControlProps,
+    builder: (column) => column,
+  );
 
   Expression<T> profileRuleLinksRefs<T extends Object>(
     Expression<T> Function($$ProfileRuleLinksTableAnnotationComposer a) f,
@@ -2019,6 +2105,8 @@ class $$ProfilesTableTableManager
                 Value<Map<String, String>> selectedMap = const Value.absent(),
                 Value<Set<String>> unfoldSet = const Value.absent(),
                 Value<int?> order = const Value.absent(),
+                Value<AccessControlProps?> accessControlProps =
+                    const Value.absent(),
               }) => ProfilesCompanion(
                 id: id,
                 label: label,
@@ -2033,6 +2121,7 @@ class $$ProfilesTableTableManager
                 selectedMap: selectedMap,
                 unfoldSet: unfoldSet,
                 order: order,
+                accessControlProps: accessControlProps,
               ),
           createCompanionCallback:
               ({
@@ -2050,6 +2139,8 @@ class $$ProfilesTableTableManager
                 required Map<String, String> selectedMap,
                 required Set<String> unfoldSet,
                 Value<int?> order = const Value.absent(),
+                Value<AccessControlProps?> accessControlProps =
+                    const Value.absent(),
               }) => ProfilesCompanion.insert(
                 id: id,
                 label: label,
@@ -2064,6 +2155,7 @@ class $$ProfilesTableTableManager
                 selectedMap: selectedMap,
                 unfoldSet: unfoldSet,
                 order: order,
+                accessControlProps: accessControlProps,
               ),
           withReferenceMapper: (p0) => p0
               .map(
