@@ -193,15 +193,8 @@ class _AccessViewState extends ConsumerState<AccessView> {
     return Consumer(
       builder: (_, ref, child) {
         final accessControl = ref.watch(accessControlStateProvider);
-        final noSave = widget.showProfileLockBadge
-            ? ref.watch(
-                vpnSettingProvider.select(
-                  (state) =>
-                      state.accessControlProps ==
-                      _getRealAccessControlProps(accessControl),
-                ),
-              )
-            : widget.initial == _getRealAccessControlProps(accessControl);
+        final noSave =
+            widget.initial == _getRealAccessControlProps(accessControl);
         if (noSave) {
           return SizedBox();
         }

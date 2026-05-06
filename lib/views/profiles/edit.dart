@@ -107,15 +107,53 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   Future<void> _handleAppAccess() async {
-    final initial =
-        widget.profile.accessControlProps ?? const AccessControlProps();
+    AccessControlProps? yamlAcl;
+    try {
+      final raw = await coreController.getConfig(widget.profile.id);
+      final tunMap = raw['tun'];
+      if (tunMap is Map) {
+        final include =
+            (tunMap['include-package'] as List?)?.whereType<String>().toList(
+              growable: false,
+            ) ??
+            const <String>[];
+        if (include.isNotEmpty) {
+          yamlAcl = const AccessControlProps().copyWith(
+            enable: true,
+            mode: AccessControlMode.acceptSelected,
+            acceptList: include,
+          );
+        } else {
+          final exclude =
+              (tunMap['exclude-package'] as List?)?.whereType<String>().toList(
+                growable: false,
+              ) ??
+              const <String>[];
+          if (exclude.isNotEmpty) {
+            yamlAcl = const AccessControlProps().copyWith(
+              enable: true,
+              mode: AccessControlMode.rejectSelected,
+              rejectList: exclude,
+            );
+          }
+        }
+      }
+    } catch (_) {
+      // YAML unreachable, fall back to UI-stored value
+    }
     if (!mounted) return;
+    final hasYamlOverride = yamlAcl != null;
+    final initial =
+        yamlAcl ??
+        widget.profile.accessControlProps ??
+        const AccessControlProps();
     await BaseNavigator.push(
       context,
       Scaffold(
         appBar: AppBar(title: Text(appLocalizations.profileAppAccess)),
         body: AccessView(
           initial: initial,
+          showProfileLockBadge: hasYamlOverride,
           onSave: (acl) async {
             final updated = widget.profile.copyWith(
               accessControlProps: acl.enable ? acl : null,
