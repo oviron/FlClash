@@ -138,10 +138,23 @@ class _ProfilesViewState extends State<ProfilesView> {
                               profile: state.profiles[i],
                               groupValue: state.currentProfileId,
                               onChanged: (profileId) {
+                                final previousId = ref.read(
+                                  currentProfileIdProvider,
+                                );
+                                final wasRunning =
+                                    ref.read(runTimeProvider) != null;
                                 ref
                                         .read(currentProfileIdProvider.notifier)
                                         .value =
                                     profileId;
+                                if (wasRunning && profileId != previousId) {
+                                  globalState
+                                      .navigatorKey
+                                      .currentContext
+                                      ?.showSnackBar(
+                                        appLocalizations.restartVpnToApply,
+                                      );
+                                }
                               },
                             ),
                           ),
