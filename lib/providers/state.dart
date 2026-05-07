@@ -611,6 +611,14 @@ SharedState sharedState(Ref ref) {
       (state) => VM2(state.tun.stack.name, state.mixedPort),
     ),
   );
+  final routeMode = ref.watch(
+    networkSettingProvider.select((state) => state.routeMode),
+  );
+  final routeAddress = ref.watch(
+    patchClashConfigProvider.select(
+      (state) => state.tun.getRealTun(routeMode).routeAddress,
+    ),
+  );
   final vpnSetting = ref.watch(vpnSettingProvider);
   final effectiveAcl =
       ref.watch(effectiveAccessControlProvider).value ??
@@ -640,6 +648,7 @@ SharedState sharedState(Ref ref) {
       accessControlProps: effectiveAcl,
       allowBypass: vpnSetting.allowBypass,
       bypassDomain: bypassDomain,
+      routeAddress: routeAddress,
     ),
   );
 }
