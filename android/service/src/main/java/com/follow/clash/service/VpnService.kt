@@ -104,6 +104,8 @@ class VpnService : SystemVpnService(), IBaseService,
 
     private val binder = LocalBinder()
 
+    override var destroyed = false
+
     inner class LocalBinder : Binder() {
         fun getService(): VpnService = this@VpnService
 
@@ -245,6 +247,7 @@ class VpnService : SystemVpnService(), IBaseService,
     }
 
     override fun stop() {
+        handleDestroy()
         loader.cancel()
         Core.stopTun()
         stopSelf()

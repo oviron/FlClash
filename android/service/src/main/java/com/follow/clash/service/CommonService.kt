@@ -41,6 +41,8 @@ class CommonService : Service(), IBaseService,
 
     private val binder = LocalBinder()
 
+    override var destroyed = false
+
     inner class LocalBinder : Binder() {
         fun getService(): CommonService = this@CommonService
     }
@@ -58,6 +60,7 @@ class CommonService : Service(), IBaseService,
     }
 
     override fun stop() {
+        handleDestroy()
         loader.cancel()
         stopSelf()
     }
