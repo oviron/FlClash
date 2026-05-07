@@ -13,6 +13,7 @@ export 'future.dart';
 export 'hive.dart';
 export 'http.dart';
 export 'icons.dart';
+export 'inbound_auth.dart';
 export 'indexing.dart';
 export 'iterable.dart';
 export 'keyboard.dart';
