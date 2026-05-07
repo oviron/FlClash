@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:fl_clash/plugins/app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 
@@ -11,10 +12,12 @@ class AutoLaunch {
   static AutoLaunch? _instance;
 
   AutoLaunch._internal() {
-    launchAtStartup.setup(
-      appName: appName,
-      appPath: Platform.resolvedExecutable,
-    );
+    if (system.isDesktop) {
+      launchAtStartup.setup(
+        appName: appName,
+        appPath: Platform.resolvedExecutable,
+      );
+    }
   }
 
   factory AutoLaunch() {
@@ -23,15 +26,24 @@ class AutoLaunch {
   }
 
   Future<bool> get isEnable async {
-    return await launchAtStartup.isEnabled();
+    if (system.isDesktop) {
+      return await launchAtStartup.isEnabled();
+    }
+    return (await app?.isAutoStartEnabled()) ?? false;
   }
 
   Future<bool> enable() async {
-    return await launchAtStartup.enable();
+    if (system.isDesktop) {
+      return await launchAtStartup.enable();
+    }
+    return (await app?.setAutoStartEnabled(true)) ?? false;
   }
 
   Future<bool> disable() async {
-    return await launchAtStartup.disable();
+    if (system.isDesktop) {
+      return await launchAtStartup.disable();
+    }
+    return (await app?.setAutoStartEnabled(false)) ?? false;
   }
 
   Future<void> updateStatus(bool isAutoLaunch) async {
@@ -47,4 +59,4 @@ class AutoLaunch {
   }
 }
 
-final autoLaunch = system.isDesktop ? AutoLaunch() : null;
+final autoLaunch = AutoLaunch();
