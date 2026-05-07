@@ -129,9 +129,11 @@ extension AccessControlPropsExt on AccessControlProps {
 /// (rejectSelected). Returns null when neither is present or the shape is
 /// unexpected. The [base] keeps the caller's view fields (sort, filters).
 ///
-/// Android `VpnService.Builder` allows allow XOR disallow, never both, so
-/// when YAML defines both keys with non-empty lists we keep `include` and
-/// log a warning. This may diverge from upstream mihomo which honors both.
+/// Android `VpnService.Builder` allows allow XOR disallow, never both. When
+/// YAML defines both keys non-empty we mirror mihomo's sing-tun semantics by
+/// returning `acceptList = include \ exclude` (whitelist minus exclusions).
+/// If subtraction empties the set we fall back to `include` and warn, since
+/// an empty allow-list would leave only FlClash itself in the tunnel.
 AccessControlProps? aclFromTunYaml(
   Map<String, dynamic> raw, {
   AccessControlProps base = const AccessControlProps(),
@@ -139,21 +141,42 @@ AccessControlProps? aclFromTunYaml(
   final tunMap = raw['tun'];
   if (tunMap is! Map) return null;
 
-  final rawInclude = tunMap['include-package'];
-  final rawExclude = tunMap['exclude-package'];
+  List<String> parsePackageList(Object? raw) {
+    if (raw is! List) return const <String>[];
+    final seen = <String>{};
+    final result = <String>[];
+    for (final item in raw.whereType<String>()) {
+      final trimmed = item.trim();
+      if (trimmed.isEmpty) continue;
+      if (seen.add(trimmed)) result.add(trimmed);
+    }
+    return List.unmodifiable(result);
+  }
 
-  final include = rawInclude is List
-      ? rawInclude.whereType<String>().toList(growable: false)
-      : const <String>[];
-  final exclude = rawExclude is List
-      ? rawExclude.whereType<String>().toList(growable: false)
-      : const <String>[];
+  final include = parsePackageList(tunMap['include-package']);
+  final exclude = parsePackageList(tunMap['exclude-package']);
 
   if (include.isNotEmpty && exclude.isNotEmpty) {
+    final excludeSet = exclude.toSet();
+    final subtracted = include
+        .where((p) => !excludeSet.contains(p))
+        .toList(growable: false);
+    if (subtracted.isNotEmpty) {
+      return base.copyWith(
+        enable: true,
+        mode: AccessControlMode.acceptSelected,
+        acceptList: subtracted,
+      );
+    }
     commonPrint.log(
-      'aclFromTunYaml: tun.include-package and tun.exclude-package are both '
-      'set; Android VpnService can only enforce one direction, applying '
-      'include-package and ignoring exclude-package.',
+      'aclFromTunYaml: tun.include-package is fully covered by '
+      'tun.exclude-package; falling back to include-only to avoid '
+      'an empty allow-list that would leave only FlClash in the tunnel.',
+    );
+    return base.copyWith(
+      enable: true,
+      mode: AccessControlMode.acceptSelected,
+      acceptList: include,
     );
   }
 
