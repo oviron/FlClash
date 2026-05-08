@@ -601,5 +601,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "years": MessageLookupByLibrary.simpleMessage("年"),
     "yearsAgo": m14,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
+    "locationPermissionTitle": MessageLookupByLibrary.simpleMessage("位置权限"),
+    "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
+      "为了识别您的Wi-Fi网络名称，Android需要位置权限。我们仅用于读取SSID，不会保存坐标。",
+    ),
+    "permissionAllow": MessageLookupByLibrary.simpleMessage("允许"),
+    "permissionNotNow": MessageLookupByLibrary.simpleMessage("暂不允许"),
+    "permissionRequiredHint": MessageLookupByLibrary.simpleMessage("需要权限"),
+    "enableLocationPermission": MessageLookupByLibrary.simpleMessage(
+      "启用位置权限",
+    ),
+    "openSettings": MessageLookupByLibrary.simpleMessage("打开设置"),
   };
 }

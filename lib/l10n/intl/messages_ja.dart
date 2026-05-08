@@ -671,5 +671,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "years": MessageLookupByLibrary.simpleMessage("年"),
     "yearsAgo": m14,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
+    "locationPermissionTitle": MessageLookupByLibrary.simpleMessage(
+      "位置情報の権限",
+    ),
+    "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fiネットワーク名を取得するため、Androidは位置情報の権限を必要とします。SSIDの読み取りにのみ使用し、座標は保存しません。",
+    ),
+    "permissionAllow": MessageLookupByLibrary.simpleMessage("許可"),
+    "permissionNotNow": MessageLookupByLibrary.simpleMessage("今はしない"),
+    "permissionRequiredHint": MessageLookupByLibrary.simpleMessage(
+      "権限が必要です",
+    ),
+    "enableLocationPermission": MessageLookupByLibrary.simpleMessage(
+      "位置情報を許可",
+    ),
+    "openSettings": MessageLookupByLibrary.simpleMessage("設定を開く"),
   };
 }

@@ -3758,6 +3758,76 @@ class AppLocalizations {
   String get delayTest {
     return Intl.message('Delay Test', name: 'delayTest', desc: '', args: []);
   }
+
+  /// `Location permission`
+  String get locationPermissionTitle {
+    return Intl.message(
+      'Location permission',
+      name: 'locationPermissionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To detect the name of your Wi-Fi network, Android requires location permission. We use it only to read the SSID and do not store any coordinates.`
+  String get locationPermissionExplanation {
+    return Intl.message(
+      'To detect the name of your Wi-Fi network, Android requires location permission. We use it only to read the SSID and do not store any coordinates.',
+      name: 'locationPermissionExplanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow`
+  String get permissionAllow {
+    return Intl.message(
+      'Allow',
+      name: 'permissionAllow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not now`
+  String get permissionNotNow {
+    return Intl.message(
+      'Not now',
+      name: 'permissionNotNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permission required`
+  String get permissionRequiredHint {
+    return Intl.message(
+      'Permission required',
+      name: 'permissionRequiredHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable location`
+  String get enableLocationPermission {
+    return Intl.message(
+      'Enable location',
+      name: 'enableLocationPermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open settings`
+  String get openSettings {
+    return Intl.message(
+      'Open settings',
+      name: 'openSettings',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

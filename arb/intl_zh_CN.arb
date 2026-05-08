@@ -482,5 +482,12 @@
   "restoreOnlyConfig": "仅恢复配置文件",
   "restoreAllData": "恢复所有数据",
   "addProfile": "添加配置",
-  "delayTest": "延迟测试"
+  "delayTest": "延迟测试",
+  "locationPermissionTitle": "位置权限",
+  "locationPermissionExplanation": "为了识别您的Wi-Fi网络名称，Android需要位置权限。我们仅用于读取SSID，不会保存坐标。",
+  "permissionAllow": "允许",
+  "permissionNotNow": "暂不允许",
+  "permissionRequiredHint": "需要权限",
+  "enableLocationPermission": "启用位置权限",
+  "openSettings": "打开设置"
 }

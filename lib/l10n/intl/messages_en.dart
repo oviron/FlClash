@@ -864,5 +864,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "years": MessageLookupByLibrary.simpleMessage("Years"),
     "yearsAgo": m14,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
+    "locationPermissionTitle": MessageLookupByLibrary.simpleMessage(
+      "Location permission",
+    ),
+    "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
+      "To detect the name of your Wi-Fi network, Android requires location permission. We use it only to read the SSID and do not store any coordinates.",
+    ),
+    "permissionAllow": MessageLookupByLibrary.simpleMessage("Allow"),
+    "permissionNotNow": MessageLookupByLibrary.simpleMessage("Not now"),
+    "permissionRequiredHint": MessageLookupByLibrary.simpleMessage(
+      "Permission required",
+    ),
+    "enableLocationPermission": MessageLookupByLibrary.simpleMessage(
+      "Enable location",
+    ),
+    "openSettings": MessageLookupByLibrary.simpleMessage("Open settings"),
   };
 }

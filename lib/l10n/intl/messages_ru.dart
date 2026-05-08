@@ -919,5 +919,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "years": MessageLookupByLibrary.simpleMessage("Лет"),
     "yearsAgo": m14,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
+    "locationPermissionTitle": MessageLookupByLibrary.simpleMessage(
+      "Разрешение на геолокацию",
+    ),
+    "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
+      "Чтобы определять имя Wi-Fi сети, Android требует разрешение на местоположение. Мы используем его только для чтения имени точки и не сохраняем координаты.",
+    ),
+    "permissionAllow": MessageLookupByLibrary.simpleMessage("Разрешить"),
+    "permissionNotNow": MessageLookupByLibrary.simpleMessage("Не сейчас"),
+    "permissionRequiredHint": MessageLookupByLibrary.simpleMessage(
+      "Требуется разрешение",
+    ),
+    "enableLocationPermission": MessageLookupByLibrary.simpleMessage(
+      "Разрешить геолокацию",
+    ),
+    "openSettings": MessageLookupByLibrary.simpleMessage("Открыть настройки"),
   };
 }

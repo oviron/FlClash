@@ -490,5 +490,12 @@
   "restoreOnlyConfig": "Восстановить только файлы конфигурации",
   "restoreAllData": "Восстановить все данные",
   "addProfile": "Добавить профиль",
-  "delayTest": "Тест задержки"
+  "delayTest": "Тест задержки",
+  "locationPermissionTitle": "Разрешение на геолокацию",
+  "locationPermissionExplanation": "Чтобы определять имя Wi-Fi сети, Android требует разрешение на местоположение. Мы используем его только для чтения имени точки и не сохраняем координаты.",
+  "permissionAllow": "Разрешить",
+  "permissionNotNow": "Не сейчас",
+  "permissionRequiredHint": "Требуется разрешение",
+  "enableLocationPermission": "Разрешить геолокацию",
+  "openSettings": "Открыть настройки"
 }

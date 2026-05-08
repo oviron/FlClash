@@ -482,5 +482,12 @@
   "restoreOnlyConfig": "設定ファイルのみを復元する",
   "restoreAllData": "すべてのデータを復元する",
   "addProfile": "プロファイルを追加",
-  "delayTest": "遅延テスト"
+  "delayTest": "遅延テスト",
+  "locationPermissionTitle": "位置情報の権限",
+  "locationPermissionExplanation": "Wi-Fiネットワーク名を取得するため、Androidは位置情報の権限を必要とします。SSIDの読み取りにのみ使用し、座標は保存しません。",
+  "permissionAllow": "許可",
+  "permissionNotNow": "今はしない",
+  "permissionRequiredHint": "権限が必要です",
+  "enableLocationPermission": "位置情報を許可",
+  "openSettings": "設定を開く"
 }

@@ -481,5 +481,12 @@
   "restoreOnlyConfig": "Restore configuration files only",
   "restoreAllData": "Restore all data",
   "addProfile": "Add Profile",
-  "delayTest": "Delay Test"
+  "delayTest": "Delay Test",
+  "locationPermissionTitle": "Location permission",
+  "locationPermissionExplanation": "To detect the name of your Wi-Fi network, Android requires location permission. We use it only to read the SSID and do not store any coordinates.",
+  "permissionAllow": "Allow",
+  "permissionNotNow": "Not now",
+  "permissionRequiredHint": "Permission required",
+  "enableLocationPermission": "Enable location",
+  "openSettings": "Open settings"
 }
