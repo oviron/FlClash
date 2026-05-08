@@ -1,12 +1,15 @@
 package com.follow.clash.service
 
+import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.ProxyInfo
+import android.net.wifi.WifiManager
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.Parcel
+import android.os.PowerManager
 import android.os.RemoteException
 import android.util.Log
 import androidx.core.content.getSystemService
@@ -38,12 +41,16 @@ class VpnService : SystemVpnService(), IBaseService,
         install(SuspendModule(self))
     }
 
+    private var wakeLock: PowerManager.WakeLock? = null
+    private var wifiLock: WifiManager.WifiLock? = null
+
     override fun onCreate() {
         super.onCreate()
         handleCreate()
     }
 
     override fun onDestroy() {
+        releaseLocks()
         handleDestroy()
         super.onDestroy()
     }
@@ -237,6 +244,7 @@ class VpnService : SystemVpnService(), IBaseService,
 
     override fun start() {
         try {
+            acquireLocks()
             loader.load()
             State.options?.let {
                 handleStart(it)
@@ -247,10 +255,37 @@ class VpnService : SystemVpnService(), IBaseService,
     }
 
     override fun stop() {
+        releaseLocks()
         handleDestroy()
         loader.cancel()
         Core.stopTun()
         stopSelf()
+    }
+
+    private fun acquireLocks() {
+        if (wakeLock == null) {
+            val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+            wakeLock = pm.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                "FlClash::VpnTunnel"
+            ).apply { acquire() }
+        }
+        if (wifiLock == null) {
+            val wm = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            @Suppress("DEPRECATION")
+            wifiLock = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                wm.createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, "FlClash::VpnTunnel")
+            } else {
+                wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "FlClash::VpnTunnel")
+            }).apply { acquire() }
+        }
+    }
+
+    private fun releaseLocks() {
+        wakeLock?.let { if (it.isHeld) it.release() }
+        wakeLock = null
+        wifiLock?.let { if (it.isHeld) it.release() }
+        wifiLock = null
     }
 
     companion object {
