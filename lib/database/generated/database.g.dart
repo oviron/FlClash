@@ -1659,6 +1659,408 @@ class ProfileRuleLinksCompanion extends UpdateCompanion<RawProfileRuleLink> {
   }
 }
 
+class $NetworkRulesTable extends NetworkRules
+    with TableInfo<$NetworkRulesTable, RawNetworkRule> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NetworkRulesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _conditionsMeta = const VerificationMeta(
+    'conditions',
+  );
+  @override
+  late final GeneratedColumn<String> conditions = GeneratedColumn<String>(
+    'conditions',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _actionMeta = const VerificationMeta('action');
+  @override
+  late final GeneratedColumn<int> action = GeneratedColumn<int>(
+    'action',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _enabledMeta = const VerificationMeta(
+    'enabled',
+  );
+  @override
+  late final GeneratedColumn<bool> enabled = GeneratedColumn<bool>(
+    'enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    conditions,
+    action,
+    priority,
+    enabled,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'network_rules';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RawNetworkRule> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    }
+    if (data.containsKey('conditions')) {
+      context.handle(
+        _conditionsMeta,
+        conditions.isAcceptableOrUnknown(data['conditions']!, _conditionsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_conditionsMeta);
+    }
+    if (data.containsKey('action')) {
+      context.handle(
+        _actionMeta,
+        action.isAcceptableOrUnknown(data['action']!, _actionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_actionMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_priorityMeta);
+    }
+    if (data.containsKey('enabled')) {
+      context.handle(
+        _enabledMeta,
+        enabled.isAcceptableOrUnknown(data['enabled']!, _enabledMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RawNetworkRule map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RawNetworkRule(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      ),
+      conditions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}conditions'],
+      )!,
+      action: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}action'],
+      )!,
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}priority'],
+      )!,
+      enabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enabled'],
+      )!,
+    );
+  }
+
+  @override
+  $NetworkRulesTable createAlias(String alias) {
+    return $NetworkRulesTable(attachedDatabase, alias);
+  }
+}
+
+class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
+  final int id;
+  final String? name;
+
+  /// JSON-encoded `List<NetworkCondition>`.
+  final String conditions;
+
+  /// Stored as `NetworkAction.index` (0=turnOn, 1=turnOff, 2=keep).
+  final int action;
+  final int priority;
+  final bool enabled;
+  const RawNetworkRule({
+    required this.id,
+    this.name,
+    required this.conditions,
+    required this.action,
+    required this.priority,
+    required this.enabled,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    map['conditions'] = Variable<String>(conditions);
+    map['action'] = Variable<int>(action);
+    map['priority'] = Variable<int>(priority);
+    map['enabled'] = Variable<bool>(enabled);
+    return map;
+  }
+
+  NetworkRulesCompanion toCompanion(bool nullToAbsent) {
+    return NetworkRulesCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      conditions: Value(conditions),
+      action: Value(action),
+      priority: Value(priority),
+      enabled: Value(enabled),
+    );
+  }
+
+  factory RawNetworkRule.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RawNetworkRule(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+      conditions: serializer.fromJson<String>(json['conditions']),
+      action: serializer.fromJson<int>(json['action']),
+      priority: serializer.fromJson<int>(json['priority']),
+      enabled: serializer.fromJson<bool>(json['enabled']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String?>(name),
+      'conditions': serializer.toJson<String>(conditions),
+      'action': serializer.toJson<int>(action),
+      'priority': serializer.toJson<int>(priority),
+      'enabled': serializer.toJson<bool>(enabled),
+    };
+  }
+
+  RawNetworkRule copyWith({
+    int? id,
+    Value<String?> name = const Value.absent(),
+    String? conditions,
+    int? action,
+    int? priority,
+    bool? enabled,
+  }) => RawNetworkRule(
+    id: id ?? this.id,
+    name: name.present ? name.value : this.name,
+    conditions: conditions ?? this.conditions,
+    action: action ?? this.action,
+    priority: priority ?? this.priority,
+    enabled: enabled ?? this.enabled,
+  );
+  RawNetworkRule copyWithCompanion(NetworkRulesCompanion data) {
+    return RawNetworkRule(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      conditions: data.conditions.present
+          ? data.conditions.value
+          : this.conditions,
+      action: data.action.present ? data.action.value : this.action,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      enabled: data.enabled.present ? data.enabled.value : this.enabled,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RawNetworkRule(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('conditions: $conditions, ')
+          ..write('action: $action, ')
+          ..write('priority: $priority, ')
+          ..write('enabled: $enabled')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, conditions, action, priority, enabled);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RawNetworkRule &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.conditions == this.conditions &&
+          other.action == this.action &&
+          other.priority == this.priority &&
+          other.enabled == this.enabled);
+}
+
+class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
+  final Value<int> id;
+  final Value<String?> name;
+  final Value<String> conditions;
+  final Value<int> action;
+  final Value<int> priority;
+  final Value<bool> enabled;
+  const NetworkRulesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.conditions = const Value.absent(),
+    this.action = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.enabled = const Value.absent(),
+  });
+  NetworkRulesCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    required String conditions,
+    required int action,
+    required int priority,
+    this.enabled = const Value.absent(),
+  }) : conditions = Value(conditions),
+       action = Value(action),
+       priority = Value(priority);
+  static Insertable<RawNetworkRule> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? conditions,
+    Expression<int>? action,
+    Expression<int>? priority,
+    Expression<bool>? enabled,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (conditions != null) 'conditions': conditions,
+      if (action != null) 'action': action,
+      if (priority != null) 'priority': priority,
+      if (enabled != null) 'enabled': enabled,
+    });
+  }
+
+  NetworkRulesCompanion copyWith({
+    Value<int>? id,
+    Value<String?>? name,
+    Value<String>? conditions,
+    Value<int>? action,
+    Value<int>? priority,
+    Value<bool>? enabled,
+  }) {
+    return NetworkRulesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      conditions: conditions ?? this.conditions,
+      action: action ?? this.action,
+      priority: priority ?? this.priority,
+      enabled: enabled ?? this.enabled,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (conditions.present) {
+      map['conditions'] = Variable<String>(conditions.value);
+    }
+    if (action.present) {
+      map['action'] = Variable<int>(action.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (enabled.present) {
+      map['enabled'] = Variable<bool>(enabled.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NetworkRulesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('conditions: $conditions, ')
+          ..write('action: $action, ')
+          ..write('priority: $priority, ')
+          ..write('enabled: $enabled')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(e);
   $DatabaseManager get managers => $DatabaseManager(this);
@@ -1668,6 +2070,7 @@ abstract class _$Database extends GeneratedDatabase {
   late final $ProfileRuleLinksTable profileRuleLinks = $ProfileRuleLinksTable(
     this,
   );
+  late final $NetworkRulesTable networkRules = $NetworkRulesTable(this);
   late final Index idxProfileSceneOrder = Index(
     'idx_profile_scene_order',
     'CREATE INDEX idx_profile_scene_order ON profile_rule_mapping (profile_id, scene, "order")',
@@ -1675,6 +2078,9 @@ abstract class _$Database extends GeneratedDatabase {
   late final ProfilesDao profilesDao = ProfilesDao(this as Database);
   late final ScriptsDao scriptsDao = ScriptsDao(this as Database);
   late final RulesDao rulesDao = RulesDao(this as Database);
+  late final NetworkRulesDao networkRulesDao = NetworkRulesDao(
+    this as Database,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1684,6 +2090,7 @@ abstract class _$Database extends GeneratedDatabase {
     scripts,
     rules,
     profileRuleLinks,
+    networkRules,
     idxProfileSceneOrder,
   ];
   @override
@@ -3005,6 +3412,221 @@ typedef $$ProfileRuleLinksTableProcessedTableManager =
       RawProfileRuleLink,
       PrefetchHooks Function({bool profileId, bool ruleId})
     >;
+typedef $$NetworkRulesTableCreateCompanionBuilder =
+    NetworkRulesCompanion Function({
+      Value<int> id,
+      Value<String?> name,
+      required String conditions,
+      required int action,
+      required int priority,
+      Value<bool> enabled,
+    });
+typedef $$NetworkRulesTableUpdateCompanionBuilder =
+    NetworkRulesCompanion Function({
+      Value<int> id,
+      Value<String?> name,
+      Value<String> conditions,
+      Value<int> action,
+      Value<int> priority,
+      Value<bool> enabled,
+    });
+
+class $$NetworkRulesTableFilterComposer
+    extends Composer<_$Database, $NetworkRulesTable> {
+  $$NetworkRulesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get conditions => $composableBuilder(
+    column: $table.conditions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get action => $composableBuilder(
+    column: $table.action,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NetworkRulesTableOrderingComposer
+    extends Composer<_$Database, $NetworkRulesTable> {
+  $$NetworkRulesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get conditions => $composableBuilder(
+    column: $table.conditions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get action => $composableBuilder(
+    column: $table.action,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NetworkRulesTableAnnotationComposer
+    extends Composer<_$Database, $NetworkRulesTable> {
+  $$NetworkRulesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get conditions => $composableBuilder(
+    column: $table.conditions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get action =>
+      $composableBuilder(column: $table.action, builder: (column) => column);
+
+  GeneratedColumn<int> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<bool> get enabled =>
+      $composableBuilder(column: $table.enabled, builder: (column) => column);
+}
+
+class $$NetworkRulesTableTableManager
+    extends
+        RootTableManager<
+          _$Database,
+          $NetworkRulesTable,
+          RawNetworkRule,
+          $$NetworkRulesTableFilterComposer,
+          $$NetworkRulesTableOrderingComposer,
+          $$NetworkRulesTableAnnotationComposer,
+          $$NetworkRulesTableCreateCompanionBuilder,
+          $$NetworkRulesTableUpdateCompanionBuilder,
+          (
+            RawNetworkRule,
+            BaseReferences<_$Database, $NetworkRulesTable, RawNetworkRule>,
+          ),
+          RawNetworkRule,
+          PrefetchHooks Function()
+        > {
+  $$NetworkRulesTableTableManager(_$Database db, $NetworkRulesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NetworkRulesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NetworkRulesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NetworkRulesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> name = const Value.absent(),
+                Value<String> conditions = const Value.absent(),
+                Value<int> action = const Value.absent(),
+                Value<int> priority = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
+              }) => NetworkRulesCompanion(
+                id: id,
+                name: name,
+                conditions: conditions,
+                action: action,
+                priority: priority,
+                enabled: enabled,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> name = const Value.absent(),
+                required String conditions,
+                required int action,
+                required int priority,
+                Value<bool> enabled = const Value.absent(),
+              }) => NetworkRulesCompanion.insert(
+                id: id,
+                name: name,
+                conditions: conditions,
+                action: action,
+                priority: priority,
+                enabled: enabled,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NetworkRulesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Database,
+      $NetworkRulesTable,
+      RawNetworkRule,
+      $$NetworkRulesTableFilterComposer,
+      $$NetworkRulesTableOrderingComposer,
+      $$NetworkRulesTableAnnotationComposer,
+      $$NetworkRulesTableCreateCompanionBuilder,
+      $$NetworkRulesTableUpdateCompanionBuilder,
+      (
+        RawNetworkRule,
+        BaseReferences<_$Database, $NetworkRulesTable, RawNetworkRule>,
+      ),
+      RawNetworkRule,
+      PrefetchHooks Function()
+    >;
 
 class $DatabaseManager {
   final _$Database _db;
@@ -3017,6 +3639,8 @@ class $DatabaseManager {
       $$RulesTableTableManager(_db, _db.rules);
   $$ProfileRuleLinksTableTableManager get profileRuleLinks =>
       $$ProfileRuleLinksTableTableManager(_db, _db.profileRuleLinks);
+  $$NetworkRulesTableTableManager get networkRules =>
+      $$NetworkRulesTableTableManager(_db, _db.networkRules);
 }
 
 mixin _$ProfilesDaoMixin on DatabaseAccessor<Database> {
@@ -3030,4 +3654,7 @@ mixin _$RulesDaoMixin on DatabaseAccessor<Database> {
   $ProfilesTable get profiles => attachedDatabase.profiles;
   $ProfileRuleLinksTable get profileRuleLinks =>
       attachedDatabase.profileRuleLinks;
+}
+mixin _$NetworkRulesDaoMixin on DatabaseAccessor<Database> {
+  $NetworkRulesTable get networkRules => attachedDatabase.networkRules;
 }

@@ -7,28 +7,33 @@ import 'package:drift/native.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/network_rules/model.dart';
 
 part 'generated/database.g.dart';
 part 'links.dart';
+part 'network_rules.dart';
 part 'profiles.dart';
 part 'rules.dart';
 part 'scripts.dart';
 
 @DriftDatabase(
-  tables: [Profiles, Scripts, Rules, ProfileRuleLinks],
-  daos: [ProfilesDao, ScriptsDao, RulesDao],
+  tables: [Profiles, Scripts, Rules, ProfileRuleLinks, NetworkRules],
+  daos: [ProfilesDao, ScriptsDao, RulesDao, NetworkRulesDao],
 )
 class Database extends _$Database {
   Database([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (m, from, to) async {
       if (from < 2) {
         await m.addColumn(profiles, profiles.accessControlProps);
+      }
+      if (from < 3) {
+        await m.createTable(networkRules);
       }
     },
   );
