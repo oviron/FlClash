@@ -4,6 +4,7 @@ export 'connectivity_manager.dart';
 export 'core_manager.dart';
 export 'global_proxy_watchdog_manager.dart';
 export 'proxy_manager.dart';
+export 'rule_engine_runner.dart';
 export 'status_manager.dart';
 export 'theme_manager.dart';
 export 'tile_manager.dart';
