@@ -1,9 +1,5 @@
-// Persisted master toggle and fallback action for the rule engine.
-//
-//   * `enabled` — global on/off. When false, the runner skips evaluation
-//     entirely and fallback never applies.
-//   * `fallback` — action to take when no rule matches the current snapshot.
-//     Only consulted while `enabled` is true.
+// Persisted master toggle for the rule engine. When `enabled` is false the
+// runner skips evaluation entirely.
 //
 // Persistence goes through the existing `Config` aggregator (see
 // `providers/config.dart` and `models/config.dart::NetworkRulesProps`) —
@@ -12,7 +8,6 @@
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
-import 'package:fl_clash/network_rules/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/network_rules_settings.g.dart';
@@ -27,9 +22,5 @@ class NetworkRulesSettings extends _$NetworkRulesSettings
 
   void setEnabled(bool value) {
     update((s) => s.copyWith(enabled: value));
-  }
-
-  void setFallback(NetworkAction action) {
-    update((s) => s.copyWith(fallback: action));
   }
 }

@@ -2326,7 +2326,7 @@ $TextScaleCopyWith<$Res> get textScale {
 /// @nodoc
 mixin _$NetworkRulesProps {
 
- bool get enabled; NetworkAction get fallback;
+ bool get enabled;
 /// Create a copy of NetworkRulesProps
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2339,16 +2339,16 @@ $NetworkRulesPropsCopyWith<NetworkRulesProps> get copyWith => _$NetworkRulesProp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkRulesProps&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.fallback, fallback) || other.fallback == fallback));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkRulesProps&&(identical(other.enabled, enabled) || other.enabled == enabled));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enabled,fallback);
+int get hashCode => Object.hash(runtimeType,enabled);
 
 @override
 String toString() {
-  return 'NetworkRulesProps(enabled: $enabled, fallback: $fallback)';
+  return 'NetworkRulesProps(enabled: $enabled)';
 }
 
 
@@ -2359,7 +2359,7 @@ abstract mixin class $NetworkRulesPropsCopyWith<$Res>  {
   factory $NetworkRulesPropsCopyWith(NetworkRulesProps value, $Res Function(NetworkRulesProps) _then) = _$NetworkRulesPropsCopyWithImpl;
 @useResult
 $Res call({
- bool enabled, NetworkAction fallback
+ bool enabled
 });
 
 
@@ -2376,11 +2376,10 @@ class _$NetworkRulesPropsCopyWithImpl<$Res>
 
 /// Create a copy of NetworkRulesProps
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,Object? fallback = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,}) {
   return _then(_self.copyWith(
 enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
-as bool,fallback: null == fallback ? _self.fallback : fallback // ignore: cast_nullable_to_non_nullable
-as NetworkAction,
+as bool,
   ));
 }
 
@@ -2465,10 +2464,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled,  NetworkAction fallback)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NetworkRulesProps() when $default != null:
-return $default(_that.enabled,_that.fallback);case _:
+return $default(_that.enabled);case _:
   return orElse();
 
 }
@@ -2486,10 +2485,10 @@ return $default(_that.enabled,_that.fallback);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled,  NetworkAction fallback)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled)  $default,) {final _that = this;
 switch (_that) {
 case _NetworkRulesProps():
-return $default(_that.enabled,_that.fallback);case _:
+return $default(_that.enabled);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2506,10 +2505,10 @@ return $default(_that.enabled,_that.fallback);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled,  NetworkAction fallback)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled)?  $default,) {final _that = this;
 switch (_that) {
 case _NetworkRulesProps() when $default != null:
-return $default(_that.enabled,_that.fallback);case _:
+return $default(_that.enabled);case _:
   return null;
 
 }
@@ -2521,11 +2520,10 @@ return $default(_that.enabled,_that.fallback);case _:
 @JsonSerializable()
 
 class _NetworkRulesProps implements NetworkRulesProps {
-  const _NetworkRulesProps({this.enabled = false, this.fallback = NetworkAction.turnOn});
+  const _NetworkRulesProps({this.enabled = false});
   factory _NetworkRulesProps.fromJson(Map<String, dynamic> json) => _$NetworkRulesPropsFromJson(json);
 
 @override@JsonKey() final  bool enabled;
-@override@JsonKey() final  NetworkAction fallback;
 
 /// Create a copy of NetworkRulesProps
 /// with the given fields replaced by the non-null parameter values.
@@ -2540,16 +2538,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkRulesProps&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.fallback, fallback) || other.fallback == fallback));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkRulesProps&&(identical(other.enabled, enabled) || other.enabled == enabled));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enabled,fallback);
+int get hashCode => Object.hash(runtimeType,enabled);
 
 @override
 String toString() {
-  return 'NetworkRulesProps(enabled: $enabled, fallback: $fallback)';
+  return 'NetworkRulesProps(enabled: $enabled)';
 }
 
 
@@ -2560,7 +2558,7 @@ abstract mixin class _$NetworkRulesPropsCopyWith<$Res> implements $NetworkRulesP
   factory _$NetworkRulesPropsCopyWith(_NetworkRulesProps value, $Res Function(_NetworkRulesProps) _then) = __$NetworkRulesPropsCopyWithImpl;
 @override @useResult
 $Res call({
- bool enabled, NetworkAction fallback
+ bool enabled
 });
 
 
@@ -2577,11 +2575,10 @@ class __$NetworkRulesPropsCopyWithImpl<$Res>
 
 /// Create a copy of NetworkRulesProps
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? enabled = null,Object? fallback = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? enabled = null,}) {
   return _then(_NetworkRulesProps(
 enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
-as bool,fallback: null == fallback ? _self.fallback : fallback // ignore: cast_nullable_to_non_nullable
-as NetworkAction,
+as bool,
   ));
 }
 

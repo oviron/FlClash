@@ -78,12 +78,16 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
       final rules = ref.read(networkRulesStreamProvider).value ?? const [];
       final snap = ref.read(currentNetworkSnapshotProvider);
 
-      final action = evaluate(
-        rules: rules,
-        snapshot: snap,
-        fallback: settings.fallback,
-      );
+      final action = evaluate(rules: rules, snapshot: snap);
 
+      // No rule matched. Do nothing; no fallback, no cooldown arming.
+      if (action == null) {
+        return;
+      }
+
+      // The redesigned UI never produces NetworkAction.keep, but legacy
+      // persisted rules from before may still carry it. Treat as null
+      // (no opinion) so we do nothing rather than fight the user.
       if (action == NetworkAction.keep) {
         return;
       }
@@ -108,7 +112,7 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
         return;
       }
 
-      final reason = _matchReason(rules, snap, settings.fallback);
+      final reason = _matchReason(rules, snap);
       _log('$reason, action=${action.name} -> ${desiredOn ? "starting" : "stopping"} VPN');
 
       try {
@@ -144,11 +148,7 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
     return remaining.inSeconds;
   }
 
-  String _matchReason(
-    List<NetworkRule> rules,
-    NetworkSnapshot snap,
-    NetworkAction fallback,
-  ) {
+  String _matchReason(List<NetworkRule> rules, NetworkSnapshot snap) {
     final ordered = [...rules]
       ..sort((a, b) => a.priority.compareTo(b.priority));
     for (final rule in ordered) {
@@ -162,8 +162,7 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
         return "matched rule '$label' on ${_describeSnapshot(snap)}";
       }
     }
-    return 'no rule matched on ${_describeSnapshot(snap)}, '
-        'fallback=${fallback.name}';
+    return 'no rule matched on ${_describeSnapshot(snap)}';
   }
 
   String _describeSnapshot(NetworkSnapshot snap) {

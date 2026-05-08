@@ -198,6 +198,12 @@ class NetworkRule {
     this.enabled = true,
   });
 
+  /// Convenience accessor for the redesigned UI which only ever creates
+  /// single-condition rules. Returns null for legacy empty-conditions rows.
+  /// We keep `conditions` as a list in storage for forward compat.
+  NetworkCondition? get condition =>
+      conditions.isNotEmpty ? conditions.first : null;
+
   NetworkRule copyWith({
     int? id,
     String? name,

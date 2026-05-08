@@ -1,6 +1,11 @@
 // Edit/create dialog for a network rule. WifiNamed is gated by
 // `ensureLocationPermissionForSsid`: the dialog will not let the user
 // save a name-rule without ACCESS_FINE_LOCATION granted.
+//
+// Form layout: a single-select group of three condition kinds plus a
+// two-chip row for the action. The previous SegmentedButton with three
+// long Russian labels wrapped vertically on phone widths and was the
+// main reason for this redesign.
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
@@ -10,6 +15,8 @@ import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/recent_ssids.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+enum _ConditionKind { wifiNamed, anyWifi, anyCellular }
 
 class EditRuleDialog extends ConsumerStatefulWidget {
   final NetworkRule? initial;
@@ -36,8 +43,7 @@ class EditRuleDialog extends ConsumerStatefulWidget {
 class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
   late final TextEditingController _nameController;
 
-  bool _hasAnyWifi = false;
-  bool _hasAnyCellular = false;
+  late _ConditionKind _conditionKind;
   String? _wifiNamedSsid;
   late NetworkAction _action;
 
@@ -47,16 +53,27 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     final initial = widget.initial;
     _nameController = TextEditingController(text: initial?.name ?? '');
     if (initial == null) {
-      // New rule: sensible default — single AnyCellular, action ON.
-      _hasAnyCellular = true;
+      // New rule: sensible default — cellular triggers VPN on.
+      _conditionKind = _ConditionKind.anyCellular;
       _action = NetworkAction.turnOn;
     } else {
-      _action = initial.action;
-      for (final c in initial.conditions) {
-        if (c is AnyWifi) _hasAnyWifi = true;
-        if (c is AnyCellular) _hasAnyCellular = true;
-        if (c is WifiNamed) _wifiNamedSsid = c.ssid;
+      // Pre-fill from the rule. Conditions are stored as a list for forward
+      // compat but the UI treats it as a single condition: take the first
+      // recognised kind.
+      final firstCondition = initial.condition;
+      if (firstCondition is WifiNamed) {
+        _conditionKind = _ConditionKind.wifiNamed;
+        _wifiNamedSsid = firstCondition.ssid;
+      } else if (firstCondition is AnyWifi) {
+        _conditionKind = _ConditionKind.anyWifi;
+      } else {
+        _conditionKind = _ConditionKind.anyCellular;
       }
+      // Legacy `keep` actions degrade to turnOn so the user can still edit
+      // and re-save the rule under the new two-action model.
+      _action = initial.action == NetworkAction.keep
+          ? NetworkAction.turnOn
+          : initial.action;
     }
   }
 
@@ -66,8 +83,13 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     super.dispose();
   }
 
-  bool get _hasAnyCondition =>
-      _hasAnyWifi || _hasAnyCellular || (_wifiNamedSsid != null);
+  bool get _isValid {
+    if (_conditionKind == _ConditionKind.wifiNamed &&
+        (_wifiNamedSsid == null || _wifiNamedSsid!.isEmpty)) {
+      return false;
+    }
+    return true;
+  }
 
   Future<void> _pickWifiNamed() async {
     final granted =
@@ -87,26 +109,26 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     // so a copy-pasted "home" matches the home the probe will read at
     // runtime.
     final sanitized = NetworkProbe.sanitizeSsid(picked);
-    if (sanitized == null) {
-      setState(() => _wifiNamedSsid = null);
-      return;
-    }
     setState(() => _wifiNamedSsid = sanitized);
   }
 
   void _save() {
-    if (!_hasAnyCondition) return;
-    final conditions = <NetworkCondition>[
-      if (_wifiNamedSsid != null) WifiNamed(_wifiNamedSsid!),
-      if (_hasAnyWifi) const AnyWifi(),
-      if (_hasAnyCellular) const AnyCellular(),
-    ];
+    if (!_isValid) return;
+    final NetworkCondition condition;
+    switch (_conditionKind) {
+      case _ConditionKind.wifiNamed:
+        condition = WifiNamed(_wifiNamedSsid!);
+      case _ConditionKind.anyWifi:
+        condition = const AnyWifi();
+      case _ConditionKind.anyCellular:
+        condition = const AnyCellular();
+    }
     final rawName = _nameController.text.trim();
     final initial = widget.initial;
     final result = NetworkRule(
       id: initial?.id ?? 0,
       name: rawName.isEmpty ? null : rawName,
-      conditions: conditions,
+      conditions: [condition],
       action: _action,
       priority: initial?.priority ?? 0,
       enabled: initial?.enabled ?? true,
@@ -119,6 +141,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     final permissionState = ref.watch(locationPermissionProvider);
     final hasPermission =
         permissionState == LocationPermissionState.granted;
+    final scheme = Theme.of(context).colorScheme;
 
     return AlertDialog(
       title: Text(
@@ -138,65 +161,83 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
               ),
             ),
             const SizedBox(height: 16),
-            Text(appLocalizations.networkRulesConditionAtLeastOne),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _WifiNamedChip(
-                  ssid: _wifiNamedSsid,
-                  hasPermission: hasPermission,
-                  onTap: _pickWifiNamed,
-                  onClear: () => setState(() => _wifiNamedSsid = null),
-                ),
-                FilterChip(
-                  selected: _hasAnyWifi,
-                  avatar: const Icon(Icons.wifi, size: 18),
-                  label: Text(
-                    appLocalizations.networkRulesConditionAnyWifi,
-                  ),
-                  onSelected: (v) => setState(() => _hasAnyWifi = v),
-                ),
-                FilterChip(
-                  selected: _hasAnyCellular,
-                  avatar:
-                      const Icon(Icons.signal_cellular_alt, size: 18),
-                  label: Text(
-                    appLocalizations.networkRulesConditionAnyCellular,
-                  ),
-                  onSelected: (v) => setState(() => _hasAnyCellular = v),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Text(appLocalizations.networkRulesAction),
-            const SizedBox(height: 8),
-            SegmentedButton<NetworkAction>(
-              segments: [
-                ButtonSegment(
-                  value: NetworkAction.turnOn,
-                  label: Text(
-                    appLocalizations.networkRulesActionTurnOn,
-                  ),
-                ),
-                ButtonSegment(
-                  value: NetworkAction.turnOff,
-                  label: Text(
-                    appLocalizations.networkRulesActionTurnOff,
-                  ),
-                ),
-                ButtonSegment(
-                  value: NetworkAction.keep,
-                  label: Text(
-                    appLocalizations.networkRulesActionKeep,
-                  ),
-                ),
-              ],
-              selected: {_action},
-              onSelectionChanged: (set) {
-                setState(() => _action = set.first);
+            // Wi-Fi named: radio + inline chip showing the picked SSID,
+            // plus a permission-required warning when location is denied.
+            RadioGroup<_ConditionKind>(
+              groupValue: _conditionKind,
+              onChanged: (v) {
+                if (v != null) setState(() => _conditionKind = v);
               },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RadioListTile<_ConditionKind>(
+                    value: _ConditionKind.wifiNamed,
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      appLocalizations.networkRulesConditionWifiNamed,
+                    ),
+                    subtitle: _conditionKind == _ConditionKind.wifiNamed
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: _WifiNamedChip(
+                              ssid: _wifiNamedSsid,
+                              hasPermission: hasPermission,
+                              onTap: _pickWifiNamed,
+                              onClear: () =>
+                                  setState(() => _wifiNamedSsid = null),
+                            ),
+                          )
+                        : null,
+                  ),
+                  RadioListTile<_ConditionKind>(
+                    value: _ConditionKind.anyWifi,
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      appLocalizations.networkRulesConditionAnyWifi,
+                    ),
+                  ),
+                  RadioListTile<_ConditionKind>(
+                    value: _ConditionKind.anyCellular,
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      appLocalizations.networkRulesConditionAnyCellular,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ChoiceChip(
+                    selected: _action == NetworkAction.turnOn,
+                    selectedColor: scheme.primaryContainer,
+                    label: Center(
+                      child: Text(
+                        appLocalizations.networkRulesActionTurnOn,
+                      ),
+                    ),
+                    onSelected: (_) =>
+                        setState(() => _action = NetworkAction.turnOn),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ChoiceChip(
+                    selected: _action == NetworkAction.turnOff,
+                    selectedColor: scheme.errorContainer,
+                    label: Center(
+                      child: Text(
+                        appLocalizations.networkRulesActionTurnOff,
+                      ),
+                    ),
+                    onSelected: (_) =>
+                        setState(() => _action = NetworkAction.turnOff),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -207,7 +248,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
           child: Text(appLocalizations.cancel),
         ),
         FilledButton(
-          onPressed: _hasAnyCondition ? _save : null,
+          onPressed: _isValid ? _save : null,
           child: Text(appLocalizations.save),
         ),
       ],
@@ -234,7 +275,7 @@ class _WifiNamedChip extends StatelessWidget {
     final hasValue = ssid != null;
     final showWarning = !hasPermission;
     final label = hasValue
-        ? '${appLocalizations.networkRulesConditionWifiNamed}: $ssid'
+        ? ssid!
         : appLocalizations.networkRulesConditionWifiNamed;
     final subLabel = showWarning
         ? '$label (${appLocalizations.permissionRequiredHint})'

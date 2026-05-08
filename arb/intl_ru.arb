@@ -443,18 +443,13 @@
   "networkRulesDelete": "Удалить",
   "networkRulesDisable": "Выключить",
   "networkRulesEnableShort": "Включить",
-  "networkRulesFallback": "По умолчанию",
-  "networkRulesAction": "Действие",
   "networkRulesActionTurnOn": "Включить VPN",
   "networkRulesActionTurnOff": "Выключить VPN",
-  "networkRulesActionKeep": "Оставить как есть",
   "networkRulesActionShortOn": "ВКЛ",
   "networkRulesActionShortOff": "ВЫКЛ",
-  "networkRulesActionShortKeep": "БЕЗ ИЗМ.",
   "networkRulesConditionWifiNamed": "Wi-Fi с именем",
   "networkRulesConditionAnyWifi": "Любая Wi-Fi",
   "networkRulesConditionAnyCellular": "Мобильная сеть",
-  "networkRulesConditionAtLeastOne": "Выберите хотя бы одно условие",
   "networkRulesConfirmDelete": "Удалить правило?",
   "ruleNameOptional": "Название (необязательно)"
 }

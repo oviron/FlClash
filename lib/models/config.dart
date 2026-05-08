@@ -1,6 +1,5 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/network_rules/model.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -303,10 +302,8 @@ abstract class ThemeProps with _$ThemeProps {
 
 @freezed
 abstract class NetworkRulesProps with _$NetworkRulesProps {
-  const factory NetworkRulesProps({
-    @Default(false) bool enabled,
-    @Default(NetworkAction.turnOn) NetworkAction fallback,
-  }) = _NetworkRulesProps;
+  const factory NetworkRulesProps({@Default(false) bool enabled}) =
+      _NetworkRulesProps;
 
   factory NetworkRulesProps.fromJson(Map<String, Object?> json) =>
       _$NetworkRulesPropsFromJson(json);

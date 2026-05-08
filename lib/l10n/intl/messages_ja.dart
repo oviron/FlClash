@@ -622,18 +622,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage(
       "有効にする",
     ),
-    "networkRulesFallback": MessageLookupByLibrary.simpleMessage("デフォルト"),
-    "networkRulesAction": MessageLookupByLibrary.simpleMessage("アクション"),
     "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
       "VPNをオン",
     ),
     "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(
       "VPNをオフ",
     ),
-    "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage("そのまま"),
     "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ON"),
     "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("OFF"),
-    "networkRulesActionShortKeep": MessageLookupByLibrary.simpleMessage("KEEP"),
     "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
       "Wi-Fi名を指定",
     ),
@@ -642,9 +638,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
       "モバイル通信",
-    ),
-    "networkRulesConditionAtLeastOne": MessageLookupByLibrary.simpleMessage(
-      "条件を1つ以上選択してください",
     ),
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "このルールを削除しますか?",

@@ -3444,26 +3444,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Default`
-  String get networkRulesFallback {
-    return Intl.message(
-      'Default',
-      name: 'networkRulesFallback',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Action`
-  String get networkRulesAction {
-    return Intl.message(
-      'Action',
-      name: 'networkRulesAction',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Turn VPN on`
   String get networkRulesActionTurnOn {
     return Intl.message(
@@ -3484,16 +3464,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Leave as is`
-  String get networkRulesActionKeep {
-    return Intl.message(
-      'Leave as is',
-      name: 'networkRulesActionKeep',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `ON`
   String get networkRulesActionShortOn {
     return Intl.message(
@@ -3509,16 +3479,6 @@ class AppLocalizations {
     return Intl.message(
       'OFF',
       name: 'networkRulesActionShortOff',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `KEEP`
-  String get networkRulesActionShortKeep {
-    return Intl.message(
-      'KEEP',
-      name: 'networkRulesActionShortKeep',
       desc: '',
       args: [],
     );
@@ -3549,16 +3509,6 @@ class AppLocalizations {
     return Intl.message(
       'Cellular',
       name: 'networkRulesConditionAnyCellular',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Select at least one condition`
-  String get networkRulesConditionAtLeastOne {
-    return Intl.message(
-      'Select at least one condition',
-      name: 'networkRulesConditionAtLeastOne',
       desc: '',
       args: [],
     );

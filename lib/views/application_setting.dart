@@ -1,6 +1,5 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/providers/config.dart';
-import 'package:fl_clash/views/setting/network_rules.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -236,19 +235,6 @@ class CrashlyticsItem extends ConsumerWidget {
   }
 }
 
-class NetworkRulesEntryItem extends StatelessWidget {
-  const NetworkRulesEntryItem({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListItem.open(
-      leading: const Icon(Icons.rule),
-      title: Text(appLocalizations.networkRulesTitle),
-      delegate: const OpenDelegate(widget: NetworkRulesView()),
-    );
-  }
-}
-
 class ApplicationSettingView extends StatelessWidget {
   const ApplicationSettingView({super.key});
 
@@ -266,7 +252,6 @@ class ApplicationSettingView extends StatelessWidget {
       AutoRunItem(),
       if (system.isAndroid) ...[HiddenItem()],
       AnimateTabItem(),
-      if (system.isAndroid) const NetworkRulesEntryItem(),
       OpenLogsItem(),
       CloseConnectionsItem(),
       UsageItem(),

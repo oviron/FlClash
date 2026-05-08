@@ -777,20 +777,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesDelete": MessageLookupByLibrary.simpleMessage("Delete"),
     "networkRulesDisable": MessageLookupByLibrary.simpleMessage("Disable"),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("Enable"),
-    "networkRulesFallback": MessageLookupByLibrary.simpleMessage("Default"),
-    "networkRulesAction": MessageLookupByLibrary.simpleMessage("Action"),
     "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
       "Turn VPN on",
     ),
     "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(
       "Turn VPN off",
     ),
-    "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage(
-      "Leave as is",
-    ),
     "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ON"),
     "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("OFF"),
-    "networkRulesActionShortKeep": MessageLookupByLibrary.simpleMessage("KEEP"),
     "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
       "Wi-Fi named",
     ),
@@ -799,9 +793,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
       "Cellular",
-    ),
-    "networkRulesConditionAtLeastOne": MessageLookupByLibrary.simpleMessage(
-      "Select at least one condition",
     ),
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "Delete this rule?",

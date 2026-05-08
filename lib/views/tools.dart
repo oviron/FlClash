@@ -11,6 +11,7 @@ import 'package:fl_clash/views/application_setting.dart';
 import 'package:fl_clash/views/backup_and_restore.dart';
 import 'package:fl_clash/views/config/config.dart';
 import 'package:fl_clash/views/hotkey.dart';
+import 'package:fl_clash/views/setting/network_rules.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,6 +69,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     return generateSection(
       title: context.appLocalizations.settings,
       items: [
+        if (system.isAndroid) const _NetworkRulesItem(),
         const _LocaleItem(),
         const _ThemeItem(),
         const _BackupItem(),
@@ -265,6 +267,19 @@ class _SettingItem extends StatelessWidget {
       title: Text(context.appLocalizations.application),
       subtitle: Text(context.appLocalizations.applicationDesc),
       delegate: OpenDelegate(widget: const ApplicationSettingView()),
+    );
+  }
+}
+
+class _NetworkRulesItem extends StatelessWidget {
+  const _NetworkRulesItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem.open(
+      leading: const Icon(Icons.rule),
+      title: Text(context.appLocalizations.networkRulesTitle),
+      delegate: const OpenDelegate(widget: NetworkRulesView()),
     );
   }
 }

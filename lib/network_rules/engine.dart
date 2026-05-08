@@ -10,17 +10,19 @@ export 'model.dart';
 ///
 /// Rule iteration order: ascending [NetworkRule.priority] (lower number runs
 /// first). Disabled rules are skipped. A rule matches when ALL of its
-/// conditions match the snapshot (AND). The first matching rule wins;
-/// remaining rules are not evaluated. If no rule matches, [fallback] is
-/// returned.
+/// conditions match the snapshot. The redesigned UI always produces single
+/// element condition lists, but the existing `every` predicate handles both
+/// shapes correctly so legacy multi-condition rows (if any) still match the
+/// same way they did before. The first matching rule wins; remaining rules
+/// are not evaluated. When no rule matches, the engine returns `null` so the
+/// runner can decide to do nothing instead of forcing a fallback action.
 ///
 /// A rule with an empty conditions list never matches: we treat empty as
 /// "no opinion" rather than "match everything" so a half-edited rule cannot
 /// hijack the engine.
-NetworkAction evaluate({
+NetworkAction? evaluate({
   required List<NetworkRule> rules,
   required NetworkSnapshot snapshot,
-  required NetworkAction fallback,
 }) {
   final ordered = [...rules]..sort((a, b) => a.priority.compareTo(b.priority));
 
@@ -31,5 +33,5 @@ NetworkAction evaluate({
     if (allMatch) return rule.action;
   }
 
-  return fallback;
+  return null;
 }

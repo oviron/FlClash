@@ -434,18 +434,13 @@
   "networkRulesDelete": "Delete",
   "networkRulesDisable": "Disable",
   "networkRulesEnableShort": "Enable",
-  "networkRulesFallback": "Default",
-  "networkRulesAction": "Action",
   "networkRulesActionTurnOn": "Turn VPN on",
   "networkRulesActionTurnOff": "Turn VPN off",
-  "networkRulesActionKeep": "Leave as is",
   "networkRulesActionShortOn": "ON",
   "networkRulesActionShortOff": "OFF",
-  "networkRulesActionShortKeep": "KEEP",
   "networkRulesConditionWifiNamed": "Wi-Fi named",
   "networkRulesConditionAnyWifi": "Any Wi-Fi",
   "networkRulesConditionAnyCellular": "Cellular",
-  "networkRulesConditionAtLeastOne": "Select at least one condition",
   "networkRulesConfirmDelete": "Delete this rule?",
   "ruleNameOptional": "Name (optional)"
 }

@@ -830,24 +830,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage(
       "Включить",
     ),
-    "networkRulesFallback": MessageLookupByLibrary.simpleMessage(
-      "По умолчанию",
-    ),
-    "networkRulesAction": MessageLookupByLibrary.simpleMessage("Действие"),
     "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
       "Включить VPN",
     ),
     "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(
       "Выключить VPN",
     ),
-    "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage(
-      "Оставить как есть",
-    ),
     "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ВКЛ"),
     "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("ВЫКЛ"),
-    "networkRulesActionShortKeep": MessageLookupByLibrary.simpleMessage(
-      "БЕЗ ИЗМ.",
-    ),
     "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
       "Wi-Fi с именем",
     ),
@@ -856,9 +846,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
       "Мобильная сеть",
-    ),
-    "networkRulesConditionAtLeastOne": MessageLookupByLibrary.simpleMessage(
-      "Выберите хотя бы одно условие",
     ),
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "Удалить правило?",

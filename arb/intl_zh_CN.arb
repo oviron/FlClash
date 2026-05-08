@@ -435,18 +435,13 @@
   "networkRulesDelete": "删除",
   "networkRulesDisable": "禁用",
   "networkRulesEnableShort": "启用",
-  "networkRulesFallback": "默认",
-  "networkRulesAction": "动作",
   "networkRulesActionTurnOn": "打开 VPN",
   "networkRulesActionTurnOff": "关闭 VPN",
-  "networkRulesActionKeep": "保持不变",
   "networkRulesActionShortOn": "开",
   "networkRulesActionShortOff": "关",
-  "networkRulesActionShortKeep": "保留",
   "networkRulesConditionWifiNamed": "指定 Wi-Fi",
   "networkRulesConditionAnyWifi": "任意 Wi-Fi",
   "networkRulesConditionAnyCellular": "移动网络",
-  "networkRulesConditionAtLeastOne": "请至少选择一个条件",
   "networkRulesConfirmDelete": "删除此规则？",
   "ruleNameOptional": "名称（可选）"
 }

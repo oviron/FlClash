@@ -41,7 +41,7 @@ final class RecentSsidsProvider
   }
 }
 
-String _$recentSsidsHash() => r'e4ad960bea777a5d2a37d4570a901012c2de5657';
+String _$recentSsidsHash() => r'90e05a5cca0bc05f4b566822ce7d00826b90dd74';
 
 abstract class _$RecentSsids extends $Notifier<List<String>> {
   List<String> build();

@@ -1,6 +1,7 @@
-// Top-level screen for network rules. The fallback row is intentionally
-// outside the reorderable list because it represents a default action,
-// not a rule.
+// Top-level screen for network rules. Each rule is a single condition
+// matched against the current network snapshot, producing an ON or OFF
+// action. When no rule matches the runner does nothing — there is no
+// explicit fallback row, by design.
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
@@ -22,21 +23,6 @@ class NetworkRulesView extends ConsumerWidget {
     final created = await EditRuleDialog.show(context: context);
     if (created == null) return;
     await ref.read(networkRulesRepoProvider.notifier).add(created);
-  }
-
-  Future<void> _cycleFallback(WidgetRef ref) async {
-    final current = ref.read(
-      networkRulesSettingsProvider.select((s) => s.fallback),
-    );
-    const order = [
-      NetworkAction.turnOn,
-      NetworkAction.turnOff,
-      NetworkAction.keep,
-    ];
-    final nextIndex = (order.indexOf(current) + 1) % order.length;
-    ref
-        .read(networkRulesSettingsProvider.notifier)
-        .setFallback(order[nextIndex]);
   }
 
   @override
@@ -63,11 +49,6 @@ class NetworkRulesView extends ConsumerWidget {
                     masterEnabled: settings.enabled,
                   ),
                 ),
-              ),
-              const Divider(height: 0),
-              _FallbackRow(
-                fallback: settings.fallback,
-                onTap: () => _cycleFallback(ref),
               ),
             ],
           ),
@@ -202,46 +183,6 @@ class _RulesList extends ConsumerWidget {
           },
         ),
       ),
-    );
-  }
-}
-
-class _FallbackRow extends StatelessWidget {
-  final NetworkAction fallback;
-  final VoidCallback onTap;
-
-  const _FallbackRow({required this.fallback, required this.onTap});
-
-  String _label(NetworkAction action) {
-    switch (action) {
-      case NetworkAction.turnOn:
-        return appLocalizations.networkRulesActionTurnOn;
-      case NetworkAction.turnOff:
-        return appLocalizations.networkRulesActionTurnOff;
-      case NetworkAction.keep:
-        return appLocalizations.networkRulesActionKeep;
-    }
-  }
-
-  IconData _icon(NetworkAction action) {
-    switch (action) {
-      case NetworkAction.turnOn:
-        return Icons.power_settings_new;
-      case NetworkAction.turnOff:
-        return Icons.power_off;
-      case NetworkAction.keep:
-        return Icons.pause_circle_outline;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.flag_outlined),
-      title: Text(appLocalizations.networkRulesFallback),
-      subtitle: Text(_label(fallback)),
-      trailing: Icon(_icon(fallback)),
-      onTap: onTap,
     );
   }
 }
