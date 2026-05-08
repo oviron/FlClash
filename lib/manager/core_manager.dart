@@ -73,10 +73,20 @@ class _CoreContainerState extends ConsumerState<CoreManager>
   @override
   void onLog(Log log) {
     ref.read(logsProvider.notifier).addLog(log);
-    if (log.logLevel == LogLevel.error) {
+    if (log.logLevel == LogLevel.error && !_isProbeNoise(log.payload)) {
       globalState.showNotifier(log.payload);
     }
     super.onLog(log);
+  }
+
+  // Health-check probes (URLTest / Fallback groups against generate_204)
+  // storm the screen during network handovers when many proxies time out
+  // or get aborted by the OS dropping the previous interface. The failures
+  // are routine: still recorded in the Logs view for debugging, but not
+  // worth a snackbar each.
+  bool _isProbeNoise(String payload) {
+    return payload.contains('generate_204') ||
+        payload.contains('failed to get the second response');
   }
 
   @override
