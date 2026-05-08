@@ -302,6 +302,26 @@ const _$DynamicSchemeVariantEnumMap = {
   DynamicSchemeVariant.fruitSalad: 'fruitSalad',
 };
 
+_NetworkRulesProps _$NetworkRulesPropsFromJson(Map<String, dynamic> json) =>
+    _NetworkRulesProps(
+      enabled: json['enabled'] as bool? ?? false,
+      fallback:
+          $enumDecodeNullable(_$NetworkActionEnumMap, json['fallback']) ??
+          NetworkAction.turnOn,
+    );
+
+Map<String, dynamic> _$NetworkRulesPropsToJson(_NetworkRulesProps instance) =>
+    <String, dynamic>{
+      'enabled': instance.enabled,
+      'fallback': _$NetworkActionEnumMap[instance.fallback]!,
+    };
+
+const _$NetworkActionEnumMap = {
+  NetworkAction.turnOn: 'turnOn',
+  NetworkAction.turnOff: 'turnOff',
+  NetworkAction.keep: 'keep',
+};
+
 _Config _$ConfigFromJson(Map<String, dynamic> json) => _Config(
   currentProfileId: (json['currentProfileId'] as num?)?.toInt(),
   overrideDns: json['overrideDns'] as bool? ?? false,
@@ -338,6 +358,11 @@ _Config _$ConfigFromJson(Map<String, dynamic> json) => _Config(
   patchClashConfig: json['patchClashConfig'] == null
       ? defaultClashConfig
       : ClashConfig.fromJson(json['patchClashConfig'] as Map<String, dynamic>),
+  networkRulesProps: json['networkRulesProps'] == null
+      ? defaultNetworkRulesProps
+      : NetworkRulesProps.fromJson(
+          json['networkRulesProps'] as Map<String, dynamic>,
+        ),
 );
 
 Map<String, dynamic> _$ConfigToJson(_Config instance) => <String, dynamic>{
@@ -352,4 +377,5 @@ Map<String, dynamic> _$ConfigToJson(_Config instance) => <String, dynamic>{
   'proxiesStyleProps': instance.proxiesStyleProps,
   'windowProps': instance.windowProps,
   'patchClashConfig': instance.patchClashConfig,
+  'networkRulesProps': instance.networkRulesProps,
 };

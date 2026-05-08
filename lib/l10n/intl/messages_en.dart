@@ -879,5 +879,45 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enable location",
     ),
     "openSettings": MessageLookupByLibrary.simpleMessage("Open settings"),
+    "networkRulesTitle": MessageLookupByLibrary.simpleMessage("Network rules"),
+    "networkRulesEnable": MessageLookupByLibrary.simpleMessage(
+      "Enable network rules",
+    ),
+    "networkRulesEmpty": MessageLookupByLibrary.simpleMessage(
+      "Add your first rule",
+    ),
+    "networkRulesAdd": MessageLookupByLibrary.simpleMessage("Add rule"),
+    "networkRulesEdit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "networkRulesDelete": MessageLookupByLibrary.simpleMessage("Delete"),
+    "networkRulesDisable": MessageLookupByLibrary.simpleMessage("Disable"),
+    "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("Enable"),
+    "networkRulesFallback": MessageLookupByLibrary.simpleMessage("Default"),
+    "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
+      "Turn VPN on",
+    ),
+    "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(
+      "Turn VPN off",
+    ),
+    "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage(
+      "Leave as is",
+    ),
+    "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fi named",
+    ),
+    "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
+      "Any Wi-Fi",
+    ),
+    "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
+      "Cellular",
+    ),
+    "networkRulesConditionAtLeastOne": MessageLookupByLibrary.simpleMessage(
+      "Select at least one condition",
+    ),
+    "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
+      "Delete this rule?",
+    ),
+    "ruleNameOptional": MessageLookupByLibrary.simpleMessage(
+      "Name (optional)",
+    ),
   };
 }

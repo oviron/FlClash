@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/network_rules/model.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -34,6 +35,7 @@ const defaultNetworkProps = NetworkProps();
 const defaultProxiesStyleProps = ProxiesStyleProps();
 const defaultWindowProps = WindowProps();
 const defaultAccessControlProps = AccessControlProps();
+const defaultNetworkRulesProps = NetworkRulesProps();
 final defaultThemeProps = ThemeProps(primaryColor: defaultPrimaryColor);
 
 const List<DashboardWidget> defaultDashboardWidgets = [
@@ -300,6 +302,17 @@ abstract class ThemeProps with _$ThemeProps {
 }
 
 @freezed
+abstract class NetworkRulesProps with _$NetworkRulesProps {
+  const factory NetworkRulesProps({
+    @Default(false) bool enabled,
+    @Default(NetworkAction.turnOn) NetworkAction fallback,
+  }) = _NetworkRulesProps;
+
+  factory NetworkRulesProps.fromJson(Map<String, Object?> json) =>
+      _$NetworkRulesPropsFromJson(json);
+}
+
+@freezed
 abstract class Config with _$Config {
   const factory Config({
     int? currentProfileId,
@@ -315,6 +328,7 @@ abstract class Config with _$Config {
     @Default(defaultProxiesStyleProps) ProxiesStyleProps proxiesStyleProps,
     @Default(defaultWindowProps) WindowProps windowProps,
     @Default(defaultClashConfig) ClashConfig patchClashConfig,
+    @Default(defaultNetworkRulesProps) NetworkRulesProps networkRulesProps,
   }) = _Config;
 
   factory Config.fromJson(Map<String, Object?> json) => _$ConfigFromJson(json);

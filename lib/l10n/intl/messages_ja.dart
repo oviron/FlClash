@@ -686,5 +686,45 @@ class MessageLookup extends MessageLookupByLibrary {
       "位置情報を許可",
     ),
     "openSettings": MessageLookupByLibrary.simpleMessage("設定を開く"),
+    "networkRulesTitle": MessageLookupByLibrary.simpleMessage(
+      "ネットワークルール",
+    ),
+    "networkRulesEnable": MessageLookupByLibrary.simpleMessage(
+      "ネットワークルールを有効にする",
+    ),
+    "networkRulesEmpty": MessageLookupByLibrary.simpleMessage(
+      "最初のルールを追加",
+    ),
+    "networkRulesAdd": MessageLookupByLibrary.simpleMessage("ルールを追加"),
+    "networkRulesEdit": MessageLookupByLibrary.simpleMessage("編集"),
+    "networkRulesDelete": MessageLookupByLibrary.simpleMessage("削除"),
+    "networkRulesDisable": MessageLookupByLibrary.simpleMessage("無効にする"),
+    "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage(
+      "有効にする",
+    ),
+    "networkRulesFallback": MessageLookupByLibrary.simpleMessage("デフォルト"),
+    "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
+      "VPNをオン",
+    ),
+    "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(
+      "VPNをオフ",
+    ),
+    "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage("そのまま"),
+    "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fi名を指定",
+    ),
+    "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
+      "任意のWi-Fi",
+    ),
+    "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
+      "モバイル通信",
+    ),
+    "networkRulesConditionAtLeastOne": MessageLookupByLibrary.simpleMessage(
+      "条件を1つ以上選択してください",
+    ),
+    "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
+      "このルールを削除しますか?",
+    ),
+    "ruleNameOptional": MessageLookupByLibrary.simpleMessage("名前（任意）"),
   };
 }

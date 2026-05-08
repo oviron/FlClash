@@ -3828,6 +3828,186 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Network rules`
+  String get networkRulesTitle {
+    return Intl.message(
+      'Network rules',
+      name: 'networkRulesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable network rules`
+  String get networkRulesEnable {
+    return Intl.message(
+      'Enable network rules',
+      name: 'networkRulesEnable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add your first rule`
+  String get networkRulesEmpty {
+    return Intl.message(
+      'Add your first rule',
+      name: 'networkRulesEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add rule`
+  String get networkRulesAdd {
+    return Intl.message(
+      'Add rule',
+      name: 'networkRulesAdd',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get networkRulesEdit {
+    return Intl.message(
+      'Edit',
+      name: 'networkRulesEdit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get networkRulesDelete {
+    return Intl.message(
+      'Delete',
+      name: 'networkRulesDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disable`
+  String get networkRulesDisable {
+    return Intl.message(
+      'Disable',
+      name: 'networkRulesDisable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable`
+  String get networkRulesEnableShort {
+    return Intl.message(
+      'Enable',
+      name: 'networkRulesEnableShort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default`
+  String get networkRulesFallback {
+    return Intl.message(
+      'Default',
+      name: 'networkRulesFallback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn VPN on`
+  String get networkRulesActionTurnOn {
+    return Intl.message(
+      'Turn VPN on',
+      name: 'networkRulesActionTurnOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn VPN off`
+  String get networkRulesActionTurnOff {
+    return Intl.message(
+      'Turn VPN off',
+      name: 'networkRulesActionTurnOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave as is`
+  String get networkRulesActionKeep {
+    return Intl.message(
+      'Leave as is',
+      name: 'networkRulesActionKeep',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wi-Fi named`
+  String get networkRulesConditionWifiNamed {
+    return Intl.message(
+      'Wi-Fi named',
+      name: 'networkRulesConditionWifiNamed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Any Wi-Fi`
+  String get networkRulesConditionAnyWifi {
+    return Intl.message(
+      'Any Wi-Fi',
+      name: 'networkRulesConditionAnyWifi',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cellular`
+  String get networkRulesConditionAnyCellular {
+    return Intl.message(
+      'Cellular',
+      name: 'networkRulesConditionAnyCellular',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select at least one condition`
+  String get networkRulesConditionAtLeastOne {
+    return Intl.message(
+      'Select at least one condition',
+      name: 'networkRulesConditionAtLeastOne',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete this rule?`
+  String get networkRulesConfirmDelete {
+    return Intl.message(
+      'Delete this rule?',
+      name: 'networkRulesConfirmDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name (optional)`
+  String get ruleNameOptional {
+    return Intl.message(
+      'Name (optional)',
+      name: 'ruleNameOptional',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

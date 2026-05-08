@@ -612,5 +612,37 @@ class MessageLookup extends MessageLookupByLibrary {
       "启用位置权限",
     ),
     "openSettings": MessageLookupByLibrary.simpleMessage("打开设置"),
+    "networkRulesTitle": MessageLookupByLibrary.simpleMessage("网络规则"),
+    "networkRulesEnable": MessageLookupByLibrary.simpleMessage("启用网络规则"),
+    "networkRulesEmpty": MessageLookupByLibrary.simpleMessage("添加第一条规则"),
+    "networkRulesAdd": MessageLookupByLibrary.simpleMessage("添加规则"),
+    "networkRulesEdit": MessageLookupByLibrary.simpleMessage("编辑"),
+    "networkRulesDelete": MessageLookupByLibrary.simpleMessage("删除"),
+    "networkRulesDisable": MessageLookupByLibrary.simpleMessage("禁用"),
+    "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("启用"),
+    "networkRulesFallback": MessageLookupByLibrary.simpleMessage("默认"),
+    "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
+      "打开 VPN",
+    ),
+    "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(
+      "关闭 VPN",
+    ),
+    "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage("保持不变"),
+    "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
+      "指定 Wi-Fi",
+    ),
+    "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
+      "任意 Wi-Fi",
+    ),
+    "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
+      "移动网络",
+    ),
+    "networkRulesConditionAtLeastOne": MessageLookupByLibrary.simpleMessage(
+      "请至少选择一个条件",
+    ),
+    "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
+      "删除此规则？",
+    ),
+    "ruleNameOptional": MessageLookupByLibrary.simpleMessage("名称（可选）"),
   };
 }

@@ -934,5 +934,53 @@ class MessageLookup extends MessageLookupByLibrary {
       "Разрешить геолокацию",
     ),
     "openSettings": MessageLookupByLibrary.simpleMessage("Открыть настройки"),
+    "networkRulesTitle": MessageLookupByLibrary.simpleMessage(
+      "Правила по сети",
+    ),
+    "networkRulesEnable": MessageLookupByLibrary.simpleMessage(
+      "Включить правила по сети",
+    ),
+    "networkRulesEmpty": MessageLookupByLibrary.simpleMessage(
+      "Добавьте первое правило",
+    ),
+    "networkRulesAdd": MessageLookupByLibrary.simpleMessage(
+      "Добавить правило",
+    ),
+    "networkRulesEdit": MessageLookupByLibrary.simpleMessage("Редактировать"),
+    "networkRulesDelete": MessageLookupByLibrary.simpleMessage("Удалить"),
+    "networkRulesDisable": MessageLookupByLibrary.simpleMessage("Выключить"),
+    "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage(
+      "Включить",
+    ),
+    "networkRulesFallback": MessageLookupByLibrary.simpleMessage(
+      "По умолчанию",
+    ),
+    "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
+      "Включить VPN",
+    ),
+    "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(
+      "Выключить VPN",
+    ),
+    "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage(
+      "Оставить как есть",
+    ),
+    "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fi с именем",
+    ),
+    "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
+      "Любая Wi-Fi",
+    ),
+    "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
+      "Мобильная сеть",
+    ),
+    "networkRulesConditionAtLeastOne": MessageLookupByLibrary.simpleMessage(
+      "Выберите хотя бы одно условие",
+    ),
+    "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
+      "Удалить правило?",
+    ),
+    "ruleNameOptional": MessageLookupByLibrary.simpleMessage(
+      "Название (необязательно)",
+    ),
   };
 }

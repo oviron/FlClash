@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/plugins/app.dart';
+import 'package:fl_clash/providers/network_rules_settings.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/dialog.dart';
@@ -1063,6 +1064,8 @@ extension BackupControllerExt on AppController {
       _ref.read(overrideDnsProvider.notifier).value = config.overrideDns;
       _ref.read(networkSettingProvider.notifier).value = config.networkProps;
       _ref.read(hotKeyActionsProvider.notifier).value = config.hotKeyActions;
+      _ref.read(networkRulesSettingsProvider.notifier).value =
+          config.networkRulesProps;
       return;
     } finally {
       await restoreDir.safeDelete(recursive: true);
