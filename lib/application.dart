@@ -8,6 +8,7 @@ import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/manager/hotkey_manager.dart';
 import 'package:fl_clash/manager/manager.dart';
 import 'package:fl_clash/plugins/app.dart';
+import 'package:fl_clash/providers/network_state.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
@@ -91,6 +92,9 @@ class ApplicationState extends ConsumerState<Application> {
                 appController.addCheckIp();
               }
               _preHasVpn = hasVpn;
+            },
+            onNetworkSnapshot: (snap) {
+              ref.read(currentNetworkSnapshotProvider.notifier).update(snap);
             },
             child: child,
           ),
