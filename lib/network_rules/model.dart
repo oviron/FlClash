@@ -8,6 +8,8 @@
 
 import 'dart:convert';
 
+import 'package:fl_clash/common/common.dart';
+
 /// What the rule engine should do when a rule matches the current network.
 enum NetworkAction {
   /// Switch the VPN on.
@@ -177,9 +179,22 @@ class NetworkConditionListCodec {
         'Expected JSON array of conditions, got: $raw',
       );
     }
-    return decoded
-        .map((e) => NetworkCondition.fromJson(e as Map<String, dynamic>))
-        .toList(growable: false);
+    // Skip individual unknown / malformed entries instead of failing the
+    // whole list. A single bad record (e.g. a condition kind written by
+    // a future version) used to bubble out of NetworkRulesDao.watchAll
+    // and turn the entire stream into an empty list, wiping every rule
+    // from the user's UI.
+    final result = <NetworkCondition>[];
+    for (final entry in decoded) {
+      try {
+        result.add(NetworkCondition.fromJson(entry as Map<String, dynamic>));
+      } catch (e) {
+        commonPrint.log(
+          'network-rules: skipping unknown condition $entry: $e',
+        );
+      }
+    }
+    return List.unmodifiable(result);
   }
 }
 

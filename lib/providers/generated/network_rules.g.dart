@@ -94,7 +94,7 @@ final class NetworkRulesRepoProvider
   }
 }
 
-String _$networkRulesRepoHash() => r'4248d3c166ddb2131b4655c5678b508082653320';
+String _$networkRulesRepoHash() => r'86797fe08348683bf9af56f825bd37c3488a94b1';
 
 /// Repository facade with CRUD + reorder. keepAlive because the engine
 /// needs to keep watching even when no UI page is mounted.

@@ -8,6 +8,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/network_rules/model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
@@ -590,6 +591,7 @@ Future<MigrationData> _restoreTask(RootIsolateToken token) async {
     database.scriptsDao.all().get(),
     database.rules.all().map((item) => item.toRule()).get(),
     database.profileRuleLinks.all().map((item) => item.toLink()).get(),
+    database.networkRulesDao.watchAll().first,
   ]);
   final profiles = results[0].cast<Profile>();
   final scripts = results[1].cast<Script>();
@@ -611,6 +613,7 @@ Future<MigrationData> _restoreTask(RootIsolateToken token) async {
     scripts: scripts,
     rules: results[2].cast<Rule>(),
     links: results[3].cast<ProfileRuleLink>(),
+    networkRules: results[4].cast<NetworkRule>(),
   );
   await database.close();
   return migrationData;

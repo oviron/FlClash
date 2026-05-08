@@ -64,6 +64,29 @@ class NetworkRulesDao extends DatabaseAccessor<Database>
       }
     });
   }
+
+  /// Returns the highest priority value currently stored, or -1 when the
+  /// table is empty. Used by [NetworkRulesRepo.add] to place new rules
+  /// at the bottom of the priority order (max + 1).
+  Future<int> currentMaxPriority() async {
+    final priority = networkRules.priority;
+    final query = selectOnly(networkRules)..addColumns([priority.max()]);
+    final row = await query.getSingleOrNull();
+    return row?.read(priority.max()) ?? -1;
+  }
+
+  /// Restore the network_rules table from a backup. Symmetric with
+  /// [ScriptsDao.setAllWithBatch] / [ProfilesDao.setAllWithBatch]: rows
+  /// not present in [items] are deleted, and rows in [items] are upserted.
+  void setAllWithBatch(Batch batch, Iterable<NetworkRule> items) {
+    final companions = items.map((r) => r.toCompanion()).toList();
+    final ids = items.map((r) => r.id).toList();
+    networkRules.setAll(
+      batch,
+      companions,
+      deleteFilter: (t) => t.id.isNotIn(ids),
+    );
+  }
 }
 
 extension RawNetworkRuleExt on RawNetworkRule {

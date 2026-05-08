@@ -9,6 +9,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/network_rules/permission_gate.dart';
+import 'package:fl_clash/network_rules/probe.dart';
 import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/recent_ssids.dart';
 import 'package:flutter/material.dart';
@@ -85,12 +86,16 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
       ),
     );
     if (picked == null) return;
-    final trimmed = picked.trim();
-    if (trimmed.isEmpty) {
+    // Run user-typed SSIDs through the same sanitizer the live probe uses
+    // (strip surrounding quotes / whitespace, treat <unknown ssid> as null)
+    // so a copy-pasted "home" matches the home the probe will read at
+    // runtime.
+    final sanitized = NetworkProbe.sanitizeSsid(picked);
+    if (sanitized == null) {
       setState(() => _wifiNamedSsid = null);
       return;
     }
-    setState(() => _wifiNamedSsid = trimmed);
+    setState(() => _wifiNamedSsid = sanitized);
   }
 
   void _save() {

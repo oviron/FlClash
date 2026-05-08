@@ -41,6 +41,7 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
 
   DateTime? _lastAutoActionAt;
   NetworkAction? _lastDispatchedAction;
+  bool _evaluating = false;
 
   @override
   void initState() {
@@ -66,53 +67,66 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
   }
 
   Future<void> _evaluate() async {
-    final settings = ref.read(networkRulesSettingsProvider);
-    if (!settings.enabled) {
-      return;
-    }
-
-    final rules = ref.read(networkRulesStreamProvider).value ?? const [];
-    final snap = ref.read(currentNetworkSnapshotProvider);
-
-    final action = evaluate(
-      rules: rules,
-      snapshot: snap,
-      fallback: settings.fallback,
-    );
-
-    if (action == NetworkAction.keep) {
-      return;
-    }
-
-    final desiredOn = action == NetworkAction.turnOn;
-    final isOn = ref.read(isStartProvider);
-    final snapDescr = _describeSnapshot(snap);
-
-    if (desiredOn == isOn) {
-      _log(
-        'action ${action.name} equals current state, skip ($snapDescr)',
-      );
-      return;
-    }
-
-    if (_isCoolingDown(action)) {
-      final remaining = _cooldownRemaining();
-      _log(
-        'cooldown active (${remaining}s remaining), deferring ${action.name} '
-        '($snapDescr)',
-      );
-      return;
-    }
-
-    final reason = _matchReason(rules, snap, settings.fallback);
-    _log('$reason, action=${action.name} -> ${desiredOn ? "starting" : "stopping"} VPN');
-
+    // Reentrancy guard: appController.updateStatus can take seconds
+    // (handleStart spins up the core), and during that await another
+    // listener (drift batch from reorder, rapid network change) could
+    // fire and re-enter _evaluate. Drop the second call rather than
+    // race the first one.
+    if (_evaluating) return;
+    _evaluating = true;
     try {
-      await appController.updateStatus(desiredOn);
-      _lastAutoActionAt = DateTime.now();
-      _lastDispatchedAction = action;
-    } catch (e) {
-      _log('dispatch failed for ${action.name}: $e');
+      final settings = ref.read(networkRulesSettingsProvider);
+      if (!settings.enabled) {
+        return;
+      }
+
+      final rules = ref.read(networkRulesStreamProvider).value ?? const [];
+      final snap = ref.read(currentNetworkSnapshotProvider);
+
+      final action = evaluate(
+        rules: rules,
+        snapshot: snap,
+        fallback: settings.fallback,
+      );
+
+      if (action == NetworkAction.keep) {
+        return;
+      }
+
+      final desiredOn = action == NetworkAction.turnOn;
+      final isOn = ref.read(isStartProvider);
+      final snapDescr = _describeSnapshot(snap);
+
+      if (desiredOn == isOn) {
+        _log(
+          'action ${action.name} equals current state, skip ($snapDescr)',
+        );
+        return;
+      }
+
+      if (_isCoolingDown(action)) {
+        final remaining = _cooldownRemaining();
+        _log(
+          'cooldown active (${remaining}s remaining), deferring ${action.name} '
+          '($snapDescr)',
+        );
+        return;
+      }
+
+      final reason = _matchReason(rules, snap, settings.fallback);
+      _log('$reason, action=${action.name} -> ${desiredOn ? "starting" : "stopping"} VPN');
+
+      try {
+        await appController.updateStatus(desiredOn);
+        if (!mounted) return;
+        _lastAutoActionAt = DateTime.now();
+        _lastDispatchedAction = action;
+      } catch (e) {
+        if (!mounted) return;
+        _log('dispatch failed for ${action.name}: $e');
+      }
+    } finally {
+      _evaluating = false;
     }
   }
 
@@ -169,6 +183,7 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
   }
 
   void _log(String message) {
+    if (!mounted) return;
     final line = 'network-rules: $message';
     commonPrint.log(line);
     ref.read(logsProvider.notifier).addLog(Log.app(line));

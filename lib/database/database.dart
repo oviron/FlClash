@@ -51,11 +51,13 @@ class Database extends _$Database {
     List<Rule> rules,
     List<ProfileRuleLink> links, {
     bool isOverride = false,
+    List<NetworkRule> networkRules = const [],
   }) async {
     if (profiles.isNotEmpty ||
         scripts.isNotEmpty ||
         rules.isNotEmpty ||
-        links.isNotEmpty) {
+        links.isNotEmpty ||
+        networkRules.isNotEmpty) {
       await batch((b) {
         isOverride
             ? profilesDao.setAllWithBatch(b, profiles)
@@ -65,6 +67,7 @@ class Database extends _$Database {
               );
         scriptsDao.setAllWithBatch(b, scripts);
         rulesDao.restoreWithBatch(b, rules, links);
+        networkRulesDao.setAllWithBatch(b, networkRules);
       });
     }
   }

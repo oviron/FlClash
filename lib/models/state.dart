@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/network_rules/model.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -359,6 +360,7 @@ abstract class MigrationData with _$MigrationData {
     @Default([]) List<Script> scripts,
     @Default([]) List<Profile> profiles,
     @Default([]) List<ProfileRuleLink> links,
+    @Default([]) List<NetworkRule> networkRules,
   }) = _MigrationData;
 }
 

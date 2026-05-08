@@ -19,9 +19,15 @@ class NetworkRulesRepo extends _$NetworkRulesRepo {
     return ref.watch(networkRulesStreamProvider).value ?? const [];
   }
 
-  Future<int> add(NetworkRule rule) {
-    // Force a fresh insert by stripping any caller-supplied id.
-    return database.networkRulesDao.upsert(rule.copyWith(id: 0).toCompanion());
+  Future<int> add(NetworkRule rule) async {
+    // Force a fresh insert by stripping any caller-supplied id and place
+    // the new rule at the bottom of the priority order (max + 1) so it
+    // shows up at the end of the user's list rather than tying with
+    // priority zero alongside existing rules.
+    final maxPriority = await database.networkRulesDao.currentMaxPriority();
+    return database.networkRulesDao.upsert(
+      rule.copyWith(id: 0, priority: maxPriority + 1).toCompanion(),
+    );
   }
 
   Future<int> update(NetworkRule rule) {
