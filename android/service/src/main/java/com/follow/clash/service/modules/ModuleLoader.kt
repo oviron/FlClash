@@ -6,6 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.util.concurrent.atomic.AtomicBoolean
 
 interface ModuleLoaderScope {
     fun <T : Module> install(module: T): T
@@ -21,9 +22,11 @@ private val mutex = Mutex()
 fun CoroutineScope.moduleLoader(block: suspend ModuleLoaderScope.() -> Unit): ModuleLoader {
     val modules = mutableListOf<Module>()
     var job: Job? = null
+    val loaded = AtomicBoolean(false)
 
     return object : ModuleLoader {
         override fun load() {
+            if (!loaded.compareAndSet(false, true)) return
             job = launch(Dispatchers.IO) {
                 mutex.withLock {
                     val scope = object : ModuleLoaderScope {
@@ -39,6 +42,7 @@ fun CoroutineScope.moduleLoader(block: suspend ModuleLoaderScope.() -> Unit): Mo
         }
 
         override fun cancel() {
+            if (!loaded.compareAndSet(true, false)) return
             launch(Dispatchers.IO) {
                 job?.cancel()
                 mutex.withLock {
