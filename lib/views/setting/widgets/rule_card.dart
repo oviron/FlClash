@@ -1,12 +1,5 @@
-// Network Rules v1: rule card widget for the list.
-//
-// Layout: drag handle (left), condition chips + arrow + action label
-// (center), popup menu (right). The card is rendered at lowered opacity
-// when the rule itself is disabled, independent of the master toggle.
-//
-// WifiNamed conditions render with the SSID. If the user has not granted
-// location permission, the chip carries a warning icon plus the localized
-// "Permission required" hint.
+// Rule card. Disabled rules render at lowered opacity; that is independent
+// of the master toggle (which dims the whole list at the screen level).
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';

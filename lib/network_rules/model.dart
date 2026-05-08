@@ -1,37 +1,16 @@
-// Network Rules v1: data model.
-//
-// Domain types for the auto-on/off VPN feature. We deliberately use
-// NetworkRule / NetworkAction / NetworkCondition prefixes because the
-// existing fl_clash codebase already has a `Rule` type in
-// lib/models/clash_config.dart for clash routing rules and reusing the
-// same name would force every consumer to alias one of them.
+// We deliberately use NetworkRule / NetworkAction / NetworkCondition prefixes
+// because the existing fl_clash codebase already has a `Rule` type in
+// lib/models/clash_config.dart for clash routing rules and reusing the same
+// name would force every consumer to alias one of them.
 
 import 'dart:convert';
 
 import 'package:fl_clash/common/common.dart';
 
-/// What the rule engine should do when a rule matches the current network.
-enum NetworkAction {
-  /// Switch the VPN on.
-  turnOn,
+enum NetworkAction { turnOn, turnOff, keep }
 
-  /// Switch the VPN off.
-  turnOff,
-
-  /// Do nothing, leave the VPN as it is.
-  keep,
-}
-
-/// Convenience alias kept for callers that import from this file directly
-/// and do not want to spell out NetworkAction. The engine_test currently
-/// references `Action.keep`.
-typedef Action = NetworkAction;
-
-/// What kind of network the device is currently on.
 enum NetworkType { wifi, cellular, none }
 
-/// Snapshot of the current network state. Created by the probe on every
-/// connectivity change and fed into the engine.
 class NetworkSnapshot {
   final NetworkType type;
 
@@ -39,8 +18,6 @@ class NetworkSnapshot {
   /// Wi-Fi if the OS denied us ACCESS_FINE_LOCATION or returned the
   /// Android stub `<unknown ssid>`.
   final String? ssid;
-
-  const NetworkSnapshot._(this.type, this.ssid);
 
   const NetworkSnapshot.wifi({this.ssid}) : type = NetworkType.wifi;
 
@@ -66,7 +43,6 @@ class NetworkSnapshot {
 sealed class NetworkCondition {
   const NetworkCondition();
 
-  /// Returns true when this condition matches the given snapshot.
   bool matches(NetworkSnapshot snapshot);
 
   Map<String, dynamic> toJson();
@@ -119,7 +95,6 @@ class WifiNamed extends NetworkCondition {
   String toString() => 'WifiNamed($ssid)';
 }
 
-/// Matches any Wi-Fi network regardless of SSID.
 class AnyWifi extends NetworkCondition {
   const AnyWifi();
 
@@ -141,7 +116,6 @@ class AnyWifi extends NetworkCondition {
   String toString() => 'AnyWifi()';
 }
 
-/// Matches any cellular (mobile data) network.
 class AnyCellular extends NetworkCondition {
   const AnyCellular();
 
@@ -163,7 +137,6 @@ class AnyCellular extends NetworkCondition {
   String toString() => 'AnyCellular()';
 }
 
-/// JSON helpers for storing a list of conditions in a single TEXT column.
 class NetworkConditionListCodec {
   const NetworkConditionListCodec._();
 
@@ -207,12 +180,11 @@ class NetworkRule {
 
   final String? name;
 
-  /// Conditions are ANDed together when evaluating.
   final List<NetworkCondition> conditions;
 
   final NetworkAction action;
 
-  /// Lower priority value runs first. Ties break by id ascending.
+  /// Lower priority value runs first.
   final int priority;
 
   final bool enabled;

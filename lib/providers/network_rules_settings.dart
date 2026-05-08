@@ -1,16 +1,14 @@
-// Network Rules v1: persisted master toggle and fallback action.
+// Persisted master toggle and fallback action for the rule engine.
 //
-// Two settings live here, separated from the rules list (which is in drift):
+//   * `enabled` — global on/off. When false, the runner skips evaluation
+//     entirely and fallback never applies.
+//   * `fallback` — action to take when no rule matches the current snapshot.
+//     Only consulted while `enabled` is true.
 //
-//   * `enabled` — global on/off for the rule engine. When false, the engine
-//     does not dispatch any auto-actions even if rules exist.
-//   * `fallback` — what action to take when no rule matches the current
-//     network snapshot. Default is `turnOn` so a user with the toggle off
-//     and an empty list still gets the historical "VPN is on" behaviour.
-//
-// We persist via the existing `Config` aggregator (see `providers/config.dart`
-// and `models/config.dart::NetworkRulesProps`) — the same JSON file that
-// already stores AppSetting / Vpn / Theme / etc. No new persistence layer.
+// Persistence goes through the existing `Config` aggregator (see
+// `providers/config.dart` and `models/config.dart::NetworkRulesProps`) —
+// the same JSON file that already stores AppSetting / Vpn / Theme / etc.
+// No new persistence layer.
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';

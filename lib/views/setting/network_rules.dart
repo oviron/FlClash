@@ -1,14 +1,6 @@
-// Network Rules v1: top-level screen.
-//
-// Layout:
-//   1. Master toggle card
-//   2. Reorderable list of rule cards (or empty-state hint)
-//   3. FAB to add a new rule
-//   4. Fallback row at the bottom (NOT inside the reorderable list)
-//
-// We render the list greyed-out when the master toggle is off. The list and
-// fallback row read from drift via `networkRulesStreamProvider` and from the
-// settings provider — both keep-alive — so the UI is always live.
+// Top-level screen for network rules. The fallback row is intentionally
+// outside the reorderable list because it represents a default action,
+// not a rule.
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';

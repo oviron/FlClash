@@ -1,10 +1,6 @@
-// Network Rules v1: edit/create dialog.
-//
-// Multi-select ChoiceChips for conditions (AND-combined), segmented action
-// picker, optional rule name. WifiNamed picker pulls recent SSIDs from
-// the recent-ssids provider and offers a free-form text field. The chip
-// is gated by `ensureLocationPermissionForSsid` from W4 — the dialog
-// will not let the user save a name-rule without permission.
+// Edit/create dialog for a network rule. WifiNamed is gated by
+// `ensureLocationPermissionForSsid`: the dialog will not let the user
+// save a name-rule without ACCESS_FINE_LOCATION granted.
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';

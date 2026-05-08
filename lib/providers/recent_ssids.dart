@@ -1,10 +1,6 @@
-// Network Rules v1: most-recent-seen Wi-Fi names for the rule editor.
-//
-// The edit dialog (W5) offers a dropdown of "networks you have been on
-// recently" so the user does not have to retype the SSID. We do not
-// persist this list across app restarts on purpose: the engine does not
-// rely on it (it always re-evaluates against a live snapshot), and the
-// memory footprint of a 20-element list is irrelevant.
+// Most-recent-seen Wi-Fi names for the rule editor's SSID picker.
+// Not persisted across app restarts on purpose: the engine never reads
+// it, and a 20-entry list does not need disk.
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -28,10 +24,5 @@ class RecentSsids extends _$RecentSsids {
       if (next.length >= _maxRecentSsids) break;
     }
     state = next;
-  }
-
-  /// Reset the list. Used by tests and by the "forget" UX action.
-  void clear() {
-    state = const [];
   }
 }

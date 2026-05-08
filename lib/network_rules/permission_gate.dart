@@ -1,19 +1,7 @@
-// Network Rules v1: orchestration layer between UI and the location
-// permission provider.
-//
-// Whenever a user action depends on reading the Wi-Fi SSID (creating a
-// "by name" rule, viewing the live snapshot in the editor, etc.) the UI
-// calls [ensureLocationPermissionForSsid] and switches on the boolean
-// result. The function itself owns:
-//
-//   * checking the cached state in [locationPermissionProvider]
-//   * showing the explanation dialog before the system prompt
-//   * triggering the system request via the notifier
-//   * the special-case fallback for `permanentlyDenied` (system Settings)
-//
-// Keeping all of this here rather than inside widgets means the same flow
-// can be triggered from anywhere — settings tile tap, FAB tap, even from
-// a deep-link in the future — without copy-pasting the branching logic.
+// Centralized location-permission flow for Wi-Fi SSID reads, so the same
+// branching (rationale dialog, system request, permanently-denied →
+// Settings fallback) does not get copy-pasted into every widget that
+// needs it.
 
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/providers/location_permission.dart';

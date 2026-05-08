@@ -1,15 +1,6 @@
-// Network Rules v1: pure rule engine.
-//
-// Single entry point: [evaluate]. Given the user's rule list, the current
-// network snapshot, and a fallback action, return the action of the first
-// matching rule (priority ascending, AND across conditions). Disabled rules
-// and rules with empty condition lists never match. WifiNamed degrades
-// gracefully to non-match when the snapshot SSID is null (e.g. the user
-// has not granted ACCESS_FINE_LOCATION).
-//
-// This file MUST stay pure: no IO, no platform calls, no logging. The
-// runtime dispatcher in Wave 6 will sit on top and translate the returned
-// action into VPN start/stop calls.
+// Pure rule engine: no IO, no platform calls, no logging. The runtime
+// dispatcher consumes [evaluate] and turns the returned action into
+// VPN start/stop calls.
 
 import 'model.dart';
 

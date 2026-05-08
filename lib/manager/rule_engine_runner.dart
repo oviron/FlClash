@@ -1,20 +1,15 @@
-// Network Rules v1: runtime dispatcher.
+// Runtime dispatcher for the rule engine.
 //
-// Subscribes to the live network snapshot, the persisted rules list, and
-// the master settings (enabled + fallback). On any change it runs the pure
-// engine and dispatches the resulting NetworkAction to the existing VPN
-// machinery via appController.updateStatus.
+// Two safeguards on top of `evaluate` so flaky networks do not toggle
+// the VPN repeatedly:
+//   * dedup — if the desired state already equals the current VPN state,
+//     no dispatch happens (also keeps the cooldown disarmed for noops).
+//   * cooldown — after every actual turnOn/turnOff a 10 second window
+//     defers the opposite action, so a brief drop and reconnect cannot
+//     start-stop-start the core.
 //
-// Two safeguards keep the dispatcher well-behaved on flaky networks:
-//   * dedup: if the desired state already equals the current VPN state we
-//     skip the call entirely.
-//   * cooldown: a 10 second window after every dispatched turnOn/turnOff
-//     during which the opposite action is deferred. Same-direction noops
-//     (caught by dedup) do not arm the cooldown.
-//
-// Master toggle: when networkRulesSettings.enabled is false the runner
-// becomes a noop — providers keep updating so the UI still works, but no
-// dispatch happens and the cooldown is reset so a re-enable starts clean.
+// Flipping the master toggle off resets the cooldown so a future re-enable
+// starts from a clean slate instead of inheriting stale state.
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';

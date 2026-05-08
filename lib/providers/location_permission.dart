@@ -61,8 +61,7 @@ class LocationPermission extends _$LocationPermission {
     state = _mapStatus(status);
   }
 
-  /// Trigger the system permission dialog. Updates [state] with the new
-  /// status and returns it for the caller to act on synchronously.
+  /// Trigger the system permission dialog and return the new state.
   Future<LocationPermissionState> request() async {
     final status = await Permission.locationWhenInUse.request();
     final mapped = _mapStatus(status);
@@ -70,6 +69,5 @@ class LocationPermission extends _$LocationPermission {
     return mapped;
   }
 
-  /// Convenience for widgets that just need a boolean gate.
   bool get isGranted => state == LocationPermissionState.granted;
 }

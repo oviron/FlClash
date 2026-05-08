@@ -1,9 +1,5 @@
-// Network Rules v1: current NetworkSnapshot as a Riverpod provider.
-//
-// The ConnectivityManager pushes a fresh snapshot here on mount and on
-// every connectivity change. W6 will subscribe a runner that drives the
-// engine; for now the provider is just storage so the wiring can land
-// independently of the dispatcher.
+// Holds the latest NetworkSnapshot from the probe. The dispatcher
+// subscribes here.
 
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
