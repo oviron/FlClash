@@ -117,6 +117,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
       "ノード変更後に接続を自動閉じる",
     ),
+    "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
+      "WebDAV認証情報をバックアップに含める",
+    ),
+    "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
+      "デフォルトはオフ。バックアップの保存先を信頼できる場合のみオンにしてください。",
+    ),
     "autoLaunch": MessageLookupByLibrary.simpleMessage("自動起動"),
     "autoLaunchDesc": MessageLookupByLibrary.simpleMessage("システムの自動起動に従う"),
     "autoRun": MessageLookupByLibrary.simpleMessage("自動実行"),

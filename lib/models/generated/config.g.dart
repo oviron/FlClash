@@ -6,36 +6,35 @@ part of '../config.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_AppSettingProps _$AppSettingPropsFromJson(Map<String, dynamic> json) =>
-    _AppSettingProps(
-      locale: json['locale'] as String?,
-      dashboardWidgets: json['dashboardWidgets'] == null
-          ? defaultDashboardWidgets
-          : dashboardWidgetsSafeFormJson(json['dashboardWidgets'] as List?),
-      onlyStatisticsProxy: json['onlyStatisticsProxy'] as bool? ?? false,
-      autoLaunch: json['autoLaunch'] as bool? ?? false,
-      silentLaunch: json['silentLaunch'] as bool? ?? false,
-      autoRun: json['autoRun'] as bool? ?? false,
-      openLogs: json['openLogs'] as bool? ?? false,
-      closeConnections: json['closeConnections'] as bool? ?? true,
-      testUrl: json['testUrl'] as String? ?? defaultTestUrl,
-      isAnimateToPage: json['isAnimateToPage'] as bool? ?? true,
-      autoCheckUpdate: json['autoCheckUpdate'] as bool? ?? true,
-      showLabel: json['showLabel'] as bool? ?? false,
-      disclaimerAccepted: json['disclaimerAccepted'] as bool? ?? false,
-      crashlyticsTip: json['crashlyticsTip'] as bool? ?? false,
-      crashlytics: json['crashlytics'] as bool? ?? false,
-      minimizeOnExit: json['minimizeOnExit'] as bool? ?? true,
-      hidden: json['hidden'] as bool? ?? false,
-      developerMode: json['developerMode'] as bool? ?? false,
-      restoreStrategy:
-          $enumDecodeNullable(
-            _$RestoreStrategyEnumMap,
-            json['restoreStrategy'],
-          ) ??
-          RestoreStrategy.compatible,
-      showTrayTitle: json['showTrayTitle'] as bool? ?? true,
-    );
+_AppSettingProps _$AppSettingPropsFromJson(
+  Map<String, dynamic> json,
+) => _AppSettingProps(
+  locale: json['locale'] as String?,
+  dashboardWidgets: json['dashboardWidgets'] == null
+      ? defaultDashboardWidgets
+      : dashboardWidgetsSafeFormJson(json['dashboardWidgets'] as List?),
+  onlyStatisticsProxy: json['onlyStatisticsProxy'] as bool? ?? false,
+  autoLaunch: json['autoLaunch'] as bool? ?? false,
+  silentLaunch: json['silentLaunch'] as bool? ?? false,
+  autoRun: json['autoRun'] as bool? ?? false,
+  openLogs: json['openLogs'] as bool? ?? false,
+  closeConnections: json['closeConnections'] as bool? ?? true,
+  testUrl: json['testUrl'] as String? ?? defaultTestUrl,
+  isAnimateToPage: json['isAnimateToPage'] as bool? ?? true,
+  autoCheckUpdate: json['autoCheckUpdate'] as bool? ?? true,
+  showLabel: json['showLabel'] as bool? ?? false,
+  disclaimerAccepted: json['disclaimerAccepted'] as bool? ?? false,
+  crashlyticsTip: json['crashlyticsTip'] as bool? ?? false,
+  crashlytics: json['crashlytics'] as bool? ?? false,
+  minimizeOnExit: json['minimizeOnExit'] as bool? ?? true,
+  hidden: json['hidden'] as bool? ?? false,
+  developerMode: json['developerMode'] as bool? ?? false,
+  restoreStrategy:
+      $enumDecodeNullable(_$RestoreStrategyEnumMap, json['restoreStrategy']) ??
+      RestoreStrategy.compatible,
+  showTrayTitle: json['showTrayTitle'] as bool? ?? true,
+  includeDavCredsInBackup: json['includeDavCredsInBackup'] as bool? ?? false,
+);
 
 Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
     <String, dynamic>{
@@ -61,6 +60,7 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'developerMode': instance.developerMode,
       'restoreStrategy': _$RestoreStrategyEnumMap[instance.restoreStrategy]!,
       'showTrayTitle': instance.showTrayTitle,
+      'includeDavCredsInBackup': instance.includeDavCredsInBackup,
     };
 
 const _$RestoreStrategyEnumMap = {

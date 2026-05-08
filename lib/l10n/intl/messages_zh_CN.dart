@@ -109,6 +109,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
       "切换节点后自动关闭连接",
     ),
+    "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
+      "在备份中包含 WebDAV 凭据",
+    ),
+    "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
+      "默认关闭。仅当您信任备份的存储位置时才启用。",
+    ),
     "autoLaunch": MessageLookupByLibrary.simpleMessage("自启动"),
     "autoLaunchDesc": MessageLookupByLibrary.simpleMessage("跟随系统自启动"),
     "autoRun": MessageLookupByLibrary.simpleMessage("自动运行"),

@@ -301,6 +301,33 @@ class BackupAndRestore extends ConsumerWidget {
               );
             },
           ),
+          Consumer(
+            builder: (_, ref, _) {
+              final include = ref.watch(
+                appSettingProvider.select(
+                  (state) => state.includeDavCredsInBackup,
+                ),
+              );
+              return ListItem.switchItem(
+                title: Text(appLocalizations.includeDavCredsInBackup),
+                subtitle: Text(
+                  appLocalizations.includeDavCredsInBackupDesc,
+                ),
+                delegate: SwitchDelegate(
+                  value: include,
+                  onChanged: (value) async {
+                    ref
+                        .read(appSettingProvider.notifier)
+                        .update(
+                          (state) => state.copyWith(
+                            includeDavCredsInBackup: value,
+                          ),
+                        );
+                  },
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

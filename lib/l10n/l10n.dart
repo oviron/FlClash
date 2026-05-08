@@ -1569,6 +1569,26 @@ class AppLocalizations {
     );
   }
 
+  /// `Include WebDAV credentials in backup`
+  String get includeDavCredsInBackup {
+    return Intl.message(
+      'Include WebDAV credentials in backup',
+      name: 'includeDavCredsInBackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Off by default. Turn on only if you trust the storage where the backup will live.`
+  String get includeDavCredsInBackupDesc {
+    return Intl.message(
+      'Off by default. Turn on only if you trust the storage where the backup will live.',
+      name: 'includeDavCredsInBackupDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Only statistics proxy`
   String get onlyStatisticsProxy {
     return Intl.message(

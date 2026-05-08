@@ -155,6 +155,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
       "Автоматически закрывать соединения после смены узла",
     ),
+    "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
+      "Класть логин WebDAV в бэкап",
+    ),
+    "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
+      "По умолчанию выключено. Включай только если доверяешь месту где будет лежать бэкап.",
+    ),
     "autoLaunch": MessageLookupByLibrary.simpleMessage("Автозапуск"),
     "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
       "Следовать автозапуску системы",

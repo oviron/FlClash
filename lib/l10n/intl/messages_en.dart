@@ -158,6 +158,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
       "Auto close connections after change node",
     ),
+    "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
+      "Include WebDAV credentials in backup",
+    ),
+    "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
+      "Off by default. Turn on only if you trust the storage where the backup will live.",
+    ),
     "autoLaunch": MessageLookupByLibrary.simpleMessage("Auto launch"),
     "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
       "Follow the system self startup",

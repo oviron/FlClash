@@ -1054,6 +1054,16 @@ extension BackupControllerExt on AppController {
     );
     final configMap = _ref.read(configProvider).toJson();
     configMap['version'] = await preferences.getVersion();
+    final includeDavCreds = _ref.read(
+      appSettingProvider.select((state) => state.includeDavCredsInBackup),
+    );
+    if (!includeDavCreds) {
+      final davProps = configMap['davProps'];
+      if (davProps is Map<String, Object?>) {
+        davProps['user'] = '';
+        davProps['password'] = '';
+      }
+    }
     return await backupTask(configMap, [
       ...profileFileNames,
       ...scriptFileNames,
