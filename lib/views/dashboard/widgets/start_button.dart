@@ -96,7 +96,7 @@ class _StartButtonState extends ConsumerState<StartButton>
       ),
       child: AnimatedBuilder(
         animation: _controller!.view,
-        builder: (_, __) {
+        builder: (_, _) {
           final runTime = ref.watch(runTimeProvider);
           final text = utils.getTimeText(runTime);
           final isLongFormat = text.contains('d ');

@@ -66,7 +66,6 @@ class _WindowContainerState extends ConsumerState<WindowManager>
     super.onWindowMoved();
     windowManager.getPosition().then((offset) {
       ref.read(windowSettingProvider.notifier);
-      // .update((state) => state.copyWith(top: offset.dy, left: offset.dx));
     });
   }
 
@@ -224,9 +223,6 @@ class _WindowHeaderState extends State<WindowHeader> {
           },
           icon: const Icon(Icons.close),
         ),
-        // const SizedBox(
-        //   width: 8,
-        // ),
       ],
     );
   }

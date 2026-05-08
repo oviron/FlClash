@@ -297,10 +297,6 @@ class ListItem<T> extends StatelessWidget {
       final child = openDelegate.widget;
       final onChanged = openDelegate.onChanged;
       return OpenContainer<T>(
-        // closedColor: context.colorScheme.surface,
-        // openColor: context.colorScheme.surface,
-        // closedElevation: 0,
-        // openElevation: 0,
         closedBuilder: (_, action) {
           openAction() async {
             final isMobile = appController.isMobile;

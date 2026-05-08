@@ -107,9 +107,6 @@ class CommonCard extends StatelessWidget {
   final CommonCardType type;
   final double? radius;
 
-  // final WidgetStateProperty<Color?>? backgroundColor;
-  // final WidgetStateProperty<BorderSide?>? borderSide;
-
   BorderSide getBorderSide(BuildContext context, Set<WidgetState> states) {
     final colorScheme = context.colorScheme;
     if (type == CommonCardType.filled) {

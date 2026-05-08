@@ -341,19 +341,6 @@ class ProfileItem extends StatelessWidget {
                                     );
                                   },
                                 ),
-                                // PopupMenuItemData(
-                                //   icon: Icons.extension_outlined,
-                                //   label: appLocalizations.override + "1",
-                                //   onPressed: () {
-                                //     final overrideProfileView = OverrideProfileView(
-                                //       profileId: profile.id,
-                                //     );
-                                //     BaseNavigator.push(
-                                //       context,
-                                //       overrideProfileView,
-                                //     );
-                                //   },
-                                // ),
                                 if (profile.type == ProfileType.url) ...[
                                   PopupMenuItemData(
                                     icon: Icons.copy,

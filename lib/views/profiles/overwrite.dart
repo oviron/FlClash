@@ -78,7 +78,6 @@ class _Title extends ConsumerWidget {
     return switch (type) {
       OverwriteType.standard => appLocalizations.standard,
       OverwriteType.script => appLocalizations.script,
-      // OverwriteType.custom => appLocalizations.overwriteTypeCustom,
     };
   }
 
@@ -86,7 +85,6 @@ class _Title extends ConsumerWidget {
     return switch (type) {
       OverwriteType.standard => Icons.stars,
       OverwriteType.script => Icons.rocket,
-      // OverwriteType.custom => Icons.dashboard_customize,
     };
   }
 
@@ -94,7 +92,6 @@ class _Title extends ConsumerWidget {
     return switch (type) {
       OverwriteType.standard => appLocalizations.standardModeDesc,
       OverwriteType.script => appLocalizations.scriptModeDesc,
-      // OverwriteType.custom => appLocalizations.overwriteTypeCustomDesc,
     };
   }
 
@@ -167,7 +164,6 @@ class _Content extends ConsumerWidget {
     return switch (overwriteType) {
       OverwriteType.standard => _StandardContent(profileId),
       OverwriteType.script => _ScriptContent(profileId),
-      // OverwriteType.custom => SliverToBoxAdapter(),
     };
   }
 }

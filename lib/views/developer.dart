@@ -63,15 +63,6 @@ class DeveloperView extends ConsumerWidget {
             await appController.handleClear();
           },
         ),
-        // ListItem(
-        //   title: Text(appLocalizations.loadTest),
-        //   minVerticalPadding: 12,
-        //   onTap: () {
-        //     ref.read(loadingProvider.notifier).value = !ref.read(
-        //       loadingProvider,
-        //     );
-        //   },
-        // ),
         ListItem(
           title: Text(appLocalizations.pruneCache),
           minVerticalPadding: 12,

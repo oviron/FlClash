@@ -138,10 +138,6 @@ enum RestoreOption { all, onlyProfiles }
 enum ChipType { action, delete }
 
 enum CommonCardType { plain, filled }
-//
-// extension CommonCardTypeExt on CommonCardType {
-//   CommonCardType get variant => CommonCardType.plain;
-// }
 
 enum ProxiesType { tab, list }
 
@@ -244,8 +240,6 @@ enum ActionMethod {
   crash,
   setupConfig,
   deleteFile,
-
-  ///Android,
   setState,
   startTun,
   stopTun,
@@ -398,12 +392,7 @@ extension RuleActionExt on RuleAction {
 
 enum OverrideRuleType { override, added }
 
-enum OverwriteType {
-  // none,
-  standard,
-  script,
-  // custom,
-}
+enum OverwriteType { standard, script }
 
 enum RuleTarget { DIRECT, REJECT, MATCH }
 

@@ -74,10 +74,6 @@ extension StringExtension on String {
     return md5.convert(bytes).toString();
   }
 
-  // bool containsToLower(String target) {
-  //   return toLowerCase().contains(target);
-  // }
-
   Future<T> commonToJSON<T>() async {
     final thresholdLimit = 51200;
     if (length < thresholdLimit) {
