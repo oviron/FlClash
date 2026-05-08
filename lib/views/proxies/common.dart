@@ -32,14 +32,18 @@ Future<void> proxyDelayTest(Proxy proxy, [String? testUrl]) async {
   final currentTestUrl = state.testUrl.takeFirstValid([
     appController.getRealTestUrl(testUrl),
   ]);
+  final delayTestUrl = getDelayTestUrl(
+    proxyName: state.proxyName,
+    testUrl: currentTestUrl,
+  );
   if (state.proxyName.isEmpty) {
     return;
   }
   appController.setDelay(
-    Delay(url: currentTestUrl, name: state.proxyName, value: 0),
+    Delay(url: delayTestUrl, name: state.proxyName, value: 0),
   );
   appController.setDelay(
-    await coreController.getDelay(currentTestUrl, state.proxyName),
+    await coreController.getDelay(delayTestUrl, state.proxyName),
   );
 }
 

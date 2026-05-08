@@ -59,6 +59,16 @@ const defaultExternalController = '127.0.0.1:9090';
 const maxMobileWidth = 600;
 const maxLaptopWidth = 840;
 const defaultTestUrl = 'https://www.gstatic.com/generate_204';
+
+// Separate endpoint for DIRECT outbound delay test. Microsoft NCSI is a
+// neutral, no-tracking, always-on probe that works in geographies where
+// the upstream proxy URL might be reachable only through the tunnel.
+const defaultDirectTestUrl = 'http://www.msftncsi.com/ncsi.txt';
+
+String getDelayTestUrl({required String proxyName, required String testUrl}) {
+  return proxyName == UsedProxy.DIRECT.value ? defaultDirectTestUrl : testUrl;
+}
+
 final commonFilter = ImageFilter.blur(
   sigmaX: 5,
   sigmaY: 5,
