@@ -892,6 +892,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesDisable": MessageLookupByLibrary.simpleMessage("Disable"),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("Enable"),
     "networkRulesFallback": MessageLookupByLibrary.simpleMessage("Default"),
+    "networkRulesAction": MessageLookupByLibrary.simpleMessage("Action"),
     "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
       "Turn VPN on",
     ),
@@ -901,6 +902,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage(
       "Leave as is",
     ),
+    "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ON"),
+    "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("OFF"),
+    "networkRulesActionShortKeep": MessageLookupByLibrary.simpleMessage("KEEP"),
     "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
       "Wi-Fi named",
     ),

@@ -621,6 +621,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesDisable": MessageLookupByLibrary.simpleMessage("禁用"),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("启用"),
     "networkRulesFallback": MessageLookupByLibrary.simpleMessage("默认"),
+    "networkRulesAction": MessageLookupByLibrary.simpleMessage("动作"),
     "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
       "打开 VPN",
     ),
@@ -628,6 +629,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "关闭 VPN",
     ),
     "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage("保持不变"),
+    "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("开"),
+    "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("关"),
+    "networkRulesActionShortKeep": MessageLookupByLibrary.simpleMessage("保留"),
     "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
       "指定 Wi-Fi",
     ),

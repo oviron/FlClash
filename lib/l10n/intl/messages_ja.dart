@@ -703,6 +703,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "有効にする",
     ),
     "networkRulesFallback": MessageLookupByLibrary.simpleMessage("デフォルト"),
+    "networkRulesAction": MessageLookupByLibrary.simpleMessage("アクション"),
     "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
       "VPNをオン",
     ),
@@ -710,6 +711,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "VPNをオフ",
     ),
     "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage("そのまま"),
+    "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ON"),
+    "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("OFF"),
+    "networkRulesActionShortKeep": MessageLookupByLibrary.simpleMessage("KEEP"),
     "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
       "Wi-Fi名を指定",
     ),

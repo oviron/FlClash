@@ -955,6 +955,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesFallback": MessageLookupByLibrary.simpleMessage(
       "По умолчанию",
     ),
+    "networkRulesAction": MessageLookupByLibrary.simpleMessage("Действие"),
     "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
       "Включить VPN",
     ),
@@ -963,6 +964,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "networkRulesActionKeep": MessageLookupByLibrary.simpleMessage(
       "Оставить как есть",
+    ),
+    "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ВКЛ"),
+    "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("ВЫКЛ"),
+    "networkRulesActionShortKeep": MessageLookupByLibrary.simpleMessage(
+      "БЕЗ ИЗМ.",
     ),
     "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
       "Wi-Fi с именем",

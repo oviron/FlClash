@@ -3919,6 +3919,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Action`
+  String get networkRulesAction {
+    return Intl.message(
+      'Action',
+      name: 'networkRulesAction',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Turn VPN on`
   String get networkRulesActionTurnOn {
     return Intl.message(
@@ -3944,6 +3954,36 @@ class AppLocalizations {
     return Intl.message(
       'Leave as is',
       name: 'networkRulesActionKeep',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ON`
+  String get networkRulesActionShortOn {
+    return Intl.message(
+      'ON',
+      name: 'networkRulesActionShortOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OFF`
+  String get networkRulesActionShortOff {
+    return Intl.message(
+      'OFF',
+      name: 'networkRulesActionShortOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `KEEP`
+  String get networkRulesActionShortKeep {
+    return Intl.message(
+      'KEEP',
+      name: 'networkRulesActionShortKeep',
       desc: '',
       args: [],
     );

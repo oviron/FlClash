@@ -33,11 +33,11 @@ class RuleCard extends ConsumerWidget {
   String _actionLabel(NetworkAction action) {
     switch (action) {
       case NetworkAction.turnOn:
-        return 'ON';
+        return appLocalizations.networkRulesActionShortOn;
       case NetworkAction.turnOff:
-        return 'OFF';
+        return appLocalizations.networkRulesActionShortOff;
       case NetworkAction.keep:
-        return 'KEEP';
+        return appLocalizations.networkRulesActionShortKeep;
     }
   }
 

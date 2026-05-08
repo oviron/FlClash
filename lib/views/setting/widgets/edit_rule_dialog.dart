@@ -174,7 +174,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
               ],
             ),
             const SizedBox(height: 24),
-            Text(appLocalizations.networkRulesFallback),
+            Text(appLocalizations.networkRulesAction),
             const SizedBox(height: 8),
             SegmentedButton<NetworkAction>(
               segments: [
