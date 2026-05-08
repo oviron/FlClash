@@ -237,20 +237,30 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     }
     final List<String> finalAddedRules;
 
-    if (replacementTarget?.isNotEmpty == true) {
-      finalAddedRules = [];
-      for (int i = 0; i < parsedNewRules.length; i++) {
-        final parsed = parsedNewRules[i];
-        if (parsed.ruleTarget?.toUpperCase() == 'MATCH') {
-          finalAddedRules.add(
-            parsed.copyWith(ruleTarget: replacementTarget).value,
-          );
-        } else {
-          finalAddedRules.add(addedRules[i].value);
-        }
+    finalAddedRules = [];
+    int droppedMatchPlaceholderCount = 0;
+    for (int i = 0; i < parsedNewRules.length; i++) {
+      final parsed = parsedNewRules[i];
+      final isMatchPlaceholder = parsed.ruleTarget?.toUpperCase() == 'MATCH';
+      if (!isMatchPlaceholder) {
+        finalAddedRules.add(addedRules[i].value);
+        continue;
       }
-    } else {
-      finalAddedRules = addedRules.map((e) => e.value).toList();
+      if (replacementTarget?.isNotEmpty == true) {
+        finalAddedRules.add(
+          parsed.copyWith(ruleTarget: replacementTarget).value,
+        );
+      } else {
+        droppedMatchPlaceholderCount++;
+      }
+    }
+    if (droppedMatchPlaceholderCount > 0) {
+      commonPrint.log(
+        'Dropped $droppedMatchPlaceholderCount added rule(s) with target=MATCH: '
+        'no concrete MATCH rule in base config to derive replacement target. '
+        'These would have produced an invalid mihomo config.',
+        logLevel: LogLevel.warning,
+      );
     }
     rules = [...finalAddedRules, ...rules];
   }

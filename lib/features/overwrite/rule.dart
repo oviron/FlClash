@@ -110,15 +110,24 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
     super.initState();
   }
 
-  void _initState() {
-    _targetItems = [
-      ...RuleTarget.values.map(
-        (item) => DropdownMenuEntry(value: item.name, label: item.name),
-      ),
+  List<DropdownMenuEntry> _buildTargetItems(RuleAction action) {
+    return [
+      ...RuleTarget.values
+          .where(
+            (item) =>
+                item != RuleTarget.MATCH || action == RuleAction.MATCH,
+          )
+          .map(
+            (item) => DropdownMenuEntry(value: item.name, label: item.name),
+          ),
     ];
+  }
+
+  void _initState() {
     if (widget.rule != null) {
       final parsedRule = ParsedRule.parseString(widget.rule!.value);
       _ruleAction = parsedRule.ruleAction;
+      _targetItems = _buildTargetItems(_ruleAction);
       _contentController.text = parsedRule.content ?? '';
       _ruleTargetController.text = parsedRule.ruleTarget ?? '';
       _noResolve = parsedRule.noResolve;
@@ -126,6 +135,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
       return;
     }
     _ruleAction = RuleAction.addedRuleActions.first;
+    _targetItems = _buildTargetItems(_ruleAction);
     if (_targetItems.isNotEmpty) {
       _ruleTargetController.text = _targetItems.first.value;
     }
@@ -198,6 +208,17 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
                             ),
                           ) ??
                           _ruleAction;
+                      _targetItems = _buildTargetItems(_ruleAction);
+                      final currentTarget =
+                          _ruleTargetController.text.toUpperCase();
+                      final hasCurrent = _targetItems.any(
+                        (i) => (i.value as String).toUpperCase() ==
+                            currentTarget,
+                      );
+                      if (!hasCurrent && _targetItems.isNotEmpty) {
+                        _ruleTargetController.text =
+                            _targetItems.first.value as String;
+                      }
                       setState(() {});
                     },
                     child: Text(_ruleAction.value),
