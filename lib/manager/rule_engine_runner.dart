@@ -1,15 +1,13 @@
 // Runtime dispatcher for the rule engine.
 //
-// Two safeguards on top of `evaluate` so flaky networks do not toggle
-// the VPN repeatedly:
-//   * dedup — if the desired state already equals the current VPN state,
-//     no dispatch happens (also keeps the cooldown disarmed for noops).
-//   * cooldown — after every actual turnOn/turnOff a 10 second window
-//     defers the opposite action, so a brief drop and reconnect cannot
-//     start-stop-start the core.
-//
-// Flipping the master toggle off resets the cooldown so a future re-enable
-// starts from a clean slate instead of inheriting stale state.
+// Network events from connectivity, drift, and settings can fire in
+// rapid bursts during a Wi-Fi to cellular handover. We debounce them
+// into a single decision: any event resets a short timer, and only the
+// final stable state triggers a dispatch. This avoids both flapping
+// (multiple toggles inside one transition) and stuck states (an event
+// arriving during an old cooldown was dropped on the previous design).
+
+import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
@@ -32,28 +30,23 @@ class RuleEngineRunner extends ConsumerStatefulWidget {
 }
 
 class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
-  static const _cooldown = Duration(seconds: 10);
+  static const _debounceWindow = Duration(seconds: 2);
 
-  DateTime? _lastAutoActionAt;
-  NetworkAction? _lastDispatchedAction;
-  bool _evaluating = false;
+  Timer? _debounce;
+  bool _dispatching = false;
 
   @override
   void initState() {
     super.initState();
-    // React on any of the three inputs the engine depends on. ref.listen
-    // fires after build, so this is safe to register eagerly.
-    ref.listenManual(currentNetworkSnapshotProvider, (_, _) => _evaluate());
-    ref.listenManual(networkRulesStreamProvider, (_, _) => _evaluate());
-    ref.listenManual(networkRulesSettingsProvider, (prev, next) {
-      // Master toggle flipped to off: drop cooldown so a future re-enable
-      // starts from a clean slate.
-      if (prev?.enabled == true && next.enabled == false) {
-        _lastAutoActionAt = null;
-        _lastDispatchedAction = null;
-      }
-      _evaluate();
-    });
+    ref.listenManual(currentNetworkSnapshotProvider, (_, _) => _schedule());
+    ref.listenManual(networkRulesStreamProvider, (_, _) => _schedule());
+    ref.listenManual(networkRulesSettingsProvider, (_, _) => _schedule());
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 
   @override
@@ -61,91 +54,53 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
     return widget.child;
   }
 
-  Future<void> _evaluate() async {
-    // Reentrancy guard: appController.updateStatus can take seconds
-    // (handleStart spins up the core), and during that await another
-    // listener (drift batch from reorder, rapid network change) could
-    // fire and re-enter _evaluate. Drop the second call rather than
-    // race the first one.
-    if (_evaluating) return;
-    _evaluating = true;
+  void _schedule() {
+    _debounce?.cancel();
+    _debounce = Timer(_debounceWindow, _dispatch);
+  }
+
+  Future<void> _dispatch() async {
+    if (_dispatching) return;
+    if (!mounted) return;
+    _dispatching = true;
     try {
       final settings = ref.read(networkRulesSettingsProvider);
-      if (!settings.enabled) {
-        return;
-      }
+      if (!settings.enabled) return;
 
       final rules = ref.read(networkRulesStreamProvider).value ?? const [];
       final snap = ref.read(currentNetworkSnapshotProvider);
 
       final action = evaluate(rules: rules, snapshot: snap);
-
-      // No rule matched. Do nothing; no fallback, no cooldown arming.
-      if (action == null) {
-        return;
-      }
-
-      // The redesigned UI never produces NetworkAction.keep, but legacy
-      // persisted rules from before may still carry it. Treat as null
-      // (no opinion) so we do nothing rather than fight the user.
-      if (action == NetworkAction.keep) {
-        return;
-      }
+      if (action == null) return;
+      // Legacy data may still carry NetworkAction.keep. The redesigned
+      // UI never produces it, but old persisted rows do. Treat as no
+      // opinion rather than coercing the VPN either way.
+      if (action == NetworkAction.keep) return;
 
       final desiredOn = action == NetworkAction.turnOn;
       final isOn = ref.read(isStartProvider);
       final snapDescr = _describeSnapshot(snap);
 
       if (desiredOn == isOn) {
-        _log(
-          'action ${action.name} equals current state, skip ($snapDescr)',
-        );
-        return;
-      }
-
-      if (_isCoolingDown(action)) {
-        final remaining = _cooldownRemaining();
-        _log(
-          'cooldown active (${remaining}s remaining), deferring ${action.name} '
-          '($snapDescr)',
-        );
+        _log('action ${action.name} equals current state, skip ($snapDescr)');
         return;
       }
 
       final reason = _matchReason(rules, snap);
-      _log('$reason, action=${action.name} -> ${desiredOn ? "starting" : "stopping"} VPN');
+      _log(
+        '$reason, action=${action.name} -> '
+        '${desiredOn ? "starting" : "stopping"} VPN',
+      );
 
       try {
         await appController.updateStatus(desiredOn);
-        if (!mounted) return;
-        _lastAutoActionAt = DateTime.now();
-        _lastDispatchedAction = action;
       } catch (e) {
         if (!mounted) return;
         _log('dispatch failed for ${action.name}: $e');
       }
     } finally {
-      _evaluating = false;
+      _dispatching = false;
     }
-  }
-
-  bool _isCoolingDown(NetworkAction next) {
-    final last = _lastAutoActionAt;
-    final lastAction = _lastDispatchedAction;
-    if (last == null || lastAction == null) return false;
-    if (DateTime.now().difference(last) >= _cooldown) return false;
-    // Cooldown only matters when we are about to flip in the opposite
-    // direction. Same-direction repeats are caught by dedup before this.
-    return next != lastAction;
-  }
-
-  int _cooldownRemaining() {
-    final last = _lastAutoActionAt;
-    if (last == null) return 0;
-    final elapsed = DateTime.now().difference(last);
-    final remaining = _cooldown - elapsed;
-    if (remaining.isNegative) return 0;
-    return remaining.inSeconds;
   }
 
   String _matchReason(List<NetworkRule> rules, NetworkSnapshot snap) {
