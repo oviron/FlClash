@@ -404,26 +404,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Auto check updates`
-  String get autoCheckUpdate {
-    return Intl.message(
-      'Auto check updates',
-      name: 'autoCheckUpdate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Auto check for updates when the app starts`
-  String get autoCheckUpdateDesc {
-    return Intl.message(
-      'Auto check for updates when the app starts',
-      name: 'autoCheckUpdateDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `AccessControl`
   String get accessControl {
     return Intl.message(
@@ -1089,41 +1069,11 @@ class AppLocalizations {
     return Intl.message('Password', name: 'password', desc: '', args: []);
   }
 
-  /// `Check for updates`
-  String get checkUpdate {
+  /// `Releases`
+  String get releases {
     return Intl.message(
-      'Check for updates',
-      name: 'checkUpdate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Discover the new version`
-  String get discoverNewVersion {
-    return Intl.message(
-      'Discover the new version',
-      name: 'discoverNewVersion',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The current application is already the latest version`
-  String get checkUpdateError {
-    return Intl.message(
-      'The current application is already the latest version',
-      name: 'checkUpdateError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Go to download`
-  String get goDownload {
-    return Intl.message(
-      'Go to download',
-      name: 'goDownload',
+      'Releases',
+      name: 'releases',
       desc: '',
       args: [],
     );
@@ -3527,16 +3477,6 @@ class AppLocalizations {
   /// `Just now`
   String get justNow {
     return Intl.message('Just now', name: 'justNow', desc: '', args: []);
-  }
-
-  /// `Don't remind again`
-  String get noLongerRemind {
-    return Intl.message(
-      'Don\'t remind again',
-      name: 'noLongerRemind',
-      desc: '',
-      args: [],
-    );
   }
 
   /// `Access Control Settings`
