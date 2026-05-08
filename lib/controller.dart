@@ -334,13 +334,57 @@ extension ProfilesControllerExt on AppController {
     }
   }
 
+  String _getLabelFromURL(String url, {int maxLength = 50}) {
+    String label;
+    try {
+      final uri = Uri.parse(url);
+
+      if (uri.queryParameters.containsKey('url')) {
+        return _getLabelFromURL(
+          uri.queryParameters['url']!,
+          maxLength: maxLength,
+        );
+      }
+
+      final isShortLink = (uri.host.split('.').length <= 2 &&
+              uri.pathSegments.length <= 2) ||
+          url.length < 30;
+
+      if (uri.host.contains('githubusercontent.com') &&
+          uri.pathSegments.length > 1) {
+        final owner = uri.pathSegments[0];
+        final file = uri.pathSegments.last;
+        label = '$owner-${file.split('.').first}';
+      } else if (isShortLink) {
+        label = '${uri.host}-${uri.pathSegments.join('-')}';
+      } else if (uri.pathSegments.isNotEmpty) {
+        final fileName = uri.pathSegments.last;
+        label = '${uri.host}-${fileName.split('.').first}';
+      } else {
+        label = uri.host;
+      }
+    } catch (_) {
+      label = url
+          .replaceAll(RegExp(r'https?://'), '')
+          .replaceAll(RegExp(r'[/\?&=]'), '-')
+          .replaceAll(RegExp(r'[^0-9a-zA-Z\-_]'), '')
+          .replaceAll(RegExp(r'-+'), '-');
+    }
+
+    if (label.length > maxLength) {
+      label = label.substring(0, maxLength);
+    }
+
+    return label;
+  }
+
   Future<void> addProfileFormURL(String url) async {
     if (globalState.navigatorKey.currentState?.canPop() ?? false) {
       globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
     toProfiles();
     final profile = await loadingRun(tag: LoadingTag.profiles, () async {
-      return await Profile.normal(url: url).update();
+      return await Profile.normal(url: url, label: _getLabelFromURL(url)).update();
     }, title: appLocalizations.addProfile);
     if (profile != null) {
       putProfile(profile);
