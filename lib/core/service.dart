@@ -204,12 +204,8 @@ class CoreService extends CoreHandlerInterface {
   @override
   Completer<dynamic> get completer => _socketCompleter;
 
-  // Desktop has no REST controller wiring yet; these methods previously
-  // dispatched through the action channel to chen-fork Go handlers that
-  // Phase D removed. Fail fast so the regression is visible instead of
-  // silently returning empty data.
   Never _desktopUnsupported(String name) =>
-      throw UnimplementedError('$name unavailable on desktop after Phase D');
+      throw UnimplementedError('$name not implemented on desktop');
 
   @override
   Future<ProxiesData> getProxies() async => _desktopUnsupported('getProxies');
