@@ -88,6 +88,26 @@ func handleValidateConfig(path string) string {
 	return ""
 }
 
+func handleGetTraffic(_ bool) string {
+	up, down := statistic.DefaultManager.Now()
+	data, err := json.Marshal(map[string]int64{"up": up, "down": down})
+	if err != nil {
+		log.Errorln("Error: %s", err)
+		return ""
+	}
+	return string(data)
+}
+
+func handleGetTotalTraffic(_ bool) string {
+	up, down := statistic.DefaultManager.Total()
+	data, err := json.Marshal(map[string]int64{"up": up, "down": down})
+	if err != nil {
+		log.Errorln("Error: %s", err)
+		return ""
+	}
+	return string(data)
+}
+
 func handleResetTraffic() {
 	statistic.DefaultManager.ResetStatistic()
 }
