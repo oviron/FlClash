@@ -608,7 +608,7 @@ extension SetupControllerExt on AppController {
       await globalState.handleStop();
       coreController.resetTraffic();
       _ref.read(trafficsProvider.notifier).clear();
-      _ref.read(totalTrafficProvider.notifier).value = Traffic();
+      _ref.read(totalTrafficProvider.notifier).value = const Traffic();
       _ref.read(runTimeProvider.notifier).value = null;
       addCheckIp();
     }
@@ -816,7 +816,7 @@ extension CoreControllerExt on AppController {
     _ref.read(coreStatusProvider.notifier).value = CoreStatus.connecting;
     final result = await Future.wait([
       coreController.preload(),
-      Future.delayed(Duration(milliseconds: 300)),
+      Future.delayed(const Duration(milliseconds: 300)),
     ]);
     final String message = result[0];
     if (message.isNotEmpty) {
@@ -886,7 +886,7 @@ extension SystemControllerExt on AppController {
   }
 
   Future<void> handleExit([bool needSave = false]) async {
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () {
       system.exit();
     });
     try {
@@ -990,7 +990,7 @@ extension SystemControllerExt on AppController {
     tray?.update(
       trayState: _ref.read(trayStateProvider),
       traffic: _ref.read(
-        trafficsProvider.select((state) => state.list.safeLast(Traffic())),
+        trafficsProvider.select((state) => state.list.safeLast(const Traffic())),
       ),
     );
   }

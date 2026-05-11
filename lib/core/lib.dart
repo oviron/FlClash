@@ -36,7 +36,7 @@ class CoreLib extends CoreHandlerInterface {
   }
 
   @override
-  destroy() async {
+  Future<bool> destroy() async {
     await _clashApi?.dispose();
     _clashApi = null;
     _clashApiReady = null;
@@ -105,9 +105,9 @@ class CoreLib extends CoreHandlerInterface {
   @override
   Future<ProxiesData> getProxies() async {
     final api = await _ensureClashApi();
-    if (api == null) return ProxiesData(proxies: {}, all: []);
+    if (api == null) return const ProxiesData(proxies: {}, all: []);
     final data = await api.getProxies();
-    if (data == null) return ProxiesData(proxies: {}, all: []);
+    if (data == null) return const ProxiesData(proxies: {}, all: []);
     return ProxiesData.fromJson(data);
   }
 

@@ -28,7 +28,7 @@ abstract class SubscriptionInfo with _$SubscriptionInfo {
   factory SubscriptionInfo.formHString(String? info) {
     if (info == null) return const SubscriptionInfo();
     final list = info.split(';');
-    Map<String, int?> map = {};
+    final Map<String, int?> map = {};
     for (final i in list) {
       final keyValue = i.trim().split('=');
       map[keyValue[0]] = int.tryParse(keyValue[1]);

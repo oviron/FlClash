@@ -298,7 +298,7 @@ class ListItem<T> extends StatelessWidget {
       final onChanged = openDelegate.onChanged;
       return OpenContainer<T>(
         closedBuilder: (_, action) {
-          openAction() async {
+          Future<void> openAction() async {
             final isMobile = appController.isMobile;
             if (!isMobile || kDebugMode) {
               final res = await showExtend(
@@ -580,7 +580,7 @@ class CommonSelectedListItem extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
         color: Colors.transparent,
         child: CommonCard(
           padding: EdgeInsets.zero,
@@ -650,8 +650,8 @@ class CommonInputListItem extends StatelessWidget {
             ? LinearBorder.none
             : RoundedSuperellipseBorder(
                 borderRadius: BorderRadius.vertical(
-                  top: isFirst ? Radius.circular(24) : Radius.zero,
-                  bottom: isLast ? Radius.circular(24) : Radius.zero,
+                  top: isFirst ? const Radius.circular(24) : Radius.zero,
+                  bottom: isLast ? const Radius.circular(24) : Radius.zero,
                 ),
               ),
       ),
@@ -674,7 +674,7 @@ class CommonInputListItem extends StatelessWidget {
               ),
             ),
             if (isDecorator != true && !isLast)
-              Divider(height: 0, indent: 14, endIndent: 14),
+              const Divider(height: 0, indent: 14, endIndent: 14),
           ],
         ),
       ),

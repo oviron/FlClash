@@ -49,7 +49,7 @@ class CoreController {
           continue;
         }
         final data = await rootBundle.load('assets/data/$geoFileName');
-        List<int> bytes = data.buffer.asUint8List();
+        final List<int> bytes = data.buffer.asUint8List();
         await geoFile.writeAsBytes(bytes, flush: true);
       }
     } catch (e) {
@@ -214,7 +214,7 @@ class CoreController {
   Future<Traffic> getTraffic(bool onlyStatisticsProxy) async {
     final trafficString = await _interface.getTraffic(onlyStatisticsProxy);
     if (trafficString.isEmpty) {
-      return Traffic();
+      return const Traffic();
     }
     return Traffic.fromJson(json.decode(trafficString));
   }
@@ -232,7 +232,7 @@ class CoreController {
       onlyStatisticsProxy,
     );
     if (totalTrafficString.isEmpty) {
-      return Traffic();
+      return const Traffic();
     }
     return Traffic.fromJson(json.decode(totalTrafficString));
   }

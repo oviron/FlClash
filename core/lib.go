@@ -13,6 +13,12 @@ import (
 	t "core/tun"
 	"encoding/json"
 	"errors"
+	"net"
+	"strings"
+	"sync"
+	"syscall"
+	"unsafe"
+
 	"github.com/metacubex/mihomo/component/dialer"
 	"github.com/metacubex/mihomo/component/process"
 	"github.com/metacubex/mihomo/constant"
@@ -20,11 +26,6 @@ import (
 	"github.com/metacubex/mihomo/listener/sing_tun"
 	"github.com/metacubex/mihomo/log"
 	"golang.org/x/sync/semaphore"
-	"net"
-	"strings"
-	"sync"
-	"syscall"
-	"unsafe"
 )
 
 var eventListener unsafe.Pointer
@@ -171,8 +172,7 @@ func (result ActionResult) send() {
 }
 
 func nextHandle(action *Action, result ActionResult) bool {
-	switch action.Method {
-	case updateDnsMethod:
+	if action.Method == updateDnsMethod {
 		data := action.Data.(string)
 		handleUpdateDns(data)
 		result.success(true)

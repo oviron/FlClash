@@ -35,7 +35,7 @@ extension StringExtension on String {
     final byteData = ByteData(length * 2);
     final bom = [0xFF, 0xFE];
     for (int i = 0; i < length; i++) {
-      int charCode = codeUnitAt(i);
+      final int charCode = codeUnitAt(i);
       byteData.setUint16(i * 2, charCode, Endian.little);
     }
     return bom + byteData.buffer.asUint8List();
@@ -75,7 +75,7 @@ extension StringExtension on String {
   }
 
   Future<T> commonToJSON<T>() async {
-    final thresholdLimit = 51200;
+    const thresholdLimit = 51200;
     if (length < thresholdLimit) {
       return json.decode(this);
     } else {

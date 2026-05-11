@@ -128,8 +128,8 @@ class OutboundModeV2 extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.all(12),
-                        constraints: BoxConstraints.expand(),
+                        padding: const EdgeInsets.all(12),
+                        constraints: const BoxConstraints.expand(),
                         child: CommonTabBar<Mode>(
                           children: Map.fromEntries(
                             Mode.values.map(
@@ -138,9 +138,9 @@ class OutboundModeV2 extends StatelessWidget {
                                 Container(
                                   clipBehavior: Clip.antiAlias,
                                   alignment: Alignment.center,
-                                  decoration: BoxDecoration(),
+                                  decoration: const BoxDecoration(),
                                   height: height - 8.ap - 24,
-                                  padding: EdgeInsets.all(4),
+                                  padding: const EdgeInsets.all(4),
                                   child: Text(
                                     Intl.message(item.name),
                                     style: Theme.of(context)
@@ -157,7 +157,7 @@ class OutboundModeV2 extends StatelessWidget {
                               ),
                             ),
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
                           groupValue: mode,
                           onValueChanged: (value) {
                             if (value == null) {
@@ -173,7 +173,7 @@ class OutboundModeV2 extends StatelessWidget {
                       color: thumbColor.opacity50,
                       height: 8.ap,
                       width: constraints.maxWidth,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                     ),
                   ],
                 );

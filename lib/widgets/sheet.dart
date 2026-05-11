@@ -128,17 +128,17 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
       backgroundColor: backgroundColor,
       title: Text(widget.title),
       actions: genActions([
-        if (widget.actions.isEmpty && sideSheet) CloseButton(),
+        if (widget.actions.isEmpty && sideSheet) const CloseButton(),
         ...widget.actions,
       ]),
     );
     if (bottomSheet) {
-      final handleSize = Size(32, 4);
+      const handleSize = Size(32, 4);
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 16),
+            padding: const EdgeInsets.only(top: 16),
             child: Container(
               alignment: Alignment.center,
               height: handleSize.height,
@@ -151,7 +151,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
               ),
             ),
           ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: appBar),
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: appBar),
           Flexible(flex: 1, child: widget.body),
           SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
         ],

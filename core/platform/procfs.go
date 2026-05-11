@@ -64,7 +64,7 @@ func QuerySocketUidFromProcFs(source, _ net.Addr) int {
 }
 
 func doQuery(path string, sIP net.IP, sPort int) int {
-	file, err := os.Open(path)
+	file, err := os.Open(path) // #nosec G304 -- path is a fixed /proc/net/* path
 	if err != nil {
 		return -1
 	}
@@ -117,7 +117,7 @@ func nativeEndianIP(ip net.IP) []byte {
 }
 
 func init() {
-	file, err := os.Open("/proc/net/tcp")
+	file, err := os.Open("/proc/net/tcp") // #nosec G304 -- literal procfs path
 	if err != nil {
 		return
 	}
@@ -167,7 +167,7 @@ func init() {
 
 func init() {
 	var x uint32 = 0x01020304
-	if *(*byte)(unsafe.Pointer(&x)) == 0x01 {
+	if *(*byte)(unsafe.Pointer(&x)) == 0x01 { // #nosec G103 -- byte-order probe
 		nativeEndian = binary.BigEndian
 	} else {
 		nativeEndian = binary.LittleEndian

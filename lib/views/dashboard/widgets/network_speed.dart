@@ -16,7 +16,7 @@ class _NetworkSpeedState extends State<NetworkSpeed> {
   List<Point> initPoints = const [Point(0, 0), Point(1, 0)];
 
   List<Point> _getPoints(List<Traffic> traffics) {
-    List<Point> trafficPoints = traffics
+    final List<Point> trafficPoints = traffics
         .toList()
         .asMap()
         .map(
@@ -32,7 +32,7 @@ class _NetworkSpeedState extends State<NetworkSpeed> {
   }
 
   Traffic _getLastTraffic(List<Traffic> traffics) {
-    if (traffics.isEmpty) return Traffic();
+    if (traffics.isEmpty) return const Traffic();
     return traffics.last;
   }
 
@@ -63,7 +63,7 @@ class _NetworkSpeedState extends State<NetworkSpeed> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
                           _getLastTraffic(traffics).speedText,
                           style: context.textTheme.bodySmall?.copyWith(
@@ -75,7 +75,7 @@ class _NetworkSpeedState extends State<NetworkSpeed> {
                   ),
                   Flexible(
                     child: Padding(
-                      padding: EdgeInsets.all(
+                      padding: const EdgeInsets.all(
                         16,
                       ).copyWith(bottom: 0, left: 0, right: 0),
                       child: LineChart(

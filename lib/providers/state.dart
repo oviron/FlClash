@@ -158,7 +158,7 @@ TrayTitleState trayTitleState(Ref ref) {
     appSettingProvider.select((state) => state.showTrayTitle),
   );
   final traffic = ref.watch(
-    trafficsProvider.select((state) => state.list.safeLast(Traffic())),
+    trafficsProvider.select((state) => state.list.safeLast(const Traffic())),
   );
   return TrayTitleState(showTrayTitle: showTrayTitle, traffic: traffic);
 }
@@ -591,7 +591,7 @@ VM3<bool, int, ProxiesSortType> needUpdateGroups(Ref ref) {
 
 @riverpod
 SharedState sharedState(Ref ref) {
-  ref.watch((appSettingProvider).select((state) => state.locale));
+  ref.watch(appSettingProvider.select((state) => state.locale));
   final currentProfileVM2 = ref.watch(
     currentProfileProvider.select(
       (state) => VM2(state?.label ?? '', state?.selectedMap ?? {}),
@@ -684,10 +684,10 @@ OverwriteType overwriteType(Ref ref, int? profileId) {
 @riverpod
 Future<Script?> script(Ref ref, int? scriptId) async {
   final script = await ref.watch(
-    (scriptsProvider.future.select((state) async {
+    scriptsProvider.future.select((state) async {
       final scripts = await state;
       return scripts.get(scriptId);
-    })),
+    }),
   );
   return script;
 }
@@ -719,7 +719,7 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
 class AccessControlState extends _$AccessControlState
     with AutoDisposeNotifierMixin {
   @override
-  AccessControlProps build() => AccessControlProps();
+  AccessControlProps build() => const AccessControlProps();
 }
 
 @riverpod

@@ -2,12 +2,15 @@ package main
 
 import (
 	b "bytes"
-	"context"
 	"encoding/json"
+	"os"
+	"path/filepath"
+	"runtime"
+	"sync"
+
 	"github.com/metacubex/mihomo/adapter"
 	"github.com/metacubex/mihomo/adapter/inbound"
 	"github.com/metacubex/mihomo/adapter/outboundgroup"
-	"github.com/metacubex/mihomo/common/batch"
 	"github.com/metacubex/mihomo/component/dialer"
 	"github.com/metacubex/mihomo/component/resolver"
 	"github.com/metacubex/mihomo/config"
@@ -19,10 +22,6 @@ import (
 	"github.com/metacubex/mihomo/listener"
 	"github.com/metacubex/mihomo/log"
 	"github.com/metacubex/mihomo/tunnel"
-	"os"
-	"path/filepath"
-	"runtime"
-	"sync"
 )
 
 var (
@@ -30,7 +29,6 @@ var (
 	version       = 0
 	isRunning     = false
 	runLock       sync.Mutex
-	mBatch, _     = batch.New[bool](context.Background(), batch.WithConcurrencyNum[bool](50))
 )
 
 func updateListeners() {
@@ -110,7 +108,7 @@ func readFile(path string) ([]byte, error) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return nil, err
 	}
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(path) // #nosec G304 -- path supplied by FlClash UI, runs in app sandbox
 	if err != nil {
 		return nil, err
 	}

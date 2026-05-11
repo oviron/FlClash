@@ -72,7 +72,7 @@ class TrafficUsage extends StatelessWidget {
                 children: [
                   Flexible(
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,7 +92,7 @@ class TrafficUsage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Flexible(
                             child: LayoutBuilder(
                               builder: (_, container) {
@@ -136,7 +136,7 @@ class TrafficUsage extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 4),
+                                        const SizedBox(width: 4),
                                         Text(
                                           maxLines: 1,
                                           appLocalizations.upload,
@@ -145,7 +145,7 @@ class TrafficUsage extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 4),
+                                    const SizedBox(height: 4),
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -160,7 +160,7 @@ class TrafficUsage extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 4),
+                                        const SizedBox(width: 4),
                                         Text(
                                           maxLines: 1,
                                           appLocalizations.download,

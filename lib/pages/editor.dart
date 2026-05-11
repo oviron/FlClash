@@ -67,7 +67,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
     if (system.isDesktop) {
       return;
     }
-    _focusNode.onKeyEvent = ((_, event) {
+    _focusNode.onKeyEvent = (_, event) {
       final keys = HardwareKeyboard.instance.logicalKeysPressed;
       final key = event.logicalKey;
       if (!keys.contains(key)) {
@@ -88,7 +88,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
         return KeyEventResult.handled;
       }
       return KeyEventResult.ignored;
-    });
+    };
   }
 
   @override
@@ -180,8 +180,8 @@ class _EditorPageState extends ConsumerState<EditorPage> {
             enabled: widget.titleEditable,
             controller: _titleController,
             decoration: InputDecoration(
-              border: _NoInputBorder(),
-              counter: SizedBox(),
+              border: const _NoInputBorder(),
+              counter: const SizedBox(),
               hintText: appLocalizations.unnamed,
             ),
             style: context.textTheme.titleLarge,
@@ -265,7 +265,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
             readOnly: readOnly,
             isMobileView: isMobileView,
           ),
-          padding: EdgeInsets.only(right: 16),
+          padding: const EdgeInsets.only(right: 16),
           autocompleteSymbols: true,
           focusNode: _focusNode,
           scrollbarBuilder: (context, child, details) {
@@ -291,7 +291,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
                   ],
                 );
               },
-          shortcutsActivatorsBuilder: DefaultCodeShortcutsActivatorsBuilder(),
+          shortcutsActivatorsBuilder: const DefaultCodeShortcutsActivatorsBuilder(),
           controller: _controller,
           style: CodeEditorStyle(
             fontSize: context.textTheme.bodyLarge?.fontSize?.ap,
@@ -343,8 +343,8 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
       return const SizedBox(width: 0, height: 0);
     }
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      margin: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      margin: const EdgeInsets.only(bottom: 8),
       color: context.colorScheme.surface,
       alignment: Alignment.centerLeft,
       height: height,
@@ -366,10 +366,10 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
         children: [
           if (!isMobileView) ...[
             ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 360),
+              constraints: const BoxConstraints(maxWidth: 360),
               child: _buildFindInput(context, value),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
           ],
           Text(result, style: context.textTheme.bodyMedium),
           Expanded(
@@ -393,10 +393,10 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
                         },
                   icon: Icons.arrow_downward,
                 ),
-                SizedBox(width: 2),
+                const SizedBox(width: 2),
                 IconButton.filledTonal(
                   onPressed: controller.close,
-                  icon: Icon(Icons.close, size: 16),
+                  icon: const Icon(Icons.close, size: 16),
                 ),
               ],
             ),
@@ -408,7 +408,7 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [bar, SizedBox(height: 4), _buildFindInput(context, value)],
+        children: [bar, const SizedBox(height: 4), _buildFindInput(context, value)],
       );
     }
     return bar;
@@ -449,7 +449,7 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
             controller.toggleRegex();
           },
         ),
-        SizedBox(width: 4),
+        const SizedBox(width: 4),
       ],
     );
   }
@@ -466,7 +466,7 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
         maxLines: 1,
         focusNode: focusNode,
         style: context.textTheme.bodyMedium,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.symmetric(horizontal: 12),
         ),
@@ -492,12 +492,12 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
         child: isSelected
             ? IconButton.filledTonal(
                 onPressed: onPressed,
-                padding: EdgeInsets.all(2),
+                padding: const EdgeInsets.all(2),
                 icon: Text(text, style: context.textTheme.bodySmall),
               )
             : IconButton(
                 onPressed: onPressed,
-                padding: EdgeInsets.all(2),
+                padding: const EdgeInsets.all(2),
                 icon: Text(text, style: context.textTheme.bodySmall),
               ),
       ),
@@ -545,7 +545,7 @@ class ContextMenuControllerImpl implements SelectionToolbarController {
             final isNotEmpty = controller.selectedText.isNotEmpty;
             final isAllSelected = controller.isAllSelected;
             final hasSelected = controller.selectedText.isNotEmpty;
-            List<PopupMenuItemData> menus = [
+            final List<PopupMenuItemData> menus = [
               if (isNotEmpty)
                 PopupMenuItemData(
                   label: appLocalizations.copy,
@@ -574,7 +574,7 @@ class ContextMenuControllerImpl implements SelectionToolbarController {
             }
             if (menus.isEmpty) {
               _removeOverLayEntry();
-              return SizedBox();
+              return const SizedBox();
             }
             return TextSelectionToolbar(
               anchorAbove: anchors.primaryAnchor,

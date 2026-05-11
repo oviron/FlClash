@@ -2,6 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"net"
+	"os"
+	"runtime"
+	"runtime/debug"
+
 	"github.com/metacubex/mihomo/adapter/provider"
 	"github.com/metacubex/mihomo/common/observable"
 	"github.com/metacubex/mihomo/component/mmdb"
@@ -16,10 +21,6 @@ import (
 	"github.com/metacubex/mihomo/log"
 	"github.com/metacubex/mihomo/tunnel"
 	"github.com/metacubex/mihomo/tunnel/statistic"
-	"net"
-	"os"
-	"runtime"
-	"runtime/debug"
 )
 
 var (
@@ -81,8 +82,10 @@ func handleShutdown() bool {
 
 func handleValidateConfig(path string) string {
 	buf, err := readFile(path)
-	_, err = config.UnmarshalRawConfig(buf)
 	if err != nil {
+		return err.Error()
+	}
+	if _, err := config.UnmarshalRawConfig(buf); err != nil {
 		return err.Error()
 	}
 	return ""

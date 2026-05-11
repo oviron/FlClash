@@ -27,7 +27,7 @@ class InfoHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    EdgeInsetsGeometry nextPadding = (padding ?? baseInfoEdgeInsets);
+    EdgeInsetsGeometry nextPadding = padding ?? baseInfoEdgeInsets;
     if (actions.isNotEmpty) {
       nextPadding = nextPadding.subtract(EdgeInsets.symmetric(vertical: 8.mAp));
     }
@@ -237,7 +237,7 @@ class SettingsBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: [
           InfoHeader(info: Info(label: title)),

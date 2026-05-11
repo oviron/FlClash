@@ -103,7 +103,7 @@ class DeveloperView extends ConsumerWidget {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _getDeveloperList(context, ref),
           ],
         ),

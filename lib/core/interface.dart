@@ -188,7 +188,7 @@ abstract class CoreHandlerInterface with CoreInterface {
     );
     return data != null
         ? ProxiesData.fromJson(data)
-        : ProxiesData(proxies: {}, all: []);
+        : const ProxiesData(proxies: {}, all: []);
   }
 
   @override
@@ -294,17 +294,17 @@ abstract class CoreHandlerInterface with CoreInterface {
   }
 
   @override
-  resetTraffic() {
+  void resetTraffic() {
     _invoke(method: ActionMethod.resetTraffic);
   }
 
   @override
-  startLog() {
+  void startLog() {
     _invoke(method: ActionMethod.startLog);
   }
 
   @override
-  stopLog() {
+  void stopLog() {
     _invoke<bool>(method: ActionMethod.stopLog);
   }
 
@@ -328,7 +328,7 @@ abstract class CoreHandlerInterface with CoreInterface {
     return await _invoke<String>(
           method: ActionMethod.asyncTestDelay,
           data: json.encode(delayParams),
-          timeout: Duration(seconds: 6),
+          timeout: const Duration(seconds: 6),
         ) ??
         json.encode(Delay(name: proxyName, value: -1, url: url));
   }

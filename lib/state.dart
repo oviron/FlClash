@@ -66,7 +66,7 @@ class GlobalState {
       corePalette = await DynamicColorPlugin.getCorePalette();
       accentColor =
           await DynamicColorPlugin.getAccentColor() ??
-          Color(defaultPrimaryColor);
+          const Color(defaultPrimaryColor);
     } catch (_) {}
   }
 
@@ -78,7 +78,7 @@ class GlobalState {
       requests: FixedList(maxLength),
       logs: FixedList(maxLength),
       traffics: FixedList(30),
-      totalTraffic: Traffic(),
+      totalTraffic: const Traffic(),
       systemUiOverlayStyle: const SystemUiOverlayStyle(),
     );
     final appStateOverrides = buildAppStateOverrides(appState);
@@ -229,19 +229,19 @@ class GlobalState {
               ),
             ],
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 4),
+              padding: const EdgeInsets.symmetric(vertical: 4),
               constraints: const BoxConstraints(maxHeight: 200),
               child: ListView.separated(
                 itemBuilder: (_, index) {
                   final message = messages[index];
                   return ListItem(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     title: Text(message.label),
                     subtitle: Text(message.message),
                   );
                 },
                 itemCount: messages.length,
-                separatorBuilder: (_, _) => Divider(height: 0),
+                separatorBuilder: (_, _) => const Divider(height: 0),
               ),
             ),
           );

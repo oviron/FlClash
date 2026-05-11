@@ -40,8 +40,8 @@ class IntranetIP extends StatelessWidget {
                               ),
                             )
                           : Container(
-                              padding: EdgeInsets.all(2),
-                              child: AspectRatio(
+                              padding: const EdgeInsets.all(2),
+                              child: const AspectRatio(
                                 aspectRatio: 1,
                                 child: CommonCircleLoading(),
                               ),

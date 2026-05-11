@@ -73,7 +73,7 @@ class _HotKeyManagerState extends ConsumerState<HotKeyManager> {
     return Shortcuts(
       shortcuts: {
         utils.controlSingleActivator(LogicalKeyboardKey.keyW):
-            CloseWindowIntent(),
+            const CloseWindowIntent(),
       },
       child: Actions(
         actions: {

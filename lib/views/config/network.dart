@@ -332,7 +332,7 @@ final networkItems = [
   if (system.isDesktop)
     ...generateSection(
       title: appLocalizations.system,
-      items: [SystemProxyItem(), BypassDomainItem()],
+      items: [const SystemProxyItem(), const BypassDomainItem()],
     ),
   ...generateSection(
     title: appLocalizations.options,

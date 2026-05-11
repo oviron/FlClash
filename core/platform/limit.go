@@ -34,9 +34,5 @@ func ShouldBlockConnection() bool {
 
 	_ = syscall.Close(fd)
 
-	if fd > maxFdCount {
-		return true
-	}
-
-	return false
+	return fd > maxFdCount
 }

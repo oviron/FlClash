@@ -259,7 +259,7 @@ class _ListInputPageState extends ConsumerState<ListInputPage> {
   }
 
   Future<void> _handleAddOrEdit([String? item]) async {
-    uniqueValidator(String? value) {
+    String? uniqueValidator(String? value) {
       final index = _items.indexWhere((entry) {
         return entry == value;
       });
@@ -371,10 +371,10 @@ class _ListInputPageState extends ConsumerState<ListInputPage> {
             CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: _handleDelete,
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
               ),
             ),
-            SizedBox(width: 2),
+            const SizedBox(width: 2),
           ] else if (!stringListEquality.equals(_items, _originItems)) ...[
             CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
@@ -382,7 +382,7 @@ class _ListInputPageState extends ConsumerState<ListInputPage> {
                 icon: const Icon(Icons.replay),
               ),
             ),
-            SizedBox(width: 2),
+            const SizedBox(width: 2),
           ],
           CommonMinFilledButtonTheme(
             child: selectedItems.isNotEmpty
@@ -397,7 +397,7 @@ class _ListInputPageState extends ConsumerState<ListInputPage> {
                     child: Text(appLocalizations.add),
                   ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
         body: _items.isEmpty
             ? NullStatus(label: appLocalizations.noData)
@@ -504,7 +504,7 @@ class _MapInputPageState extends ConsumerState<MapInputPage> {
   }
 
   Future<void> _handleAddOrEdit([MapEntry<String, String>? item]) async {
-    uniqueValidator(String? value) {
+    String? uniqueValidator(String? value) {
       final index = _items.indexWhere((entry) {
         return entry.key == value;
       });
@@ -624,10 +624,10 @@ class _MapInputPageState extends ConsumerState<MapInputPage> {
             CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: _handleDelete,
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
               ),
             ),
-            SizedBox(width: 2),
+            const SizedBox(width: 2),
           ] else if (!stringAndStringMapEntryListEquality.equals(
             _items,
             _originItems,
@@ -638,7 +638,7 @@ class _MapInputPageState extends ConsumerState<MapInputPage> {
                 icon: const Icon(Icons.replay),
               ),
             ),
-            SizedBox(width: 2),
+            const SizedBox(width: 2),
           ],
           CommonMinFilledButtonTheme(
             child: selectedItems.isNotEmpty
@@ -653,7 +653,7 @@ class _MapInputPageState extends ConsumerState<MapInputPage> {
                     child: Text(appLocalizations.add),
                   ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
         body: _items.isEmpty
             ? NullStatus(label: appLocalizations.noData)

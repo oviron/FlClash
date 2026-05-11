@@ -114,7 +114,7 @@ class _ProfilesViewState extends State<ProfilesView> {
           body: state.profiles.isEmpty
               ? NullStatus(
                   label: appLocalizations.nullProfileDesc,
-                  illustration: ProfileEmptyIllustration(),
+                  illustration: const ProfileEmptyIllustration(),
                 )
               : Align(
                   alignment: Alignment.topCenter,
@@ -301,7 +301,7 @@ class ProfileItem extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       )
                     : CommonPopupBox(
-                        key: ValueKey('menu'),
+                        key: const ValueKey('menu'),
                         popup: CommonPopupMenu(
                           items: [
                             PopupMenuItemData(
@@ -374,7 +374,7 @@ class ProfileItem extends StatelessWidget {
                             onPressed: () {
                               open();
                             },
-                            icon: Icon(Icons.more_vert),
+                            icon: const Icon(Icons.more_vert),
                           );
                         },
                       ),
@@ -471,19 +471,19 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
             style: IconButton.styleFrom(
               visualDensity: VisualDensity.comfortable,
               tapTargetSize: MaterialTapTargetSize.padded,
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               iconSize: 20,
             ),
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
           )
         else
           IconButton.filledTonal(
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
             onPressed: _handleSave,
           ),
       ],
       body: Padding(
-        padding: EdgeInsets.only(bottom: 32, top: 12),
+        padding: const EdgeInsets.only(bottom: 32, top: 12),
         child: ReorderableListView.builder(
           buildDefaultDragHandles: false,
           padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -344,7 +344,7 @@ extension ColorSchemesExt on ColorSchemes {
               dynamicSchemeVariant: schemeVariant,
             )
           : ColorScheme.fromSeed(
-              seedColor: Color(defaultPrimaryColor),
+              seedColor: const Color(defaultPrimaryColor),
               brightness: Brightness.dark,
               dynamicSchemeVariant: schemeVariant,
             );
@@ -355,7 +355,7 @@ extension ColorSchemesExt on ColorSchemes {
             dynamicSchemeVariant: schemeVariant,
           )
         : ColorScheme.fromSeed(
-            seedColor: Color(defaultPrimaryColor),
+            seedColor: const Color(defaultPrimaryColor),
             dynamicSchemeVariant: schemeVariant,
           );
   }

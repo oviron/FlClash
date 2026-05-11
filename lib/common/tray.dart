@@ -69,7 +69,7 @@ class Tray {
         tunEnable: trayState.tunEnable,
       );
     }
-    List<MenuItem> menuItems = [];
+    final List<MenuItem> menuItems = [];
     final showMenuItem = MenuItem(
       label: appLocalizations.show,
       onClick: (_) {
@@ -110,7 +110,7 @@ class Tray {
     menuItems.add(MenuItem.separator());
     if (system.isMacOS) {
       for (final group in trayState.groups) {
-        List<MenuItem> subMenuItems = [];
+        final List<MenuItem> subMenuItems = [];
         for (final proxy in group.all) {
           subMenuItems.add(
             MenuItem.checkbox(

@@ -9,7 +9,7 @@ part 'generated/config.g.dart';
 class AppSetting extends _$AppSetting with AutoDisposeNotifierMixin {
   @override
   AppSettingProps build() {
-    return AppSettingProps();
+    return const AppSettingProps();
   }
 }
 
@@ -17,7 +17,7 @@ class AppSetting extends _$AppSetting with AutoDisposeNotifierMixin {
 class WindowSetting extends _$WindowSetting with AutoDisposeNotifierMixin {
   @override
   WindowProps build() {
-    return WindowProps();
+    return const WindowProps();
   }
 
   void hello() {}
@@ -27,7 +27,7 @@ class WindowSetting extends _$WindowSetting with AutoDisposeNotifierMixin {
 class VpnSetting extends _$VpnSetting with AutoDisposeNotifierMixin {
   @override
   VpnProps build() {
-    return VpnProps();
+    return const VpnProps();
   }
 }
 
@@ -35,7 +35,7 @@ class VpnSetting extends _$VpnSetting with AutoDisposeNotifierMixin {
 class NetworkSetting extends _$NetworkSetting with AutoDisposeNotifierMixin {
   @override
   NetworkProps build() {
-    return NetworkProps();
+    return const NetworkProps();
   }
 }
 
@@ -43,7 +43,7 @@ class NetworkSetting extends _$NetworkSetting with AutoDisposeNotifierMixin {
 class ThemeSetting extends _$ThemeSetting with AutoDisposeNotifierMixin {
   @override
   ThemeProps build() {
-    return ThemeProps();
+    return const ThemeProps();
   }
 }
 
@@ -85,7 +85,7 @@ class ProxiesStyleSetting extends _$ProxiesStyleSetting
     with AutoDisposeNotifierMixin {
   @override
   ProxiesStyleProps build() {
-    return ProxiesStyleProps();
+    return const ProxiesStyleProps();
   }
 }
 
@@ -94,7 +94,7 @@ class PatchClashConfig extends _$PatchClashConfig
     with AutoDisposeNotifierMixin {
   @override
   ClashConfig build() {
-    return ClashConfig();
+    return const ClashConfig();
   }
 }
 

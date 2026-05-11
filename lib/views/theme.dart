@@ -39,7 +39,7 @@ class ThemeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseScaffold(
       title: appLocalizations.theme,
-      body: CustomScrollView(
+      body: const CustomScrollView(
         slivers: [
           _ThemeModeItem(),
           SliverToBoxAdapter(child: SizedBox(height: 16)),
@@ -87,7 +87,7 @@ class _ThemeModeItem extends ConsumerWidget {
     final themeMode = ref.watch(
       themeSettingProvider.select((state) => state.themeMode),
     );
-    List<ThemeModeItem> themeModeItems = [
+    final List<ThemeModeItem> themeModeItems = [
       ThemeModeItem(
         iconData: Icons.auto_mode,
         label: appLocalizations.auto,
@@ -217,7 +217,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
 
   Future<void> _handleAdd() async {
     final res = await globalState.showCommonDialog<int>(
-      child: _PaletteDialog(),
+      child: const _PaletteDialog(),
     );
     if (res == null) {
       return;
@@ -320,10 +320,10 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
             if (_removablePrimaryColor == null && !isEquals)
               IconButton.filledTonal(
                 iconSize: 20,
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 visualDensity: VisualDensity.compact,
                 onPressed: _handleReset,
-                icon: Icon(Icons.replay),
+                icon: const Icon(Icons.replay),
               ),
           ], space: 8),
           child: Container(
@@ -374,10 +374,10 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                                 _removablePrimaryColor == color)
                               Container(
                                 color: Colors.white.opacity0,
-                                padding: EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
                                 child: IconButton.filledTonal(
                                   onPressed: _handleDel,
-                                  padding: EdgeInsets.all(12),
+                                  padding: const EdgeInsets.all(12),
                                   iconSize: 30,
                                   icon: Icon(
                                     color: context.colorScheme.primary,
@@ -392,7 +392,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                       Container(
                         width: itemWidth,
                         height: itemWidth,
-                        padding: EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(4),
                         child: IconButton.filledTonal(
                           onPressed: _handleAdd,
                           iconSize: 32,
@@ -423,7 +423,7 @@ class _PrueBlackItem extends ConsumerWidget {
     );
     return SliverToBoxAdapter(
       child: ListItem.switchItem(
-        leading: Icon(Icons.contrast),
+        leading: const Icon(Icons.contrast),
         horizontalTitleGap: 12,
         title: Text(
           appLocalizations.pureBlackMode,
@@ -458,9 +458,9 @@ class _TextScaleFactorItem extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.only(bottom: 8),
             child: ListItem.switchItem(
-              leading: Icon(Icons.text_fields),
+              leading: const Icon(Icons.text_fields),
               horizontalTitleGap: 12,
               title: Text(
                 appLocalizations.textScale,
@@ -481,7 +481,7 @@ class _TextScaleFactorItem extends ConsumerWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
@@ -513,7 +513,7 @@ class _TextScaleFactorItem extends ConsumerWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 4),
+                  padding: const EdgeInsets.only(right: 4),
                   child: Text(process, style: context.textTheme.titleMedium),
                 ),
               ],
@@ -555,13 +555,13 @@ class _PaletteDialogState extends State<_PaletteDialog> {
       ],
       child: Column(
         children: [
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           SizedBox(
             width: 250,
             height: 250,
             child: Palette(controller: _controller),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           ValueListenableBuilder(
             valueListenable: _controller,
             builder: (_, color, _) {

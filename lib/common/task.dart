@@ -187,7 +187,7 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     rawConfig['dns'] = {};
   }
   final isEnableDns = rawConfig['dns']['enable'] == true;
-  final systemDns = 'system://';
+  const systemDns = 'system://';
   if (overrideDns || !isEnableDns) {
     final dns = switch (!isEnableDns) {
       true => realPatchConfig.dns.copyWith(
@@ -385,7 +385,7 @@ Future<MigrationData> _oldToNowTask(
       Script(id: newId, label: label, lastUpdateTime: DateTime.now()),
     );
   }
-  List rawRules = configMap['rules'] as List<dynamic>? ?? [];
+  final List rawRules = configMap['rules'] as List<dynamic>? ?? [];
   final List<Rule> rules = [];
   final List<ProfileRuleLink> links = [];
   for (final rawRule in rawRules) {
@@ -394,7 +394,7 @@ Future<MigrationData> _oldToNowTask(
     rules.add(Rule.fromJson(rawRule));
     links.add(ProfileRuleLink(ruleId: id));
   }
-  List rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
+  final List rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
   final List<Profile> profiles = [];
   for (final rawProfile in rawProfiles) {
     final rawId = rawProfile['id'] as String?;

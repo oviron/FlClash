@@ -91,7 +91,7 @@ class _StartButtonState extends ConsumerState<StartButton>
       data: Theme.of(context).copyWith(
         floatingActionButtonTheme: Theme.of(context).floatingActionButtonTheme
             .copyWith(
-              sizeConstraints: BoxConstraints(minWidth: 56, maxWidth: 200),
+              sizeConstraints: const BoxConstraints(minWidth: 56, maxWidth: 200),
             ),
       ),
       child: AnimatedBuilder(

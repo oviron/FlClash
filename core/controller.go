@@ -15,16 +15,16 @@ import (
 )
 
 const (
-	controllerPortStart = 19999
-	controllerPortEnd   = 20009
-	controllerVerifyDelay = 50 * time.Millisecond
+	controllerPortStart     = 19999
+	controllerPortEnd       = 20009
+	controllerVerifyDelay   = 50 * time.Millisecond
 	controllerVerifyTimeout = 2 * time.Second
 )
 
 var (
-	controllerMu     sync.Mutex
-	controllerPort   int
-	controllerSecret string
+	controllerMu      sync.Mutex
+	controllerPort    int
+	controllerSecret  string
 	controllerStarted bool
 )
 
@@ -48,7 +48,7 @@ func verifyControllerPort(port int, secret string) bool {
 	if err != nil {
 		return false
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	_, _ = io.Copy(io.Discard, resp.Body)
 	return resp.StatusCode == http.StatusOK
 }

@@ -23,11 +23,11 @@ extension NumExt on num {
   }
 
   double get mAp {
-    return this * min((1 + (globalState.theme.textScaleFactor - 1) * 0.5), 1);
+    return this * min(1 + (globalState.theme.textScaleFactor - 1) * 0.5, 1);
   }
 
   TrafficShow get traffic {
-    final units = TrafficUnit.values;
+    const units = TrafficUnit.values;
     var size = toDouble();
     var unitIndex = 0;
     while (size >= 1024 && unitIndex < units.length - 1) {
@@ -41,7 +41,7 @@ extension NumExt on num {
   }
 
   TrafficShow get shortTraffic {
-    final units = TrafficUnit.values;
+    const units = TrafficUnit.values;
     var size = toDouble();
     var unitIndex = 0;
     while (size >= 1024 && unitIndex < units.length - 1) {
