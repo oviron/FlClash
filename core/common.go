@@ -4,24 +4,20 @@ import (
 	b "bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"github.com/metacubex/mihomo/adapter"
 	"github.com/metacubex/mihomo/adapter/inbound"
 	"github.com/metacubex/mihomo/adapter/outboundgroup"
-	"github.com/metacubex/mihomo/adapter/provider"
 	"github.com/metacubex/mihomo/common/batch"
 	"github.com/metacubex/mihomo/component/dialer"
 	"github.com/metacubex/mihomo/component/resolver"
 	"github.com/metacubex/mihomo/config"
-	"github.com/metacubex/mihomo/constant"
+	C "github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/constant/features"
-	cp "github.com/metacubex/mihomo/constant/provider"
 	"github.com/metacubex/mihomo/hub"
 	"github.com/metacubex/mihomo/hub/executor"
 	"github.com/metacubex/mihomo/hub/route"
 	"github.com/metacubex/mihomo/listener"
 	"github.com/metacubex/mihomo/log"
-	rp "github.com/metacubex/mihomo/rules/provider"
 	"github.com/metacubex/mihomo/tunnel"
 	"os"
 	"path/filepath"
@@ -36,70 +32,6 @@ var (
 	runLock       sync.Mutex
 	mBatch, _     = batch.New[bool](context.Background(), batch.WithConcurrencyNum[bool](50))
 )
-
-func getExternalProvidersRaw() map[string]cp.Provider {
-	eps := make(map[string]cp.Provider)
-	for n, p := range tunnel.Providers() {
-		if p.VehicleType() != cp.Compatible {
-			eps[n] = p
-		}
-	}
-	for n, p := range tunnel.RuleProviders() {
-		if p.VehicleType() != cp.Compatible {
-			eps[n] = p
-		}
-	}
-	return eps
-}
-
-func toExternalProvider(p cp.Provider) (*ExternalProvider, error) {
-	switch p.(type) {
-	case *provider.ProxySetProvider:
-		psp := p.(*provider.ProxySetProvider)
-		return &ExternalProvider{
-			Name:             psp.Name(),
-			Type:             psp.Type().String(),
-			VehicleType:      psp.VehicleType().String(),
-			Count:            psp.Count(),
-			UpdateAt:         psp.UpdatedAt(),
-			Path:             psp.Vehicle().Path(),
-			SubscriptionInfo: psp.GetSubscriptionInfo(),
-		}, nil
-	case *rp.RuleSetProvider:
-		rsp := p.(*rp.RuleSetProvider)
-		return &ExternalProvider{
-			Name:        rsp.Name(),
-			Type:        rsp.Type().String(),
-			VehicleType: rsp.VehicleType().String(),
-			Count:       rsp.Count(),
-			UpdateAt:    rsp.UpdatedAt(),
-			Path:        rsp.Vehicle().Path(),
-		}, nil
-	default:
-		return nil, errors.New("not external provider")
-	}
-}
-
-func sideUpdateExternalProvider(p cp.Provider, bytes []byte) error {
-	switch p.(type) {
-	case *provider.ProxySetProvider:
-		psp := p.(*provider.ProxySetProvider)
-		_, _, err := psp.SideUpdate(bytes)
-		if err == nil {
-			return err
-		}
-		return nil
-	case rp.RuleSetProvider:
-		rsp := p.(*rp.RuleSetProvider)
-		_, _, err := rsp.SideUpdate(bytes)
-		if err == nil {
-			return err
-		}
-		return nil
-	default:
-		return errors.New("not external provider")
-	}
-}
 
 func updateListeners() {
 	if !isRunning {
@@ -128,17 +60,26 @@ func updateListeners() {
 	listener.ReCreateShadowSocks(general.ShadowSocksConfig, tunnel.Tunnel)
 	listener.ReCreateVmess(general.VmessConfig, tunnel.Tunnel)
 	listener.ReCreateTuic(general.TuicServer, tunnel.Tunnel)
-	if !features.Android {
+	if !features.CMFA {
 		listener.ReCreateTun(general.Tun, tunnel.Tunnel)
 	}
 }
 
 func stopListeners() {
-	listener.StopListener()
+	listener.Cleanup()
 }
 
 func patchSelectGroup(mapping map[string]string) {
-	for name, proxy := range tunnel.ProxiesWithProviders() {
+	allProxies := make(map[string]C.Proxy)
+	for name, proxy := range tunnel.Proxies() {
+		allProxies[name] = proxy
+	}
+	for _, p := range tunnel.Providers() {
+		for _, proxy := range p.Proxies() {
+			allProxies[proxy.Name()] = proxy
+		}
+	}
+	for name, proxy := range allProxies {
 		outbound, ok := proxy.(*adapter.Proxy)
 		if !ok {
 			continue
@@ -240,8 +181,7 @@ func applyConfig(params *SetupParams) error {
 	runLock.Lock()
 	defer runLock.Unlock()
 	var err error
-	constant.DefaultTestURL = params.TestURL
-	currentConfig, err = executor.ParseWithPath(filepath.Join(constant.Path.HomeDir(), "config.yaml"))
+	currentConfig, err = executor.ParseWithPath(filepath.Join(C.Path.HomeDir(), "config.yaml"))
 	if err != nil {
 		currentConfig, _ = config.ParseRawConfig(config.DefaultRawConfig())
 	}

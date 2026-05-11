@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:fl_clash/clash/clash_api_client.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -12,6 +14,8 @@ class CoreLib extends CoreHandlerInterface {
   static CoreLib? _instance;
 
   Completer<bool> _connectedCompleter = Completer();
+  ClashApiClient? _clashApi;
+  Future<bool>? _clashApiReady;
 
   CoreLib._internal();
 
@@ -33,6 +37,9 @@ class CoreLib extends CoreHandlerInterface {
 
   @override
   destroy() async {
+    await _clashApi?.dispose();
+    _clashApi = null;
+    _clashApiReady = null;
     return true;
   }
 
@@ -42,6 +49,9 @@ class CoreLib extends CoreHandlerInterface {
       return false;
     }
     _connectedCompleter = Completer();
+    await _clashApi?.dispose();
+    _clashApi = null;
+    _clashApiReady = null;
     return service?.shutdown() ?? true;
   }
 
@@ -63,6 +73,170 @@ class CoreLib extends CoreHandlerInterface {
 
   @override
   Completer get completer => _connectedCompleter;
+
+  /// Lazily resolves the mihomo external-controller endpoint via the action
+  /// channel and caches the connected client. Subsequent callers await the
+  /// in-flight connect. On failure callers fall back to action-invoke paths
+  /// where still available (rare — Phase D dropped most polled handlers).
+  Future<ClashApiClient?> _ensureClashApi() async {
+    final ready = _clashApiReady;
+    if (ready != null) {
+      if (await ready) return _clashApi;
+      return null;
+    }
+    final client = ClashApiClient(
+      getEndpoint: () async {
+        final res = await invoke<String>(
+          method: ActionMethod.getControllerEndpoint,
+        );
+        return res ?? '';
+      },
+    );
+    _clashApi = client;
+    final completer = Completer<bool>();
+    _clashApiReady = completer.future;
+    final ok = await client.connect();
+    completer.complete(ok);
+    return ok ? client : null;
+  }
+
+  // ─── REST overrides (Phase D cutover) ────────────────────────────────
+
+  @override
+  Future<ProxiesData> getProxies() async {
+    final api = await _ensureClashApi();
+    if (api == null) return ProxiesData(proxies: {}, all: []);
+    final data = await api.getProxies();
+    if (data == null) return ProxiesData(proxies: {}, all: []);
+    return ProxiesData.fromJson(data);
+  }
+
+  @override
+  Future<String> changeProxy(ChangeProxyParams changeProxyParams) async {
+    final api = await _ensureClashApi();
+    if (api == null) return 'controller unavailable';
+    final ok = await api.setProxy(
+      group: changeProxyParams.groupName,
+      name: changeProxyParams.proxyName,
+    );
+    return ok ? '' : 'set proxy failed';
+  }
+
+  @override
+  Future<String> getTraffic(bool onlyStatisticsProxy) async {
+    final api = await _ensureClashApi();
+    if (api == null) return '';
+    final data = await api.getTraffic();
+    if (data == null) return '';
+    return json.encode({'up': data['up'] ?? 0, 'down': data['down'] ?? 0});
+  }
+
+  @override
+  Future<String> getTotalTraffic(bool onlyStatisticsProxy) async {
+    final api = await _ensureClashApi();
+    if (api == null) return '';
+    final data = await api.getTraffic();
+    if (data == null) return '';
+    return json.encode({
+      'up': data['upTotal'] ?? 0,
+      'down': data['downTotal'] ?? 0,
+    });
+  }
+
+  @override
+  Future<String> getMemory() async {
+    final api = await _ensureClashApi();
+    if (api == null) return '0';
+    final data = await api.getMemory();
+    if (data == null) return '0';
+    return '${data['inuse'] ?? 0}';
+  }
+
+  @override
+  Future<String> getConnections() async {
+    final api = await _ensureClashApi();
+    if (api == null) return '';
+    final data = await api.getConnections();
+    if (data == null) return '';
+    return json.encode(data);
+  }
+
+  @override
+  Future<bool> closeConnection(String id) async {
+    final api = await _ensureClashApi();
+    if (api == null) return false;
+    return api.closeConnection(id);
+  }
+
+  @override
+  Future<bool> closeConnections() async {
+    final api = await _ensureClashApi();
+    if (api == null) return false;
+    return api.closeAllConnections();
+  }
+
+  @override
+  Future<String> asyncTestDelay(String url, String proxyName) async {
+    final api = await _ensureClashApi();
+    if (api == null) {
+      return json.encode(Delay(name: proxyName, value: -1, url: url));
+    }
+    final delay = await api.testDelay(name: proxyName, url: url);
+    return json.encode(Delay(name: proxyName, value: delay, url: url));
+  }
+
+  @override
+  Future<String> getExternalProviders() async {
+    final api = await _ensureClashApi();
+    if (api == null) return '[]';
+    final data = await api.getProviders();
+    if (data == null) return '[]';
+    final providers = data['providers'];
+    if (providers is! Map) return '[]';
+    final filtered = <Map<String, dynamic>>[];
+    providers.forEach((name, raw) {
+      if (raw is! Map) return;
+      final vehicle = raw['vehicleType'] ?? raw['vehicle-type'];
+      if (vehicle == null || vehicle == 'Compatible') return;
+      filtered.add({
+        'name': raw['name'] ?? name,
+        'type': raw['type'] ?? '',
+        'vehicle-type': vehicle,
+        'count': raw['count'] ?? 0,
+        'path': raw['path'] ?? '',
+        'update-at': raw['updatedAt'] ?? raw['updated-at'] ?? '',
+        'subscription-info':
+            raw['subscriptionInfo'] ?? raw['subscription-info'],
+      });
+    });
+    return json.encode(filtered);
+  }
+
+  @override
+  Future<String> getExternalProvider(String externalProviderName) async {
+    final api = await _ensureClashApi();
+    if (api == null) return '';
+    final data = await api.getProvider(externalProviderName);
+    if (data == null) return '';
+    return json.encode({
+      'name': data['name'] ?? externalProviderName,
+      'type': data['type'] ?? '',
+      'vehicle-type': data['vehicleType'] ?? data['vehicle-type'] ?? '',
+      'count': data['count'] ?? 0,
+      'path': data['path'] ?? '',
+      'update-at': data['updatedAt'] ?? data['updated-at'] ?? '',
+      'subscription-info':
+          data['subscriptionInfo'] ?? data['subscription-info'],
+    });
+  }
+
+  @override
+  Future<String> updateExternalProvider(String providerName) async {
+    final api = await _ensureClashApi();
+    if (api == null) return 'controller unavailable';
+    final ok = await api.updateProvider(providerName);
+    return ok ? '' : 'update failed';
+  }
 }
 
 CoreLib? get coreLib => system.isAndroid ? CoreLib() : null;
