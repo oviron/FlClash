@@ -251,6 +251,9 @@ func handleAction(action *Action, result ActionResult) {
 		}
 		handleDelFile(path, result)
 		return
+	case getControllerEndpointMethod:
+		result.success(GetControllerEndpoint())
+		return
 	default:
 		nextHandle(action, result)
 	}

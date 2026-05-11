@@ -242,6 +242,11 @@ func getTraffic(onlyStatisticsProxy bool) *C.char {
 	return C.CString(handleGetTraffic(onlyStatisticsProxy))
 }
 
+//export getControllerEndpoint
+func getControllerEndpoint() *C.char {
+	return C.CString(GetControllerEndpoint())
+}
+
 func sendMessage(message Message) {
 	if eventListener == nil {
 		return
