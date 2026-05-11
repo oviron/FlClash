@@ -169,8 +169,6 @@
   "otherContributors": "Other contributors",
   "autoCloseConnections": "Auto close connections",
   "autoCloseConnectionsDesc": "Auto close connections after change node",
-  "onlyStatisticsProxy": "Only statistics proxy",
-  "onlyStatisticsProxyDesc": "When turned on, only statistics proxy traffic",
   "pureBlackMode": "Pure black mode",
   "keepAliveIntervalDesc": "Tcp keep alive interval",
   "entries": " entries",

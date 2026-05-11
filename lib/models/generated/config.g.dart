@@ -13,7 +13,6 @@ _AppSettingProps _$AppSettingPropsFromJson(
   dashboardWidgets: json['dashboardWidgets'] == null
       ? defaultDashboardWidgets
       : dashboardWidgetsSafeFormJson(json['dashboardWidgets'] as List?),
-  onlyStatisticsProxy: json['onlyStatisticsProxy'] as bool? ?? false,
   autoLaunch: json['autoLaunch'] as bool? ?? false,
   silentLaunch: json['silentLaunch'] as bool? ?? false,
   autoRun: json['autoRun'] as bool? ?? false,
@@ -41,7 +40,6 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'dashboardWidgets': instance.dashboardWidgets
           .map((e) => _$DashboardWidgetEnumMap[e]!)
           .toList(),
-      'onlyStatisticsProxy': instance.onlyStatisticsProxy,
       'autoLaunch': instance.autoLaunch,
       'silentLaunch': instance.silentLaunch,
       'autoRun': instance.autoRun,

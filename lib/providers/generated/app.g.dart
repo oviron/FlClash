@@ -413,7 +413,7 @@ final class TotalTrafficProvider
   }
 }
 
-String _$totalTrafficHash() => r'00c5b34834882c4db0eacf948121ddbe9921728a';
+String _$totalTrafficHash() => r'fc933692cd103acc8bcf02054a399659c08d9054';
 
 abstract class _$TotalTraffic extends $Notifier<Traffic> {
   Traffic build();
@@ -1256,7 +1256,7 @@ final class SystemUiOverlayStyleStateProvider
 }
 
 String _$systemUiOverlayStyleStateHash() =>
-    r'c5ba11d1c6eceef95f80b129e4d2a8ab7ecb7916';
+    r'e933e3b01fca397e084f75fab5f0be22f0a08257';
 
 abstract class _$SystemUiOverlayStyleState
     extends $Notifier<SystemUiOverlayStyle> {
@@ -1822,7 +1822,7 @@ final class NetworkDetectionProvider
   }
 }
 
-String _$networkDetectionHash() => r'501babec2bbf2a38e4fef96cf20c76e9352bc5ee';
+String _$networkDetectionHash() => r'b955cbe70e41060d23b46bbbab1885b4951fa504';
 
 abstract class _$NetworkDetection extends $Notifier<NetworkDetectionState> {
   NetworkDetectionState build();

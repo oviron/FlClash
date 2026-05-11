@@ -34,13 +34,12 @@ import kotlinx.coroutines.launch
 data class ExtendedNotificationParams(
     val title: String,
     val stopText: String,
-    val onlyStatisticsProxy: Boolean,
     val contentText: String,
 )
 
 val NotificationParams.extended: ExtendedNotificationParams
     get() = ExtendedNotificationParams(
-        title, stopText, onlyStatisticsProxy, Core.getSpeedTrafficText(onlyStatisticsProxy)
+        title, stopText, Core.getSpeedTrafficText()
     )
 
 class NotificationModule(private val service: Service) : Module() {

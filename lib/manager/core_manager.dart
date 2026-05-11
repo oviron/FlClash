@@ -81,15 +81,6 @@ class _CoreContainerState extends ConsumerState<CoreManager>
   }
 
   @override
-  Future<void> onDelay(Delay delay) async {
-    super.onDelay(delay);
-    appController.setDelay(delay);
-    debouncer.call(FunctionTag.updateDelay, () async {
-      appController.updateGroupsDebounce();
-    }, duration: const Duration(milliseconds: 5000));
-  }
-
-  @override
   void onLog(Log log) {
     ref.read(logsProvider.notifier).addLog(log);
     if (log.logLevel == LogLevel.error && !_isProbeNoise(log.payload)) {
@@ -106,23 +97,6 @@ class _CoreContainerState extends ConsumerState<CoreManager>
   bool _isProbeNoise(String payload) {
     return payload.contains('generate_204') ||
         payload.contains('failed to get the second response');
-  }
-
-  @override
-  void onRequest(TrackerInfo trackerInfo) async {
-    ref.read(requestsProvider.notifier).addRequest(trackerInfo);
-    super.onRequest(trackerInfo);
-  }
-
-  @override
-  Future<void> onLoaded(String providerName) async {
-    ref
-        .read(providersProvider.notifier)
-        .setProvider(await coreController.getExternalProvider(providerName));
-    debouncer.call(FunctionTag.loadedProvider, () async {
-      appController.updateGroupsDebounce();
-    }, duration: const Duration(milliseconds: 5000));
-    super.onLoaded(providerName);
   }
 
   @override

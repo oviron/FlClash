@@ -28,29 +28,6 @@ class CloseConnectionsItem extends ConsumerWidget {
   }
 }
 
-class UsageItem extends ConsumerWidget {
-  const UsageItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final onlyStatisticsProxy = ref.watch(
-      appSettingProvider.select((state) => state.onlyStatisticsProxy),
-    );
-    return ListItem.switchItem(
-      title: Text(appLocalizations.onlyStatisticsProxy),
-      subtitle: Text(appLocalizations.onlyStatisticsProxyDesc),
-      delegate: SwitchDelegate(
-        value: onlyStatisticsProxy,
-        onChanged: (bool value) async {
-          ref
-              .read(appSettingProvider.notifier)
-              .update((state) => state.copyWith(onlyStatisticsProxy: value));
-        },
-      ),
-    );
-  }
-}
-
 class MinimizeItem extends ConsumerWidget {
   const MinimizeItem({super.key});
 
@@ -254,7 +231,6 @@ class ApplicationSettingView extends StatelessWidget {
       const AnimateTabItem(),
       const OpenLogsItem(),
       const CloseConnectionsItem(),
-      const UsageItem(),
       if (system.isAndroid) const CrashlyticsItem(),
     ];
     return BaseScaffold(

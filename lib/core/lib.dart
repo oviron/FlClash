@@ -131,14 +131,14 @@ class CoreLib extends CoreHandlerInterface {
   }
 
   @override
-  Future<String> getTraffic(bool _) async {
+  Future<String> getTraffic() async {
     final data = await _cachedTraffic();
     if (data == null) return '';
     return json.encode({'up': data['up'] ?? 0, 'down': data['down'] ?? 0});
   }
 
   @override
-  Future<String> getTotalTraffic(bool _) async {
+  Future<String> getTotalTraffic() async {
     final data = await _cachedTraffic();
     if (data == null) return '';
     return json.encode({

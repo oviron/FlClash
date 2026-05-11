@@ -203,6 +203,58 @@ class CoreService extends CoreHandlerInterface {
 
   @override
   Completer<dynamic> get completer => _socketCompleter;
+
+  // Desktop has no REST controller wiring yet; these methods previously
+  // dispatched through the action channel to chen-fork Go handlers that
+  // Phase D removed. Fail fast so the regression is visible instead of
+  // silently returning empty data.
+  Never _desktopUnsupported(String name) =>
+      throw UnimplementedError('$name unavailable on desktop after Phase D');
+
+  @override
+  Future<ProxiesData> getProxies() async => _desktopUnsupported('getProxies');
+
+  @override
+  Future<String> changeProxy(ChangeProxyParams p) async =>
+      _desktopUnsupported('changeProxy');
+
+  @override
+  Future<String> getTraffic() async => _desktopUnsupported('getTraffic');
+
+  @override
+  Future<String> getTotalTraffic() async =>
+      _desktopUnsupported('getTotalTraffic');
+
+  @override
+  Future<String> getMemory() async => _desktopUnsupported('getMemory');
+
+  @override
+  Future<String> getConnections() async =>
+      _desktopUnsupported('getConnections');
+
+  @override
+  Future<bool> closeConnection(String id) async =>
+      _desktopUnsupported('closeConnection');
+
+  @override
+  Future<bool> closeConnections() async =>
+      _desktopUnsupported('closeConnections');
+
+  @override
+  Future<String> asyncTestDelay(String url, String name) async =>
+      _desktopUnsupported('asyncTestDelay');
+
+  @override
+  Future<String> getExternalProviders() async =>
+      _desktopUnsupported('getExternalProviders');
+
+  @override
+  Future<String> getExternalProvider(String name) async =>
+      _desktopUnsupported('getExternalProvider');
+
+  @override
+  Future<String> updateExternalProvider(String name) async =>
+      _desktopUnsupported('updateExternalProvider');
 }
 
 final coreService = system.isDesktop ? CoreService() : null;

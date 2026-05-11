@@ -13,9 +13,9 @@ data class Traffic(
 val Traffic.speedText: String
     get() = "${up.formatBytes}/s↑  ${down.formatBytes}/s↓"
 
-fun Core.getSpeedTrafficText(onlyStatisticsProxy: Boolean): String {
+fun Core.getSpeedTrafficText(): String {
     try {
-        val res = getTraffic(onlyStatisticsProxy)
+        val res = getTraffic()
         val traffic = Gson().fromJson(res, Traffic::class.java)
         return traffic.speedText
     } catch (e: Exception) {

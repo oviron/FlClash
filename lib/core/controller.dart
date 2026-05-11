@@ -211,8 +211,8 @@ class CoreController {
     }
   }
 
-  Future<Traffic> getTraffic(bool onlyStatisticsProxy) async {
-    final trafficString = await _interface.getTraffic(onlyStatisticsProxy);
+  Future<Traffic> getTraffic() async {
+    final trafficString = await _interface.getTraffic();
     if (trafficString.isEmpty) {
       return const Traffic();
     }
@@ -227,10 +227,8 @@ class CoreController {
     return IpInfo(ip: ip, countryCode: countryCode);
   }
 
-  Future<Traffic> getTotalTraffic(bool onlyStatisticsProxy) async {
-    final totalTrafficString = await _interface.getTotalTraffic(
-      onlyStatisticsProxy,
-    );
+  Future<Traffic> getTotalTraffic() async {
+    final totalTrafficString = await _interface.getTotalTraffic();
     if (totalTrafficString.isEmpty) {
       return const Traffic();
     }

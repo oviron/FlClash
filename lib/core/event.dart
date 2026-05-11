@@ -7,12 +7,6 @@ import 'package:flutter/foundation.dart';
 abstract mixin class CoreEventListener {
   void onLog(Log log) {}
 
-  void onDelay(Delay delay) {}
-
-  void onRequest(TrackerInfo connection) {}
-
-  void onLoaded(String providerName) {}
-
   void onCrash(String message) {}
 }
 
@@ -25,15 +19,6 @@ class CoreEventManager {
         switch (event.type) {
           case CoreEventType.log:
             listener.onLog(Log.fromJson(event.data));
-            break;
-          case CoreEventType.delay:
-            listener.onDelay(Delay.fromJson(event.data));
-            break;
-          case CoreEventType.request:
-            listener.onRequest(TrackerInfo.fromJson(event.data));
-            break;
-          case CoreEventType.loaded:
-            listener.onLoaded(event.data);
             break;
           case CoreEventType.crash:
             listener.onCrash(event.data);

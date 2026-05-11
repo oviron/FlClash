@@ -37,7 +37,7 @@ mixin CoreInterface {
 
   Future<String> getExternalProviders();
 
-  Future<String>? getExternalProvider(String externalProviderName);
+  Future<String> getExternalProvider(String externalProviderName);
 
   Future<String> updateGeoData(UpdateGeoDataParams params);
 
@@ -48,9 +48,9 @@ mixin CoreInterface {
 
   Future<String> updateExternalProvider(String providerName);
 
-  FutureOr<String> getTraffic(bool onlyStatisticsProxy);
+  FutureOr<String> getTraffic();
 
-  FutureOr<String> getTotalTraffic(bool onlyStatisticsProxy);
+  FutureOr<String> getTotalTraffic();
 
   FutureOr<String> getCountryCode(String ip);
 
@@ -182,40 +182,6 @@ abstract class CoreHandlerInterface with CoreInterface {
   }
 
   @override
-  Future<ProxiesData> getProxies() async {
-    final data = await _invoke<Map<String, dynamic>>(
-      method: ActionMethod.getProxies,
-    );
-    return data != null
-        ? ProxiesData.fromJson(data)
-        : const ProxiesData(proxies: {}, all: []);
-  }
-
-  @override
-  Future<String> changeProxy(ChangeProxyParams changeProxyParams) async {
-    return await _invoke<String>(
-          method: ActionMethod.changeProxy,
-          data: json.encode(changeProxyParams),
-        ) ??
-        '';
-  }
-
-  @override
-  Future<String> getExternalProviders() async {
-    return await _invoke<String>(method: ActionMethod.getExternalProviders) ??
-        '';
-  }
-
-  @override
-  Future<String> getExternalProvider(String externalProviderName) async {
-    return await _invoke<String>(
-          method: ActionMethod.getExternalProvider,
-          data: externalProviderName,
-        ) ??
-        '';
-  }
-
-  @override
   Future<String> updateGeoData(UpdateGeoDataParams params) async {
     return await _invoke<String>(
           method: ActionMethod.updateGeoData,
@@ -237,54 +203,8 @@ abstract class CoreHandlerInterface with CoreInterface {
   }
 
   @override
-  Future<String> updateExternalProvider(String providerName) async {
-    return await _invoke<String>(
-          method: ActionMethod.updateExternalProvider,
-          data: providerName,
-        ) ??
-        '';
-  }
-
-  @override
-  Future<String> getConnections() async {
-    return await _invoke<String>(method: ActionMethod.getConnections) ?? '';
-  }
-
-  @override
-  Future<bool> closeConnections() async {
-    return await _invoke<bool>(method: ActionMethod.closeConnections) ?? false;
-  }
-
-  @override
   Future<bool> resetConnections() async {
     return await _invoke<bool>(method: ActionMethod.resetConnections) ?? false;
-  }
-
-  @override
-  Future<bool> closeConnection(String id) async {
-    return await _invoke<bool>(
-          method: ActionMethod.closeConnection,
-          data: id,
-        ) ??
-        false;
-  }
-
-  @override
-  Future<String> getTotalTraffic(bool onlyStatisticsProxy) async {
-    return await _invoke<String>(
-          method: ActionMethod.getTotalTraffic,
-          data: onlyStatisticsProxy,
-        ) ??
-        '';
-  }
-
-  @override
-  Future<String> getTraffic(bool onlyStatisticsProxy) async {
-    return await _invoke<String>(
-          method: ActionMethod.getTraffic,
-          data: onlyStatisticsProxy,
-        ) ??
-        '';
   }
 
   @override
@@ -319,31 +239,11 @@ abstract class CoreHandlerInterface with CoreInterface {
   }
 
   @override
-  Future<String> asyncTestDelay(String url, String proxyName) async {
-    final delayParams = {
-      'proxy-name': proxyName,
-      'timeout': httpTimeoutDuration.inMilliseconds,
-      'test-url': url,
-    };
-    return await _invoke<String>(
-          method: ActionMethod.asyncTestDelay,
-          data: json.encode(delayParams),
-          timeout: const Duration(seconds: 6),
-        ) ??
-        json.encode(Delay(name: proxyName, value: -1, url: url));
-  }
-
-  @override
   Future<String> getCountryCode(String ip) async {
     return await _invoke<String>(
           method: ActionMethod.getCountryCode,
           data: ip,
         ) ??
         '';
-  }
-
-  @override
-  Future<String> getMemory() async {
-    return await _invoke<String>(method: ActionMethod.getMemory) ?? '';
   }
 }

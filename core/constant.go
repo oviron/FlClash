@@ -80,22 +80,10 @@ const (
 	shutdownMethod                 Method = "shutdown"
 	validateConfigMethod           Method = "validateConfig"
 	updateConfigMethod             Method = "updateConfig"
-	getProxiesMethod               Method = "getProxies"
-	changeProxyMethod              Method = "changeProxy"
-	getTrafficMethod               Method = "getTraffic"
-	getTotalTrafficMethod          Method = "getTotalTraffic"
 	resetTrafficMethod             Method = "resetTraffic"
-	asyncTestDelayMethod           Method = "asyncTestDelay"
-	getConnectionsMethod           Method = "getConnections"
-	closeConnectionsMethod         Method = "closeConnections"
 	resetConnectionsMethod         Method = "resetConnectionsMethod"
-	closeConnectionMethod          Method = "closeConnection"
-	getExternalProvidersMethod     Method = "getExternalProviders"
-	getExternalProviderMethod      Method = "getExternalProvider"
 	getCountryCodeMethod           Method = "getCountryCode"
-	getMemoryMethod                Method = "getMemory"
 	updateGeoDataMethod            Method = "updateGeoData"
-	updateExternalProviderMethod   Method = "updateExternalProvider"
 	sideLoadExternalProviderMethod Method = "sideLoadExternalProvider"
 	startLogMethod                 Method = "startLog"
 	stopLogMethod                  Method = "stopLog"
@@ -125,10 +113,7 @@ type Message struct {
 }
 
 const (
-	LogMessage     MessageType = "log"
-	DelayMessage   MessageType = "delay"
-	RequestMessage MessageType = "request"
-	LoadedMessage  MessageType = "loaded"
+	LogMessage MessageType = "log"
 )
 
 func (message *Message) Json() (string, error) {

@@ -233,13 +233,13 @@ func setEventListener(listener unsafe.Pointer) {
 }
 
 //export getTotalTraffic
-func getTotalTraffic(onlyStatisticsProxy bool) *C.char {
-	return C.CString(handleGetTotalTraffic(onlyStatisticsProxy))
+func getTotalTraffic() *C.char {
+	return C.CString(handleGetTotalTraffic())
 }
 
 //export getTraffic
-func getTraffic(onlyStatisticsProxy bool) *C.char {
-	return C.CString(handleGetTraffic(onlyStatisticsProxy))
+func getTraffic() *C.char {
+	return C.CString(handleGetTraffic())
 }
 
 //export getControllerEndpoint

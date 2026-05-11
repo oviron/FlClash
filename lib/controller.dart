@@ -1144,13 +1144,10 @@ extension CommonControllerExt on AppController {
   }
 
   Future<void> updateTraffic() async {
-    final onlyStatisticsProxy = _ref.read(
-      appSettingProvider.select((state) => state.onlyStatisticsProxy),
-    );
-    final traffic = await coreController.getTraffic(onlyStatisticsProxy);
+    final traffic = await coreController.getTraffic();
     _ref.read(trafficsProvider.notifier).addTraffic(traffic);
-    _ref.read(totalTrafficProvider.notifier).value = await coreController
-        .getTotalTraffic(onlyStatisticsProxy);
+    _ref.read(totalTrafficProvider.notifier).value =
+        await coreController.getTotalTraffic();
   }
 
   Future<T?> loadingRun<T>(

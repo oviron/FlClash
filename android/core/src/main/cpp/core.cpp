@@ -53,9 +53,8 @@ Java_com_follow_clash_core_Core_setEventListener(JNIEnv *env, jobject thiz, jobj
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_follow_clash_core_Core_getTraffic(JNIEnv *env, jobject thiz,
-                                           const jboolean only_statistics_proxy) {
-    auto traffic = getTraffic(only_statistics_proxy);
+Java_com_follow_clash_core_Core_getTraffic(JNIEnv *env, jobject thiz) {
+    auto traffic = getTraffic();
     const auto result = new_string(traffic);
     release_string(&traffic);
     return result;
@@ -63,9 +62,8 @@ Java_com_follow_clash_core_Core_getTraffic(JNIEnv *env, jobject thiz,
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_follow_clash_core_Core_getTotalTraffic(JNIEnv *env, jobject thiz,
-                                                const jboolean only_statistics_proxy) {
-    auto traffic = getTotalTraffic(only_statistics_proxy);
+Java_com_follow_clash_core_Core_getTotalTraffic(JNIEnv *env, jobject thiz) {
+    auto traffic = getTotalTraffic();
     const auto result = new_string(traffic);
     release_string(&traffic);
     return result;
@@ -196,13 +194,13 @@ Java_com_follow_clash_core_Core_setEventListener(JNIEnv *env, jobject thiz, jobj
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_follow_clash_core_Core_getTraffic(JNIEnv *env, jobject thiz,
-                                           const jboolean only_statistics_proxy) {
+Java_com_follow_clash_core_Core_getTraffic(JNIEnv *env, jobject thiz) {
+    return env->NewStringUTF("");
 }
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_follow_clash_core_Core_getTotalTraffic(JNIEnv *env, jobject thiz,
-                                                const jboolean only_statistics_proxy) {
+Java_com_follow_clash_core_Core_getTotalTraffic(JNIEnv *env, jobject thiz) {
+    return env->NewStringUTF("");
 }
 
 extern "C"

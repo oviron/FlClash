@@ -160,9 +160,6 @@ Map<String, dynamic> _$CoreEventToJson(_CoreEvent instance) =>
 
 const _$CoreEventTypeEnumMap = {
   CoreEventType.log: 'log',
-  CoreEventType.delay: 'delay',
-  CoreEventType.request: 'request',
-  CoreEventType.loaded: 'loaded',
   CoreEventType.crash: 'crash',
 };
 
@@ -266,27 +263,15 @@ const _$ActionMethodEnumMap = {
   ActionMethod.validateConfig: 'validateConfig',
   ActionMethod.updateConfig: 'updateConfig',
   ActionMethod.getConfig: 'getConfig',
-  ActionMethod.getProxies: 'getProxies',
-  ActionMethod.changeProxy: 'changeProxy',
-  ActionMethod.getTraffic: 'getTraffic',
-  ActionMethod.getTotalTraffic: 'getTotalTraffic',
   ActionMethod.resetTraffic: 'resetTraffic',
-  ActionMethod.asyncTestDelay: 'asyncTestDelay',
-  ActionMethod.getConnections: 'getConnections',
-  ActionMethod.closeConnections: 'closeConnections',
   ActionMethod.resetConnections: 'resetConnections',
-  ActionMethod.closeConnection: 'closeConnection',
-  ActionMethod.getExternalProviders: 'getExternalProviders',
-  ActionMethod.getExternalProvider: 'getExternalProvider',
   ActionMethod.updateGeoData: 'updateGeoData',
-  ActionMethod.updateExternalProvider: 'updateExternalProvider',
   ActionMethod.sideLoadExternalProvider: 'sideLoadExternalProvider',
   ActionMethod.startLog: 'startLog',
   ActionMethod.stopLog: 'stopLog',
   ActionMethod.startListener: 'startListener',
   ActionMethod.stopListener: 'stopListener',
   ActionMethod.getCountryCode: 'getCountryCode',
-  ActionMethod.getMemory: 'getMemory',
   ActionMethod.crash: 'crash',
   ActionMethod.setupConfig: 'setupConfig',
   ActionMethod.deleteFile: 'deleteFile',
@@ -297,6 +282,7 @@ const _$ActionMethodEnumMap = {
   ActionMethod.updateDns: 'updateDns',
   ActionMethod.getAndroidVpnOptions: 'getAndroidVpnOptions',
   ActionMethod.getCurrentProfileName: 'getCurrentProfileName',
+  ActionMethod.getControllerEndpoint: 'getControllerEndpoint',
 };
 
 _ProxiesData _$ProxiesDataFromJson(Map<String, dynamic> json) => _ProxiesData(
