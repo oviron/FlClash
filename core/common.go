@@ -178,11 +178,17 @@ func applyConfig(params *SetupParams) error {
 	runtime.GC()
 	runLock.Lock()
 	defer runLock.Unlock()
+	if err := InitController(); err != nil {
+		log.Errorln("[Controller] %v", err)
+	}
 	var err error
 	currentConfig, err = executor.ParseWithPath(filepath.Join(C.Path.HomeDir(), "config.yaml"))
 	if err != nil {
 		currentConfig, _ = config.ParseRawConfig(config.DefaultRawConfig())
 	}
+	currentConfig.Controller.ExternalController = ControllerAddr()
+	currentConfig.Controller.Secret = ControllerSecret()
+	route.SetEmbedMode(true)
 	hub.ApplyConfig(currentConfig)
 	patchSelectGroup(params.SelectedMap)
 	updateListeners()

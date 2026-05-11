@@ -4,108 +4,68 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"io"
 	"net"
-	"net/http"
 	"sync"
-	"time"
-
-	"github.com/metacubex/mihomo/hub/route"
-	"github.com/metacubex/mihomo/log"
 )
 
 const (
-	controllerPortStart      = 19999
-	controllerPortEnd        = 20009
-	controllerVerifyDeadline = 3 * time.Second
-	controllerVerifyPoll     = 100 * time.Millisecond
-	controllerVerifyTimeout  = 2 * time.Second
+	controllerPortStart = 19999
+	controllerPortEnd   = 20009
 )
 
 var (
-	controllerMu      sync.Mutex
-	controllerPort    int
-	controllerSecret  string
-	controllerStarted bool
+	controllerMu     sync.Mutex
+	controllerPort   int
+	controllerSecret string
 )
 
-func generateControllerSecret() (string, error) {
-	b := make([]byte, 32)
-	if _, err := rand.Read(b); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(b), nil
-}
-
-func verifyControllerPort(port int, secret string) bool {
-	url := fmt.Sprintf("http://127.0.0.1:%d/version", port)
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return false
-	}
-	req.Header.Set("Authorization", "Bearer "+secret)
-	client := &http.Client{Timeout: controllerVerifyTimeout}
-	resp, err := client.Do(req)
-	if err != nil {
-		return false
-	}
-	defer func() { _ = resp.Body.Close() }()
-	_, _ = io.Copy(io.Discard, resp.Body)
-	return resp.StatusCode == http.StatusOK
-}
-
-func StartController() error {
+// InitController picks a free 127.0.0.1 port from the range and generates the
+// bearer secret once per process. The actual HTTP listener is brought up by
+// mihomo inside hub.ApplyConfig via cfg.Controller.ExternalController.
+func InitController() error {
 	controllerMu.Lock()
 	defer controllerMu.Unlock()
-	if controllerStarted {
+	if controllerPort != 0 {
 		return nil
 	}
-
 	if controllerSecret == "" {
-		secret, err := generateControllerSecret()
-		if err != nil {
-			return fmt.Errorf("generate controller secret: %w", err)
+		b := make([]byte, 32)
+		if _, err := rand.Read(b); err != nil {
+			return err
 		}
-		controllerSecret = secret
+		controllerSecret = hex.EncodeToString(b)
 	}
-
-	route.SetEmbedMode(true)
-
 	for port := controllerPortStart; port <= controllerPortEnd; port++ {
-		addr := fmt.Sprintf("127.0.0.1:%d", port)
-
-		l, err := net.Listen("tcp", addr)
+		l, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", port))
 		if err != nil {
-			log.Warnln("[Controller] port %d busy: %v", port, err)
 			continue
 		}
 		_ = l.Close()
-
-		route.ReCreateServer(&route.Config{
-			Addr:   addr,
-			Secret: controllerSecret,
-		})
-
-		deadline := time.Now().Add(controllerVerifyDeadline)
-		for time.Now().Before(deadline) {
-			if verifyControllerPort(port, controllerSecret) {
-				controllerPort = port
-				controllerStarted = true
-				log.Infoln("[Controller] started at 127.0.0.1:%d", port)
-				return nil
-			}
-			time.Sleep(controllerVerifyPoll)
-		}
-		route.ReCreateServer(&route.Config{Addr: "", Secret: ""})
+		controllerPort = port
+		return nil
 	}
+	return fmt.Errorf("controller: no free port in %d-%d", controllerPortStart, controllerPortEnd)
+}
 
-	return fmt.Errorf("controller: no free port in range %d-%d", controllerPortStart, controllerPortEnd)
+func ControllerAddr() string {
+	controllerMu.Lock()
+	defer controllerMu.Unlock()
+	if controllerPort == 0 {
+		return ""
+	}
+	return fmt.Sprintf("127.0.0.1:%d", controllerPort)
+}
+
+func ControllerSecret() string {
+	controllerMu.Lock()
+	defer controllerMu.Unlock()
+	return controllerSecret
 }
 
 func GetControllerEndpoint() string {
 	controllerMu.Lock()
 	defer controllerMu.Unlock()
-	if !controllerStarted || controllerPort == 0 {
+	if controllerPort == 0 || controllerSecret == "" {
 		return ""
 	}
 	return fmt.Sprintf("http://127.0.0.1:%d?token=%s", controllerPort, controllerSecret)

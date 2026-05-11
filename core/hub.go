@@ -280,8 +280,5 @@ func handleSetupConfig(bytes []byte) string {
 	if err != nil {
 		return err.Error()
 	}
-	if cErr := StartController(); cErr != nil {
-		log.Errorln("[Controller] start failed: %v", cErr)
-	}
 	return ""
 }
