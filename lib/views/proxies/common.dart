@@ -50,7 +50,7 @@ Future<void> proxyDelayTest(Proxy proxy, [String? testUrl]) async {
 Future<void> delayTest(List<Proxy> proxies, [String? testUrl]) async {
   final proxyNames = proxies.map((proxy) => proxy.name).toSet().toList();
 
-  final delayProxies = proxyNames.map<Future>((proxyName) async {
+  final delayProxies = proxyNames.map<Future<void>>((proxyName) async {
     final groups = appController.groups;
     final selectedMap = appController.currentProfile?.selectedMap ?? {};
     final state = computeRealSelectedProxyState(

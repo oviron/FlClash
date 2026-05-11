@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -35,7 +36,7 @@ class _HotKeyManagerState extends ConsumerState<HotKeyManager> {
       case HotAction.start:
         appController.updateStart();
       case HotAction.view:
-        appController.updateVisible();
+        unawaited(appController.updateVisible());
       case HotAction.proxy:
         appController.updateSystemProxy();
       case HotAction.tun:
@@ -51,7 +52,7 @@ class _HotKeyManagerState extends ConsumerState<HotKeyManager> {
         .where((hotKeyAction) {
           return hotKeyAction.key != null && hotKeyAction.modifiers.isNotEmpty;
         })
-        .map<Future>((hotKeyAction) async {
+        .map<Future<void>>((hotKeyAction) async {
           final modifiers = hotKeyAction.modifiers
               .map((item) => item.toHotKeyModifier())
               .toList();

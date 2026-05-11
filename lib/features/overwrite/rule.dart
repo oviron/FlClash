@@ -101,7 +101,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
   final _contentController = TextEditingController();
   bool _noResolve = false;
   bool _src = false;
-  List<DropdownMenuEntry> _targetItems = [];
+  List<DropdownMenuEntry<String>> _targetItems = [];
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -110,7 +110,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
     super.initState();
   }
 
-  List<DropdownMenuEntry> _buildTargetItems(RuleAction action) {
+  List<DropdownMenuEntry<String>> _buildTargetItems(RuleAction action) {
     return [
       ...RuleTarget.values
           .where(
@@ -212,12 +212,12 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
                       final currentTarget =
                           _ruleTargetController.text.toUpperCase();
                       final hasCurrent = _targetItems.any(
-                        (i) => (i.value as String).toUpperCase() ==
+                        (i) => i.value.toUpperCase() ==
                             currentTarget,
                       );
                       if (!hasCurrent && _targetItems.isNotEmpty) {
                         _ruleTargetController.text =
-                            _targetItems.first.value as String;
+                            _targetItems.first.value;
                       }
                       setState(() {});
                     },

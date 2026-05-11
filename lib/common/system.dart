@@ -217,9 +217,7 @@ class Windows {
         'taskkill',
         '/F',
         '/IM',
-        '$appHelperService.exe'
-            ' & '
-            'sc',
+        '$appHelperService.exe & sc',
         'delete',
         appHelperService,
         '&',

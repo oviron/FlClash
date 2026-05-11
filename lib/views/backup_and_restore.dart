@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/dav_client.dart';
@@ -40,10 +41,10 @@ class BackupAndRestore extends ConsumerWidget {
       title: appLocalizations.backup,
     );
     if (res != true) return;
-    globalState.showMessage(
+    unawaited(globalState.showMessage(
       title: appLocalizations.backup,
       message: TextSpan(text: appLocalizations.backupSuccess),
-    );
+    ));
   }
 
   Future<void> _restoreOnWebDAV(
@@ -61,10 +62,10 @@ class BackupAndRestore extends ConsumerWidget {
       title: appLocalizations.restore,
     );
     if (res != true) return;
-    globalState.showMessage(
+    unawaited(globalState.showMessage(
       title: appLocalizations.restore,
       message: TextSpan(text: appLocalizations.restoreSuccess),
-    );
+    ));
   }
 
   Future<void> _handleRestoreOnWebDAV(
@@ -75,7 +76,7 @@ class BackupAndRestore extends ConsumerWidget {
       child: const RestoreOptionsDialog(),
     );
     if (restoreOption == null || !context.mounted) return;
-    _restoreOnWebDAV(context, client, restoreOption);
+    unawaited(_restoreOnWebDAV(context, client, restoreOption));
   }
 
   Future<void> _backupOnLocal(BuildContext context) async {
@@ -96,10 +97,10 @@ class BackupAndRestore extends ConsumerWidget {
       tag: LoadingTag.backup_restore,
     );
     if (res != true) return;
-    globalState.showMessage(
+    unawaited(globalState.showMessage(
       title: appLocalizations.backup,
       message: TextSpan(text: appLocalizations.backupSuccess),
-    );
+    ));
   }
 
   Future<void> _restoreOnLocal(RestoreOption option) async {
@@ -116,10 +117,10 @@ class BackupAndRestore extends ConsumerWidget {
       title: appLocalizations.restore,
     );
     if (res != true) return;
-    globalState.showMessage(
+    unawaited(globalState.showMessage(
       title: appLocalizations.restore,
       message: TextSpan(text: appLocalizations.restoreSuccess),
-    );
+    ));
   }
 
   Future<void> _handleRestoreOnLocal(BuildContext context) async {
@@ -127,7 +128,7 @@ class BackupAndRestore extends ConsumerWidget {
       child: const RestoreOptionsDialog(),
     );
     if (option == null || !context.mounted) return;
-    _restoreOnLocal(option);
+    unawaited(_restoreOnLocal(option));
   }
 
   void _handleChange(String? value, WidgetRef ref) {

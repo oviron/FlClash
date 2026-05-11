@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:fl_clash/common/app_localizations.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/core/controller.dart';
@@ -29,8 +30,8 @@ class _TileContainerState extends ConsumerState<TileManager> with TileListener {
     if (isStart && coreController.isCompleted) {
       return;
     }
-    appController.updateStatus(true);
-    app?.tip(appLocalizations.startVpn);
+    unawaited(appController.updateStatus(true));
+    unawaited(app?.tip(appLocalizations.startVpn));
     super.onStart();
   }
 
@@ -39,8 +40,8 @@ class _TileContainerState extends ConsumerState<TileManager> with TileListener {
     if (!isStart) {
       return;
     }
-    appController.updateStatus(false);
-    app?.tip(appLocalizations.stopVpn);
+    unawaited(appController.updateStatus(false));
+    unawaited(app?.tip(appLocalizations.stopVpn));
     super.onStop();
   }
 

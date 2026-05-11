@@ -63,7 +63,7 @@ class ServiceDelegate<T>(
                     withContext(Dispatchers.Default) {
                         block(it)
                     }
-                } ?: throw Exception(state.second)
+                } ?: throw IllegalStateException(state.second)
             }
         }
     }

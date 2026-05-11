@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
@@ -361,7 +362,7 @@ Future<MigrationData> _oldToNowTask(
   configMap['appSettingProps'] = appSettingProps;
   configMap['proxiesStyleProps'] = configMap['proxiesStyle'];
   configMap['proxiesStyleProps'] = configMap['proxiesStyle'];
-  List rawScripts = configMap['scripts'] as List<dynamic>? ?? [];
+  List<dynamic> rawScripts = configMap['scripts'] as List<dynamic>? ?? [];
   if (rawScripts.isEmpty) {
     final scriptPropsJson = configMap['scriptProps'] as Map<String, dynamic>?;
     if (scriptPropsJson != null) {
@@ -385,7 +386,7 @@ Future<MigrationData> _oldToNowTask(
       Script(id: newId, label: label, lastUpdateTime: DateTime.now()),
     );
   }
-  final List rawRules = configMap['rules'] as List<dynamic>? ?? [];
+  final List<dynamic> rawRules = configMap['rules'] as List<dynamic>? ?? [];
   final List<Rule> rules = [];
   final List<ProfileRuleLink> links = [];
   for (final rawRule in rawRules) {
@@ -394,7 +395,7 @@ Future<MigrationData> _oldToNowTask(
     rules.add(Rule.fromJson(rawRule));
     links.add(ProfileRuleLink(ruleId: id));
   }
-  final List rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
+  final List<dynamic> rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
   final List<Profile> profiles = [];
   for (final rawProfile in rawProfiles) {
     final rawId = rawProfile['id'] as String?;
@@ -517,7 +518,7 @@ Future<String> _backupTask<T>(
       },
     );
   }
-  encoder.close();
+  unawaited(encoder.close());
   await tempConfigFile.safeDelete();
   await tempDBFile.safeDelete();
   return tempZipFilePath;
@@ -564,13 +565,12 @@ Future<MigrationData> _restoreTask(RootIsolateToken token) async {
       json.decode(await restoreConfigFile.readAsString())
           as Map<String, Object?>?;
   final version = restoreConfigMap?['version'] ?? 0;
-  MigrationData migrationData = MigrationData(configMap: restoreConfigMap);
   if (version == 0 && restoreConfigMap != null) {
-    migrationData = await _oldToNowTask(
+    return _oldToNowTask(
       VM3(restoreConfigMap, restoreDirPath, homeDirPath),
     );
-    return migrationData;
   }
+  MigrationData migrationData = MigrationData(configMap: restoreConfigMap);
   final backupDatabaseFile = File(join(restoreDirPath, backupDatabaseName));
   if (!await backupDatabaseFile.exists()) {
     return migrationData;

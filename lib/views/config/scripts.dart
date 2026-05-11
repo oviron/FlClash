@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -38,7 +39,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
     }
     ref.read(scriptsProvider.notifier).del(id);
     ref.read(selectedItemProvider(_key).notifier).value = null;
-    _clearEffect(id);
+    unawaited(_clearEffect(id));
   }
 
   Future<void> _clearEffect(int id) async {
@@ -124,11 +125,11 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
           .read(scriptsProvider.notifier)
           .isExits(newScript.label);
       if (isExits) {
-        globalState.showMessage(
+        unawaited(globalState.showMessage(
           message: TextSpan(
             text: appLocalizations.existsTip(appLocalizations.name),
           ),
-        );
+        ));
         return;
       }
     }
@@ -152,7 +153,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
       message: TextSpan(text: appLocalizations.saveChanges),
     );
     if (res == true && mounted) {
-      _handleEditorSave(context, title, content, script: script);
+      unawaited(_handleEditorSave(context, title, content, script: script));
     } else {
       return true;
     }
@@ -166,7 +167,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
     if (!mounted) {
       return;
     }
-    BaseNavigator.push(
+    unawaited(BaseNavigator.push(
       context,
       EditorPage(
         titleEditable: true,
@@ -181,7 +182,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
         languages: const [Language.javaScript],
         content: raw,
       ),
-    );
+    ));
   }
 
   @override

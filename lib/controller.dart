@@ -47,13 +47,13 @@ extension InitControllerExt on AppController {
         logLevel: LogLevel.warning,
       );
     };
-    updateTray();
-    autoUpdateProfiles();
-    autoLaunch.updateStatus(_ref.read(appSettingProvider).autoLaunch);
+    unawaited(updateTray());
+    unawaited(autoUpdateProfiles());
+    unawaited(autoLaunch.updateStatus(_ref.read(appSettingProvider).autoLaunch));
     if (!_ref.read(appSettingProvider).silentLaunch) {
-      window?.show();
+      unawaited(window?.show());
     } else {
-      window?.hide();
+      unawaited(window?.hide());
     }
     await _handleFailedPreference();
     await _handlerDisclaimer();
@@ -255,7 +255,7 @@ extension StateControllerExt on AppController {
 extension ProfilesControllerExt on AppController {
   Future<void> deleteProfile(int id) async {
     _ref.read(profilesProvider.notifier).del(id);
-    clearEffect(id);
+    unawaited(clearEffect(id));
     final currentProfileId = _ref.read(currentProfileIdProvider);
     if (currentProfileId == id) {
       final profiles = _ref.read(profilesProvider);
@@ -264,7 +264,7 @@ extension ProfilesControllerExt on AppController {
         _ref.read(currentProfileIdProvider.notifier).value = updateId;
       } else {
         _ref.read(currentProfileIdProvider.notifier).value = null;
-        updateStatus(false);
+        unawaited(updateStatus(false));
       }
     }
   }
@@ -404,7 +404,7 @@ extension ProfilesControllerExt on AppController {
   Future<void> addProfileFormQrCode() async {
     final url = await safeRun(picker.pickerConfigQRCode);
     if (url == null) return;
-    addProfileFormURL(url);
+    unawaited(addProfileFormURL(url));
   }
 
   void reorder(List<Profile> profiles) {
@@ -435,9 +435,7 @@ extension LogsControllerExt on AppController {
     final tempFilePath = await appPath.tempFilePath;
     final file = File(tempFilePath);
     await file.safeWriteAsString(logString);
-    bool res = false;
-    res = await picker.saveFileWithPath(utils.logFile, tempFilePath) != null;
-    return res;
+    return await picker.saveFileWithPath(utils.logFile, tempFilePath) != null;
   }
 }
 
@@ -745,8 +743,8 @@ extension SetupControllerExt on AppController {
     return res;
   }
 
-  Future<Map> getProfileWithId(int profileId) async {
-    var res = {};
+  Future<Map<String, dynamic>> getProfileWithId(int profileId) async {
+    var res = <String, dynamic>{};
     try {
       final setupState = await _ref.read(setupStateProvider(profileId).future);
       final patchClashConfig = _ref.read(patchClashConfigProvider);
@@ -779,7 +777,7 @@ extension SetupControllerExt on AppController {
     globalState.lastSetupState = setupState;
     if (system.isAndroid) {
       globalState.lastVpnState = _ref.read(vpnStateProvider);
-      preferences.saveShareState(this.sharedState);
+      unawaited(preferences.saveShareState(this.sharedState));
     }
     final config = await getProfile(
       setupState: setupState,
@@ -899,7 +897,7 @@ extension SystemControllerExt on AppController {
       await coreController.destroy();
       commonPrint.log('exit');
     } finally {
-      system.exit();
+      unawaited(system.exit());
     }
   }
 
@@ -920,9 +918,9 @@ extension SystemControllerExt on AppController {
   Future<void> updateVisible() async {
     final visible = await window?.isVisible;
     if (visible != null && !visible) {
-      window?.show();
+      unawaited(window?.show());
     } else {
-      window?.hide();
+      unawaited(window?.hide());
     }
   }
 
@@ -964,7 +962,7 @@ extension SystemControllerExt on AppController {
       if (res != true) {
         return;
       }
-      addProfileFormURL(url);
+      unawaited(addProfileFormURL(url));
     });
   }
 
@@ -987,12 +985,12 @@ extension SystemControllerExt on AppController {
   }
 
   Future<void> updateTray() async {
-    tray?.update(
+    unawaited(tray?.update(
       trayState: _ref.read(trayStateProvider),
       traffic: _ref.read(
         trafficsProvider.select((state) => state.list.safeLast(const Traffic())),
       ),
-    );
+    ));
   }
 
   Future<void> updateLocalIp() async {
@@ -1120,7 +1118,7 @@ extension StoreControllerExt on AppController {
     });
   }
 
-  Future handleClear() async {
+  Future<void> handleClear() async {
     await preferences.clearPreferences();
     commonPrint.log('clear preferences');
     await database.close();
@@ -1130,7 +1128,7 @@ extension StoreControllerExt on AppController {
       await coreController.deleteFile(file.path);
     }
     await preferences.clearPreferences();
-    handleExit(false);
+    unawaited(handleExit(false));
   }
 }
 
@@ -1228,10 +1226,10 @@ extension CommonControllerExt on AppController {
       if (silence) {
         globalState.showNotifier(e.toString());
       } else {
-        globalState.showMessage(
+        unawaited(globalState.showMessage(
           title: title ?? appLocalizations.tip,
           message: TextSpan(text: e.toString()),
-        );
+        ));
       }
       return null;
     } finally {

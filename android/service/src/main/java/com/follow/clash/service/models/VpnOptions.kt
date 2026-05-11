@@ -47,37 +47,29 @@ fun VpnOptions.getIpv6RouteAddress(): List<CIDR> {
 
 fun String.isIpv4(): Boolean {
     val parts = split("/")
-    if (parts.size != 2) {
-        throw IllegalArgumentException("Invalid CIDR format")
-    }
+    require(parts.size == 2) { "Invalid CIDR format" }
     val address = InetAddress.getByName(parts[0])
     return address.address.size == 4
 }
 
 fun String.isIpv6(): Boolean {
     val parts = split("/")
-    if (parts.size != 2) {
-        throw IllegalArgumentException("Invalid CIDR format")
-    }
+    require(parts.size == 2) { "Invalid CIDR format" }
     val address = InetAddress.getByName(parts[0])
     return address.address.size == 16
 }
 
 fun String.toCIDR(): CIDR {
     val parts = split("/")
-    if (parts.size != 2) {
-        throw IllegalArgumentException("Invalid CIDR format")
-    }
+    require(parts.size == 2) { "Invalid CIDR format" }
     val ipAddress = parts[0]
-    val prefixLength =
-        parts[1].toIntOrNull() ?: throw IllegalArgumentException("Invalid prefix length")
+    val prefixLength = parts[1].toIntOrNull()
+    require(prefixLength != null) { "Invalid prefix length" }
 
     val address = InetAddress.getByName(ipAddress)
 
     val maxPrefix = if (address.address.size == 4) 32 else 128
-    if (prefixLength < 0 || prefixLength > maxPrefix) {
-        throw IllegalArgumentException("Invalid prefix length for IP version")
-    }
+    require(prefixLength in 0..maxPrefix) { "Invalid prefix length for IP version" }
 
     return CIDR(address, prefixLength)
 }

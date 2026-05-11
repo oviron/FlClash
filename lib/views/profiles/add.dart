@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/pages/scan.dart';
@@ -11,16 +12,16 @@ class AddProfileView extends StatelessWidget {
   const AddProfileView({super.key, required this.context});
 
   Future<void> _handleAddProfileFormFile() async {
-    appController.addProfileFormFile();
+    unawaited(appController.addProfileFormFile());
   }
 
   Future<void> _handleAddProfileFormURL(String url) async {
-    appController.addProfileFormURL(url);
+    unawaited(appController.addProfileFormURL(url));
   }
 
   Future<void> _toScan() async {
     if (system.isDesktop) {
-      appController.addProfileFormQrCode();
+      unawaited(appController.addProfileFormQrCode());
       return;
     }
     final url = await BaseNavigator.push(context, const ScanPage());
@@ -50,7 +51,7 @@ class AddProfileView extends StatelessWidget {
       ),
     );
     if (url != null) {
-      _handleAddProfileFormURL(url);
+      unawaited(_handleAddProfileFormURL(url));
     }
   }
 

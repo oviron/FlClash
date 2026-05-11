@@ -151,7 +151,7 @@ abstract class Sniffer with _$Sniffer {
       _$SnifferFromJson(json);
 }
 
-List<String> _formJsonPorts(List? ports) {
+List<String> _formJsonPorts(List<dynamic>? ports) {
   return ports?.map((item) => item.toString()).toList() ?? [];
 }
 

@@ -139,7 +139,7 @@ class ListItem<T> extends StatelessWidget {
     this.leading,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
     this.trailing,
-    required OpenDelegate this.delegate,
+    required OpenDelegate<dynamic> this.delegate,
     this.horizontalTitleGap,
     this.dense,
     this.titleTextStyle,

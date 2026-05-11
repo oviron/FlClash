@@ -40,7 +40,7 @@ class _MemoryInfoState extends State<MemoryInfo> {
         _memoryStateNotifier.value = rss;
       }
       timer = Timer(const Duration(seconds: 2), () async {
-        _updateMemory();
+        unawaited(_updateMemory());
       });
     });
   }

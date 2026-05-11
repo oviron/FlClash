@@ -25,7 +25,7 @@ import 'database/database.dart';
 import 'l10n/l10n.dart';
 import 'models/models.dart';
 
-typedef UpdateTasks = List<FutureOr Function()>;
+typedef UpdateTasks = List<FutureOr<void> Function()>;
 
 class GlobalState {
   static GlobalState? _instance;
@@ -126,7 +126,7 @@ class GlobalState {
     }
     await executorUpdateTask();
     timer = Timer(const Duration(seconds: 1), () async {
-      startUpdateTasks();
+      unawaited(startUpdateTasks());
     });
   }
 
@@ -147,14 +147,14 @@ class GlobalState {
     startTime ??= DateTime.now();
     await coreController.startListener();
     await service?.start();
-    startUpdateTasks(tasks);
+    unawaited(startUpdateTasks(tasks));
   }
 
-  Future updateStartTime() async {
+  Future<void> updateStartTime() async {
     startTime = await service?.getRunTime();
   }
 
-  Future handleStop() async {
+  Future<void> handleStop() async {
     startTime = null;
     await coreController.stopListener();
     await service?.stop();
@@ -284,7 +284,7 @@ class GlobalState {
     if (res != true) {
       return;
     }
-    launchUrl(Uri.parse(url));
+    unawaited(launchUrl(Uri.parse(url)));
   }
 
   Future<Map<String, dynamic>> handleEvaluate(

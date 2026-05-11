@@ -72,7 +72,7 @@ class CoreLib extends CoreHandlerInterface {
   }
 
   @override
-  Completer get completer => _connectedCompleter;
+  Completer<dynamic> get completer => _connectedCompleter;
 
   /// Lazily resolves the mihomo external-controller endpoint via the action
   /// channel and caches the connected client. Subsequent callers await the

@@ -187,7 +187,7 @@ class _WindowHeaderState extends State<WindowHeader> {
       children: [
         IconButton(
           onPressed: () async {
-            _updatePin();
+            unawaited(_updatePin());
           },
           icon: ValueListenableBuilder(
             valueListenable: isPinNotifier,
@@ -206,7 +206,7 @@ class _WindowHeaderState extends State<WindowHeader> {
         ),
         IconButton(
           onPressed: () async {
-            _updateMaximized();
+            unawaited(_updateMaximized());
           },
           icon: ValueListenableBuilder(
             valueListenable: isMaximizedNotifier,

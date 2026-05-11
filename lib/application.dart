@@ -57,7 +57,7 @@ class ApplicationState extends ConsumerState<Application> {
       }
       _autoUpdateProfilesTask();
       appController.initLink();
-      app?.initShortcuts();
+      unawaited(app?.initShortcuts());
     });
   }
 
@@ -87,7 +87,7 @@ class ApplicationState extends ConsumerState<Application> {
             child: ConnectivityManager(
               onConnectivityChanged: (results) async {
                 commonPrint.log('connectivityChanged ${results.toString()}');
-                appController.updateLocalIp();
+                unawaited(appController.updateLocalIp());
                 final hasVpn = results.contains(ConnectivityResult.vpn);
                 if (_preHasVpn == hasVpn) {
                   appController.addCheckIp();

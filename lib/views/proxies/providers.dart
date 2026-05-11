@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
@@ -27,7 +28,7 @@ class _ProvidersViewState extends ConsumerState<ProvidersView> {
   Future<void> _updateProviders() async {
     final providers = ref.read(providersProvider);
     final List<UpdatingMessage> messages = [];
-    final updateProviders = providers.map<Future>((provider) async {
+    final updateProviders = providers.map<Future<void>>((provider) async {
       final message = await appController.updateProvider(provider);
       if (message.isNotEmpty) {
         messages.add(UpdatingMessage(label: provider.name, message: message));
@@ -36,7 +37,7 @@ class _ProvidersViewState extends ConsumerState<ProvidersView> {
     await Future.wait(updateProviders);
     appController.updateGroupsDebounce();
     if (messages.isNotEmpty) {
-      globalState.showAllUpdatingMessagesDialog(messages);
+      unawaited(globalState.showAllUpdatingMessagesDialog(messages));
     }
   }
 

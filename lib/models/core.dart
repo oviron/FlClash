@@ -202,7 +202,7 @@ abstract class ActionResult with _$ActionResult {
 }
 
 extension ActionResultExt on ActionResult {
-  Result get toResult {
+  Result<dynamic> get toResult {
     if (code == ResultType.success) {
       return Result.success(data);
     } else {

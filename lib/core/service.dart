@@ -18,7 +18,7 @@ class CoreService extends CoreHandlerInterface {
 
   Completer<bool> _shutdownCompleter = Completer();
 
-  final Map<String, Completer> _callbackCompleterMap = {};
+  final Map<String, Completer<dynamic>> _callbackCompleterMap = {};
 
   Process? _process;
 
@@ -77,7 +77,7 @@ class CoreService extends CoreHandlerInterface {
         .transform(const LineSplitter())
         .listen((data) async {
           final dataJson = await data.trim().commonToJSON<dynamic>();
-          handleResult(ActionResult.fromJson(dataJson));
+          unawaited(handleResult(ActionResult.fromJson(dataJson)));
         })
         .onDone(() {
           _handleInvokeCrashEvent();
@@ -128,6 +128,7 @@ class CoreService extends CoreHandlerInterface {
   }
 
   Future<void> sendMessage(String message) async {
+    // ignore: close_sinks — socket lifetime managed by _destroySocket
     final socket = await _socketCompleter.future;
     socket.writeln(message);
   }
@@ -148,7 +149,7 @@ class CoreService extends CoreHandlerInterface {
   }
 
   @override
-  Future<Object> shutdown(bool isUser) async {
+  Future<bool> shutdown(bool isUser) async {
     if (!_socketCompleter.isCompleted && _process == null) {
       return false;
     }
@@ -162,9 +163,8 @@ class CoreService extends CoreHandlerInterface {
     _process = null;
     if (isUser) {
       return _shutdownCompleter.future;
-    } else {
-      return true;
     }
+    return true;
   }
 
   void _clearCompleter() {
@@ -188,7 +188,7 @@ class CoreService extends CoreHandlerInterface {
   }) async {
     final id = '${method.name}#${utils.id}';
     _callbackCompleterMap[id] = Completer<T?>();
-    sendMessage(json.encode(Action(id: id, method: method, data: data)));
+    unawaited(sendMessage(json.encode(Action(id: id, method: method, data: data))));
     return (_callbackCompleterMap[id] as Completer<T?>).future.withTimeout(
       timeout: timeout,
       onLast: () {
@@ -202,7 +202,7 @@ class CoreService extends CoreHandlerInterface {
   }
 
   @override
-  Completer get completer => _socketCompleter;
+  Completer<dynamic> get completer => _socketCompleter;
 }
 
 final coreService = system.isDesktop ? CoreService() : null;

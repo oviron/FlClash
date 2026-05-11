@@ -323,16 +323,26 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     }
 
 
-    @Suppress("DEPRECATION")
+    @Suppress(
+        "DEPRECATION",
+        "CyclomaticComplexMethod",
+        "CognitiveComplexMethod",
+        "NestedBlockDepth",
+        "ReturnCount",
+    )
     private fun isChinaPackage(packageName: String): Boolean {
         val packageManager = GlobalState.application.packageManager ?: return false
         skipPrefixList.forEach {
             if (packageName == it || packageName.startsWith("$it.")) return false
         }
+        val baseFlags = PackageManager.GET_ACTIVITIES or
+            PackageManager.GET_SERVICES or
+            PackageManager.GET_RECEIVERS or
+            PackageManager.GET_PROVIDERS
         val packageManagerFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            PackageManager.MATCH_UNINSTALLED_PACKAGES or PackageManager.GET_ACTIVITIES or PackageManager.GET_SERVICES or PackageManager.GET_RECEIVERS or PackageManager.GET_PROVIDERS
+            PackageManager.MATCH_UNINSTALLED_PACKAGES or baseFlags
         } else {
-            PackageManager.GET_UNINSTALLED_PACKAGES or PackageManager.GET_ACTIVITIES or PackageManager.GET_SERVICES or PackageManager.GET_RECEIVERS or PackageManager.GET_PROVIDERS
+            PackageManager.GET_UNINSTALLED_PACKAGES or baseFlags
         }
         if (packageName.matches(chinaAppRegex)) {
             return true
@@ -374,6 +384,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                         val dexFile = try {
                             DexBackedDexFile.fromInputStream(null, input)
                         } catch (e: Exception) {
+                            GlobalState.log("isChinaPackage dex parse failed: $e")
                             return false
                         }
                         for (clazz in dexFile.classes) {

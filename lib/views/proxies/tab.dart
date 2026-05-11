@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
@@ -18,7 +19,7 @@ typedef ProxyGroupViewKeyMap =
 class ProxiesTabView extends ConsumerStatefulWidget {
   const ProxiesTabView({super.key});
 
-  static Map<String, PageStorageKey> pageListStoreMap = {};
+  static Map<String, PageStorageKey<dynamic>> pageListStoreMap = {};
 
   @override
   ConsumerState<ProxiesTabView> createState() => ProxiesTabViewState();
@@ -289,7 +290,7 @@ class _ProxyGroupViewState extends ConsumerState<ProxyGroupView> {
     _controller = ScrollController();
   }
 
-  PageStorageKey _getPageStorageKey() {
+  PageStorageKey<dynamic> _getPageStorageKey() {
     final profile = appController.currentProfile;
     final key =
         '${profile?.id}_${ScrollPositionCacheKey.proxiesTabList.name}_${widget.group.name}';
@@ -363,7 +364,7 @@ class _ProxyGroupViewState extends ConsumerState<ProxyGroupView> {
 }
 
 class DelayTestButton extends StatefulWidget {
-  final Future Function() onClick;
+  final Future<void> Function() onClick;
 
   const DelayTestButton({super.key, required this.onClick});
 
@@ -380,10 +381,10 @@ class _DelayTestButtonState extends State<DelayTestButton>
     if (_controller.isAnimating) {
       return;
     }
-    _controller.forward();
+    unawaited(_controller.forward());
     await widget.onClick();
     if (mounted) {
-      _controller.reverse();
+      unawaited(_controller.reverse());
     }
   }
 

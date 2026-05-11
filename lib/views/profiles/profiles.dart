@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -46,7 +47,7 @@ class _ProfilesViewState extends State<ProfilesView> {
     }
     _isUpdating = true;
     final List<UpdatingMessage> messages = [];
-    final updateProfiles = profiles.map<Future>((profile) async {
+    final updateProfiles = profiles.map<Future<void>>((profile) async {
       if (profile.type == ProfileType.file) return;
       try {
         await appController.updateProfile(profile, showLoading: true);
@@ -58,7 +59,7 @@ class _ProfilesViewState extends State<ProfilesView> {
     });
     await Future.wait(updateProfiles);
     if (messages.isNotEmpty) {
-      globalState.showAllUpdatingMessagesDialog(messages);
+      unawaited(globalState.showAllUpdatingMessagesDialog(messages));
     }
     _isUpdating = false;
   }
@@ -201,10 +202,10 @@ class ProfileItem extends StatelessWidget {
     }
 
     final previewPage = EditorPage(title: profile.realLabel, content: content);
-    BaseNavigator.push<String>(context, previewPage);
+    unawaited(BaseNavigator.push<String>(context, previewPage));
   }
 
-  Future updateProfile() async {
+  Future<void> updateProfile() async {
     if (profile.type == ProfileType.file) return;
     try {} finally {}
     await appController.loadingRun(() async {

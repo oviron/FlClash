@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -72,10 +73,10 @@ class _LogsViewState extends ConsumerState<LogsView> {
       return await appController.exportLogs();
     }, title: appLocalizations.exportLogs);
     if (res != true) return;
-    globalState.showMessage(
+    unawaited(globalState.showMessage(
       title: appLocalizations.tip,
       message: TextSpan(text: appLocalizations.exportSuccess),
-    );
+    ));
   }
 
   void updateLogsThrottler() {

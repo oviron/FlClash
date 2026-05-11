@@ -135,6 +135,12 @@ class VpnService : SystemVpnService(), IBaseService,
         return binder
     }
 
+    @Suppress(
+        "LongMethod",
+        "CyclomaticComplexMethod",
+        "CognitiveComplexMethod",
+        "NestedBlockDepth",
+    )
     private fun handleStart(options: VpnOptions) {
         val fd = with(Builder()) {
             val cidr = IPV4_ADDRESS.toCIDR()

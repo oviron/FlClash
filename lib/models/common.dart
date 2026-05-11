@@ -487,7 +487,7 @@ abstract class Result<T> with _$Result<T> {
       Result(data: null, type: ResultType.error, message: message);
 }
 
-extension ResultExt on Result {
+extension ResultExt on Result<dynamic> {
   bool get isError => type == ResultType.error;
 
   bool get isSuccess => type == ResultType.success;

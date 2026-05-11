@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -40,7 +41,7 @@ class Tray {
     return 'assets/images/icon/status_3.$trayIconSuffix';
   }
 
-  Future _updateSystemTray({
+  Future<void> _updateSystemTray({
     required bool isStart,
     required bool tunEnable,
   }) async {
@@ -190,7 +191,7 @@ class Tray {
         tunEnable: trayState.tunEnable,
       );
     }
-    updateTrayTitle(showTrayTitle: trayState.showTrayTitle, traffic: traffic);
+    unawaited(updateTrayTitle(showTrayTitle: trayState.showTrayTitle, traffic: traffic));
   }
 
   Future<void> updateTrayTitle({

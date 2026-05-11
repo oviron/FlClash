@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class Measure {
   final TextScaler _textScaler;
   final BuildContext context;
-  final Map<String, dynamic> _measureMap;
+  final Map<String, double> _measureMap;
 
   Measure.of(this.context, double textScaleFactor)
     : _measureMap = {},

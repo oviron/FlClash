@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -89,12 +90,12 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     } else if (!hasUpdate) {
       appController.putProfile(profile);
     } else {
-      appController.safeRun(() async {
+      unawaited(appController.safeRun(() async {
         await Future.delayed(commonDuration);
         if (hasUpdate) {
           await appController.updateProfile(profile);
         }
-      });
+      }));
     }
     if (mounted) {
       Navigator.of(context).pop();
@@ -163,10 +164,10 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       return message;
     }, silence: false);
     if (message?.isNotEmpty == true) {
-      globalState.showMessage(
+      unawaited(globalState.showMessage(
         title: appLocalizations.tip,
         message: TextSpan(text: message),
-      );
+      ));
       return;
     }
     if (context.mounted) {
@@ -203,7 +204,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
           message: TextSpan(text: appLocalizations.hasCacheChange),
         );
         if (res == true && context.mounted) {
-          _handleSaveEdit(context, content);
+          unawaited(_handleSaveEdit(context, content));
         } else {
           return true;
         }
@@ -241,7 +242,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       message: TextSpan(text: appLocalizations.fileIsUpdate),
     );
     if (res == true) {
-      _handleConfirm();
+      unawaited(_handleConfirm());
     } else {
       if (mounted) {
         Navigator.of(context).pop();

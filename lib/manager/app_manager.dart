@@ -49,9 +49,9 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
         return;
       }
       if (next.a == true && next.b == true) {
-        macOS?.updateDns(false);
+        unawaited(macOS?.updateDns(false));
       } else {
-        macOS?.updateDns(true);
+        unawaited(macOS?.updateDns(true));
       }
     });
   }

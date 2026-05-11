@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
@@ -295,7 +296,7 @@ class _DisclaimerItem extends StatelessWidget {
       onTap: () async {
         final isDisclaimerAccepted = await appController.showDisclaimer();
         if (!isDisclaimerAccepted) {
-          appController.handleExit();
+          unawaited(appController.handleExit());
         }
       },
     );

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
@@ -86,10 +87,10 @@ class _GeoDataListItemState extends State<GeoDataListItem> {
           return state.copyWith(geoXUrl: GeoXUrl.fromJson(map));
         });
       } catch (e) {
-        globalState.showMessage(
+        unawaited(globalState.showMessage(
           title: geoItem.label,
           message: TextSpan(text: e.toString()),
-        );
+        ));
       }
     }
   }

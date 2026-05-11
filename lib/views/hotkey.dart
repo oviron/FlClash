@@ -28,12 +28,10 @@ class HotKeyView extends StatelessWidget {
     final modifierLabels = hotKeyAction.modifiers.map(
       (item) => item.physicalKeys.first.label,
     );
-    var text = '';
-    if (modifierLabels.isNotEmpty) {
-      text += "${modifierLabels.join(" ")}+";
-    }
-    text += PhysicalKeyboardKey(key).label;
-    return text;
+    final prefix = modifierLabels.isNotEmpty
+        ? "${modifierLabels.join(" ")}+"
+        : '';
+    return '$prefix${PhysicalKeyboardKey(key).label}';
   }
 
   @override

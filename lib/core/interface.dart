@@ -19,7 +19,7 @@ mixin CoreInterface {
 
   Future<String> validateConfig(String path);
 
-  Future<Result> getConfig(String path);
+  Future<Result<dynamic>> getConfig(String path);
 
   Future<String> asyncTestDelay(String url, String proxyName);
 
@@ -76,7 +76,7 @@ mixin CoreInterface {
 }
 
 abstract class CoreHandlerInterface with CoreInterface {
-  Completer get completer;
+  Completer<dynamic> get completer;
 
   FutureOr<bool> destroy();
 
@@ -162,7 +162,7 @@ abstract class CoreHandlerInterface with CoreInterface {
   }
 
   @override
-  Future<Result> getConfig(String path) async {
+  Future<Result<dynamic>> getConfig(String path) async {
     final res = await _invoke(method: ActionMethod.getConfig, data: path);
     return res ?? Result.success({});
   }

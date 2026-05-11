@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
@@ -333,7 +334,7 @@ class Build {
   }
 }
 
-class BuildCommand extends Command {
+class BuildCommand extends Command<void> {
   Target target;
 
   BuildCommand({required this.target}) {
@@ -374,7 +375,8 @@ class BuildCommand extends Command {
       'APP_ENV': env,
       if (coreSha256 != null) 'CORE_SHA256': coreSha256,
     };
-    final envFile = File(join(current, 'env.json'))..create();
+    final envFile = File(join(current, 'env.json'));
+    unawaited(envFile.create());
     await envFile.writeAsString(json.encode(data));
   }
 
@@ -470,12 +472,12 @@ class BuildCommand extends Command {
 
     switch (target) {
       case Target.windows:
-        _buildDistributor(
+        unawaited(_buildDistributor(
           target: target,
           targets: 'exe,zip',
           args: ' --description $archName',
           env: env,
-        );
+        ));
         return;
       case Target.linux:
         final targetMap = {Arch.arm64: 'linux-arm64', Arch.amd64: 'linux-x64'};
@@ -486,13 +488,13 @@ class BuildCommand extends Command {
         ].join(',');
         final defaultTarget = targetMap[arch];
         await _getLinuxDependencies(arch!);
-        _buildDistributor(
+        unawaited(_buildDistributor(
           target: target,
           targets: targets,
           args:
               ' --description $archName --build-target-platform $defaultTarget',
           env: env,
-        );
+        ));
         return;
       case Target.android:
         final targetMap = {
@@ -505,22 +507,22 @@ class BuildCommand extends Command {
             .where((element) => arch == null ? true : element == arch)
             .map((e) => targetMap[e])
             .toList();
-        _buildDistributor(
+        unawaited(_buildDistributor(
           target: target,
           targets: 'apk',
           args:
               ",split-per-abi --build-target-platform ${defaultTargets.join(",")}",
           env: env,
-        );
+        ));
         return;
       case Target.macos:
         await _getMacosDependencies();
-        _buildDistributor(
+        unawaited(_buildDistributor(
           target: target,
           targets: 'dmg',
           args: ' --description $archName',
           env: env,
-        );
+        ));
         return;
     }
   }
@@ -532,5 +534,5 @@ Future<void> main(Iterable<String> args) async {
   runner.addCommand(BuildCommand(target: Target.linux));
   runner.addCommand(BuildCommand(target: Target.windows));
   runner.addCommand(BuildCommand(target: Target.macos));
-  runner.run(args);
+  unawaited(runner.run(args));
 }

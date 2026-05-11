@@ -54,7 +54,7 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
       if (mounted) {
         await _updateConnections();
         timer = Timer(const Duration(seconds: 1), () async {
-          _updateConnectionsTask();
+          unawaited(_updateConnectionsTask());
         });
       }
     });

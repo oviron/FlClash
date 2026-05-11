@@ -3,7 +3,7 @@ import 'dart:async';
 class Store<T> {
   late T _data;
 
-  Store(Stream stream, T defaultValue) {
+  Store(Stream<T> stream, T defaultValue) {
     stream.listen((data) {
       _add(data);
     });

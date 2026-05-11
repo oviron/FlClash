@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:async';
 
 import 'package:defer_pointer/defer_pointer.dart';
 import 'package:fl_clash/common/common.dart';
@@ -54,7 +55,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     if (res != true) {
       return;
     }
-    appController.restartCore();
+    unawaited(appController.restartCore());
   }
 
   List<Widget> _buildActions(bool isEdit) {

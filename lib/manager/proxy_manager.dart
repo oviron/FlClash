@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:fl_clash/common/proxy.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/state.dart';
@@ -19,9 +20,9 @@ class _ProxyManagerState extends ConsumerState<ProxyManager> {
     final systemProxy = proxyState.systemProxy;
     final port = proxyState.port;
     if (isStart && systemProxy) {
-      proxy?.startProxy(port, proxyState.bassDomain);
+      unawaited(proxy?.startProxy(port, proxyState.bassDomain));
     } else {
-      proxy?.stopProxy();
+      unawaited(proxy?.stopProxy());
     }
   }
 

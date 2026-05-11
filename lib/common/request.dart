@@ -98,7 +98,7 @@ class Request {
             options: Options(responseType: ResponseType.json),
           )
           .timeout(const Duration(seconds: 10));
-      future
+      unawaited(future
           .then((res) {
             if (res.statusCode == HttpStatus.ok && res.data != null) {
               completer.complete(Result.success(source.value(res.data!)));
@@ -113,7 +113,7 @@ class Request {
               completer.complete(Result.error('cancelled'));
             }
             handleFailRes();
-          });
+          }));
       return completer.future;
     });
     final res = await Future.any(futures);

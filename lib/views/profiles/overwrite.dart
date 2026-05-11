@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -40,7 +41,7 @@ class _OverwriteViewState extends ConsumerState<OverwriteView> {
       return;
     }
     final previewPage = EditorPage(title: profile.realLabel, content: content);
-    BaseNavigator.push<String>(context, previewPage);
+    unawaited(BaseNavigator.push<String>(context, previewPage));
   }
 
   @override
