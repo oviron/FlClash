@@ -1,0 +1,88 @@
+version: "2"
+
+run:
+  timeout: 5m
+  build-tags:
+    - with_gvisor
+    - cmfa
+  concurrency: 4
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gocritic
+    - misspell
+    - revive
+    - unconvert
+    - unparam
+    - gosec
+    - bodyclose
+    - prealloc
+    - copyloopvar
+    - intrange
+    - nilerr
+    - errorlint
+  settings:
+    gosec:
+      excludes:
+        - G104
+        - G115
+        - G404
+    revive:
+      rules:
+        - name: exported
+          disabled: true
+        - name: var-naming
+          disabled: true
+        - name: package-comments
+          disabled: true
+        - name: blank-imports
+        - name: context-as-argument
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: if-return
+        - name: increment-decrement
+        - name: range
+        - name: receiver-naming
+        - name: time-naming
+        - name: unexported-return
+        - name: indent-error-flow
+        - name: errorf
+        - name: empty-block
+        - name: superfluous-else
+        - name: unused-parameter
+          disabled: true
+        - name: unreachable-code
+        - name: redefines-builtin-id
+    misspell:
+      locale: US
+    unparam:
+      check-exported: false
+  exclusions:
+    rules:
+      - path: core/lib\.go
+        linters:
+          - unused
+      - path: core/(main|main_cgo|server|bride)\.go
+        linters:
+          - unused
+      - path: _test\.go
+        linters:
+          - errcheck
+          - gosec
+          - unparam
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
