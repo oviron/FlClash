@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:fl_clash/clash/clash_api_client.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/plugins/app.dart';
@@ -61,36 +60,7 @@ extension InitControllerExt on AppController {
     await _connectCore();
     await _initCore();
     await _initStatus();
-    unawaited(_probeControllerSmoke());
     _ref.read(initProvider.notifier).value = true;
-  }
-
-  /// Phase A smoke: resolve mihomo external-controller endpoint via Go core,
-  /// hit GET /version, log the round-trip. Diagnostic only — Phase B replaces
-  /// this with real client integration.
-  Future<void> _probeControllerSmoke() async {
-    if (!system.isAndroid) {
-      return;
-    }
-    final client = ClashApiClient(
-      getEndpoint: () async {
-        final res = await coreLib?.invoke<String>(
-          method: ActionMethod.getControllerEndpoint,
-        );
-        return res ?? '';
-      },
-    );
-    final connected = await client.connect();
-    if (!connected) {
-      commonPrint.log(
-        '[ClashApi] Phase A smoke: connect failed',
-        logLevel: LogLevel.warning,
-      );
-      return;
-    }
-    final version = await client.getVersion();
-    commonPrint.log('[ClashApi] Phase A smoke /version → $version');
-    await client.dispose();
   }
 
   Future<void> _handleFailedPreference() async {

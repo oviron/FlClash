@@ -54,5 +54,16 @@ GOOS=android GOARCH="$goarch" CGO_ENABLED=1 \
     -buildmode=c-shared -o "../$out_dir/libclash.so" .
 cd - >/dev/null
 
+
 echo "✓ Built $out_dir/libclash.so ($(du -h "$out_dir/libclash.so" | cut -f1))"
-nm -D "$out_dir/libclash.so" | grep -E " T (invokeAction|getControllerEndpoint|getTraffic|getTotalTraffic|startTUN|setEventListener)" | sed 's/^/   /'
+
+missing=$(comm -23 \
+  <(grep -h '^//export ' core/*.go | awk '{print $2}' | sort -u) \
+  <(nm -D "$out_dir/libclash.so" | awk '$2=="T"{print $3}' | sort -u))
+
+if [[ -n "$missing" ]]; then
+  echo "✗ //export symbols missing from .so:" >&2
+  echo "$missing" | sed 's/^/   /' >&2
+  exit 1
+fi
+echo "✓ all $(grep -hc '^//export ' core/*.go | paste -sd+ - | bc) //export symbols present in .so"

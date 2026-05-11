@@ -74,33 +74,41 @@ class CoreLib extends CoreHandlerInterface {
   @override
   Completer<dynamic> get completer => _connectedCompleter;
 
-  /// Lazily resolves the mihomo external-controller endpoint via the action
-  /// channel and caches the connected client. Subsequent callers await the
-  /// in-flight connect. On failure callers fall back to action-invoke paths
-  /// where still available (rare — Phase D dropped most polled handlers).
   Future<ClashApiClient?> _ensureClashApi() async {
     final ready = _clashApiReady;
-    if (ready != null) {
-      if (await ready) return _clashApi;
-      return null;
-    }
-    final client = ClashApiClient(
-      getEndpoint: () async {
-        final res = await invoke<String>(
-          method: ActionMethod.getControllerEndpoint,
-        );
-        return res ?? '';
-      },
-    );
-    _clashApi = client;
+    if (ready != null) return (await ready) ? _clashApi : null;
     final completer = Completer<bool>();
     _clashApiReady = completer.future;
+    final client = ClashApiClient(getEndpoint: () async {
+      return (await invoke<String>(
+            method: ActionMethod.getControllerEndpoint,
+          )) ??
+          '';
+    });
+    _clashApi = client;
     final ok = await client.connect();
     completer.complete(ok);
-    return ok ? client : null;
+    if (ok) return client;
+    _clashApi = null;
+    _clashApiReady = null;
+    return null;
   }
 
-  // ─── REST overrides (Phase D cutover) ────────────────────────────────
+  Map<String, dynamic>? _trafficCache;
+  DateTime? _trafficCachedAt;
+
+  Future<Map<String, dynamic>?> _cachedTraffic() async {
+    final at = _trafficCachedAt;
+    if (at != null &&
+        DateTime.now().difference(at) < const Duration(milliseconds: 900)) {
+      return _trafficCache;
+    }
+    final api = await _ensureClashApi();
+    if (api == null) return null;
+    _trafficCache = await api.getTraffic();
+    _trafficCachedAt = DateTime.now();
+    return _trafficCache;
+  }
 
   @override
   Future<ProxiesData> getProxies() async {
@@ -123,19 +131,15 @@ class CoreLib extends CoreHandlerInterface {
   }
 
   @override
-  Future<String> getTraffic(bool onlyStatisticsProxy) async {
-    final api = await _ensureClashApi();
-    if (api == null) return '';
-    final data = await api.getTraffic();
+  Future<String> getTraffic(bool _) async {
+    final data = await _cachedTraffic();
     if (data == null) return '';
     return json.encode({'up': data['up'] ?? 0, 'down': data['down'] ?? 0});
   }
 
   @override
-  Future<String> getTotalTraffic(bool onlyStatisticsProxy) async {
-    final api = await _ensureClashApi();
-    if (api == null) return '';
-    final data = await api.getTraffic();
+  Future<String> getTotalTraffic(bool _) async {
+    final data = await _cachedTraffic();
     if (data == null) return '';
     return json.encode({
       'up': data['upTotal'] ?? 0,

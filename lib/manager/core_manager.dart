@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/core/core.dart';
@@ -21,6 +23,9 @@ class CoreManager extends ConsumerStatefulWidget {
 
 class _CoreContainerState extends ConsumerState<CoreManager>
     with CoreEventListener {
+  Timer? _connectionsPoll;
+  final Set<String> _seenIds = <String>{};
+
   @override
   Widget build(BuildContext context) {
     return widget.child;
@@ -33,31 +38,45 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     ref.listenManual(
       currentSetupStateProvider.select((state) => state?.profileId),
       (prev, next) {
-        if (prev != next) {
-          appController.fullSetup();
-        }
+        if (prev != next) appController.fullSetup();
       },
     );
     ref.listenManual(updateParamsProvider, (prev, next) {
-      if (prev != next) {
-        appController.updateConfigDebounce();
-      }
+      if (prev != next) appController.updateConfigDebounce();
     });
     ref.listenManual(appSettingProvider.select((state) => state.openLogs), (
       prev,
       next,
     ) {
-      if (next) {
-        coreController.startLog();
+      next ? coreController.startLog() : coreController.stopLog();
+    }, fireImmediately: true);
+    ref.listenManual(coreStatusProvider, (prev, next) {
+      if (next == CoreStatus.connected) {
+        _connectionsPoll ??= Timer.periodic(
+          const Duration(seconds: 1),
+          (_) => _pollConnections(),
+        );
       } else {
-        coreController.stopLog();
+        _connectionsPoll?.cancel();
+        _connectionsPoll = null;
+        _seenIds.clear();
       }
     }, fireImmediately: true);
+  }
+
+  Future<void> _pollConnections() async {
+    final trackers = await coreController.getConnections();
+    for (final t in trackers) {
+      if (_seenIds.add(t.id)) {
+        ref.read(requestsProvider.notifier).addRequest(t);
+      }
+    }
   }
 
   @override
   Future<void> dispose() async {
     coreEventManager.removeListener(this);
+    _connectionsPoll?.cancel();
     super.dispose();
   }
 

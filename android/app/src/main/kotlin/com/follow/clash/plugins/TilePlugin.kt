@@ -29,6 +29,6 @@ class TilePlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
     }
 
 
-    ("EmptyFunctionBlock")
+    @Suppress("EmptyFunctionBlock")
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) { /* handled in Dart */ }
 }

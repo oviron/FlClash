@@ -15,10 +15,11 @@ import (
 )
 
 const (
-	controllerPortStart     = 19999
-	controllerPortEnd       = 20009
-	controllerVerifyDelay   = 50 * time.Millisecond
-	controllerVerifyTimeout = 2 * time.Second
+	controllerPortStart      = 19999
+	controllerPortEnd        = 20009
+	controllerVerifyDeadline = 3 * time.Second
+	controllerVerifyPoll     = 100 * time.Millisecond
+	controllerVerifyTimeout  = 2 * time.Second
 )
 
 var (
@@ -85,16 +86,17 @@ func StartController() error {
 			Secret: controllerSecret,
 		})
 
-		time.Sleep(controllerVerifyDelay)
-
-		if verifyControllerPort(port, controllerSecret) {
-			controllerPort = port
-			controllerStarted = true
-			log.Infoln("[Controller] started at 127.0.0.1:%d", port)
-			return nil
+		deadline := time.Now().Add(controllerVerifyDeadline)
+		for time.Now().Before(deadline) {
+			if verifyControllerPort(port, controllerSecret) {
+				controllerPort = port
+				controllerStarted = true
+				log.Infoln("[Controller] started at 127.0.0.1:%d", port)
+				return nil
+			}
+			time.Sleep(controllerVerifyPoll)
 		}
-
-		log.Warnln("[Controller] port %d bound but /version verify failed", port)
+		route.ReCreateServer(&route.Config{Addr: "", Secret: ""})
 	}
 
 	return fmt.Errorf("controller: no free port in range %d-%d", controllerPortStart, controllerPortEnd)
