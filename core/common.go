@@ -16,9 +16,7 @@ import (
 	"github.com/metacubex/mihomo/config"
 	C "github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/constant/features"
-	"github.com/metacubex/mihomo/hub"
 	"github.com/metacubex/mihomo/hub/executor"
-	"github.com/metacubex/mihomo/hub/route"
 	"github.com/metacubex/mihomo/listener"
 	"github.com/metacubex/mihomo/log"
 	"github.com/metacubex/mihomo/tunnel"
@@ -155,13 +153,6 @@ func updateConfig(params *UpdateParams) {
 		general.IPv6 = *params.IPv6
 		resolver.DisableIPv6 = !general.IPv6
 	}
-	if params.ExternalController != nil {
-		currentConfig.Controller.ExternalController = *params.ExternalController
-		route.ReCreateServer(&route.Config{
-			Addr: currentConfig.Controller.ExternalController,
-		})
-	}
-
 	if params.Tun != nil {
 		general.Tun.Enable = params.Tun.Enable
 		general.Tun.AutoRoute = *params.Tun.AutoRoute
@@ -178,18 +169,12 @@ func applyConfig(params *SetupParams) error {
 	runtime.GC()
 	runLock.Lock()
 	defer runLock.Unlock()
-	if err := InitController(); err != nil {
-		log.Errorln("[Controller] %v", err)
-	}
 	var err error
 	currentConfig, err = executor.ParseWithPath(filepath.Join(C.Path.HomeDir(), "config.yaml"))
 	if err != nil {
 		currentConfig, _ = config.ParseRawConfig(config.DefaultRawConfig())
 	}
-	currentConfig.Controller.ExternalController = ControllerAddr()
-	currentConfig.Controller.Secret = ControllerSecret()
-	route.SetEmbedMode(true)
-	hub.ApplyConfig(currentConfig)
+	executor.ApplyConfig(currentConfig, true)
 	patchSelectGroup(params.SelectedMap)
 	updateListeners()
 	return err

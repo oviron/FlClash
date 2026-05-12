@@ -5,7 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net"
-	"sync"
+
+	"github.com/metacubex/mihomo/hub/route"
 )
 
 const (
@@ -14,27 +15,19 @@ const (
 )
 
 var (
-	controllerMu     sync.Mutex
 	controllerPort   int
 	controllerSecret string
 )
 
-// InitController picks a free 127.0.0.1 port from the range and generates the
-// bearer secret once per process. The actual HTTP listener is brought up by
-// mihomo inside hub.ApplyConfig via cfg.Controller.ExternalController.
 func InitController() error {
-	controllerMu.Lock()
-	defer controllerMu.Unlock()
 	if controllerPort != 0 {
 		return nil
 	}
-	if controllerSecret == "" {
-		b := make([]byte, 32)
-		if _, err := rand.Read(b); err != nil {
-			return err
-		}
-		controllerSecret = hex.EncodeToString(b)
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		return err
 	}
+	controllerSecret = hex.EncodeToString(b)
 	for port := controllerPortStart; port <= controllerPortEnd; port++ {
 		l, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", port))
 		if err != nil {
@@ -42,29 +35,17 @@ func InitController() error {
 		}
 		_ = l.Close()
 		controllerPort = port
+		route.SetEmbedMode(true)
+		route.ReCreateServer(&route.Config{
+			Addr:   fmt.Sprintf("127.0.0.1:%d", port),
+			Secret: controllerSecret,
+		})
 		return nil
 	}
 	return fmt.Errorf("controller: no free port in %d-%d", controllerPortStart, controllerPortEnd)
 }
 
-func ControllerAddr() string {
-	controllerMu.Lock()
-	defer controllerMu.Unlock()
-	if controllerPort == 0 {
-		return ""
-	}
-	return fmt.Sprintf("127.0.0.1:%d", controllerPort)
-}
-
-func ControllerSecret() string {
-	controllerMu.Lock()
-	defer controllerMu.Unlock()
-	return controllerSecret
-}
-
 func GetControllerEndpoint() string {
-	controllerMu.Lock()
-	defer controllerMu.Unlock()
 	if controllerPort == 0 || controllerSecret == "" {
 		return ""
 	}

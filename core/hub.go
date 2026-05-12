@@ -32,12 +32,15 @@ func handleInitClash(paramsString string) bool {
 	runLock.Lock()
 	defer runLock.Unlock()
 	var params = InitParams{}
-	err := json.Unmarshal([]byte(paramsString), &params)
-	if err != nil {
+	if err := json.Unmarshal([]byte(paramsString), &params); err != nil {
 		return false
 	}
 	version = params.Version
 	constant.SetHomeDir(params.HomeDir)
+	if err := InitController(); err != nil {
+		log.Errorln("[Controller] %v", err)
+		return false
+	}
 	isInit = true
 	return isInit
 }
