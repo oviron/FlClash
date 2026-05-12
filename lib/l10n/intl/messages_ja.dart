@@ -102,9 +102,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "application": MessageLookupByLibrary.simpleMessage("アプリケーション"),
     "applicationDesc": MessageLookupByLibrary.simpleMessage("アプリ関連設定を変更"),
     "auto": MessageLookupByLibrary.simpleMessage("自動"),
-    "autoCloseConnections": MessageLookupByLibrary.simpleMessage("接続を自動閉じる"),
+    "autoCloseConnections": MessageLookupByLibrary.simpleMessage(
+      "Drop connections on node switch",
+    ),
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
-      "ノード変更後に接続を自動閉じる",
+      "When the proxy node changes, active connections are closed so new ones use the new node",
     ),
     "releases": MessageLookupByLibrary.simpleMessage("リリース"),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
@@ -113,10 +115,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
       "デフォルトはオフ。バックアップの保存先を信頼できる場合のみオンにしてください。",
     ),
-    "autoLaunch": MessageLookupByLibrary.simpleMessage("自動起動"),
-    "autoLaunchDesc": MessageLookupByLibrary.simpleMessage("システムの自動起動に従う"),
-    "autoRun": MessageLookupByLibrary.simpleMessage("自動実行"),
-    "autoRunDesc": MessageLookupByLibrary.simpleMessage("アプリ起動時に自動実行"),
+    "autoLaunch": MessageLookupByLibrary.simpleMessage("Start on device boot"),
+    "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
+      "VPN service launches automatically after the phone reboots (requires OEM whitelisting)",
+    ),
+    "autoRun": MessageLookupByLibrary.simpleMessage("Connect on app open"),
+    "autoRunDesc": MessageLookupByLibrary.simpleMessage(
+      "Tunnel comes up immediately when the app is launched",
+    ),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage("オートセットシステムDNS"),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自動更新"),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage("自動更新間隔（分）"),
@@ -217,9 +223,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("英語"),
     "entries": MessageLookupByLibrary.simpleMessage(" エントリ"),
-    "exclude": MessageLookupByLibrary.simpleMessage("最近のタスクから非表示"),
+    "exclude": MessageLookupByLibrary.simpleMessage("Hide from recents"),
     "excludeDesc": MessageLookupByLibrary.simpleMessage(
-      "アプリがバックグラウンド時に最近のタスクから非表示",
+      "App icon does not appear in the recent apps list while the app is in background",
     ),
     "existsTip": m5,
     "exit": MessageLookupByLibrary.simpleMessage("終了"),
@@ -302,8 +308,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "localBackupDesc": MessageLookupByLibrary.simpleMessage("ローカルにデータをバックアップ"),
     "log": MessageLookupByLibrary.simpleMessage("ログ"),
     "logLevel": MessageLookupByLibrary.simpleMessage("ログレベル"),
-    "logcat": MessageLookupByLibrary.simpleMessage("ログキャット"),
-    "logcatDesc": MessageLookupByLibrary.simpleMessage("無効化するとログエントリを非表示"),
+    "logcat": MessageLookupByLibrary.simpleMessage("Record in-app log"),
+    "logcatDesc": MessageLookupByLibrary.simpleMessage(
+      "Keep recent events in the Logs view (internal buffer, not Android logcat)",
+    ),
     "logs": MessageLookupByLibrary.simpleMessage("ログ"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("ログキャプチャ記録"),
     "logsTest": MessageLookupByLibrary.simpleMessage("ログテスト"),
@@ -314,9 +322,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "messageTest": MessageLookupByLibrary.simpleMessage("メッセージテスト"),
     "messageTestTip": MessageLookupByLibrary.simpleMessage("これはメッセージです。"),
     "min": MessageLookupByLibrary.simpleMessage("最小化"),
-    "minimizeOnExit": MessageLookupByLibrary.simpleMessage("終了時に最小化"),
+    "minimizeOnExit": MessageLookupByLibrary.simpleMessage(
+      "Minimize instead of exit",
+    ),
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
-      "システムの終了イベントを変更",
+      "Back button sends the app to background instead of closing it",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("分"),
     "minutesAgo": m7,
@@ -498,8 +508,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("表示"),
     "shrink": MessageLookupByLibrary.simpleMessage("縮小"),
-    "silentLaunch": MessageLookupByLibrary.simpleMessage("バックグラウンド起動"),
-    "silentLaunchDesc": MessageLookupByLibrary.simpleMessage("バックグラウンドで起動"),
+    "silentLaunch": MessageLookupByLibrary.simpleMessage("Silent launch"),
+    "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
+      "Start in the background",
+    ),
     "size": MessageLookupByLibrary.simpleMessage("サイズ"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socksポート"),
     "sort": MessageLookupByLibrary.simpleMessage("並び替え"),
@@ -531,7 +543,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tab": MessageLookupByLibrary.simpleMessage("タブ"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("タブアニメーション"),
-    "tabAnimationDesc": MessageLookupByLibrary.simpleMessage("モバイル表示でのみ有効"),
+    "tabAnimationDesc": MessageLookupByLibrary.simpleMessage(
+      "Smooth slide between tabs (mobile layout only)",
+    ),
     "tcpConcurrent": MessageLookupByLibrary.simpleMessage("TCP並列処理"),
     "tcpConcurrentDesc": MessageLookupByLibrary.simpleMessage("TCP並列処理を許可"),
     "testUrl": MessageLookupByLibrary.simpleMessage("URLテスト"),

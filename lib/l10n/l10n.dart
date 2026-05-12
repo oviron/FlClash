@@ -289,45 +289,50 @@ class AppLocalizations {
     );
   }
 
-  /// `Minimize on exit`
+  /// `Minimize instead of exit`
   String get minimizeOnExit {
     return Intl.message(
-      'Minimize on exit',
+      'Minimize instead of exit',
       name: 'minimizeOnExit',
       desc: '',
       args: [],
     );
   }
 
-  /// `Modify the default system exit event`
+  /// `Back button sends the app to background instead of closing it`
   String get minimizeOnExitDesc {
     return Intl.message(
-      'Modify the default system exit event',
+      'Back button sends the app to background instead of closing it',
       name: 'minimizeOnExitDesc',
       desc: '',
       args: [],
     );
   }
 
-  /// `Auto launch`
+  /// `Start on device boot`
   String get autoLaunch {
-    return Intl.message('Auto launch', name: 'autoLaunch', desc: '', args: []);
+    return Intl.message(
+      'Start on device boot',
+      name: 'autoLaunch',
+      desc: '',
+      args: [],
+    );
   }
 
-  /// `Follow the system self startup`
+  /// `VPN service launches automatically after the phone reboots (requires OEM whitelisting)`
   String get autoLaunchDesc {
     return Intl.message(
-      'Follow the system self startup',
+      'VPN service launches automatically after the phone reboots (requires OEM whitelisting)',
       name: 'autoLaunchDesc',
       desc: '',
       args: [],
     );
   }
 
-  /// `SilentLaunch`
+  /// `Silent launch`
   String get silentLaunch {
     return Intl.message(
-      'SilentLaunch',
+      'Silent launch',
       name: 'silentLaunch',
       desc: '',
       args: [],
@@ -344,30 +349,40 @@ class AppLocalizations {
     );
   }
 
-  /// `AutoRun`
+  /// `Connect on app open`
   String get autoRun {
-    return Intl.message('AutoRun', name: 'autoRun', desc: '', args: []);
+    return Intl.message(
+      'Connect on app open',
+      name: 'autoRun',
+      desc: '',
+      args: [],
+    );
   }
 
-  /// `Auto run when the application is opened`
+  /// `Tunnel comes up immediately when the app is launched`
   String get autoRunDesc {
     return Intl.message(
-      'Auto run when the application is opened',
+      'Tunnel comes up immediately when the app is launched',
       name: 'autoRunDesc',
       desc: '',
       args: [],
     );
   }
 
-  /// `Logcat`
+  /// `Record in-app log`
   String get logcat {
-    return Intl.message('Logcat', name: 'logcat', desc: '', args: []);
+    return Intl.message(
+      'Record in-app log',
+      name: 'logcat',
+      desc: '',
+      args: [],
+    );
   }
 
-  /// `Disabling will hide the log entry`
+  /// `Keep recent events in the Logs view (internal buffer, not Android logcat)`
   String get logcatDesc {
     return Intl.message(
-      'Disabling will hide the log entry',
+      'Keep recent events in the Logs view (internal buffer, not Android logcat)',
       name: 'logcatDesc',
       desc: '',
       args: [],
@@ -1139,20 +1154,20 @@ class AppLocalizations {
     return Intl.message('Sync', name: 'sync', desc: '', args: []);
   }
 
-  /// `Hidden from recent tasks`
+  /// `Hide from recents`
   String get exclude {
     return Intl.message(
-      'Hidden from recent tasks',
+      'Hide from recents',
       name: 'exclude',
       desc: '',
       args: [],
     );
   }
 
-  /// `When the app is in the background, the app is hidden from the recent task`
+  /// `App icon does not appear in the recent apps list while the app is in background`
   String get excludeDesc {
     return Intl.message(
-      'When the app is in the background, the app is hidden from the recent task',
+      'App icon does not appear in the recent apps list while the app is in background',
       name: 'excludeDesc',
       desc: '',
       args: [],
@@ -1239,20 +1254,20 @@ class AppLocalizations {
     );
   }
 
-  /// `Auto close connections`
+  /// `Drop connections on node switch`
   String get autoCloseConnections {
     return Intl.message(
-      'Auto close connections',
+      'Drop connections on node switch',
       name: 'autoCloseConnections',
       desc: '',
       args: [],
     );
   }
 
-  /// `Auto close connections after change node`
+  /// `When the proxy node changes, active connections are closed so new ones use the new node`
   String get autoCloseConnectionsDesc {
     return Intl.message(
-      'Auto close connections after change node',
+      'When the proxy node changes, active connections are closed so new ones use the new node',
       name: 'autoCloseConnectionsDesc',
       desc: '',
       args: [],
@@ -2264,10 +2279,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Effective only in mobile view`
+  /// `Smooth slide between tabs (mobile layout only)`
   String get tabAnimationDesc {
     return Intl.message(
-      'Effective only in mobile view',
+      'Smooth slide between tabs (mobile layout only)',
       name: 'tabAnimationDesc',
       desc: '',
       args: [],

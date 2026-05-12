@@ -130,10 +130,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "auto": MessageLookupByLibrary.simpleMessage("Auto"),
     "autoCloseConnections": MessageLookupByLibrary.simpleMessage(
-      "Auto close connections",
+      "Drop connections on node switch",
     ),
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
-      "Auto close connections after change node",
+      "When the proxy node changes, active connections are closed so new ones use the new node",
     ),
     "releases": MessageLookupByLibrary.simpleMessage("Releases"),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
@@ -142,13 +142,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
       "Off by default. Turn on only if you trust the storage where the backup will live.",
     ),
-    "autoLaunch": MessageLookupByLibrary.simpleMessage("Auto launch"),
+    "autoLaunch": MessageLookupByLibrary.simpleMessage("Start on device boot"),
     "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
-      "Follow the system self startup",
+      "VPN service launches automatically after the phone reboots (requires OEM whitelisting)",
     ),
-    "autoRun": MessageLookupByLibrary.simpleMessage("AutoRun"),
+    "autoRun": MessageLookupByLibrary.simpleMessage("Connect on app open"),
     "autoRunDesc": MessageLookupByLibrary.simpleMessage(
-      "Auto run when the application is opened",
+      "Tunnel comes up immediately when the app is launched",
     ),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage(
       "Auto set system DNS",
@@ -280,9 +280,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("English"),
     "entries": MessageLookupByLibrary.simpleMessage(" entries"),
-    "exclude": MessageLookupByLibrary.simpleMessage("Hidden from recent tasks"),
+    "exclude": MessageLookupByLibrary.simpleMessage("Hide from recents"),
     "excludeDesc": MessageLookupByLibrary.simpleMessage(
-      "When the app is in the background, the app is hidden from the recent task",
+      "App icon does not appear in the recent apps list while the app is in background",
     ),
     "existsTip": m5,
     "exit": MessageLookupByLibrary.simpleMessage("Exit"),
@@ -387,9 +387,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "log": MessageLookupByLibrary.simpleMessage("Log"),
     "logLevel": MessageLookupByLibrary.simpleMessage("LogLevel"),
-    "logcat": MessageLookupByLibrary.simpleMessage("Logcat"),
+    "logcat": MessageLookupByLibrary.simpleMessage("Record in-app log"),
     "logcatDesc": MessageLookupByLibrary.simpleMessage(
-      "Disabling will hide the log entry",
+      "Keep recent events in the Logs view (internal buffer, not Android logcat)",
     ),
     "logs": MessageLookupByLibrary.simpleMessage("Logs"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("Log capture records"),
@@ -405,9 +405,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "This is a message.",
     ),
     "min": MessageLookupByLibrary.simpleMessage("Min"),
-    "minimizeOnExit": MessageLookupByLibrary.simpleMessage("Minimize on exit"),
+    "minimizeOnExit": MessageLookupByLibrary.simpleMessage(
+      "Minimize instead of exit",
+    ),
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
-      "Modify the default system exit event",
+      "Back button sends the app to background instead of closing it",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("Minutes"),
     "minutesAgo": m7,
@@ -633,7 +635,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
-    "silentLaunch": MessageLookupByLibrary.simpleMessage("SilentLaunch"),
+    "silentLaunch": MessageLookupByLibrary.simpleMessage("Silent launch"),
     "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
       "Start in the background",
     ),
@@ -671,7 +673,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tab": MessageLookupByLibrary.simpleMessage("Tab"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("Tab animation"),
     "tabAnimationDesc": MessageLookupByLibrary.simpleMessage(
-      "Effective only in mobile view",
+      "Smooth slide between tabs (mobile layout only)",
     ),
     "tcpConcurrent": MessageLookupByLibrary.simpleMessage("TCP concurrent"),
     "tcpConcurrentDesc": MessageLookupByLibrary.simpleMessage(

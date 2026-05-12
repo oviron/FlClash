@@ -127,10 +127,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "auto": MessageLookupByLibrary.simpleMessage("Авто"),
     "autoCloseConnections": MessageLookupByLibrary.simpleMessage(
-      "Автоматическое закрытие соединений",
+      "Закрывать соединения при смене узла",
     ),
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
-      "Автоматически закрывать соединения после смены узла",
+      "После переключения прокси-узла активные соединения обрываются, чтобы новые шли через новый узел",
     ),
     "releases": MessageLookupByLibrary.simpleMessage("Релизы"),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
@@ -139,13 +139,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
       "По умолчанию выключено. Включай только если доверяешь месту где будет лежать бэкап.",
     ),
-    "autoLaunch": MessageLookupByLibrary.simpleMessage("Автозапуск"),
-    "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
-      "Следовать автозапуску системы",
+    "autoLaunch": MessageLookupByLibrary.simpleMessage(
+      "Запуск при загрузке системы",
     ),
-    "autoRun": MessageLookupByLibrary.simpleMessage("Автозапуск"),
+    "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
+      "VPN-сервис стартует после перезагрузки телефона (нужен whitelist OEM)",
+    ),
+    "autoRun": MessageLookupByLibrary.simpleMessage("Подключаться при открытии"),
     "autoRunDesc": MessageLookupByLibrary.simpleMessage(
-      "Автоматический запуск при открытии приложения",
+      "Туннель поднимается сразу при запуске приложения",
     ),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage(
       "Автоматическая настройка системного DNS",
@@ -285,11 +287,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("Английский"),
     "entries": MessageLookupByLibrary.simpleMessage(" записей"),
-    "exclude": MessageLookupByLibrary.simpleMessage(
-      "Скрыть из последних задач",
-    ),
+    "exclude": MessageLookupByLibrary.simpleMessage("Прятать из недавних задач"),
     "excludeDesc": MessageLookupByLibrary.simpleMessage(
-      "Когда приложение находится в фоновом режиме, оно скрыто из последних задач",
+      "Иконка не показывается в списке недавних приложений, когда оно уходит в фон",
     ),
     "existsTip": m5,
     "exit": MessageLookupByLibrary.simpleMessage("Выход"),
@@ -402,9 +402,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "log": MessageLookupByLibrary.simpleMessage("Журнал"),
     "logLevel": MessageLookupByLibrary.simpleMessage("Уровень логов"),
-    "logcat": MessageLookupByLibrary.simpleMessage("Logcat"),
+    "logcat": MessageLookupByLibrary.simpleMessage("Записывать журнал"),
     "logcatDesc": MessageLookupByLibrary.simpleMessage(
-      "Отключение скроет запись логов",
+      "Хранить последние события в Logs (внутренний буфер, не Android logcat)",
     ),
     "logs": MessageLookupByLibrary.simpleMessage("Логи"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("Записи захвата логов"),
@@ -423,10 +423,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "messageTestTip": MessageLookupByLibrary.simpleMessage("Это сообщение."),
     "min": MessageLookupByLibrary.simpleMessage("Мин"),
     "minimizeOnExit": MessageLookupByLibrary.simpleMessage(
-      "Свернуть при выходе",
+      "Сворачивать вместо выхода",
     ),
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
-      "Изменить стандартное событие выхода из системы",
+      "По кнопке «Назад» приложение уходит в фон, а не закрывается",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("Минут"),
     "minutesAgo": m7,
@@ -710,7 +710,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tab": MessageLookupByLibrary.simpleMessage("Вкладка"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("Анимация вкладок"),
     "tabAnimationDesc": MessageLookupByLibrary.simpleMessage(
-      "Действительно только в мобильном виде",
+      "Плавный переход при переключении вкладок (только в мобильной раскладке)",
     ),
     "tcpConcurrent": MessageLookupByLibrary.simpleMessage("TCP параллелизм"),
     "tcpConcurrentDesc": MessageLookupByLibrary.simpleMessage(

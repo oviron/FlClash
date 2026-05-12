@@ -96,9 +96,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "application": MessageLookupByLibrary.simpleMessage("应用程序"),
     "applicationDesc": MessageLookupByLibrary.simpleMessage("修改应用程序相关设置"),
     "auto": MessageLookupByLibrary.simpleMessage("自动"),
-    "autoCloseConnections": MessageLookupByLibrary.simpleMessage("自动关闭连接"),
+    "autoCloseConnections": MessageLookupByLibrary.simpleMessage(
+      "Drop connections on node switch",
+    ),
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
-      "切换节点后自动关闭连接",
+      "When the proxy node changes, active connections are closed so new ones use the new node",
     ),
     "releases": MessageLookupByLibrary.simpleMessage("发布版本"),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
@@ -107,10 +109,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
       "默认关闭。仅当您信任备份的存储位置时才启用。",
     ),
-    "autoLaunch": MessageLookupByLibrary.simpleMessage("自启动"),
-    "autoLaunchDesc": MessageLookupByLibrary.simpleMessage("跟随系统自启动"),
-    "autoRun": MessageLookupByLibrary.simpleMessage("自动运行"),
-    "autoRunDesc": MessageLookupByLibrary.simpleMessage("应用打开时自动运行"),
+    "autoLaunch": MessageLookupByLibrary.simpleMessage("Start on device boot"),
+    "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
+      "VPN service launches automatically after the phone reboots (requires OEM whitelisting)",
+    ),
+    "autoRun": MessageLookupByLibrary.simpleMessage("Connect on app open"),
+    "autoRunDesc": MessageLookupByLibrary.simpleMessage(
+      "Tunnel comes up immediately when the app is launched",
+    ),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage("自动设置系统DNS"),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自动更新"),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage("自动更新间隔（分钟）"),
@@ -199,8 +205,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("英语"),
     "entries": MessageLookupByLibrary.simpleMessage("个条目"),
-    "exclude": MessageLookupByLibrary.simpleMessage("从最近任务中隐藏"),
-    "excludeDesc": MessageLookupByLibrary.simpleMessage("应用在后台时,从最近任务中隐藏应用"),
+    "exclude": MessageLookupByLibrary.simpleMessage("Hide from recents"),
+    "excludeDesc": MessageLookupByLibrary.simpleMessage(
+      "App icon does not appear in the recent apps list while the app is in background",
+    ),
     "existsTip": m5,
     "exit": MessageLookupByLibrary.simpleMessage("退出"),
     "expand": MessageLookupByLibrary.simpleMessage("标准"),
@@ -270,8 +278,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "localBackupDesc": MessageLookupByLibrary.simpleMessage("备份数据到本地"),
     "log": MessageLookupByLibrary.simpleMessage("日志"),
     "logLevel": MessageLookupByLibrary.simpleMessage("日志等级"),
-    "logcat": MessageLookupByLibrary.simpleMessage("日志捕获"),
-    "logcatDesc": MessageLookupByLibrary.simpleMessage("禁用将会隐藏日志入口"),
+    "logcat": MessageLookupByLibrary.simpleMessage("Record in-app log"),
+    "logcatDesc": MessageLookupByLibrary.simpleMessage(
+      "Keep recent events in the Logs view (internal buffer, not Android logcat)",
+    ),
     "logs": MessageLookupByLibrary.simpleMessage("日志"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("日志捕获记录"),
     "logsTest": MessageLookupByLibrary.simpleMessage("日志测试"),
@@ -282,8 +292,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "messageTest": MessageLookupByLibrary.simpleMessage("消息测试"),
     "messageTestTip": MessageLookupByLibrary.simpleMessage("这是一条消息。"),
     "min": MessageLookupByLibrary.simpleMessage("最小"),
-    "minimizeOnExit": MessageLookupByLibrary.simpleMessage("退出时最小化"),
-    "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage("修改系统默认退出事件"),
+    "minimizeOnExit": MessageLookupByLibrary.simpleMessage(
+      "Minimize instead of exit",
+    ),
+    "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
+      "Back button sends the app to background instead of closing it",
+    ),
     "minutes": MessageLookupByLibrary.simpleMessage("分钟"),
     "minutesAgo": m7,
     "mixedPort": MessageLookupByLibrary.simpleMessage("混合端口"),
@@ -442,8 +456,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings": MessageLookupByLibrary.simpleMessage("设置"),
     "show": MessageLookupByLibrary.simpleMessage("显示"),
     "shrink": MessageLookupByLibrary.simpleMessage("紧凑"),
-    "silentLaunch": MessageLookupByLibrary.simpleMessage("静默启动"),
-    "silentLaunchDesc": MessageLookupByLibrary.simpleMessage("后台启动"),
+    "silentLaunch": MessageLookupByLibrary.simpleMessage("Silent launch"),
+    "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
+      "Start in the background",
+    ),
     "size": MessageLookupByLibrary.simpleMessage("尺寸"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks端口"),
     "sort": MessageLookupByLibrary.simpleMessage("排序"),
@@ -473,7 +489,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemProxyDesc": MessageLookupByLibrary.simpleMessage("设置系统代理"),
     "tab": MessageLookupByLibrary.simpleMessage("标签页"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("选项卡动画"),
-    "tabAnimationDesc": MessageLookupByLibrary.simpleMessage("仅在移动视图中有效"),
+    "tabAnimationDesc": MessageLookupByLibrary.simpleMessage(
+      "Smooth slide between tabs (mobile layout only)",
+    ),
     "tcpConcurrent": MessageLookupByLibrary.simpleMessage("TCP并发"),
     "tcpConcurrentDesc": MessageLookupByLibrary.simpleMessage("开启后允许TCP并发"),
     "testUrl": MessageLookupByLibrary.simpleMessage("测速链接"),
