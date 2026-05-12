@@ -94,12 +94,6 @@ const delayMapEquality = MapEquality<String, Map<String, int?>>();
 const stringSetEquality = SetEquality<String>();
 const keyboardModifierListEquality = SetEquality<KeyboardModifier>();
 
-const viewModeColumnsMap = {
-  ViewMode.mobile: [2, 1],
-  ViewMode.laptop: [3, 2],
-  ViewMode.desktop: [4, 3],
-};
-
 const proxiesListStoreKey = PageStorageKey<String>('proxies_list');
 const toolsStoreKey = PageStorageKey<String>('tools');
 const profilesStoreKey = PageStorageKey<String>('profiles');
