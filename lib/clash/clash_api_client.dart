@@ -77,7 +77,13 @@ class ClashApiClient {
     final dio = _dio;
     if (dio == null) return null;
     try {
-      final res = await dio.get<dynamic>(path);
+      final res = await dio.get<dynamic>(
+        path,
+        options: Options(
+          validateStatus: (code) => code != null && code < 500,
+        ),
+      );
+      if (res.statusCode == 404) return null;
       final data = res.data;
       if (data is Map<String, dynamic>) return data;
       if (data is Map) return Map<String, dynamic>.from(data);
@@ -237,6 +243,7 @@ class ClashApiClient {
   }
 
   /// PUT /providers/proxies/{name} or /providers/rules/{name}. Triggers refetch.
+  /// 404 returns false silently — caller can fall back to the other endpoint.
   Future<bool> updateProvider(String name, {bool isRule = false}) async {
     final dio = _dio;
     if (dio == null) return false;
@@ -245,7 +252,7 @@ class ClashApiClient {
     try {
       final res = await dio.put<dynamic>(
         path,
-        options: Options(validateStatus: (code) => code != null && code < 400),
+        options: Options(validateStatus: (code) => code != null && code < 500),
       );
       return res.statusCode != null && res.statusCode! < 400;
     } on DioException catch (e) {
