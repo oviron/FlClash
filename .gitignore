@@ -61,10 +61,5 @@ CLAUDE.md
 #FlClash
 /libclash/
 /android/app/src/main/jniLibs/
-/services/helper/target
-/macos/**/Package.resolved
+/env.json
 devtools_options.yaml
-
-# FVM Version Cache
-.fvm/
-.fvmrc
