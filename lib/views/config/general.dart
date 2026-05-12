@@ -341,38 +341,6 @@ class GeodataLoaderItem extends ConsumerWidget {
   }
 }
 
-class ExternalControllerItem extends ConsumerWidget {
-  const ExternalControllerItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final hasExternalController = ref.watch(
-      patchClashConfigProvider.select(
-        (state) => state.externalController == ExternalControllerStatus.open,
-      ),
-    );
-    return ListItem.switchItem(
-      leading: const Icon(Icons.api_outlined),
-      title: Text(appLocalizations.externalController),
-      subtitle: Text(appLocalizations.externalControllerDesc),
-      delegate: SwitchDelegate(
-        value: hasExternalController,
-        onChanged: (bool value) async {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update(
-                (state) => state.copyWith(
-                  externalController: value
-                      ? ExternalControllerStatus.open
-                      : ExternalControllerStatus.close,
-                ),
-              );
-        },
-      ),
-    );
-  }
-}
-
 final generalItems = <Widget>[
   const LogLevelItem(),
   const UaItem(),
@@ -386,7 +354,6 @@ final generalItems = <Widget>[
   const FindProcessItem(),
   const TcpConcurrentItem(),
   const GeodataLoaderItem(),
-  const ExternalControllerItem(),
 ].separated(const Divider(height: 0)).toList();
 
 class _PortDialog extends ConsumerStatefulWidget {

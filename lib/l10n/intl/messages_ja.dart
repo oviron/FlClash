@@ -228,10 +228,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "exportLogs": MessageLookupByLibrary.simpleMessage("ログをエクスポート"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("エクスポート成功"),
     "expressiveScheme": MessageLookupByLibrary.simpleMessage("エクスプレッシブ"),
-    "externalController": MessageLookupByLibrary.simpleMessage("外部コントローラー"),
-    "externalControllerDesc": MessageLookupByLibrary.simpleMessage(
-      "有効化するとClashコアをポート9090で制御可能",
-    ),
     "externalFetch": MessageLookupByLibrary.simpleMessage("外部取得"),
     "externalLink": MessageLookupByLibrary.simpleMessage("外部リンク"),
     "fakeipFilter": MessageLookupByLibrary.simpleMessage("Fakeipフィルター"),

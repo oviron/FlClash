@@ -23,18 +23,17 @@ type SetupParams struct {
 }
 
 type UpdateParams struct {
-	Tun                *tunSchema         `json:"tun"`
-	AllowLan           *bool              `json:"allow-lan"`
-	MixedPort          *int               `json:"mixed-port"`
-	FindProcessMode    *P.FindProcessMode `json:"find-process-mode"`
-	Mode               *tunnel.TunnelMode `json:"mode"`
-	LogLevel           *log.LogLevel      `json:"log-level"`
-	IPv6               *bool              `json:"ipv6"`
-	Sniffing           *bool              `json:"sniffing"`
-	TCPConcurrent      *bool              `json:"tcp-concurrent"`
-	ExternalController *string            `json:"external-controller"`
-	Interface          *string            `json:"interface-name"`
-	UnifiedDelay       *bool              `json:"unified-delay"`
+	Tun             *tunSchema         `json:"tun"`
+	AllowLan        *bool              `json:"allow-lan"`
+	MixedPort       *int               `json:"mixed-port"`
+	FindProcessMode *P.FindProcessMode `json:"find-process-mode"`
+	Mode            *tunnel.TunnelMode `json:"mode"`
+	LogLevel        *log.LogLevel      `json:"log-level"`
+	IPv6            *bool              `json:"ipv6"`
+	Sniffing        *bool              `json:"sniffing"`
+	TCPConcurrent   *bool              `json:"tcp-concurrent"`
+	Interface       *string            `json:"interface-name"`
+	UnifiedDelay    *bool              `json:"unified-delay"`
 }
 
 type tunSchema struct {

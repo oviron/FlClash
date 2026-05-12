@@ -298,12 +298,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "exportLogs": MessageLookupByLibrary.simpleMessage("Экспорт логов"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("Экспорт успешен"),
     "expressiveScheme": MessageLookupByLibrary.simpleMessage("Экспрессивные"),
-    "externalController": MessageLookupByLibrary.simpleMessage(
-      "Внешний контроллер",
-    ),
-    "externalControllerDesc": MessageLookupByLibrary.simpleMessage(
-      "При включении ядро Clash можно контролировать на порту 9090",
-    ),
     "externalFetch": MessageLookupByLibrary.simpleMessage("Внешнее получение"),
     "externalLink": MessageLookupByLibrary.simpleMessage("Внешняя ссылка"),
     "fakeipFilter": MessageLookupByLibrary.simpleMessage("Фильтр Fakeip"),

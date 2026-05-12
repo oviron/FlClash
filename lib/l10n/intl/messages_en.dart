@@ -291,12 +291,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "exportLogs": MessageLookupByLibrary.simpleMessage("Export logs"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("Export Success"),
     "expressiveScheme": MessageLookupByLibrary.simpleMessage("Expressive"),
-    "externalController": MessageLookupByLibrary.simpleMessage(
-      "ExternalController",
-    ),
-    "externalControllerDesc": MessageLookupByLibrary.simpleMessage(
-      "Once enabled, the Clash kernel can be controlled on port 9090",
-    ),
     "externalFetch": MessageLookupByLibrary.simpleMessage("External fetch"),
     "externalLink": MessageLookupByLibrary.simpleMessage("External link"),
     "fakeipFilter": MessageLookupByLibrary.simpleMessage("Fakeip filter"),

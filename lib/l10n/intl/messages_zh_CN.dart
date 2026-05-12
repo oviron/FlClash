@@ -208,10 +208,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "exportLogs": MessageLookupByLibrary.simpleMessage("导出日志"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("导出成功"),
     "expressiveScheme": MessageLookupByLibrary.simpleMessage("表现力"),
-    "externalController": MessageLookupByLibrary.simpleMessage("外部控制器"),
-    "externalControllerDesc": MessageLookupByLibrary.simpleMessage(
-      "开启后将可以通过9090端口控制Clash内核",
-    ),
     "externalFetch": MessageLookupByLibrary.simpleMessage("外部获取"),
     "externalLink": MessageLookupByLibrary.simpleMessage("外部链接"),
     "fakeipFilter": MessageLookupByLibrary.simpleMessage("Fakeip过滤"),

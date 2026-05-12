@@ -373,12 +373,6 @@ _ClashConfig _$ClashConfigFromJson(Map<String, dynamic> json) => _ClashConfig(
       (json['rule'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
   globalUa: json['global-ua'] as String?,
-  externalController:
-      $enumDecodeNullable(
-        _$ExternalControllerStatusEnumMap,
-        json['external-controller'],
-      ) ??
-      ExternalControllerStatus.close,
   hosts:
       (json['hosts'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
@@ -408,8 +402,6 @@ Map<String, dynamic> _$ClashConfigToJson(_ClashConfig instance) =>
       'proxy-groups': instance.proxyGroups,
       'rule': instance.rule,
       'global-ua': instance.globalUa,
-      'external-controller':
-          _$ExternalControllerStatusEnumMap[instance.externalController]!,
       'hosts': instance.hosts,
     };
 
@@ -437,7 +429,3 @@ const _$GeodataLoaderEnumMap = {
   GeodataLoader.memconservative: 'memconservative',
 };
 
-const _$ExternalControllerStatusEnumMap = {
-  ExternalControllerStatus.close: '',
-  ExternalControllerStatus.open: '127.0.0.1:9090',
-};

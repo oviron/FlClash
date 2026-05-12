@@ -959,26 +959,6 @@ class AppLocalizations {
     );
   }
 
-  /// `ExternalController`
-  String get externalController {
-    return Intl.message(
-      'ExternalController',
-      name: 'externalController',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Once enabled, the Clash kernel can be controlled on port 9090`
-  String get externalControllerDesc {
-    return Intl.message(
-      'Once enabled, the Clash kernel can be controlled on port 9090',
-      name: 'externalControllerDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `When turned on it will be able to receive IPv6 traffic`
   String get ipv6Desc {
     return Intl.message(

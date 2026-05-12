@@ -125,8 +125,6 @@
   "search": "Search",
   "allowBypass": "Allow applications to bypass VPN",
   "allowBypassDesc": "Some apps can bypass VPN when turned on",
-  "externalController": "ExternalController",
-  "externalControllerDesc": "Once enabled, the Clash kernel can be controlled on port 9090",
   "ipv6Desc": "When turned on it will be able to receive IPv6 traffic",
   "app": "App",
   "general": "General",
