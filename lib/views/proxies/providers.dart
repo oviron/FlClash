@@ -101,9 +101,8 @@ class ProviderItem extends StatelessWidget {
       );
       if (message.isNotEmpty) throw message;
       appController.setProvider(
-        await coreController.getExternalProvider(provider.name),
+        await coreController.getExternalProvider(provider.name, provider.type),
       );
-      if (message.isNotEmpty) throw message;
     });
     appController.updateGroupsDebounce();
   }

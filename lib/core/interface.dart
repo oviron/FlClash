@@ -37,7 +37,7 @@ mixin CoreInterface {
 
   Future<String> getExternalProviders();
 
-  Future<String> getExternalProvider(String externalProviderName);
+  Future<String> getExternalProvider(String name, String type);
 
   Future<String> updateGeoData(UpdateGeoDataParams params);
 
@@ -46,7 +46,7 @@ mixin CoreInterface {
     required String data,
   });
 
-  Future<String> updateExternalProvider(String providerName);
+  Future<String> updateExternalProvider(String name, String type);
 
   FutureOr<String> getTraffic();
 
@@ -66,11 +66,15 @@ mixin CoreInterface {
 
   FutureOr<String> getConnections();
 
+  FutureOr<bool> subscribeConnections();
+
+  FutureOr<bool> unsubscribeConnections();
+
   FutureOr<bool> closeConnection(String id);
 
   FutureOr<String> deleteFile(String path);
 
-  FutureOr<bool> closeConnections();
+  FutureOr<bool> closeAllConnections();
 
   FutureOr<bool> resetConnections();
 }
@@ -114,7 +118,7 @@ abstract class CoreHandlerInterface with CoreInterface {
     Duration? timeout,
   });
 
-  Future<T> parasResult<T>(ActionResult result) async {
+  Future<T> parseResult<T>(ActionResult result) async {
     return switch (result.method) {
       ActionMethod.getConfig => result.toResult as T,
       _ => result.data as T,
@@ -245,5 +249,63 @@ abstract class CoreHandlerInterface with CoreInterface {
           data: ip,
         ) ??
         '';
+  }
+
+  @override
+  Future<String> getExternalProviders() async {
+    return await _invoke<String>(
+          method: ActionMethod.queryExternalProviders,
+        ) ??
+        '[]';
+  }
+
+  @override
+  Future<String> getExternalProvider(String name, String type) async {
+    return await _invoke<String>(
+          method: ActionMethod.getExternalProvider,
+          data: json.encode({'name': name, 'type': type}),
+        ) ??
+        '';
+  }
+
+  @override
+  Future<String> updateExternalProvider(String name, String type) async {
+    return await _invoke<String>(
+          method: ActionMethod.updateExternalProvider,
+          data: json.encode({'name': name, 'type': type}),
+        ) ??
+        '';
+  }
+
+  @override
+  Future<String> getConnections() async {
+    return await _invoke<String>(method: ActionMethod.getConnections) ?? '';
+  }
+
+  @override
+  Future<bool> subscribeConnections() async {
+    return await _invoke<bool>(method: ActionMethod.subscribeConnections) ??
+        false;
+  }
+
+  @override
+  Future<bool> unsubscribeConnections() async {
+    return await _invoke<bool>(method: ActionMethod.unsubscribeConnections) ??
+        false;
+  }
+
+  @override
+  Future<bool> closeConnection(String id) async {
+    return await _invoke<bool>(
+          method: ActionMethod.closeConnection,
+          data: id,
+        ) ??
+        false;
+  }
+
+  @override
+  Future<bool> closeAllConnections() async {
+    return await _invoke<bool>(method: ActionMethod.closeAllConnections) ??
+        false;
   }
 }

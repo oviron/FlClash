@@ -61,15 +61,6 @@ Java_com_follow_clash_core_Core_getTraffic(JNIEnv *env, jobject thiz) {
 }
 
 extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_follow_clash_core_Core_getTotalTraffic(JNIEnv *env, jobject thiz) {
-    auto traffic = getTotalTraffic();
-    const auto result = new_string(traffic);
-    release_string(&traffic);
-    return result;
-}
-
-extern "C"
 JNIEXPORT void JNICALL
 Java_com_follow_clash_core_Core_suspended(JNIEnv *env, jobject thiz, jboolean suspended) {
     suspend(suspended);
@@ -195,11 +186,6 @@ Java_com_follow_clash_core_Core_setEventListener(JNIEnv *env, jobject thiz, jobj
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_follow_clash_core_Core_getTraffic(JNIEnv *env, jobject thiz) {
-    return env->NewStringUTF("");
-}
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_follow_clash_core_Core_getTotalTraffic(JNIEnv *env, jobject thiz) {
     return env->NewStringUTF("");
 }
 

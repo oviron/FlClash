@@ -68,7 +68,7 @@ class CoreLib extends CoreHandlerInterface {
     if (result == null) {
       return null;
     }
-    return parasResult<T>(result);
+    return parseResult<T>(result);
   }
 
   @override
@@ -175,29 +175,6 @@ class CoreLib extends CoreHandlerInterface {
   }
 
   @override
-  Future<String> getConnections() async {
-    final api = await _ensureClashApi();
-    if (api == null) return '';
-    final data = await api.getConnections();
-    if (data == null) return '';
-    return json.encode(data);
-  }
-
-  @override
-  Future<bool> closeConnection(String id) async {
-    final api = await _ensureClashApi();
-    if (api == null) return false;
-    return api.closeConnection(id);
-  }
-
-  @override
-  Future<bool> closeConnections() async {
-    final api = await _ensureClashApi();
-    if (api == null) return false;
-    return api.closeAllConnections();
-  }
-
-  @override
   Future<String> asyncTestDelay(String url, String proxyName) async {
     final api = await _ensureClashApi();
     if (api == null) {
@@ -207,72 +184,6 @@ class CoreLib extends CoreHandlerInterface {
     return json.encode(Delay(name: proxyName, value: delay, url: url));
   }
 
-  @override
-  Future<String> getExternalProviders() async {
-    final api = await _ensureClashApi();
-    if (api == null) return '[]';
-    final results = await Future.wait([
-      api.getProviders(),
-      api.getRuleProviders(),
-    ]);
-    final filtered = <Map<String, dynamic>>[];
-    _collectProviders(results[0], filtered);
-    _collectProviders(results[1], filtered);
-    return json.encode(filtered);
-  }
-
-  void _collectProviders(
-    Map<String, dynamic>? data,
-    List<Map<String, dynamic>> out,
-  ) {
-    if (data == null) return;
-    final providers = data['providers'];
-    if (providers is! Map) return;
-    providers.forEach((name, raw) {
-      if (raw is! Map) return;
-      final vehicle = raw['vehicleType'] ?? raw['vehicle-type'];
-      if (vehicle == null || vehicle == 'Compatible') return;
-      out.add({
-        'name': raw['name'] ?? name,
-        'type': raw['type'] ?? '',
-        'vehicle-type': vehicle,
-        'count': raw['count'] ?? raw['ruleCount'] ?? raw['rule-count'] ?? 0,
-        'path': raw['path'] ?? '',
-        'update-at': raw['updatedAt'] ?? raw['updated-at'] ?? '',
-        'subscription-info':
-            raw['subscriptionInfo'] ?? raw['subscription-info'],
-      });
-    });
-  }
-
-  @override
-  Future<String> getExternalProvider(String externalProviderName) async {
-    final api = await _ensureClashApi();
-    if (api == null) return '';
-    final data = await api.getProvider(externalProviderName) ??
-        await api.getRuleProvider(externalProviderName);
-    if (data == null) return '';
-    return json.encode({
-      'name': data['name'] ?? externalProviderName,
-      'type': data['type'] ?? '',
-      'vehicle-type': data['vehicleType'] ?? data['vehicle-type'] ?? '',
-      'count':
-          data['count'] ?? data['ruleCount'] ?? data['rule-count'] ?? 0,
-      'path': data['path'] ?? '',
-      'update-at': data['updatedAt'] ?? data['updated-at'] ?? '',
-      'subscription-info':
-          data['subscriptionInfo'] ?? data['subscription-info'],
-    });
-  }
-
-  @override
-  Future<String> updateExternalProvider(String providerName) async {
-    final api = await _ensureClashApi();
-    if (api == null) return 'controller unavailable';
-    if (await api.updateProvider(providerName)) return '';
-    if (await api.updateProvider(providerName, isRule: true)) return '';
-    return 'update failed';
-  }
 }
 
 CoreLib? get coreLib => system.isAndroid ? CoreLib() : null;

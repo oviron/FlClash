@@ -29,7 +29,7 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
     return [
       IconButton(
         onPressed: () async {
-          coreController.closeConnections();
+          coreController.closeAllConnections();
           await _updateConnections();
         },
         icon: const Icon(Icons.delete_sweep_outlined),

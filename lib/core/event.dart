@@ -8,6 +8,8 @@ abstract mixin class CoreEventListener {
   void onLog(Log log) {}
 
   void onCrash(String message) {}
+
+  void onConnections(List<TrackerInfo> trackers) {}
 }
 
 class CoreEventManager {
@@ -22,6 +24,17 @@ class CoreEventManager {
             break;
           case CoreEventType.crash:
             listener.onCrash(event.data);
+            break;
+          case CoreEventType.connections:
+            final raw = event.data as Map<String, dynamic>;
+            final connections = raw['connections'];
+            if (connections is! List) break;
+            listener.onConnections(
+              connections
+                  .whereType<Map<String, dynamic>>()
+                  .map(TrackerInfo.fromJson)
+                  .toList(),
+            );
             break;
         }
       }

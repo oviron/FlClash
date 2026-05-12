@@ -125,17 +125,29 @@ class CoreController {
 
   Future<List<TrackerInfo>> getConnections() async {
     final res = await _interface.getConnections();
+    if (res.isEmpty) return const [];
     final connectionsData = json.decode(res) as Map;
     final connectionsRaw = connectionsData['connections'] as List? ?? [];
-    return connectionsRaw.map((e) => TrackerInfo.fromJson(e)).toList();
+    return connectionsRaw
+        .whereType<Map<String, dynamic>>()
+        .map(TrackerInfo.fromJson)
+        .toList();
+  }
+
+  Future<void> subscribeConnections() async {
+    await _interface.subscribeConnections();
+  }
+
+  Future<void> unsubscribeConnections() async {
+    await _interface.unsubscribeConnections();
   }
 
   void closeConnection(String id) {
     _interface.closeConnection(id);
   }
 
-  void closeConnections() {
-    _interface.closeConnections();
+  void closeAllConnections() {
+    _interface.closeAllConnections();
   }
 
   void resetConnections() {
@@ -155,15 +167,14 @@ class CoreController {
   }
 
   Future<ExternalProvider?> getExternalProvider(
-    String externalProviderName,
+    String name,
+    String type,
   ) async {
-    final externalProvidersRawString = await _interface.getExternalProvider(
-      externalProviderName,
-    );
-    if (externalProvidersRawString.isEmpty) {
+    final raw = await _interface.getExternalProvider(name, type);
+    if (raw.isEmpty) {
       return null;
     }
-    return ExternalProvider.fromJson(json.decode(externalProvidersRawString));
+    return ExternalProvider.fromJson(json.decode(raw));
   }
 
   Future<String> updateGeoData(UpdateGeoDataParams params) {
@@ -180,8 +191,11 @@ class CoreController {
     );
   }
 
-  Future<String> updateExternalProvider({required String providerName}) async {
-    return _interface.updateExternalProvider(providerName);
+  Future<String> updateExternalProvider({
+    required String name,
+    required String type,
+  }) async {
+    return _interface.updateExternalProvider(name, type);
   }
 
   Future<bool> startListener() async {

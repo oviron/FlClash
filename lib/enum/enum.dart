@@ -127,7 +127,7 @@ enum ResultType {
   error,
 }
 
-enum CoreEventType { log, crash }
+enum CoreEventType { log, crash, connections }
 
 enum InvokeMessageType { protect, process }
 
@@ -228,14 +228,15 @@ enum ActionMethod {
   crash,
   setupConfig,
   deleteFile,
-  setState,
-  startTun,
-  stopTun,
-  getRunTime,
-  updateDns,
-  getAndroidVpnOptions,
-  getCurrentProfileName,
   getControllerEndpoint,
+  queryExternalProviders,
+  getExternalProvider,
+  updateExternalProvider,
+  getConnections,
+  subscribeConnections,
+  unsubscribeConnections,
+  closeConnection,
+  closeAllConnections,
 }
 
 enum AuthorizeCode { none, success, error }

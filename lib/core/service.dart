@@ -33,7 +33,7 @@ class CoreService extends CoreHandlerInterface {
 
   Future<void> handleResult(ActionResult result) async {
     final completer = _callbackCompleterMap[result.id];
-    final data = await parasResult(result);
+    final data = await parseResult(result);
     if (result.id?.isEmpty == true) {
       coreEventManager.sendEvent(CoreEvent.fromJson(result.data));
     }
@@ -229,12 +229,20 @@ class CoreService extends CoreHandlerInterface {
       _desktopUnsupported('getConnections');
 
   @override
+  Future<bool> subscribeConnections() async =>
+      _desktopUnsupported('subscribeConnections');
+
+  @override
+  Future<bool> unsubscribeConnections() async =>
+      _desktopUnsupported('unsubscribeConnections');
+
+  @override
   Future<bool> closeConnection(String id) async =>
       _desktopUnsupported('closeConnection');
 
   @override
-  Future<bool> closeConnections() async =>
-      _desktopUnsupported('closeConnections');
+  Future<bool> closeAllConnections() async =>
+      _desktopUnsupported('closeAllConnections');
 
   @override
   Future<String> asyncTestDelay(String url, String name) async =>
@@ -245,11 +253,11 @@ class CoreService extends CoreHandlerInterface {
       _desktopUnsupported('getExternalProviders');
 
   @override
-  Future<String> getExternalProvider(String name) async =>
+  Future<String> getExternalProvider(String name, String type) async =>
       _desktopUnsupported('getExternalProvider');
 
   @override
-  Future<String> updateExternalProvider(String name) async =>
+  Future<String> updateExternalProvider(String name, String type) async =>
       _desktopUnsupported('updateExternalProvider');
 }
 

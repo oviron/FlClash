@@ -163,7 +163,7 @@ func handleAction(action *Action, result ActionResult) {
 	case crashMethod:
 		result.success(true)
 		handleCrash()
-	case deleteFile:
+	case deleteFileMethod:
 		path, ok := action.Data.(string)
 		if !ok {
 			result.error("invalid data type")
@@ -174,7 +174,66 @@ func handleAction(action *Action, result ActionResult) {
 	case getControllerEndpointMethod:
 		result.success(GetControllerEndpoint())
 		return
+	case queryExternalProvidersMethod:
+		result.success(queryExternalProviders())
+		return
+	case getExternalProviderMethod:
+		s, ok := action.Data.(string)
+		if !ok {
+			result.error("invalid data type")
+			return
+		}
+		var params struct {
+			Type string `json:"type"`
+			Name string `json:"name"`
+		}
+		if err := json.Unmarshal([]byte(s), &params); err != nil {
+			result.error(err.Error())
+			return
+		}
+		result.success(getExternalProvider(params.Type, params.Name))
+		return
+	case updateExternalProviderMethod:
+		s, ok := action.Data.(string)
+		if !ok {
+			result.error("invalid data type")
+			return
+		}
+		var params struct {
+			Type string `json:"type"`
+			Name string `json:"name"`
+		}
+		if err := json.Unmarshal([]byte(s), &params); err != nil {
+			result.error(err.Error())
+			return
+		}
+		go func() {
+			result.success(updateExternalProvider(params.Type, params.Name))
+		}()
+		return
+	case getConnectionsMethod:
+		result.success(handleGetConnections())
+		return
+	case subscribeConnectionsMethod:
+		handleSubscribeConnections()
+		result.success(true)
+		return
+	case unsubscribeConnectionsMethod:
+		handleUnsubscribeConnections()
+		result.success(true)
+		return
+	case closeConnectionMethod:
+		id, ok := action.Data.(string)
+		if !ok {
+			result.error("invalid data type")
+			return
+		}
+		result.success(handleCloseConnection(id))
+		return
+	case closeAllConnectionsMethod:
+		result.success(handleCloseAllConnections())
+		return
 	default:
-		nextHandle(action, result)
+		result.error("unknown method: " + string(action.Method))
 	}
 }

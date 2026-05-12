@@ -161,6 +161,7 @@ Map<String, dynamic> _$CoreEventToJson(_CoreEvent instance) =>
 const _$CoreEventTypeEnumMap = {
   CoreEventType.log: 'log',
   CoreEventType.crash: 'crash',
+  CoreEventType.connections: 'connections',
 };
 
 _InvokeMessage _$InvokeMessageFromJson(Map<String, dynamic> json) =>
@@ -275,14 +276,15 @@ const _$ActionMethodEnumMap = {
   ActionMethod.crash: 'crash',
   ActionMethod.setupConfig: 'setupConfig',
   ActionMethod.deleteFile: 'deleteFile',
-  ActionMethod.setState: 'setState',
-  ActionMethod.startTun: 'startTun',
-  ActionMethod.stopTun: 'stopTun',
-  ActionMethod.getRunTime: 'getRunTime',
-  ActionMethod.updateDns: 'updateDns',
-  ActionMethod.getAndroidVpnOptions: 'getAndroidVpnOptions',
-  ActionMethod.getCurrentProfileName: 'getCurrentProfileName',
   ActionMethod.getControllerEndpoint: 'getControllerEndpoint',
+  ActionMethod.queryExternalProviders: 'queryExternalProviders',
+  ActionMethod.getExternalProvider: 'getExternalProvider',
+  ActionMethod.updateExternalProvider: 'updateExternalProvider',
+  ActionMethod.getConnections: 'getConnections',
+  ActionMethod.subscribeConnections: 'subscribeConnections',
+  ActionMethod.unsubscribeConnections: 'unsubscribeConnections',
+  ActionMethod.closeConnection: 'closeConnection',
+  ActionMethod.closeAllConnections: 'closeAllConnections',
 };
 
 _ProxiesData _$ProxiesDataFromJson(Map<String, dynamic> json) => _ProxiesData(

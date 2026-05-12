@@ -145,6 +145,11 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   if (rawConfig['profile'] == null) {
     rawConfig['profile'] = {};
   }
+  // Default `proxy: DIRECT` on every HTTP-vehicle provider so mihomo's own
+  // fetcher uses SpecialProxy="DIRECT" — bypass user routing rules entirely
+  // (in particular a trailing MATCH,REJECT that would otherwise REJECT every
+  // rule-provider's own download, chicken-and-egg). User can still override
+  // by writing an explicit `proxy:` in the profile.
   if (rawConfig['proxy-providers'] != null) {
     final proxyProviders = rawConfig['proxy-providers'] as Map;
     for (final key in proxyProviders.keys) {
@@ -158,6 +163,7 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
           proxyProvider['url'],
         );
       }
+      proxyProvider['proxy'] ??= 'DIRECT';
     }
   }
   if (rawConfig['rule-providers'] != null) {
@@ -173,6 +179,7 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
           ruleProvider['url'],
         );
       }
+      ruleProvider['proxy'] ??= 'DIRECT';
     }
   }
   rawConfig['profile']['store-selected'] = false;

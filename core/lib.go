@@ -28,7 +28,10 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
-var eventListener unsafe.Pointer
+var (
+	eventListener   unsafe.Pointer
+	eventListenerMu sync.RWMutex
+)
 
 type TunHandler struct {
 	listener *sing_tun.Listener
@@ -171,16 +174,6 @@ func (result ActionResult) send() {
 	}
 }
 
-func nextHandle(action *Action, result ActionResult) bool {
-	if action.Method == updateDnsMethod {
-		data := action.Data.(string)
-		handleUpdateDns(data)
-		result.success(true)
-		return true
-	}
-	return false
-}
-
 //export invokeAction
 func invokeAction(callback unsafe.Pointer, paramsChar *C.char) {
 	params := takeCString(paramsChar)
@@ -212,6 +205,7 @@ func startTUN(callback unsafe.Pointer, fd C.int, stackChar, addressChar, dnsChar
 //export quickSetup
 func quickSetup(callback unsafe.Pointer, initParamsChar *C.char, setupParamsChar *C.char) {
 	go func() {
+		defer releaseObject(callback)
 		initParamsString := takeCString(initParamsChar)
 		setupParamsString := takeCString(setupParamsChar)
 		if !handleInitClash(initParamsString) {
@@ -226,15 +220,13 @@ func quickSetup(callback unsafe.Pointer, initParamsChar *C.char, setupParamsChar
 
 //export setEventListener
 func setEventListener(listener unsafe.Pointer) {
-	if eventListener != nil || listener == nil {
-		releaseObject(eventListener)
-	}
+	eventListenerMu.Lock()
+	old := eventListener
 	eventListener = listener
-}
-
-//export getTotalTraffic
-func getTotalTraffic() *C.char {
-	return C.CString(handleGetTotalTraffic())
+	eventListenerMu.Unlock()
+	if old != nil {
+		releaseObject(old)
+	}
 }
 
 //export getTraffic
@@ -242,12 +234,9 @@ func getTraffic() *C.char {
 	return C.CString(handleGetTraffic())
 }
 
-//export getControllerEndpoint
-func getControllerEndpoint() *C.char {
-	return C.CString(GetControllerEndpoint())
-}
-
 func sendMessage(message Message) {
+	eventListenerMu.RLock()
+	defer eventListenerMu.RUnlock()
 	if eventListener == nil {
 		return
 	}

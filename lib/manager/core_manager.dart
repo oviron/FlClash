@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
@@ -23,8 +24,8 @@ class CoreManager extends ConsumerStatefulWidget {
 
 class _CoreContainerState extends ConsumerState<CoreManager>
     with CoreEventListener {
-  Timer? _connectionsPoll;
-  final Set<String> _seenIds = <String>{};
+  static const _seenIdsCapacity = 10000;
+  final LinkedHashSet<String> _seenIds = LinkedHashSet<String>();
 
   @override
   Widget build(BuildContext context) {
@@ -52,31 +53,32 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     }, fireImmediately: true);
     ref.listenManual(coreStatusProvider, (prev, next) {
       if (next == CoreStatus.connected) {
-        _connectionsPoll ??= Timer.periodic(
-          const Duration(seconds: 1),
-          (_) => _pollConnections(),
-        );
+        coreController.subscribeConnections();
       } else {
-        _connectionsPoll?.cancel();
-        _connectionsPoll = null;
+        coreController.unsubscribeConnections();
         _seenIds.clear();
       }
     }, fireImmediately: true);
   }
 
-  Future<void> _pollConnections() async {
-    final trackers = await coreController.getConnections();
+  @override
+  void onConnections(List<TrackerInfo> trackers) {
+    final requests = ref.read(requestsProvider.notifier);
     for (final t in trackers) {
       if (_seenIds.add(t.id)) {
-        ref.read(requestsProvider.notifier).addRequest(t);
+        requests.addRequest(t);
+        if (_seenIds.length > _seenIdsCapacity) {
+          _seenIds.remove(_seenIds.first);
+        }
       }
     }
+    super.onConnections(trackers);
   }
 
   @override
   Future<void> dispose() async {
     coreEventManager.removeListener(this);
-    _connectionsPoll?.cancel();
+    unawaited(coreController.unsubscribeConnections());
     super.dispose();
   }
 

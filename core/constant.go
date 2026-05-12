@@ -67,11 +67,6 @@ type ExternalProvider struct {
 	SubscriptionInfo *provider.SubscriptionInfo `json:"subscription-info"`
 }
 
-type ProxiesData struct {
-	Proxies map[string]constant.Proxy `json:"proxies"`
-	All     []string                  `json:"all"`
-}
-
 const (
 	messageMethod                  Method = "message"
 	initClashMethod                Method = "initClash"
@@ -81,7 +76,7 @@ const (
 	validateConfigMethod           Method = "validateConfig"
 	updateConfigMethod             Method = "updateConfig"
 	resetTrafficMethod             Method = "resetTraffic"
-	resetConnectionsMethod         Method = "resetConnectionsMethod"
+	resetConnectionsMethod         Method = "resetConnections"
 	getCountryCodeMethod           Method = "getCountryCode"
 	updateGeoDataMethod            Method = "updateGeoData"
 	sideLoadExternalProviderMethod Method = "sideLoadExternalProvider"
@@ -89,12 +84,19 @@ const (
 	stopLogMethod                  Method = "stopLog"
 	startListenerMethod            Method = "startListener"
 	stopListenerMethod             Method = "stopListener"
-	updateDnsMethod                Method = "updateDns"
 	crashMethod                    Method = "crash"
 	setupConfigMethod              Method = "setupConfig"
 	getConfigMethod                Method = "getConfig"
-	deleteFile                     Method = "deleteFile"
+	deleteFileMethod               Method = "deleteFile"
 	getControllerEndpointMethod    Method = "getControllerEndpoint"
+	queryExternalProvidersMethod   Method = "queryExternalProviders"
+	getExternalProviderMethod      Method = "getExternalProvider"
+	updateExternalProviderMethod   Method = "updateExternalProvider"
+	getConnectionsMethod           Method = "getConnections"
+	subscribeConnectionsMethod     Method = "subscribeConnections"
+	unsubscribeConnectionsMethod   Method = "unsubscribeConnections"
+	closeConnectionMethod          Method = "closeConnection"
+	closeAllConnectionsMethod      Method = "closeAllConnections"
 )
 
 type Method string
@@ -113,7 +115,8 @@ type Message struct {
 }
 
 const (
-	LogMessage MessageType = "log"
+	LogMessage         MessageType = "log"
+	ConnectionsMessage MessageType = "connections"
 )
 
 func (message *Message) Json() (string, error) {

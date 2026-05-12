@@ -126,7 +126,7 @@ class _GlobalProxyWatchdogManagerState
   Future<void> _resetProxyPath() async {
     _log('global watchdog resetting stale proxy connections');
     coreController.resetConnections();
-    coreController.closeConnections();
+    coreController.closeAllConnections();
   }
 
   Future<void> _trySwitchGlobalProxy(String defaultTestUrl) async {

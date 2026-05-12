@@ -498,7 +498,7 @@ extension ProxiesControllerExt on AppController {
       ChangeProxyParams(groupName: groupName, proxyName: proxyName),
     );
     if (_ref.read(appSettingProvider).closeConnections) {
-      coreController.closeConnections();
+      coreController.closeAllConnections();
     } else {
       coreController.resetConnections();
     }
@@ -524,10 +524,13 @@ extension ProxiesControllerExt on AppController {
             true;
       }
       final message = await coreController.updateExternalProvider(
-        providerName: provider.name,
+        name: provider.name,
+        type: provider.type,
       );
       if (message.isNotEmpty) return message;
-      setProvider(await coreController.getExternalProvider(provider.name));
+      setProvider(
+        await coreController.getExternalProvider(provider.name, provider.type),
+      );
       return '';
     } finally {
       _ref.read(isUpdatingProvider(provider.updatingKey).notifier).value =
