@@ -53,7 +53,7 @@ jobs:
       - name: Setup
         run: dart setup.dart ${{ matrix.platform }} ${{ matrix.arch && format('--arch {0}', matrix.arch) }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }}
 
-      - name: Verify 16-KB page-size alignment
+      - name: Verify 16-KB page-size alignment for native libs
         if: startsWith(matrix.platform,'android')
         run: |
           BUILD_TOOLS=$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)
@@ -66,8 +66,9 @@ jobs:
             exit 0
           fi
           for apk in "${apks[@]}"; do
-            echo "Checking $apk"
-            "$ZIPALIGN" -p -v 16384 -c "$apk" || { echo "FAILED: $apk is not 16KB page-size aligned"; exit 1; }
+            echo "Checking $apk for 16-KB .so alignment (Android 15+)"
+            "$ZIPALIGN" -P 16 -c -v 4 "$apk" 2>&1 | grep -E "\.so .* (BAD|OK)" || true
+            "$ZIPALIGN" -P 16 -c 4 "$apk" || { echo "FAILED: native .so libs in $apk are not 16-KB aligned"; exit 1; }
           done
 
       - name: Upload
