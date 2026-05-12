@@ -44,11 +44,7 @@ const MMDB = 'GEOIP.metadb';
 const ASN = 'ASN.mmdb';
 const GEOIP = 'GEOIP.dat';
 const GEOSITE = 'GEOSITE.dat';
-final double kHeaderHeight = system.isDesktop
-    ? !system.isMacOS
-          ? 40
-          : 28
-    : 0;
+const double kHeaderHeight = 0;
 const profilesDirectoryName = 'profiles';
 const localhost = '127.0.0.1';
 const clashConfigKey = 'clash_config';

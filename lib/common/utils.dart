@@ -7,7 +7,6 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class Utils {
   static Utils? _instance;
@@ -147,11 +146,6 @@ class Utils {
     } else {
       return '$label(1)';
     }
-  }
-
-  String get traySuffix {
-    final suffix = system.isWindows ? 'ico' : 'png';
-    return 'assets/images/icon/status_2.$suffix';
   }
 
   int compareVersions(String version1, String version2) {
@@ -309,11 +303,6 @@ class Utils {
       return addresses.first.address;
     }
     return '';
-  }
-
-  SingleActivator controlSingleActivator(LogicalKeyboardKey trigger) {
-    final control = system.isMacOS ? false : true;
-    return SingleActivator(trigger, control: control, meta: !control);
   }
 
   FutureOr<T> handleWatch<T>({

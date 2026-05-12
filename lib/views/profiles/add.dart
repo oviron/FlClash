@@ -20,10 +20,6 @@ class AddProfileView extends StatelessWidget {
   }
 
   Future<void> _toScan() async {
-    if (system.isDesktop) {
-      unawaited(appController.addProfileFormQrCode());
-      return;
-    }
     final url = await BaseNavigator.push(context, const ScanPage());
     if (url != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

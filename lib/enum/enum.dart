@@ -1,7 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'dart:io';
-
 import 'package:fl_clash/common/color.dart';
 import 'package:fl_clash/common/system.dart';
 import 'package:fl_clash/views/dashboard/widgets/widgets.dart';
@@ -9,33 +7,17 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hotkey_manager/hotkey_manager.dart';
 
 enum SupportPlatform {
-  Windows,
-  MacOS,
-  Linux,
   Android;
 
   static SupportPlatform get currentPlatform {
-    if (system.isWindows) {
-      return SupportPlatform.Windows;
-    } else if (system.isMacOS) {
-      return SupportPlatform.MacOS;
-    } else if (Platform.isLinux) {
-      return SupportPlatform.Linux;
-    } else if (system.isAndroid) {
+    if (system.isAndroid) {
       return SupportPlatform.Android;
     }
     throw 'invalid platform';
   }
 }
-
-const desktopPlatforms = [
-  SupportPlatform.Linux,
-  SupportPlatform.MacOS,
-  SupportPlatform.Windows,
-];
 
 enum GroupType {
   Selector,
@@ -178,19 +160,6 @@ enum KeyboardModifier {
   const KeyboardModifier(this.physicalKeys);
 }
 
-extension KeyboardModifierExt on KeyboardModifier {
-  HotKeyModifier toHotKeyModifier() {
-    return switch (this) {
-      KeyboardModifier.alt => HotKeyModifier.alt,
-      KeyboardModifier.capsLock => HotKeyModifier.capsLock,
-      KeyboardModifier.control => HotKeyModifier.control,
-      KeyboardModifier.fn => HotKeyModifier.fn,
-      KeyboardModifier.meta => HotKeyModifier.meta,
-      KeyboardModifier.shift => HotKeyModifier.shift,
-    };
-  }
-}
-
 enum HotAction { start, view, mode, proxy, tun }
 
 enum ProxiesIconStyle { none, standard, icon }
@@ -278,17 +247,9 @@ enum DashboardWidget {
   outboundMode(GridItem(crossAxisCellCount: 4, child: OutboundMode())),
   trafficUsage(GridItem(crossAxisCellCount: 4, child: TrafficUsage())),
   networkDetection(GridItem(crossAxisCellCount: 4, child: NetworkDetection())),
-  tunButton(
-    GridItem(crossAxisCellCount: 4, child: TUNButton()),
-    platforms: desktopPlatforms,
-  ),
   vpnButton(
     GridItem(crossAxisCellCount: 4, child: VpnButton()),
     platforms: [SupportPlatform.Android],
-  ),
-  systemProxyButton(
-    GridItem(crossAxisCellCount: 4, child: SystemProxyButton()),
-    platforms: desktopPlatforms,
   ),
   intranetIp(GridItem(crossAxisCellCount: 4, child: IntranetIP())),
   memoryInfo(GridItem(crossAxisCellCount: 4, child: MemoryInfo()));

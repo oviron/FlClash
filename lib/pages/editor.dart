@@ -64,9 +64,6 @@ class _EditorPageState extends ConsumerState<EditorPage> {
     _controller = CodeLineEditingController.fromText(widget.content);
     _findController = CodeFindController(_controller);
     _titleController = TextEditingController(text: widget.title);
-    if (system.isDesktop) {
-      return;
-    }
     _focusNode.onKeyEvent = (_, event) {
       final keys = HardwareKeyboard.instance.logicalKeysPressed;
       final key = event.logicalKey;

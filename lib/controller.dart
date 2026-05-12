@@ -46,14 +46,7 @@ extension InitControllerExt on AppController {
         logLevel: LogLevel.warning,
       );
     };
-    unawaited(updateTray());
     unawaited(autoUpdateProfiles());
-    unawaited(autoLaunch.updateStatus(_ref.read(appSettingProvider).autoLaunch));
-    if (!_ref.read(appSettingProvider).silentLaunch) {
-      unawaited(window?.show());
-    } else {
-      unawaited(window?.hide());
-    }
     await _handleFailedPreference();
     await _handlerDisclaimer();
     await _showCrashlyticsTip();
@@ -801,20 +794,6 @@ extension CoreControllerExt on AppController {
   }
 
   Future<Result<bool>> _requestAdmin(bool enableTun) async {
-    final realTunEnable = _ref.read(realTunEnableProvider);
-    if (enableTun != realTunEnable && realTunEnable == false) {
-      final code = await system.authorizeCore();
-      switch (code) {
-        case AuthorizeCode.success:
-          await restartCore();
-          return Result.error('');
-        case AuthorizeCode.none:
-          break;
-        case AuthorizeCode.error:
-          enableTun = false;
-          break;
-      }
-    }
     _ref.read(realTunEnableProvider.notifier).value = enableTun;
     return Result.success(enableTun);
   }
@@ -861,12 +840,9 @@ extension SystemControllerExt on AppController {
       system.exit();
     });
     try {
-      await Future.wait([
-        if (needSave) preferences.saveConfig(config),
-        if (macOS != null) macOS!.updateDns(true),
-        if (proxy != null) proxy!.stopProxy(),
-        if (tray != null) tray!.destroy(),
-      ]);
+      if (needSave) {
+        await preferences.saveConfig(config);
+      }
       await coreController.destroy();
       commonPrint.log('exit');
     } finally {
@@ -879,23 +855,13 @@ extension SystemControllerExt on AppController {
       return;
     }
     if (_ref.read(appSettingProvider).minimizeOnExit) {
-      if (system.isDesktop) {
-        await preferences.saveConfig(config);
-      }
       await system.back();
     } else {
       await handleExit();
     }
   }
 
-  Future<void> updateVisible() async {
-    final visible = await window?.isVisible;
-    if (visible != null && !visible) {
-      unawaited(window?.show());
-    } else {
-      unawaited(window?.hide());
-    }
-  }
+  Future<void> updateVisible() async {}
 
   void updateBrightness() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -957,14 +923,7 @@ extension SystemControllerExt on AppController {
         .update((state) => state.copyWith(autoLaunch: !state.autoLaunch));
   }
 
-  Future<void> updateTray() async {
-    unawaited(tray?.update(
-      trayState: _ref.read(trayStateProvider),
-      traffic: _ref.read(
-        trafficsProvider.select((state) => state.list.safeLast(const Traffic())),
-      ),
-    ));
-  }
+  Future<void> updateTray() async {}
 
   Future<void> updateLocalIp() async {
     _ref.read(localIpProvider.notifier).value = null;

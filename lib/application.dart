@@ -5,7 +5,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/l10n/l10n.dart';
-import 'package:fl_clash/manager/hotkey_manager.dart';
 import 'package:fl_clash/manager/manager.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/network_state.dart';
@@ -32,9 +31,6 @@ class ApplicationState extends ConsumerState<Application> {
   final _pageTransitionsTheme = const PageTransitionsTheme(
     builders: <TargetPlatform, PageTransitionsBuilder>{
       TargetPlatform.android: commonSharedXPageTransitions,
-      TargetPlatform.windows: commonSharedXPageTransitions,
-      TargetPlatform.linux: commonSharedXPageTransitions,
-      TargetPlatform.macOS: commonSharedXPageTransitions,
     },
   );
 
@@ -69,13 +65,6 @@ class ApplicationState extends ConsumerState<Application> {
   }
 
   Widget _buildPlatformState({required Widget child}) {
-    if (system.isDesktop) {
-      return WindowManager(
-        child: TrayManager(
-          child: HotKeyManager(child: ProxyManager(child: child)),
-        ),
-      );
-    }
     return AndroidManager(child: TileManager(child: child));
   }
 
@@ -106,9 +95,6 @@ class ApplicationState extends ConsumerState<Application> {
   }
 
   Widget _buildPlatformApp({required Widget child}) {
-    if (system.isDesktop) {
-      return WindowHeaderContainer(child: child);
-    }
     return VpnManager(child: child);
   }
 

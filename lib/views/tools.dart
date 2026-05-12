@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
@@ -11,13 +10,11 @@ import 'package:fl_clash/views/access.dart';
 import 'package:fl_clash/views/application_setting.dart';
 import 'package:fl_clash/views/backup_and_restore.dart';
 import 'package:fl_clash/views/config/config.dart';
-import 'package:fl_clash/views/hotkey.dart';
 import 'package:fl_clash/views/setting/network_rules.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart' show dirname, join;
 
 import 'config/advanced.dart';
 import 'developer.dart';
@@ -70,13 +67,11 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     return generateSection(
       title: context.appLocalizations.settings,
       items: [
-        if (system.isAndroid) const _NetworkRulesItem(),
+        const _NetworkRulesItem(),
         const _LocaleItem(),
         const _ThemeItem(),
         const _BackupItem(),
-        if (system.isDesktop) const _HotkeyItem(),
-        if (system.isWindows) const _LoopbackItem(),
-        if (system.isAndroid) const _AccessItem(),
+        const _AccessItem(),
         const _ConfigItem(),
         const _AdvancedConfigItem(),
         const _SettingItem(),
@@ -179,39 +174,6 @@ class _BackupItem extends StatelessWidget {
       title: Text(context.appLocalizations.backupAndRestore),
       subtitle: Text(context.appLocalizations.backupAndRestoreDesc),
       delegate: const OpenDelegate(widget: BackupAndRestore()),
-    );
-  }
-}
-
-class _HotkeyItem extends StatelessWidget {
-  const _HotkeyItem();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListItem.open(
-      leading: const Icon(Icons.keyboard),
-      title: Text(context.appLocalizations.hotkeyManagement),
-      subtitle: Text(context.appLocalizations.hotkeyManagementDesc),
-      delegate: const OpenDelegate(widget: HotKeyView()),
-    );
-  }
-}
-
-class _LoopbackItem extends StatelessWidget {
-  const _LoopbackItem();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListItem(
-      leading: const Icon(Icons.lock),
-      title: Text(context.appLocalizations.loopback),
-      subtitle: Text(context.appLocalizations.loopbackDesc),
-      onTap: () {
-        windows?.runas(
-          '"${join(dirname(Platform.resolvedExecutable), "EnableLoopback.exe")}"',
-          '',
-        );
-      },
     );
   }
 }

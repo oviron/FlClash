@@ -34,9 +34,7 @@ class AppPath {
     return _instance!;
   }
 
-  String get executableExtension {
-    return system.isWindows ? '.exe' : '';
-  }
+  String get executableExtension => '';
 
   String get executableDirPath {
     final currentExecutablePath = Platform.resolvedExecutable;

@@ -225,13 +225,12 @@ class ApplicationSettingView extends StatelessWidget {
     final List<Widget> items = [
       const MinimizeItem(),
       const AutoLaunchItem(),
-      if (system.isDesktop) ...[const SilentLaunchItem()],
       const AutoRunItem(),
-      if (system.isAndroid) ...[const HiddenItem()],
+      const HiddenItem(),
       const AnimateTabItem(),
       const OpenLogsItem(),
       const CloseConnectionsItem(),
-      if (system.isAndroid) const CrashlyticsItem(),
+      const CrashlyticsItem(),
     ];
     return BaseScaffold(
       title: appLocalizations.application,

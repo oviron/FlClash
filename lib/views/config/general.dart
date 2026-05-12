@@ -64,47 +64,6 @@ class UaItem extends ConsumerWidget {
   }
 }
 
-class KeepAliveIntervalItem extends ConsumerWidget {
-  const KeepAliveIntervalItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final keepAliveInterval = ref.watch(
-      patchClashConfigProvider.select((state) => state.keepAliveInterval),
-    );
-    return ListItem.input(
-      leading: const Icon(Icons.timer_outlined),
-      title: Text(appLocalizations.keepAliveIntervalDesc),
-      subtitle: Text('$keepAliveInterval ${appLocalizations.seconds}'),
-      delegate: InputDelegate(
-        title: appLocalizations.keepAliveIntervalDesc,
-        suffixText: appLocalizations.seconds,
-        resetValue: '$defaultKeepAliveInterval',
-        value: '$keepAliveInterval',
-        validator: (String? value) {
-          if (value == null || value.isEmpty) {
-            return appLocalizations.emptyTip(appLocalizations.interval);
-          }
-          final intValue = int.tryParse(value);
-          if (intValue == null) {
-            return appLocalizations.numberTip(appLocalizations.interval);
-          }
-          return null;
-        },
-        onChanged: (String? value) {
-          if (value == null) {
-            return;
-          }
-          final intValue = int.parse(value);
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith(keepAliveInterval: intValue));
-        },
-      ),
-    );
-  }
-}
-
 class TestUrlItem extends ConsumerWidget {
   const TestUrlItem({super.key});
 
@@ -417,7 +376,6 @@ class ExternalControllerItem extends ConsumerWidget {
 final generalItems = <Widget>[
   const LogLevelItem(),
   const UaItem(),
-  if (system.isDesktop) const KeepAliveIntervalItem(),
   const TestUrlItem(),
   const PortItem(),
   const HostsItem(),

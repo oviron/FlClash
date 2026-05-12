@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/manager/window_manager.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/foundation.dart';
@@ -41,19 +40,6 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
         appController.updateGroupsDebounce();
       }
     });
-    if (window == null) {
-      return;
-    }
-    ref.listenManual(autoSetSystemDnsStateProvider, (prev, next) async {
-      if (prev == next) {
-        return;
-      }
-      if (next.a == true && next.b == true) {
-        unawaited(macOS?.updateDns(false));
-      } else {
-        unawaited(macOS?.updateDns(true));
-      }
-    });
   }
 
   @override
@@ -66,7 +52,6 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     commonPrint.log('$state');
     if (state == AppLifecycleState.resumed) {
-      render?.resume();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         appController.tryCheckIp();
         if (system.isAndroid) {
@@ -83,12 +68,7 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerHover: (_) {
-        render?.resume();
-      },
-      child: widget.child,
-    );
+    return widget.child;
   }
 }
 
@@ -157,12 +137,9 @@ class AppSidebarContainer extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (system.isMacOS) const SizedBox(height: 22),
                 const SizedBox(height: 10),
-                if (!system.isMacOS) ...[
-                  const ClipRect(child: AppIcon()),
-                  const SizedBox(height: 12),
-                ],
+                const ClipRect(child: _AppIcon()),
+                const SizedBox(height: 12),
                 Expanded(
                   child: ScrollConfiguration(
                     behavior: HiddenBarScrollBehavior(),
@@ -238,6 +215,27 @@ class AppSidebarContainer extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _AppIcon extends StatelessWidget {
+  const _AppIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: ShapeDecoration(
+        color: context.colorScheme.surfaceContainerHighest,
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+      ),
+      padding: const EdgeInsets.all(8),
+      child: Transform.translate(
+        offset: const Offset(0, -1),
+        child: Image.asset('assets/images/icon.png', width: 34, height: 34),
+      ),
     );
   }
 }

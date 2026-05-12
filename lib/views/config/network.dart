@@ -29,30 +29,6 @@ class VPNItem extends ConsumerWidget {
   }
 }
 
-class TUNItem extends ConsumerWidget {
-  const TUNItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final enable = ref.watch(
-      patchClashConfigProvider.select((state) => state.tun.enable),
-    );
-
-    return ListItem.switchItem(
-      title: Text(appLocalizations.tun),
-      subtitle: Text(appLocalizations.tunDesc),
-      delegate: SwitchDelegate(
-        value: enable,
-        onChanged: (value) async {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.tun(enable: value));
-        },
-      ),
-    );
-  }
-}
-
 class AllowBypassItem extends ConsumerWidget {
   const AllowBypassItem({super.key});
 
@@ -99,30 +75,6 @@ class VpnSystemProxyItem extends ConsumerWidget {
   }
 }
 
-class SystemProxyItem extends ConsumerWidget {
-  const SystemProxyItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final systemProxy = ref.watch(
-      networkSettingProvider.select((state) => state.systemProxy),
-    );
-
-    return ListItem.switchItem(
-      title: Text(appLocalizations.systemProxy),
-      subtitle: Text(appLocalizations.systemProxyDesc),
-      delegate: SwitchDelegate(
-        value: systemProxy,
-        onChanged: (bool value) async {
-          ref
-              .read(networkSettingProvider.notifier)
-              .update((state) => state.copyWith(systemProxy: value));
-        },
-      ),
-    );
-  }
-}
-
 class Ipv6Item extends ConsumerWidget {
   const Ipv6Item({super.key});
 
@@ -138,28 +90,6 @@ class Ipv6Item extends ConsumerWidget {
           ref
               .read(vpnSettingProvider.notifier)
               .update((state) => state.copyWith(ipv6: value));
-        },
-      ),
-    );
-  }
-}
-
-class AutoSetSystemDnsItem extends ConsumerWidget {
-  const AutoSetSystemDnsItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final autoSetSystemDns = ref.watch(
-      networkSettingProvider.select((state) => state.autoSetSystemDns),
-    );
-    return ListItem.switchItem(
-      title: Text(appLocalizations.autoSetSystemDns),
-      delegate: SwitchDelegate(
-        value: autoSetSystemDns,
-        onChanged: (bool value) async {
-          ref
-              .read(networkSettingProvider.notifier)
-              .update((state) => state.copyWith(autoSetSystemDns: value));
         },
       ),
     );
@@ -317,33 +247,23 @@ class RouteAddressItem extends ConsumerWidget {
 }
 
 final networkItems = [
-  if (system.isAndroid) const VPNItem(),
-  if (system.isAndroid)
-    ...generateSection(
-      title: 'VPN',
-      items: [
-        const VpnSystemProxyItem(),
-        const BypassDomainItem(),
-        const AllowBypassItem(),
-        const Ipv6Item(),
-        const DNSHijackingItem(),
-      ],
-    ),
-  if (system.isDesktop)
-    ...generateSection(
-      title: appLocalizations.system,
-      items: [const SystemProxyItem(), const BypassDomainItem()],
-    ),
+  const VPNItem(),
+  ...generateSection(
+    title: 'VPN',
+    items: [
+      const VpnSystemProxyItem(),
+      const BypassDomainItem(),
+      const AllowBypassItem(),
+      const Ipv6Item(),
+      const DNSHijackingItem(),
+    ],
+  ),
   ...generateSection(
     title: appLocalizations.options,
     items: [
-      if (system.isDesktop) const TUNItem(),
-      if (system.isMacOS) const AutoSetSystemDnsItem(),
       const TunStackItem(),
-      if (!system.isDesktop) ...[
-        const RouteModeItem(),
-        const RouteAddressItem(),
-      ],
+      const RouteModeItem(),
+      const RouteAddressItem(),
     ],
   ),
 ];

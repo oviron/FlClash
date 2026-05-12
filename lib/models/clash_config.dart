@@ -196,13 +196,10 @@ extension TunExt on Tun {
     final mRouteAddress = routeMode == RouteMode.bypassPrivate
         ? defaultBypassPrivateRouteAddress
         : routeAddress;
-    return switch (system.isDesktop) {
-      true => copyWith(autoRoute: true, routeAddress: []),
-      false => copyWith(
-        autoRoute: mRouteAddress.isEmpty ? true : false,
-        routeAddress: mRouteAddress,
-      ),
-    };
+    return copyWith(
+      autoRoute: mRouteAddress.isEmpty ? true : false,
+      routeAddress: mRouteAddress,
+    );
   }
 }
 

@@ -40,19 +40,6 @@ class _AndroidContainerState extends ConsumerState<AndroidManager>
       }
     });
     service?.addListener(this);
-    ref.listenManual(
-      appSettingProvider.select((state) => state.autoLaunch),
-      (prev, next) {
-        if (prev != next) {
-          debouncer.call(
-            FunctionTag.autoLaunch,
-            () {
-              autoLaunch.updateStatus(next);
-            },
-          );
-        }
-      },
-    );
   }
 
   @override
