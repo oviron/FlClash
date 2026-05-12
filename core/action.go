@@ -211,8 +211,20 @@ func handleAction(action *Action, result ActionResult) {
 			result.success(updateExternalProvider(params.Type, params.Name))
 		}()
 		return
+	case getTrafficMethod:
+		result.success(handleGetTraffic())
+		return
+	case getTotalTrafficMethod:
+		result.success(handleGetTotalTraffic())
+		return
+	case getMemoryMethod:
+		result.success(handleGetMemory())
+		return
 	case getConnectionsMethod:
 		result.success(handleGetConnections())
+		return
+	case queryProxyGroupOrderMethod:
+		result.success(queryProxyGroupOrder())
 		return
 	case subscribeConnectionsMethod:
 		handleSubscribeConnections()

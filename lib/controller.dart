@@ -1140,8 +1140,13 @@ extension CommonControllerExt on AppController {
     if (startTime != null) {
       final startTimeStamp = startTime.millisecondsSinceEpoch;
       final nowTimeStamp = DateTime.now().millisecondsSinceEpoch;
-      _ref.read(runTimeProvider.notifier).value = nowTimeStamp - startTimeStamp;
+      final delta = nowTimeStamp - startTimeStamp;
+      _ref.read(runTimeProvider.notifier).value = delta;
+      if (delta < 1000) {
+        commonPrint.log('updateRunTime delta=$delta startTime=$startTime');
+      }
     } else {
+      commonPrint.log('updateRunTime startTime=null (timer will hide)');
       _ref.read(runTimeProvider.notifier).value = null;
     }
   }

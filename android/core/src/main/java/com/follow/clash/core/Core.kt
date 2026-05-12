@@ -128,6 +128,8 @@ data object Core {
 
     external fun getTraffic(): String
 
+    external fun getTotalTraffic(): String
+
     init {
         System.loadLibrary("core")
     }

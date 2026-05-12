@@ -23,10 +23,12 @@ import (
 )
 
 var (
-	currentConfig *config.Config
-	version       = 0
-	isRunning     = false
-	runLock       sync.Mutex
+	currentConfig     *config.Config
+	version           = 0
+	isRunning         = false
+	runLock           sync.Mutex
+	proxyGroupOrder   []string
+	proxyGroupOrderMu sync.RWMutex
 )
 
 func updateListeners() {
@@ -169,15 +171,46 @@ func applyConfig(params *SetupParams) error {
 	runtime.GC()
 	runLock.Lock()
 	defer runLock.Unlock()
+	configPath := filepath.Join(C.Path.HomeDir(), "config.yaml")
 	var err error
-	currentConfig, err = executor.ParseWithPath(filepath.Join(C.Path.HomeDir(), "config.yaml"))
+	currentConfig, err = executor.ParseWithPath(configPath)
 	if err != nil {
 		currentConfig, _ = config.ParseRawConfig(config.DefaultRawConfig())
 	}
+	captureProxyGroupOrder(configPath)
 	executor.ApplyConfig(currentConfig, true)
 	patchSelectGroup(params.SelectedMap)
 	updateListeners()
 	return err
+}
+
+func captureProxyGroupOrder(path string) {
+	order := []string{}
+	defer func() {
+		proxyGroupOrderMu.Lock()
+		proxyGroupOrder = order
+		proxyGroupOrderMu.Unlock()
+	}()
+	buf, rerr := readFile(path)
+	if rerr != nil {
+		return
+	}
+	raw, perr := config.UnmarshalRawConfig(buf)
+	if perr != nil || raw == nil {
+		return
+	}
+	for _, g := range raw.ProxyGroup {
+		if name, ok := g["name"].(string); ok && name != "" {
+			order = append(order, name)
+		}
+	}
+}
+
+func queryProxyGroupOrder() string {
+	proxyGroupOrderMu.RLock()
+	defer proxyGroupOrderMu.RUnlock()
+	data, _ := json.Marshal(proxyGroupOrder)
+	return string(data)
 }
 
 func UnmarshalJson(data []byte, v any) error {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/metacubex/mihomo/component/resolver"
 	"github.com/metacubex/mihomo/listener"
@@ -51,4 +52,14 @@ func handleGetTraffic() string {
 	up, down := statistic.DefaultManager.Now()
 	data, _ := json.Marshal(map[string]int64{"up": up, "down": down})
 	return string(data)
+}
+
+func handleGetTotalTraffic() string {
+	up, down := statistic.DefaultManager.Total()
+	data, _ := json.Marshal(map[string]int64{"up": up, "down": down})
+	return string(data)
+}
+
+func handleGetMemory() string {
+	return fmt.Sprintf("%d", statistic.DefaultManager.Memory())
 }

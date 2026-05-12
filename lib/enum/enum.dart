@@ -232,11 +232,15 @@ enum ActionMethod {
   queryExternalProviders,
   getExternalProvider,
   updateExternalProvider,
+  getTraffic,
+  getTotalTraffic,
+  getMemory,
   getConnections,
   subscribeConnections,
   unsubscribeConnections,
   closeConnection,
   closeAllConnections,
+  queryProxyGroupOrder,
 }
 
 enum AuthorizeCode { none, success, error }

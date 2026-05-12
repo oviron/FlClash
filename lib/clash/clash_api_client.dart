@@ -112,10 +112,6 @@ class ClashApiClient {
   }
 
 
-  Future<Map<String, dynamic>?> getTraffic() => _getJson('/traffic');
-
-  Future<Map<String, dynamic>?> getMemory() => _getJson('/memory');
-
   Future<Map<String, dynamic>?> getProxies() => _getJson('/proxies');
 
   Future<bool> setProxy({required String group, required String name}) =>

@@ -280,11 +280,15 @@ const _$ActionMethodEnumMap = {
   ActionMethod.queryExternalProviders: 'queryExternalProviders',
   ActionMethod.getExternalProvider: 'getExternalProvider',
   ActionMethod.updateExternalProvider: 'updateExternalProvider',
+  ActionMethod.getTraffic: 'getTraffic',
+  ActionMethod.getTotalTraffic: 'getTotalTraffic',
+  ActionMethod.getMemory: 'getMemory',
   ActionMethod.getConnections: 'getConnections',
   ActionMethod.subscribeConnections: 'subscribeConnections',
   ActionMethod.unsubscribeConnections: 'unsubscribeConnections',
   ActionMethod.closeConnection: 'closeConnection',
   ActionMethod.closeAllConnections: 'closeAllConnections',
+  ActionMethod.queryProxyGroupOrder: 'queryProxyGroupOrder',
 };
 
 _ProxiesData _$ProxiesDataFromJson(Map<String, dynamic> json) => _ProxiesData(

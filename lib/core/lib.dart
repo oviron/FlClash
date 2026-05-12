@@ -94,22 +94,6 @@ class CoreLib extends CoreHandlerInterface {
     return null;
   }
 
-  Map<String, dynamic>? _trafficCache;
-  DateTime? _trafficCachedAt;
-
-  Future<Map<String, dynamic>?> _cachedTraffic() async {
-    final at = _trafficCachedAt;
-    if (at != null &&
-        DateTime.now().difference(at) < const Duration(milliseconds: 900)) {
-      return _trafficCache;
-    }
-    final api = await _ensureClashApi();
-    if (api == null) return null;
-    _trafficCache = await api.getTraffic();
-    _trafficCachedAt = DateTime.now();
-    return _trafficCache;
-  }
-
   @override
   Future<ProxiesData> getProxies() async {
     final api = await _ensureClashApi();
@@ -125,12 +109,31 @@ class CoreLib extends CoreHandlerInterface {
       'Relay',
       'LoadBalance',
     };
-    final all = <String>[];
+    final orderRaw = await invoke<String>(
+      method: ActionMethod.queryProxyGroupOrder,
+    );
+    final orderFromYaml = <String>[];
+    if (orderRaw != null && orderRaw.isNotEmpty) {
+      try {
+        final decoded = json.decode(orderRaw);
+        if (decoded is List) {
+          for (final n in decoded) {
+            if (n is String) orderFromYaml.add(n);
+          }
+        }
+      } catch (_) {}
+    }
+    final groupsSet = <String>{};
     proxies.forEach((name, raw) {
       if (raw is Map && groupTypes.contains(raw['type'])) {
-        all.add(name as String);
+        groupsSet.add(name as String);
       }
     });
+    final all = <String>[];
+    for (final name in orderFromYaml) {
+      if (groupsSet.remove(name)) all.add(name);
+    }
+    all.addAll(groupsSet);
     return ProxiesData(
       proxies: Map<String, dynamic>.from(proxies),
       all: all,
@@ -150,28 +153,17 @@ class CoreLib extends CoreHandlerInterface {
 
   @override
   Future<String> getTraffic() async {
-    final data = await _cachedTraffic();
-    if (data == null) return '';
-    return json.encode({'up': data['up'] ?? 0, 'down': data['down'] ?? 0});
+    return (await invoke<String>(method: ActionMethod.getTraffic)) ?? '';
   }
 
   @override
   Future<String> getTotalTraffic() async {
-    final data = await _cachedTraffic();
-    if (data == null) return '';
-    return json.encode({
-      'up': data['upTotal'] ?? 0,
-      'down': data['downTotal'] ?? 0,
-    });
+    return (await invoke<String>(method: ActionMethod.getTotalTraffic)) ?? '';
   }
 
   @override
   Future<String> getMemory() async {
-    final api = await _ensureClashApi();
-    if (api == null) return '0';
-    final data = await api.getMemory();
-    if (data == null) return '0';
-    return '${data['inuse'] ?? 0}';
+    return (await invoke<String>(method: ActionMethod.getMemory)) ?? '0';
   }
 
   @override

@@ -144,17 +144,28 @@ class GlobalState {
   }
 
   Future<void> handleStart([UpdateTasks? tasks]) async {
+    final before = startTime;
     startTime ??= DateTime.now();
+    commonPrint.log(
+      'handleStart startTime: before=$before after=$startTime '
+      'tasks=${tasks?.length ?? this.tasks.length}',
+    );
     await coreController.startListener();
     await service?.start();
     unawaited(startUpdateTasks(tasks));
   }
 
   Future<void> updateStartTime() async {
-    startTime = await service?.getRunTime();
+    final fromService = await service?.getRunTime();
+    commonPrint.log(
+      'updateStartTime service.getRunTime=$fromService '
+      'previous=$startTime',
+    );
+    startTime = fromService;
   }
 
   Future<void> handleStop() async {
+    commonPrint.log('handleStop startTime=$startTime');
     startTime = null;
     await coreController.stopListener();
     await service?.stop();

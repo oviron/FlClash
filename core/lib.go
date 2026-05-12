@@ -234,6 +234,11 @@ func getTraffic() *C.char {
 	return C.CString(handleGetTraffic())
 }
 
+//export getTotalTraffic
+func getTotalTraffic() *C.char {
+	return C.CString(handleGetTotalTraffic())
+}
+
 func sendMessage(message Message) {
 	eventListenerMu.RLock()
 	defer eventListenerMu.RUnlock()
