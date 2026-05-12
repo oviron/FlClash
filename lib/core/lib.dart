@@ -211,40 +211,53 @@ class CoreLib extends CoreHandlerInterface {
   Future<String> getExternalProviders() async {
     final api = await _ensureClashApi();
     if (api == null) return '[]';
-    final data = await api.getProviders();
-    if (data == null) return '[]';
-    final providers = data['providers'];
-    if (providers is! Map) return '[]';
+    final results = await Future.wait([
+      api.getProviders(),
+      api.getRuleProviders(),
+    ]);
     final filtered = <Map<String, dynamic>>[];
+    _collectProviders(results[0], filtered);
+    _collectProviders(results[1], filtered);
+    return json.encode(filtered);
+  }
+
+  void _collectProviders(
+    Map<String, dynamic>? data,
+    List<Map<String, dynamic>> out,
+  ) {
+    if (data == null) return;
+    final providers = data['providers'];
+    if (providers is! Map) return;
     providers.forEach((name, raw) {
       if (raw is! Map) return;
       final vehicle = raw['vehicleType'] ?? raw['vehicle-type'];
       if (vehicle == null || vehicle == 'Compatible') return;
-      filtered.add({
+      out.add({
         'name': raw['name'] ?? name,
         'type': raw['type'] ?? '',
         'vehicle-type': vehicle,
-        'count': raw['count'] ?? 0,
+        'count': raw['count'] ?? raw['ruleCount'] ?? raw['rule-count'] ?? 0,
         'path': raw['path'] ?? '',
         'update-at': raw['updatedAt'] ?? raw['updated-at'] ?? '',
         'subscription-info':
             raw['subscriptionInfo'] ?? raw['subscription-info'],
       });
     });
-    return json.encode(filtered);
   }
 
   @override
   Future<String> getExternalProvider(String externalProviderName) async {
     final api = await _ensureClashApi();
     if (api == null) return '';
-    final data = await api.getProvider(externalProviderName);
+    final data = await api.getProvider(externalProviderName) ??
+        await api.getRuleProvider(externalProviderName);
     if (data == null) return '';
     return json.encode({
       'name': data['name'] ?? externalProviderName,
       'type': data['type'] ?? '',
       'vehicle-type': data['vehicleType'] ?? data['vehicle-type'] ?? '',
-      'count': data['count'] ?? 0,
+      'count':
+          data['count'] ?? data['ruleCount'] ?? data['rule-count'] ?? 0,
       'path': data['path'] ?? '',
       'update-at': data['updatedAt'] ?? data['updated-at'] ?? '',
       'subscription-info':
@@ -256,8 +269,9 @@ class CoreLib extends CoreHandlerInterface {
   Future<String> updateExternalProvider(String providerName) async {
     final api = await _ensureClashApi();
     if (api == null) return 'controller unavailable';
-    final ok = await api.updateProvider(providerName);
-    return ok ? '' : 'update failed';
+    if (await api.updateProvider(providerName)) return '';
+    if (await api.updateProvider(providerName, isRule: true)) return '';
+    return 'update failed';
   }
 }
 

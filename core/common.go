@@ -175,8 +175,6 @@ func applyConfig(params *SetupParams) error {
 		currentConfig, _ = config.ParseRawConfig(config.DefaultRawConfig())
 	}
 	executor.ApplyConfig(currentConfig, true)
-	log.SetLevel(log.DEBUG)
-	log.Infoln("[DIAG] log-level forced to DEBUG for provider-fetch diagnosis")
 	patchSelectGroup(params.SelectedMap)
 	updateListeners()
 	return err

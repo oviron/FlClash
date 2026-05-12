@@ -149,8 +149,13 @@ class ClashApiClient {
   /// `{providers: {name: {...}}}`. Adds VehicleType + SubscriptionInfo for external providers.
   Future<Map<String, dynamic>?> getProviders() => _getJson('/providers/proxies');
 
+  Future<Map<String, dynamic>?> getRuleProviders() => _getJson('/providers/rules');
+
   Future<Map<String, dynamic>?> getProvider(String name) =>
       _getJson('/providers/proxies/${Uri.encodeComponent(name)}');
+
+  Future<Map<String, dynamic>?> getRuleProvider(String name) =>
+      _getJson('/providers/rules/${Uri.encodeComponent(name)}');
 
   /// `{downloadTotal, uploadTotal, connections: [...]}`.
   Future<Map<String, dynamic>?> getConnections() => _getJson('/connections');
@@ -231,19 +236,21 @@ class ClashApiClient {
     }
   }
 
-  /// PUT /providers/proxies/{name}. Triggers refetch of the provider URL.
-  Future<bool> updateProvider(String name) async {
+  /// PUT /providers/proxies/{name} or /providers/rules/{name}. Triggers refetch.
+  Future<bool> updateProvider(String name, {bool isRule = false}) async {
     final dio = _dio;
     if (dio == null) return false;
+    final base = isRule ? '/providers/rules' : '/providers/proxies';
+    final path = '$base/${Uri.encodeComponent(name)}';
     try {
       final res = await dio.put<dynamic>(
-        '/providers/proxies/${Uri.encodeComponent(name)}',
+        path,
         options: Options(validateStatus: (code) => code != null && code < 400),
       );
       return res.statusCode != null && res.statusCode! < 400;
     } on DioException catch (e) {
       commonPrint.log(
-        '[ClashApi] PUT /providers/proxies/$name failed: ${e.message}',
+        '[ClashApi] PUT $path failed: ${e.message}',
         logLevel: LogLevel.warning,
       );
       return false;
