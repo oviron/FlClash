@@ -116,7 +116,25 @@ class CoreLib extends CoreHandlerInterface {
     if (api == null) return const ProxiesData(proxies: {}, all: []);
     final data = await api.getProxies();
     if (data == null) return const ProxiesData(proxies: {}, all: []);
-    return ProxiesData.fromJson(data);
+    final proxies = data['proxies'];
+    if (proxies is! Map) return const ProxiesData(proxies: {}, all: []);
+    const groupTypes = {
+      'Selector',
+      'URLTest',
+      'Fallback',
+      'Relay',
+      'LoadBalance',
+    };
+    final all = <String>[];
+    proxies.forEach((name, raw) {
+      if (raw is Map && groupTypes.contains(raw['type'])) {
+        all.add(name as String);
+      }
+    });
+    return ProxiesData(
+      proxies: Map<String, dynamic>.from(proxies),
+      all: all,
+    );
   }
 
   @override
