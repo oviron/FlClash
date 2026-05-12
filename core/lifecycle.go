@@ -22,10 +22,6 @@ func handleInitClash(paramsString string) bool {
 	}
 	version = params.Version
 	constant.SetHomeDir(params.HomeDir)
-	if err := InitController(); err != nil {
-		log.Errorln("[Controller] %v", err)
-		return false
-	}
 	isInit = true
 	return isInit
 }

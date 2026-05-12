@@ -171,8 +171,42 @@ func handleAction(action *Action, result ActionResult) {
 		}
 		handleDelFile(path, result)
 		return
-	case getControllerEndpointMethod:
-		result.success(GetControllerEndpoint())
+	case getProxiesMethod:
+		result.success(handleGetProxies())
+		return
+	case changeProxyMethod:
+		s, ok := action.Data.(string)
+		if !ok {
+			result.error("invalid data type")
+			return
+		}
+		var params ChangeProxyParams
+		if err := json.Unmarshal([]byte(s), &params); err != nil {
+			result.error(err.Error())
+			return
+		}
+		if params.GroupName == nil || params.ProxyName == nil {
+			result.error("group-name and proxy-name are required")
+			return
+		}
+		if err := handleChangeProxy(*params.GroupName, *params.ProxyName); err != nil {
+			result.error(err.Error())
+			return
+		}
+		result.success(true)
+		return
+	case testDelayMethod:
+		s, ok := action.Data.(string)
+		if !ok {
+			result.error("invalid data type")
+			return
+		}
+		var params TestDelayParams
+		if err := json.Unmarshal([]byte(s), &params); err != nil {
+			result.error(err.Error())
+			return
+		}
+		result.success(handleAsyncTestDelay(params.ProxyName, params.TestUrl, int(params.Timeout)))
 		return
 	case queryExternalProvidersMethod:
 		result.success(queryExternalProviders())

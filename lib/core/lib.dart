@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:fl_clash/clash/clash_api_client.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -14,8 +13,6 @@ class CoreLib extends CoreHandlerInterface {
   static CoreLib? _instance;
 
   Completer<bool> _connectedCompleter = Completer();
-  ClashApiClient? _clashApi;
-  Future<bool>? _clashApiReady;
 
   CoreLib._internal();
 
@@ -37,9 +34,6 @@ class CoreLib extends CoreHandlerInterface {
 
   @override
   Future<bool> destroy() async {
-    await _clashApi?.dispose();
-    _clashApi = null;
-    _clashApiReady = null;
     return true;
   }
 
@@ -49,9 +43,6 @@ class CoreLib extends CoreHandlerInterface {
       return false;
     }
     _connectedCompleter = Completer();
-    await _clashApi?.dispose();
-    _clashApi = null;
-    _clashApiReady = null;
     return service?.shutdown() ?? true;
   }
 
@@ -74,31 +65,23 @@ class CoreLib extends CoreHandlerInterface {
   @override
   Completer<dynamic> get completer => _connectedCompleter;
 
-  Future<ClashApiClient?> _ensureClashApi() async {
-    final ready = _clashApiReady;
-    if (ready != null) return (await ready) ? _clashApi : null;
-    final completer = Completer<bool>();
-    _clashApiReady = completer.future;
-    final client = ClashApiClient(getEndpoint: () async {
-      return (await invoke<String>(
-            method: ActionMethod.getControllerEndpoint,
-          )) ??
-          '';
-    });
-    _clashApi = client;
-    final ok = await client.connect();
-    completer.complete(ok);
-    if (ok) return client;
-    _clashApi = null;
-    _clashApiReady = null;
-    return null;
-  }
-
   @override
   Future<ProxiesData> getProxies() async {
-    final api = await _ensureClashApi();
-    if (api == null) return const ProxiesData(proxies: {}, all: []);
-    final data = await api.getProxies();
+    final raw = await invoke<String>(method: ActionMethod.getProxies);
+    if (raw == null || raw.isEmpty) {
+      return const ProxiesData(proxies: {}, all: []);
+    }
+    Map<String, dynamic>? data;
+    try {
+      final decoded = json.decode(raw);
+      if (decoded is Map) data = Map<String, dynamic>.from(decoded);
+    } catch (e) {
+      commonPrint.log(
+        '[CoreLib] getProxies decode failed: $e',
+        logLevel: LogLevel.warning,
+      );
+      return const ProxiesData(proxies: {}, all: []);
+    }
     if (data == null) return const ProxiesData(proxies: {}, all: []);
     final proxies = data['proxies'];
     if (proxies is! Map) return const ProxiesData(proxies: {}, all: []);
@@ -142,13 +125,14 @@ class CoreLib extends CoreHandlerInterface {
 
   @override
   Future<String> changeProxy(ChangeProxyParams changeProxyParams) async {
-    final api = await _ensureClashApi();
-    if (api == null) return 'controller unavailable';
-    final ok = await api.setProxy(
-      group: changeProxyParams.groupName,
-      name: changeProxyParams.proxyName,
+    final ok = await invoke<bool>(
+      method: ActionMethod.changeProxy,
+      data: json.encode({
+        'group-name': changeProxyParams.groupName,
+        'proxy-name': changeProxyParams.proxyName,
+      }),
     );
-    return ok ? '' : 'set proxy failed';
+    return ok == true ? '' : 'set proxy failed';
   }
 
   @override
@@ -168,14 +152,18 @@ class CoreLib extends CoreHandlerInterface {
 
   @override
   Future<String> asyncTestDelay(String url, String proxyName) async {
-    final api = await _ensureClashApi();
-    if (api == null) {
-      return json.encode(Delay(name: proxyName, value: -1, url: url));
-    }
-    final delay = await api.testDelay(name: proxyName, url: url);
-    return json.encode(Delay(name: proxyName, value: delay, url: url));
+    final delay = await invoke<int>(
+      method: ActionMethod.testDelay,
+      data: json.encode({
+        'proxy-name': proxyName,
+        'test-url': url,
+        'timeout': 5000,
+      }),
+    );
+    return json.encode(
+      Delay(name: proxyName, value: delay ?? -1, url: url),
+    );
   }
-
 }
 
 CoreLib? get coreLib => system.isAndroid ? CoreLib() : null;
