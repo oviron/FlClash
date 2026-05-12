@@ -597,10 +597,8 @@ SharedState sharedState(Ref ref) {
       (state) => VM2(state?.label ?? '', state?.selectedMap ?? {}),
     ),
   );
-  final appSettingVM2 = ref.watch(
-    appSettingProvider.select(
-      (state) => VM2(state.crashlytics, state.testUrl),
-    ),
+  final testUrl = ref.watch(
+    appSettingProvider.select((state) => state.testUrl),
   );
   final bypassDomain = ref.watch(
     networkSettingProvider.select((state) => state.bypassDomain),
@@ -624,14 +622,11 @@ SharedState sharedState(Ref ref) {
       vpnSetting.accessControlProps;
   final currentProfileName = currentProfileVM2.a;
   final selectedMap = currentProfileVM2.b;
-  final crashlytics = appSettingVM2.a;
-  final testUrl = appSettingVM2.b;
   final stack = clashConfigVM2.a;
   final port = clashConfigVM2.b;
   return SharedState(
     currentProfileName: currentProfileName,
     stopText: appLocalizations.stop,
-    crashlytics: crashlytics,
     stopTip: appLocalizations.stopVpn,
     startTip: appLocalizations.startVpn,
     setupParams: SetupParams(selectedMap: selectedMap, testUrl: testUrl),

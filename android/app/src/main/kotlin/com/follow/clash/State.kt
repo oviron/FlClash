@@ -116,14 +116,12 @@ object State {
     }
 
     suspend fun syncState() {
-        GlobalState.setCrashlytics(sharedState.crashlytics)
         Service.updateNotificationParams(
             NotificationParams(
                 title = sharedState.currentProfileName,
                 stopText = sharedState.stopText,
             )
         )
-        Service.setCrashlytics(sharedState.crashlytics)
     }
 
     private suspend fun setupAndStart() {
