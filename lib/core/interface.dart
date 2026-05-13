@@ -23,8 +23,9 @@ mixin CoreInterface {
 
   Future<String> asyncTestDelay(String url, String proxyName);
 
-  /// Probe exit-IP для default-route. `mode` — Dart-side значение
-  /// ('rule'/'global'/'direct') чтобы обойти race с debounced mihomo sync.
+  /// Probe exit-IP for the default route. `mode` is the Dart-side value
+  /// ('rule'/'global'/'direct') passed to avoid a race with mihomo's
+  /// debounced config sync.
   Future<String> probeCurrentProxyIp({String mode = ''});
 
   Future<String> updateConfig(UpdateParams updateParams);

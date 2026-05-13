@@ -343,8 +343,9 @@ class NetworkDetection extends _$NetworkDetection
     final isStart = ref.read(isStartProvider);
     if (!isStart && _preIsStart == false && state.ipInfo != null) return;
 
-    // Monotonic generation вместо millisecond-timestamp: два вызова в одну ms
-    // получат разные generation и stale-callback guard сработает надёжно.
+    // Monotonic generation counter instead of a millisecond timestamp: two
+    // calls within the same ms get distinct generations, so the stale-callback
+    // guard below remains reliable.
     final gen = ++_generation;
     _cancelToken?.cancel();
     _cancelToken = CancelToken();
@@ -353,7 +354,7 @@ class NetworkDetection extends _$NetworkDetection
     _preIsStart = isStart;
     final res = await request.checkIp(cancelToken: _cancelToken);
     commonPrint.log('checkIp res: $res');
-    if (gen != _generation) return; // более новый _checkIp() уже стартовал
+    if (gen != _generation) return; // a newer _checkIp() has started
     if (res.isError) {
       state = state.copyWith(isLoading: true, ipInfo: null);
       return;

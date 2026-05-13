@@ -82,8 +82,8 @@ class Request {
   };
 
   Future<Result<IpInfo?>> checkIp({CancelToken? cancelToken}) async {
-    // VPN on → JNI probe (mode-aware target, минует user rules).
-    // VPN off → 7-source dio fallback ниже (прямой системный путь).
+    // VPN on  → JNI probe (mode-aware target, bypasses user rules).
+    // VPN off → 7-source dio fallback below (direct system path).
     if (appController.isStart) {
       try {
         final raw = await coreController.probeCurrentProxyIp(

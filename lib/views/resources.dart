@@ -73,9 +73,9 @@ class _ResourcesViewState extends ConsumerState<ResourcesView> {
     if (messages.isNotEmpty) {
       unawaited(globalState.showAllUpdatingMessagesDialog(messages));
     } else if (mounted) {
-      // mihomo skip'ает write при unchanged content (update_geo.go:121) →
-      // mtime файла не меняется → "X ago" label остаётся. SnackBar даёт
-      // явный фидбэк что проверка прошла.
+      // mihomo skips the write when content is unchanged (update_geo.go:121),
+      // so file mtime does not move and the "X ago" label stays the same.
+      // The SnackBar gives explicit feedback that the check ran.
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(appLocalizations.resourcesUpToDate),
         duration: const Duration(seconds: 2),

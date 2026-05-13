@@ -12,14 +12,16 @@ import (
 	"github.com/metacubex/mihomo/tunnel"
 )
 
-// rejectedProbeBody — sentinel JSON для Dart, чтобы UI нарисовала REJECT-badge
-// вместо вечного спиннера, когда default-route у пользователя — REJECT.
+// rejectedProbeBody is a sentinel JSON the Dart side checks for so the UI can
+// render a REJECT badge instead of an endless spinner when the user's default
+// route is REJECT.
 const rejectedProbeBody = `{"status":"REJECT"}`
 
-// handleProbeCurrentProxyIp возвращает JSON ipinfo.io для default-route exit-IP.
-// Target выбирается по mode'у Dart UI (modeHint) и затем минует rules через
-// WithSpecialProxy (resolveMetadata делает early-return при SpecialProxy != "").
-// Пустой modeHint → fallback на tunnel.Mode() (может lag'нуть на смену mode).
+// handleProbeCurrentProxyIp returns ipinfo.io JSON for the default-route
+// exit-IP. The target is picked from the Dart UI mode (modeHint), then the
+// request is sent with WithSpecialProxy so resolveMetadata early-returns when
+// SpecialProxy is non-empty and user rules are bypassed. An empty modeHint
+// falls back to tunnel.Mode(), which may lag a mode switch by one debounce.
 func handleProbeCurrentProxyIp(modeHint string) string {
 	target := determineProbeTarget(modeHint)
 	if target == "REJECT" {
@@ -53,16 +55,16 @@ func determineProbeTarget(modeHint string) string {
 	case tunnel.Global:
 		return "GLOBAL"
 	}
-	// Rule mode: первое top-level MATCH правило = default route для трафика
-	// который не попал ни под одно более узкое правило. Sub-rules' MATCH
-	// scoped к sub-rule, не считаются.
+	// Rule mode: the first top-level MATCH rule is the default route for
+	// traffic that didn't hit any narrower rule. A MATCH inside a sub-rule is
+	// scoped to that sub-rule and does not count.
 	for _, rule := range tunnel.Rules() {
 		if rule.RuleType() == C.MATCH {
 			return rule.Adapter()
 		}
 	}
-	// MATCH вообще отсутствует — mihomo дропает unspecified traffic. Показать
-	// REJECT honestly вместо лживого GLOBAL[selected].
+	// No MATCH at all: mihomo drops unspecified traffic. Surface REJECT
+	// honestly instead of lying with GLOBAL[selected].
 	return "REJECT"
 }
 

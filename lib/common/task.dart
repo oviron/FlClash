@@ -222,11 +222,12 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     rules = List<String>.from(rawConfig['rules']);
   }
   rawConfig.remove('rules');
-  // Mihomo's INNER traffic → DIRECT, чтобы обойти whitelist `MATCH,REJECT`.
-  // Покрывает оба пути: GeoX/MMDB fetch (Type=INNER, Process="mihomo") + DoH
-  // запросы при `respect-rules: true` (Type=INNER, Process=""). IN-TYPE
-  // матчит по Type, не зависит от Process. Если user уже указал IN-TYPE,INNER
-  // или PROCESS-NAME,mihomo — уважаем его выбор.
+  // Route mihomo's own INNER traffic to DIRECT so whitelist `MATCH,REJECT`
+  // catch-all does not strand it. Covers both INNER paths: GeoX/MMDB fetches
+  // (Type=INNER, Process="mihomo") and DoH lookups under `respect-rules: true`
+  // (Type=INNER, Process=""). IN-TYPE matches by Type and ignores Process, so
+  // it catches both. If the user already has IN-TYPE,INNER,X or
+  // PROCESS-NAME,mihomo,X, respect their choice.
   const innerBypassRule = 'IN-TYPE,INNER,DIRECT';
   final hasUserInnerRule = rules.any(
     (r) =>

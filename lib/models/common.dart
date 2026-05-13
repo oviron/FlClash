@@ -366,8 +366,8 @@ abstract class IpInfo with _$IpInfo {
   const factory IpInfo({required String ip, required String countryCode}) =
       _IpInfo;
 
-  // Sentinel для default-route REJECT (см. core/probe.go::rejectedProbeBody).
-  // Не ISO-3166 — выбран длиннее 2 символов чтобы исключить любую коллизию.
+  // Sentinel for default-route REJECT (see core/probe.go::rejectedProbeBody).
+  // Not an ISO-3166 code; longer than 2 chars to rule out any collision.
   static const rejectedCountryCode = 'REJECT';
   static IpInfo rejected() =>
       const IpInfo(ip: '', countryCode: rejectedCountryCode);
