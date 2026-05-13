@@ -222,6 +222,17 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     rules = List<String>.from(rawConfig['rules']);
   }
   rawConfig.remove('rules');
+  // Force mihomo's own outbound fetches (GeoX updater, MMDB autodownload, any
+  // future internal HTTP) to bypass user rules. In a whitelist-mode profile
+  // with `MATCH,REJECT` at the tail, mihomo's internal fetches would get
+  // caught by the catch-all REJECT and silently die. Same infra-injection
+  // pattern as `proxyProvider['proxy'] ??= 'DIRECT'` above.
+  // `inner.HandleTcp` in mihomo unconditionally sets `metadata.Process="mihomo"`
+  // for every INNER request, so PROCESS-NAME match is reliable.
+  const innerBypassRule = 'PROCESS-NAME,mihomo,DIRECT';
+  if (!rules.contains(innerBypassRule)) {
+    rules.insert(0, innerBypassRule);
+  }
   if (addedRules.isNotEmpty) {
     final parsedNewRules = addedRules
         .map((item) => ParsedRule.parseString(item.value))
