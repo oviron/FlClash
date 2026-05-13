@@ -5,6 +5,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -23,51 +24,95 @@ class GeoItem {
     required this.key,
     required this.fileName,
   });
+
+  String get updatingKey => 'geodata_$key';
 }
 
-class ResourcesView extends StatelessWidget {
+const _geoItems = <GeoItem>[
+  GeoItem(label: 'GEOIP', fileName: GEOIP, key: 'geoip'),
+  GeoItem(label: 'GEOSITE', fileName: GEOSITE, key: 'geosite'),
+  GeoItem(label: 'MMDB', fileName: MMDB, key: 'mmdb'),
+  GeoItem(label: 'ASN', fileName: ASN, key: 'asn'),
+];
+
+Future<String> _updateGeoItem(GeoItem item) async {
+  final message = await coreController.updateGeoData(
+    UpdateGeoDataParams(geoName: item.fileName, geoType: item.label),
+  );
+  return message;
+}
+
+class ResourcesView extends ConsumerStatefulWidget {
   const ResourcesView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    const geoItems = <GeoItem>[
-      GeoItem(label: 'GEOIP', fileName: GEOIP, key: 'geoip'),
-      GeoItem(label: 'GEOSITE', fileName: GEOSITE, key: 'geosite'),
-      GeoItem(label: 'MMDB', fileName: MMDB, key: 'mmdb'),
-      GeoItem(label: 'ASN', fileName: ASN, key: 'asn'),
-    ];
+  ConsumerState<ResourcesView> createState() => _ResourcesViewState();
+}
 
+class _ResourcesViewState extends ConsumerState<ResourcesView> {
+  Future<void> _updateAllGeoData() async {
+    final messages = <UpdatingMessage>[];
+    final futures = _geoItems.map<Future<void>>((item) async {
+      final updatingNotifier = ref.read(
+        isUpdatingProvider(item.updatingKey).notifier,
+      );
+      if (updatingNotifier.value) return;
+      updatingNotifier.value = true;
+      try {
+        final message = await _updateGeoItem(item);
+        if (message.isNotEmpty) {
+          messages.add(UpdatingMessage(label: item.label, message: message));
+        }
+      } catch (e) {
+        messages.add(UpdatingMessage(label: item.label, message: e.toString()));
+      } finally {
+        updatingNotifier.value = false;
+      }
+    });
+    await Future.wait(futures);
+    if (messages.isNotEmpty) {
+      unawaited(globalState.showAllUpdatingMessagesDialog(messages));
+    }
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return CommonScaffold(
       title: appLocalizations.resources,
+      actions: [
+        IconButton(
+          onPressed: _updateAllGeoData,
+          icon: const Icon(Icons.sync),
+        ),
+      ],
       body: ListView.separated(
         itemBuilder: (_, index) {
-          final geoItem = geoItems[index];
+          final geoItem = _geoItems[index];
           return GeoDataListItem(geoItem: geoItem);
         },
         separatorBuilder: (BuildContext context, int index) {
           return const Divider(height: 0);
         },
-        itemCount: geoItems.length,
+        itemCount: _geoItems.length,
       ),
     );
   }
 }
 
-class GeoDataListItem extends StatefulWidget {
+class GeoDataListItem extends ConsumerStatefulWidget {
   final GeoItem geoItem;
 
   const GeoDataListItem({super.key, required this.geoItem});
 
   @override
-  State<GeoDataListItem> createState() => _GeoDataListItemState();
+  ConsumerState<GeoDataListItem> createState() => _GeoDataListItemState();
 }
 
-class _GeoDataListItemState extends State<GeoDataListItem> {
-  final isUpdating = ValueNotifier<bool>(false);
-
+class _GeoDataListItemState extends ConsumerState<GeoDataListItem> {
   GeoItem get geoItem => widget.geoItem;
 
-  Future<void> _updateUrl(String url, WidgetRef ref) async {
+  Future<void> _updateUrl(String url) async {
     final defaultMap = defaultGeoXUrl.toJson();
     final newUrl = await globalState.showCommonDialog<String>(
       child: UpdateGeoUrlFormDialog(
@@ -101,6 +146,20 @@ class _GeoDataListItemState extends State<GeoDataListItem> {
     final lastModified = await file.lastModified();
     final size = await file.length();
     return FileInfo(size: size, lastModified: lastModified);
+  }
+
+  Future<void> _handleUpdateGeoDataItem() async {
+    final updatingNotifier = ref.read(
+      isUpdatingProvider(geoItem.updatingKey).notifier,
+    );
+    if (updatingNotifier.value) return;
+    updatingNotifier.value = true;
+    await appController.safeRun<void>(() async {
+      final message = await _updateGeoItem(geoItem);
+      if (message.isNotEmpty) throw message;
+    }, silence: false);
+    updatingNotifier.value = false;
+    if (mounted) setState(() {});
   }
 
   Widget _buildSubtitle() {
@@ -145,36 +204,29 @@ class _GeoDataListItemState extends State<GeoDataListItem> {
                   avatar: const Icon(Icons.edit),
                   label: appLocalizations.edit,
                   onPressed: () {
-                    _updateUrl(url, ref);
+                    _updateUrl(url);
                   },
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      child: ValueListenableBuilder(
-                        valueListenable: isUpdating,
-                        builder: (_, isUpdating, _) {
-                          return isUpdating
-                              ? const SizedBox(
-                                  height: 30,
-                                  width: 30,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(2),
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                )
-                              : CommonChip(
-                                  avatar: const Icon(Icons.sync),
-                                  label: appLocalizations.sync,
-                                  onPressed: () {
-                                    _handleUpdateGeoDataItem();
-                                  },
-                                );
-                        },
-                      ),
-                    ),
-                  ],
+                Consumer(
+                  builder: (_, ref, _) {
+                    final isUpdating = ref.watch(
+                      isUpdatingProvider(geoItem.updatingKey),
+                    );
+                    return isUpdating
+                        ? const SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: Padding(
+                              padding: EdgeInsets.all(2),
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : CommonChip(
+                            avatar: const Icon(Icons.sync),
+                            label: appLocalizations.sync,
+                            onPressed: _handleUpdateGeoDataItem,
+                          );
+                  },
                 ),
               ],
             ),
@@ -183,36 +235,6 @@ class _GeoDataListItemState extends State<GeoDataListItem> {
         );
       },
     );
-  }
-
-  Future<void> _handleUpdateGeoDataItem() async {
-    await appController.safeRun<void>(() async {
-      await updateGeoDateItem();
-    }, silence: false);
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  Future<void> updateGeoDateItem() async {
-    isUpdating.value = true;
-    try {
-      final message = await coreController.updateGeoData(
-        UpdateGeoDataParams(geoName: geoItem.fileName, geoType: geoItem.label),
-      );
-      if (message.isNotEmpty) throw message;
-    } catch (e) {
-      isUpdating.value = false;
-      rethrow;
-    }
-    isUpdating.value = false;
-    return;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    isUpdating.dispose();
   }
 
   @override
