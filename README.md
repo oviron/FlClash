@@ -1,127 +1,49 @@
-<div>
+## FlClash (oviron fork)
 
-[**简体中文**](README_zh_CN.md)
+[![License](https://img.shields.io/github/license/oviron/FlClash?style=flat-square)](LICENSE) [![Last Version](https://img.shields.io/github/release/oviron/FlClash/all.svg?style=flat-square)](https://github.com/oviron/FlClash/releases/)
 
-</div>
+Android `mihomo` client. Open source, no ads, no telemetry.
 
-## FlClash
+A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (last upstream activity: February 2026). This fork is **Android-only**: desktop platform code, Firebase/Crashlytics, the in-app updater, the External Controller toggle, and other upstream-specific layers were removed. The mihomo core was migrated from chen's submodule to `metacubex/mihomo v1.19.24` directly, and the client now talks to mihomo through a 100% JNI bridge (no REST controller).
 
-[![Downloads](https://img.shields.io/github/downloads/chen08209/FlClash/total?style=flat-square&logo=github)](https://github.com/chen08209/FlClash/releases/)[![Last Version](https://img.shields.io/github/release/chen08209/FlClash/all.svg?style=flat-square)](https://github.com/chen08209/FlClash/releases/)[![License](https://img.shields.io/github/license/chen08209/FlClash?style=flat-square)](LICENSE)
-
-[![Channel](https://img.shields.io/badge/Telegram-Channel-blue?style=flat-square&logo=telegram)](https://t.me/FlClash)
-
-A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.
-
-on Desktop:
-<p style="text-align: center;">
-    <img alt="desktop" src="snapshots/desktop.gif">
+<p align="center">
+    <img alt="mobile" src="snapshots/mobile.gif" width="45%">
 </p>
 
-on Mobile:
-<p style="text-align: center;">
-    <img alt="mobile" src="snapshots/mobile.gif">
-</p>
+## What's in this fork
 
-## Features
+- **Per-profile App Access Control** — YAML `tun.include-package` / `tun.exclude-package` are honored by `VpnService.Builder.addAllowedApplication()`. Without this, Android Auto breaks on whitelist profiles. A per-profile GUI editor with drift v2 migration, opt-in override (Profile UI > YAML > Global), and Reset-to-YAML are included.
+- **Network Rules v1** — automatic VPN on/off based on the current network (WifiNamed / AnyWifi / AnyCellular).
+- **H.7 backend** — `metacubex/mihomo v1.19.24` direct, with CMfA-style patterns: type-explicit providers API, async-callback path, push subscription for connections/log, INNER-bypass via Dart pre-process.
+- **Dashboard checkIp probe** — JNI `WithSpecialProxy` bypasses user rules so the real exit-IP shows even on whitelist profiles with `MATCH,REJECT`.
+- Stability stack: wake/Wi-Fi locks, idempotent module loader, defensive Go type-assertions, MATCH-rule guard for upstream #1959, Global proxy watchdog.
 
-✈️ Multi-platform: Android, Windows, macOS and Linux
+## Install
 
-💻 Adaptive multiple screen sizes, Multiple color themes available
+`./gradlew` is not used directly; APKs are produced by the GitHub Actions workflow in this repo.
 
-💡 Based on Material You Design, [Surfboard](https://github.com/getsurfboard/surfboard)-like UI
+```bash
+adb install -r FlClash-<version>-android-arm64-v8a.apk
+```
 
-☁️ Supports data sync via WebDAV
-
-✨ Support subscription link, Dark mode
-
-## Use
-
-### Linux
-
-⚠️ Make sure to install the following dependencies before using them
-
-   ```bash
-    sudo apt-get install libayatana-appindicator3-dev
-    sudo apt-get install libkeybinder-3.0-dev
-   ```
-
-### Android
-
-Support the following actions
-
-   ```bash
-    com.follow.clash.action.START
-    
-    com.follow.clash.action.STOP
-    
-    com.follow.clash.action.TOGGLE
-   ```
-
-## Download
-
-<a href="https://chen08209.github.io/FlClash-fdroid-repo/repo?fingerprint=789D6D32668712EF7672F9E58DEEB15FBD6DCEEC5AE7A4371EA72F2AAE8A12FD"><img alt="Get it on F-Droid" src="snapshots/get-it-on-fdroid.svg" width="200px"/></a> <a href="https://github.com/chen08209/FlClash/releases"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" width="200px"/></a>
+Releases are published under [Releases](https://github.com/oviron/FlClash/releases/) and signed with this fork's own debug keystore. Reinstalling on top of upstream-signed FlClash requires a clean reinstall once (signatures differ).
 
 ## Build
 
-1. Update submodules
-   ```bash
-   git submodule update --init --recursive
-   ```
+```bash
+git clone https://github.com/oviron/FlClash.git
+cd FlClash
+dart setup.dart android
+```
 
-2. Install `Flutter` and `Golang` environment
+Requires Flutter, Go (with cgo), Android SDK + NDK 28. The build script produces split APKs for `arm`, `arm64`, and `x86_64` in `dist/`.
 
-3. Build Application
+## License
 
-    - android
+GPL-3.0, inherited from [chen08209/FlClash](https://github.com/chen08209/FlClash). See [LICENSE](LICENSE).
 
-        1. Install  `Android SDK` ,  `Android NDK`
+## Acknowledgements
 
-        2. Set `ANDROID_NDK` environment variables
-
-        3. Run Build script
-
-           ```bash
-           dart .\setup.dart android
-           ```
-
-    - windows
-
-        1. You need a windows client
-
-        2. Install  `Gcc`，`Inno Setup`
-
-        3. Run build script
-
-           ```bash
-           dart .\setup.dart windows --arch <arm64 | amd64>
-           ```
-
-    - linux
-
-        1. You need a linux client
-
-        2. Run build script
-
-           ```bash
-           dart .\setup.dart linux --arch <arm64 | amd64>
-           ```
-
-    - macOS
-
-        1. You need a macOS client
-
-        2. Run build script
-
-           ```bash
-           dart .\setup.dart macos --arch <arm64 | amd64>
-           ```
-
-## Star
-
-The easiest way to support developers is to click on the star (⭐) at the top of the page.
-
-<p style="text-align: center;">
-    <a href="https://api.star-history.com/svg?repos=chen08209/FlClash&Date">
-        <img alt="start" width=50% src="https://api.star-history.com/svg?repos=chen08209/FlClash&Date"/>
-    </a>
-</p>
+- [chen08209/FlClash](https://github.com/chen08209/FlClash) — original FlClash app.
+- [MetaCubeX/mihomo](https://github.com/MetaCubeX/mihomo) — proxy core.
+- [kr328/ClashMetaForAndroid](https://github.com/MetaCubeX/ClashMetaForAndroid) — reference patterns for the JNI bridge.
