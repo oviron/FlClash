@@ -233,13 +233,16 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   //    match is reliable.
   // 2) FlClash app's own outbound fetches (Dashboard checkIp, future probes) →
   //    current selected proxy via the builtin GLOBAL selector. checkIp through
-  //    `_clashDio` (lib/common/request.dart) hits mihomo's mixed inbound, mihomo
-  //    sees the connecting UID = com.follow.clash via Android's
-  //    getConnectionOwnerUid (API 29+) and matches PROCESS-NAME. GLOBAL gives
-  //    the user's active proxy member regardless of profile group naming.
+  //    `_clashDio` (lib/common/request.dart) hits mihomo's mixed inbound from
+  //    loopback (127.0.0.1). On CMFA-build (-tags cmfa) `DefaultPackageNameResolver`
+  //    is registered only for TUN packets (listener/sing_tun/server_android.go
+  //    !features.CMFA path), so PROCESS-NAME has no metadata.Process to match
+  //    against — we use SRC-IP-CIDR which matches metadata.SrcIP set by
+  //    adapter/inbound/http.go:15-17 from RemoteAddr (always 127.0.0.1 for
+  //    loopback connections from FlClash to its own mixed-port).
   const infraRules = [
     'PROCESS-NAME,mihomo,DIRECT',
-    'PROCESS-NAME,com.follow.clash,GLOBAL',
+    'SRC-IP-CIDR,127.0.0.1/32,GLOBAL,no-resolve',
   ];
   for (final rule in infraRules.reversed) {
     if (!rules.contains(rule)) {
