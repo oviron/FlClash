@@ -144,6 +144,16 @@ class AppLocalizations {
     );
   }
 
+  /// `timeout`
+  String get detectionTimeout {
+    return Intl.message(
+      'timeout',
+      name: 'detectionTimeout',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Traffic usage`
   String get trafficUsage {
     return Intl.message(

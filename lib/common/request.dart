@@ -82,12 +82,8 @@ class Request {
   };
 
   Future<Result<IpInfo?>> checkIp({CancelToken? cancelToken}) async {
-    // Когда VPN активен — JNI-probe сначала. Идёт через mihomo's GLOBAL
-    // selector group с WithSpecialProxy("GLOBAL") → метаданные имеют
-    // SpecialProxy != "" → resolveMetadata делает early-return и **минует
-    // user rules** полностью. В whitelist-mode profile с MATCH,REJECT иначе
-    // 7 dio-параллельных запросов через mixed-port попали бы в REJECT
-    // (process resolution для loopback на CMFA-build не работает).
+    // VPN on → JNI probe (mode-aware target, минует user rules).
+    // VPN off → 7-source dio fallback ниже (прямой системный путь).
     if (appController.isStart) {
       try {
         final raw = await coreController.probeCurrentProxyIp(
@@ -95,15 +91,7 @@ class Request {
         );
         if (raw.isNotEmpty) {
           final data = json.decode(raw) as Map<String, dynamic>;
-          // Sentinel from Go-side: profile's default-route catch-all is
-          // MATCH,REJECT (typical whitelist-mode). There's no real exit-IP
-          // for unspecified traffic — UI должна рисовать REJECT-бэдж, а
-          // не вечно крутить спиннер.
-          if (data['status'] == 'REJECT') {
-            return Result.success(
-              const IpInfo(ip: '', countryCode: 'REJECT'),
-            );
-          }
+          if (data['status'] == 'REJECT') return Result.success(IpInfo.rejected());
           return Result.success(IpInfo.fromIpInfoIoJson(data));
         }
       } catch (e) {

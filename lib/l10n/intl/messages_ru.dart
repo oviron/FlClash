@@ -607,6 +607,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "detectionRejected": MessageLookupByLibrary.simpleMessage(
       "REJECT",
     ),
+    "detectionTimeout": MessageLookupByLibrary.simpleMessage(
+      "Нет ответа",
+    ),
     "respectRules": MessageLookupByLibrary.simpleMessage("Соблюдение правил"),
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(
       "DNS-соединение следует правилам, необходимо настроить proxy-server-nameserver",

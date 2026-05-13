@@ -73,11 +73,9 @@ class _ResourcesViewState extends ConsumerState<ResourcesView> {
     if (messages.isNotEmpty) {
       unawaited(globalState.showAllUpdatingMessagesDialog(messages));
     } else if (mounted) {
-      // mihomo's `update_geo.go:121` skips write when content hash matches the
-      // existing file on disk, so a successful check often leaves file mtime
-      // (and our "X ago" label) untouched. Без явного фидбэка juzер думает
-      // что update ничего не сделал — показываем SnackBar чтобы отличать
-      // "checked, up to date" от "не нажимал кнопку".
+      // mihomo skip'ает write при unchanged content (update_geo.go:121) →
+      // mtime файла не меняется → "X ago" label остаётся. SnackBar даёт
+      // явный фидбэк что проверка прошла.
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(appLocalizations.resourcesUpToDate),
         duration: const Duration(seconds: 2),
@@ -164,12 +162,15 @@ class _GeoDataListItemState extends ConsumerState<GeoDataListItem> {
     );
     if (updatingNotifier.value) return;
     updatingNotifier.value = true;
-    await appController.safeRun<void>(() async {
-      final message = await _updateGeoItem(geoItem);
-      if (message.isNotEmpty) throw message;
-    }, silence: false);
-    updatingNotifier.value = false;
-    if (mounted) setState(() {});
+    try {
+      await appController.safeRun<void>(() async {
+        final message = await _updateGeoItem(geoItem);
+        if (message.isNotEmpty) throw message;
+      }, silence: false);
+    } finally {
+      updatingNotifier.value = false;
+      if (mounted) setState(() {});
+    }
   }
 
   Widget _buildSubtitle() {

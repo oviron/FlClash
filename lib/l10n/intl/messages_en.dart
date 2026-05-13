@@ -578,6 +578,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "detectionRejected": MessageLookupByLibrary.simpleMessage(
       "REJECT",
     ),
+    "detectionTimeout": MessageLookupByLibrary.simpleMessage(
+      "timeout",
+    ),
     "respectRules": MessageLookupByLibrary.simpleMessage("Respect rules"),
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(
       "DNS connection following rules, need to configure proxy-server-nameserver",

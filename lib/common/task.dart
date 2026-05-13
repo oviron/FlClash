@@ -222,15 +222,14 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     rules = List<String>.from(rawConfig['rules']);
   }
   rawConfig.remove('rules');
-  // Bypass user catch-all (typical whitelist-mode `MATCH,REJECT`) for mihomo's
-  // own outbound fetches: GeoX updater, MMDB autodownload, future internal
-  // HTTP. `inner.HandleTcp` always sets metadata.Process="mihomo", so the
-  // rule matches reliably. Same infra-injection pattern as
-  // `proxyProvider['proxy'] ??= 'DIRECT'` for HTTP-vehicle providers above.
+  // Mihomo's INNER fetches (GeoX updater, MMDB autodownload) → DIRECT, чтобы
+  // обойти whitelist-mode `MATCH,REJECT` catch-all. Если у user'а уже есть
+  // PROCESS-NAME,mihomo,X — уважаем его выбор, не перетираем.
   const innerBypassRule = 'PROCESS-NAME,mihomo,DIRECT';
-  if (!rules.contains(innerBypassRule)) {
-    rules.insert(0, innerBypassRule);
-  }
+  final hasUserMihomoRule = rules.any(
+    (r) => r.startsWith('PROCESS-NAME,mihomo,'),
+  );
+  if (!hasUserMihomoRule) rules.insert(0, innerBypassRule);
   if (addedRules.isNotEmpty) {
     final parsedNewRules = addedRules
         .map((item) => ParsedRule.parseString(item.value))

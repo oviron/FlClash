@@ -23,9 +23,8 @@ mixin CoreInterface {
 
   Future<String> asyncTestDelay(String url, String proxyName);
 
-  /// Probe the exit-IP of the default-route proxy for the given mode. Dart-side
-  /// mode value передаётся явно — mihomo's tunnel.Mode() lagит (~600ms debounce
-  /// updateConfig). Empty mode = fallback на tunnel.Mode().
+  /// Probe exit-IP для default-route. `mode` — Dart-side значение
+  /// ('rule'/'global'/'direct') чтобы обойти race с debounced mihomo sync.
   Future<String> probeCurrentProxyIp({String mode = ''});
 
   Future<String> updateConfig(UpdateParams updateParams);

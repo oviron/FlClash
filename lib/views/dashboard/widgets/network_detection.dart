@@ -51,7 +51,7 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                 children: [
                   ipInfo == null
                       ? Icon(Icons.network_check, color: titleTextStyle)
-                      : ipInfo.countryCode == 'REJECT'
+                      : ipInfo.isRejected
                       ? Icon(
                           Icons.block,
                           color: context.colorScheme.error,
@@ -103,31 +103,26 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                 height: globalState.measure.bodyMediumHeight + 2,
                 child: FadeThroughBox(
                   child: ipInfo != null
-                      ? ipInfo.countryCode == 'REJECT'
-                            ? TooltipText(
-                                text: Text(
-                                  appLocalizations.detectionRejected,
-                                  style: context.textTheme.bodyMedium
+                      ? TooltipText(
+                          text: Text(
+                            ipInfo.isRejected
+                                ? appLocalizations.detectionRejected
+                                : ipInfo.ip,
+                            style: ipInfo.isRejected
+                                ? context.textTheme.bodyMedium
                                       ?.copyWith(color: context.colorScheme.error)
+                                      .adjustSize(1)
+                                : context.textTheme.bodyMedium?.toLight
                                       .adjustSize(1),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              )
-                            : TooltipText(
-                                text: Text(
-                                  ipInfo.ip,
-                                  style: context.textTheme.bodyMedium?.toLight
-                                      .adjustSize(1),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              )
-                      : isLoading == false && ipInfo == null
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                      : isLoading == false
                       ? Text(
-                          'timeout',
+                          appLocalizations.detectionTimeout,
                           style: context.textTheme.bodyMedium
-                              ?.copyWith(color: Colors.red)
+                              ?.copyWith(color: context.colorScheme.error)
                               .adjustSize(1),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

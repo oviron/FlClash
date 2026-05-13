@@ -177,9 +177,6 @@ class CoreController {
     return _interface.updateGeoData(params);
   }
 
-  /// Probe the exit-IP of the default-route proxy for the given mode.
-  /// Pass Dart-side mode explicitly чтобы избежать race с mihomo's
-  /// debounced state sync. Empty mode = fallback на mihomo's tunnel state.
   Future<String> probeCurrentProxyIp({String mode = ''}) {
     return _interface.probeCurrentProxyIp(mode: mode);
   }

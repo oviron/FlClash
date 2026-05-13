@@ -366,6 +366,12 @@ abstract class IpInfo with _$IpInfo {
   const factory IpInfo({required String ip, required String countryCode}) =
       _IpInfo;
 
+  // Sentinel для default-route REJECT (см. core/probe.go::rejectedProbeBody).
+  // Не ISO-3166 — выбран длиннее 2 символов чтобы исключить любую коллизию.
+  static const rejectedCountryCode = 'REJECT';
+  static IpInfo rejected() =>
+      const IpInfo(ip: '', countryCode: rejectedCountryCode);
+
   static IpInfo fromIpInfoIoJson(Map<String, dynamic> json) {
     return switch (json) {
       {'ip': final String ip, 'country': final String country} => IpInfo(
@@ -427,6 +433,10 @@ abstract class IpInfo with _$IpInfo {
       _ => throw const FormatException('invalid json'),
     };
   }
+}
+
+extension IpInfoStatus on IpInfo {
+  bool get isRejected => countryCode == IpInfo.rejectedCountryCode;
 }
 
 @freezed

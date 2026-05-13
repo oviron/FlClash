@@ -324,7 +324,7 @@ class NetworkDetection extends _$NetworkDetection
     with AutoDisposeNotifierMixin {
   bool? _preIsStart;
   CancelToken? _cancelToken;
-  int _startMillisecondsEpoch = 0;
+  int _generation = 0;
 
   @override
   NetworkDetectionState build() {
@@ -339,16 +339,13 @@ class NetworkDetection extends _$NetworkDetection
 
   Future<void> _checkIp() async {
     final isInit = ref.read(initProvider);
-    if (!isInit) {
-      return;
-    }
+    if (!isInit) return;
     final isStart = ref.read(isStartProvider);
-    if (!isStart && _preIsStart == false && state.ipInfo != null) {
-      return;
-    }
-    final millisecondsEpoch = DateTime.now().millisecondsSinceEpoch;
-    _startMillisecondsEpoch = millisecondsEpoch;
-    final runTime = millisecondsEpoch + 1;
+    if (!isStart && _preIsStart == false && state.ipInfo != null) return;
+
+    // Monotonic generation вместо millisecond-timestamp: два вызова в одну ms
+    // получат разные generation и stale-callback guard сработает надёжно.
+    final gen = ++_generation;
     _cancelToken?.cancel();
     _cancelToken = CancelToken();
     commonPrint.log('checkIp start');
@@ -356,21 +353,13 @@ class NetworkDetection extends _$NetworkDetection
     _preIsStart = isStart;
     final res = await request.checkIp(cancelToken: _cancelToken);
     commonPrint.log('checkIp res: $res');
-    // Stale-callback guard: если более новый _checkIp() уже стартовал
-    // (после mode change через addCheckIp), `_startMillisecondsEpoch` уже
-    // продвинут вперёд, наш `runTime` отстал — не перетираем state свежим
-    // callback'ом результатом для устаревшего mode.
-    if (runTime <= _startMillisecondsEpoch) {
-      return;
-    }
+    if (gen != _generation) return; // более новый _checkIp() уже стартовал
     if (res.isError) {
       state = state.copyWith(isLoading: true, ipInfo: null);
       return;
     }
     final ipInfo = res.data;
-    if (ipInfo == null) {
-      return;
-    }
+    if (ipInfo == null) return;
     state = state.copyWith(isLoading: false, ipInfo: ipInfo);
   }
 }
