@@ -177,6 +177,12 @@ class CoreController {
     return _interface.updateGeoData(params);
   }
 
+  /// Probe the exit-IP of the currently selected proxy via mihomo's GLOBAL
+  /// group, bypassing user rules. Returns raw ipinfo.io JSON or '' on failure.
+  Future<String> probeCurrentProxyIp() {
+    return _interface.probeCurrentProxyIp();
+  }
+
   Future<String> sideLoadExternalProvider({
     required String providerName,
     required String data,

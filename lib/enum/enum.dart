@@ -189,6 +189,7 @@ enum ActionMethod {
   getProxies,
   changeProxy,
   testDelay,
+  probeCurrentProxyIp,
   queryExternalProviders,
   getExternalProvider,
   updateExternalProvider,

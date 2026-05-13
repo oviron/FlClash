@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/cupertino.dart';
@@ -81,6 +82,24 @@ class Request {
   };
 
   Future<Result<IpInfo?>> checkIp({CancelToken? cancelToken}) async {
+    // Когда VPN активен — JNI-probe сначала. Идёт через mihomo's GLOBAL
+    // selector group с WithSpecialProxy("GLOBAL") → метаданные имеют
+    // SpecialProxy != "" → resolveMetadata делает early-return и **минует
+    // user rules** полностью. В whitelist-mode profile с MATCH,REJECT иначе
+    // 7 dio-параллельных запросов через mixed-port попали бы в REJECT
+    // (process resolution для loopback на CMFA-build не работает).
+    if (appController.isStart) {
+      try {
+        final raw = await coreController.probeCurrentProxyIp();
+        if (raw.isNotEmpty) {
+          final data = json.decode(raw) as Map<String, dynamic>;
+          return Result.success(IpInfo.fromIpInfoIoJson(data));
+        }
+      } catch (e) {
+        commonPrint.log('probeCurrentProxyIp fallback: $e');
+      }
+    }
+
     var failureCount = 0;
     final token = cancelToken ?? CancelToken();
     final futures = _ipInfoSources.entries.map((source) async {

@@ -164,6 +164,12 @@ class CoreLib extends CoreHandlerInterface {
       Delay(name: proxyName, value: delay ?? -1, url: url),
     );
   }
+
+  @override
+  Future<String> probeCurrentProxyIp() async {
+    return (await invoke<String>(method: ActionMethod.probeCurrentProxyIp)) ??
+        '';
+  }
 }
 
 CoreLib? get coreLib => system.isAndroid ? CoreLib() : null;

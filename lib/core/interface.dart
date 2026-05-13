@@ -23,6 +23,13 @@ mixin CoreInterface {
 
   Future<String> asyncTestDelay(String url, String proxyName);
 
+  /// Probe the exit-IP of the user's currently selected proxy.
+  ///
+  /// Calls mihomo's HTTP client with `WithSpecialProxy("GLOBAL")` on
+  /// `https://ipinfo.io/json`, bypassing user routing rules entirely. Returns
+  /// the raw JSON body or empty string on failure.
+  Future<String> probeCurrentProxyIp();
+
   Future<String> updateConfig(UpdateParams updateParams);
 
   Future<String> setupConfig(SetupParams setupParams);
