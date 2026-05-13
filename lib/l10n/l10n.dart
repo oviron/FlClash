@@ -804,11 +804,6 @@ class AppLocalizations {
     return Intl.message('Project', name: 'project', desc: '', args: []);
   }
 
-  /// `Core`
-  String get core {
-    return Intl.message('Core', name: 'core', desc: '', args: []);
-  }
-
   /// `Tab animation`
   String get tabAnimation {
     return Intl.message(
@@ -819,13 +814,23 @@ class AppLocalizations {
     );
   }
 
-  /// `A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.`
+  /// `Android mihomo client. Open source, no ads, no telemetry.`
   String get desc {
     return Intl.message(
-      'A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.',
+      'Android mihomo client. Open source, no ads, no telemetry.',
       name: 'desc',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Fork of {upstream}`
+  String forkOf(Object upstream) {
+    return Intl.message(
+      'Fork of $upstream',
+      name: 'forkOf',
+      desc: '',
+      args: [upstream],
     );
   }
 
@@ -1274,15 +1279,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Other contributors`
-  String get otherContributors {
-    return Intl.message(
-      'Other contributors',
-      name: 'otherContributors',
-      desc: '',
-      args: [],
-    );
-  }
 
   /// `Drop connections on node switch`
   String get autoCloseConnections {

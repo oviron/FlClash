@@ -8,19 +8,6 @@ import 'package:fl_clash/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-@immutable
-class Contributor {
-  final String avatar;
-  final String name;
-  final String link;
-
-  const Contributor({
-    required this.avatar,
-    required this.name,
-    required this.link,
-  });
-}
-
 class AboutView extends StatelessWidget {
   const AboutView({super.key});
 
@@ -32,16 +19,7 @@ class AboutView extends StatelessWidget {
         ListItem(
           title: Text(appLocalizations.releases),
           onTap: () {
-            globalState.openUrl(
-              'https://github.com/$repository/releases',
-            );
-          },
-          trailing: const Icon(Icons.launch),
-        ),
-        ListItem(
-          title: const Text('Telegram'),
-          onTap: () {
-            globalState.openUrl('https://t.me/FlClash');
+            globalState.openUrl('https://github.com/$repository/releases');
           },
           trailing: const Icon(Icons.launch),
         ),
@@ -52,49 +30,26 @@ class AboutView extends StatelessWidget {
           },
           trailing: const Icon(Icons.launch),
         ),
-        ListItem(
-          title: Text(appLocalizations.core),
-          onTap: () {
-            globalState.openUrl(
-              'https://github.com/chen08209/Clash.Meta/tree/FlClash',
-            );
-          },
-          trailing: const Icon(Icons.launch),
-        ),
       ],
     );
   }
 
-  List<Widget> _buildContributorsSection() {
-    const contributors = [
-      Contributor(
-        avatar: 'assets/images/avatar/june2.jpg',
-        name: 'June2',
-        link: 'https://t.me/Jibadong',
-      ),
-      Contributor(
-        avatar: 'assets/images/avatar/arue.jpg',
-        name: 'Arue',
-        link: 'https://t.me/xrcm6868',
-      ),
-    ];
-    return generateSection(
-      separated: false,
-      title: appLocalizations.otherContributors,
-      items: [
-        ListItem(
-          title: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Wrap(
-              spacing: 24,
-              children: [
-                for (final contributor in contributors)
-                  Avatar(contributor: contributor),
-              ],
-            ),
+  Widget _buildUpstreamNote(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 16),
+      child: InkWell(
+        onTap: () {
+          globalState.openUrl('https://github.com/$upstreamRepository');
+        },
+        borderRadius: BorderRadius.circular(4),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          child: Text(
+            appLocalizations.forkOf(upstreamRepository),
+            style: context.textTheme.bodySmall?.toLight,
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -155,8 +110,8 @@ class AboutView extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 12),
-      ..._buildContributorsSection(),
       ..._buildMoreSection(context),
+      _buildUpstreamNote(context),
     ];
     return BaseScaffold(
       title: appLocalizations.about,
@@ -164,34 +119,6 @@ class AboutView extends StatelessWidget {
         padding: kMaterialListPadding.copyWith(top: 16, bottom: 16),
         child: generateListView(items),
       ),
-    );
-  }
-}
-
-class Avatar extends StatelessWidget {
-  final Contributor contributor;
-
-  const Avatar({super.key, required this.contributor});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Column(
-        children: [
-          SizedBox(
-            width: 36,
-            height: 36,
-            child: CircleAvatar(
-              foregroundImage: AssetImage(contributor.avatar),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(contributor.name, style: context.textTheme.bodySmall),
-        ],
-      ),
-      onTap: () {
-        globalState.openUrl(contributor.link);
-      },
     );
   }
 }
