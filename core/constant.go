@@ -90,6 +90,7 @@ const (
 	getProxiesMethod               Method = "getProxies"
 	changeProxyMethod              Method = "changeProxy"
 	testDelayMethod                Method = "testDelay"
+	probeCurrentProxyIpMethod      Method = "probeCurrentProxyIp"
 	queryExternalProvidersMethod   Method = "queryExternalProviders"
 	getExternalProviderMethod      Method = "getExternalProvider"
 	updateExternalProviderMethod   Method = "updateExternalProvider"
