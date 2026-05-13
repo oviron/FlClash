@@ -90,7 +90,9 @@ class Request {
     // (process resolution для loopback на CMFA-build не работает).
     if (appController.isStart) {
       try {
-        final raw = await coreController.probeCurrentProxyIp();
+        final raw = await coreController.probeCurrentProxyIp(
+          mode: appController.mode.name,
+        );
         if (raw.isNotEmpty) {
           final data = json.decode(raw) as Map<String, dynamic>;
           // Sentinel from Go-side: profile's default-route catch-all is

@@ -177,10 +177,11 @@ class CoreController {
     return _interface.updateGeoData(params);
   }
 
-  /// Probe the exit-IP of the currently selected proxy via mihomo's GLOBAL
-  /// group, bypassing user rules. Returns raw ipinfo.io JSON or '' on failure.
-  Future<String> probeCurrentProxyIp() {
-    return _interface.probeCurrentProxyIp();
+  /// Probe the exit-IP of the default-route proxy for the given mode.
+  /// Pass Dart-side mode explicitly чтобы избежать race с mihomo's
+  /// debounced state sync. Empty mode = fallback на mihomo's tunnel state.
+  Future<String> probeCurrentProxyIp({String mode = ''}) {
+    return _interface.probeCurrentProxyIp(mode: mode);
   }
 
   Future<String> sideLoadExternalProvider({

@@ -23,12 +23,10 @@ mixin CoreInterface {
 
   Future<String> asyncTestDelay(String url, String proxyName);
 
-  /// Probe the exit-IP of the user's currently selected proxy.
-  ///
-  /// Calls mihomo's HTTP client with `WithSpecialProxy("GLOBAL")` on
-  /// `https://ipinfo.io/json`, bypassing user routing rules entirely. Returns
-  /// the raw JSON body or empty string on failure.
-  Future<String> probeCurrentProxyIp();
+  /// Probe the exit-IP of the default-route proxy for the given mode. Dart-side
+  /// mode value передаётся явно — mihomo's tunnel.Mode() lagит (~600ms debounce
+  /// updateConfig). Empty mode = fallback на tunnel.Mode().
+  Future<String> probeCurrentProxyIp({String mode = ''});
 
   Future<String> updateConfig(UpdateParams updateParams);
 

@@ -209,7 +209,8 @@ func handleAction(action *Action, result ActionResult) {
 		result.success(handleAsyncTestDelay(params.ProxyName, params.TestUrl, int(params.Timeout)))
 		return
 	case probeCurrentProxyIpMethod:
-		result.success(handleProbeCurrentProxyIp())
+		modeHint, _ := action.Data.(string)
+		result.success(handleProbeCurrentProxyIp(modeHint))
 		return
 	case queryExternalProvidersMethod:
 		result.success(queryExternalProviders())

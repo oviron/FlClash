@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"io"
+	"strings"
 	"time"
 
 	mihomoHttp "github.com/metacubex/mihomo/component/http"
@@ -34,8 +35,12 @@ const rejectedProbeBody = `{"status":"REJECT"}`
 // (resolveMetadata early-returns when SpecialProxy != ""). For REJECT we
 // return a sentinel so the dashboard renders "REJECT" instead of a fake IP
 // or an infinite spinner.
-func handleProbeCurrentProxyIp() string {
-	target := determineProbeTarget()
+// modeHint — текущий Dart-side mode ("rule"/"global"/"direct"). Dart знает mode
+// мгновенно после клика; mihomo's tunnel.Mode() обновляется через debounced
+// updateConfig (≈600ms), за это время probe может запуститься со stale mode.
+// Передаём explicitly чтобы убрать race. Пустая строка → fallback на tunnel.Mode().
+func handleProbeCurrentProxyIp(modeHint string) string {
+	target := determineProbeTarget(modeHint)
 	if target == "REJECT" {
 		return rejectedProbeBody
 	}
@@ -64,8 +69,8 @@ func handleProbeCurrentProxyIp() string {
 	return string(body)
 }
 
-func determineProbeTarget() string {
-	switch tunnel.Mode() {
+func determineProbeTarget(modeHint string) string {
+	switch resolveMode(modeHint) {
 	case tunnel.Direct:
 		return "DIRECT"
 	case tunnel.Global:
@@ -78,8 +83,15 @@ func determineProbeTarget() string {
 				return rule.Adapter()
 			}
 		}
-		// No MATCH rule means mihomo has no catch-all; fall back to GLOBAL
-		// (which always exists as a builtin selector).
+		// No MATCH rule means mihomo has no catch-all; fall back to GLOBAL.
 		return "GLOBAL"
 	}
+}
+
+func resolveMode(modeHint string) tunnel.TunnelMode {
+	// tunnel.ModeMapping keys lowercase ("global"/"rule"/"direct").
+	if m, ok := tunnel.ModeMapping[strings.ToLower(modeHint)]; ok {
+		return m
+	}
+	return tunnel.Mode()
 }

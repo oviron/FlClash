@@ -153,6 +153,8 @@ extension StateControllerExt on AppController {
     globalState.packageInfo.ua,
   ]);
 
+  Mode get mode => _ref.read(patchClashConfigProvider).mode;
+
   Profile? get currentProfile {
     return _ref.read(currentProfileProvider);
   }

@@ -166,8 +166,11 @@ class CoreLib extends CoreHandlerInterface {
   }
 
   @override
-  Future<String> probeCurrentProxyIp() async {
-    return (await invoke<String>(method: ActionMethod.probeCurrentProxyIp)) ??
+  Future<String> probeCurrentProxyIp({String mode = ''}) async {
+    return (await invoke<String>(
+          method: ActionMethod.probeCurrentProxyIp,
+          data: mode,
+        )) ??
         '';
   }
 }

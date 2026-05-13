@@ -356,7 +356,14 @@ class NetworkDetection extends _$NetworkDetection
     _preIsStart = isStart;
     final res = await request.checkIp(cancelToken: _cancelToken);
     commonPrint.log('checkIp res: $res');
-    if (res.isError && runTime > _startMillisecondsEpoch) {
+    // Stale-callback guard: если более новый _checkIp() уже стартовал
+    // (после mode change через addCheckIp), `_startMillisecondsEpoch` уже
+    // продвинут вперёд, наш `runTime` отстал — не перетираем state свежим
+    // callback'ом результатом для устаревшего mode.
+    if (runTime <= _startMillisecondsEpoch) {
+      return;
+    }
+    if (res.isError) {
       state = state.copyWith(isLoading: true, ipInfo: null);
       return;
     }
