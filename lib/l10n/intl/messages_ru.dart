@@ -601,6 +601,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "resourcesDesc": MessageLookupByLibrary.simpleMessage(
       "Информация, связанная с внешними ресурсами",
     ),
+    "resourcesUpToDate": MessageLookupByLibrary.simpleMessage(
+      "Ресурсы актуальны",
+    ),
     "respectRules": MessageLookupByLibrary.simpleMessage("Соблюдение правил"),
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(
       "DNS-соединение следует правилам, необходимо настроить proxy-server-nameserver",

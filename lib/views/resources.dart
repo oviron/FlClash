@@ -51,18 +51,12 @@ class ResourcesView extends ConsumerStatefulWidget {
 
 class _ResourcesViewState extends ConsumerState<ResourcesView> {
   Future<void> _updateAllGeoData() async {
-    // Sequential, not parallel. mihomo's HTTP transport sets
-    // `DisableKeepAlives:true` on Android (component/http/http.go:71) — every
-    // request opens a fresh TLS connection. Four concurrent fetches to the
-    // same host (fastly.jsdelivr.net) end up racing through one socket pool
-    // and 3 out of 4 silently abort. Sequentially the 4 ~5–10s downloads
-    // sum to ~30s — UI per-item spinner shows the progression.
     final messages = <UpdatingMessage>[];
-    for (final item in _geoItems) {
+    final futures = _geoItems.map<Future<void>>((item) async {
       final updatingNotifier = ref.read(
         isUpdatingProvider(item.updatingKey).notifier,
       );
-      if (updatingNotifier.value) continue;
+      if (updatingNotifier.value) return;
       updatingNotifier.value = true;
       try {
         final message = await _updateGeoItem(item);
@@ -74,9 +68,20 @@ class _ResourcesViewState extends ConsumerState<ResourcesView> {
       } finally {
         updatingNotifier.value = false;
       }
-    }
+    });
+    await Future.wait(futures);
     if (messages.isNotEmpty) {
       unawaited(globalState.showAllUpdatingMessagesDialog(messages));
+    } else if (mounted) {
+      // mihomo's `update_geo.go:121` skips write when content hash matches the
+      // existing file on disk, so a successful check often leaves file mtime
+      // (and our "X ago" label) untouched. Без явного фидбэка juzер думает
+      // что update ничего не сделал — показываем SnackBar чтобы отличать
+      // "checked, up to date" от "не нажимал кнопку".
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(appLocalizations.resourcesUpToDate),
+        duration: const Duration(seconds: 2),
+      ));
     }
     if (mounted) setState(() {});
   }

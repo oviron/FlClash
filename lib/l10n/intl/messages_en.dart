@@ -572,6 +572,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "resourcesDesc": MessageLookupByLibrary.simpleMessage(
       "External resource related info",
     ),
+    "resourcesUpToDate": MessageLookupByLibrary.simpleMessage(
+      "Resources up to date",
+    ),
     "respectRules": MessageLookupByLibrary.simpleMessage("Respect rules"),
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(
       "DNS connection following rules, need to configure proxy-server-nameserver",

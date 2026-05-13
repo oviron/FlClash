@@ -124,6 +124,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Resources up to date`
+  String get resourcesUpToDate {
+    return Intl.message(
+      'Resources up to date',
+      name: 'resourcesUpToDate',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Traffic usage`
   String get trafficUsage {
     return Intl.message(
