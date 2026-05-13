@@ -226,9 +226,9 @@ abstract class Dns with _$Dns {
     @Default(false) @JsonKey(name: 'prefer-h3') bool preferH3,
     @Default(true) @JsonKey(name: 'use-hosts') bool useHosts,
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
-    @Default(false) @JsonKey(name: 'respect-rules') bool respectRules,
+    @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    @Default(['223.5.5.5'])
+    @Default(['tls://8.8.8.8:853', 'tls://1.1.1.1:853'])
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
     @Default(DnsMode.fakeIp)
@@ -237,20 +237,19 @@ abstract class Dns with _$Dns {
     @Default('198.18.0.1/16')
     @JsonKey(name: 'fake-ip-range')
     String fakeIpRange,
-    @Default(['*.lan', 'localhost.ptlogin2.qq.com'])
+    @Default(['*.lan', '*.local', '*.arpa'])
     @JsonKey(name: 'fake-ip-filter')
     List<String> fakeIpFilter,
-    @Default({
-      'www.baidu.com': '114.114.114.114',
-      '+.internal.crop.com': '10.0.0.1',
-      'geosite:cn': 'https://doh.pub/dns-query',
-    })
+    @Default({})
     @JsonKey(name: 'nameserver-policy')
     Map<String, String> nameserverPolicy,
-    @Default(['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'])
+    @Default([
+      'https://dns.google/dns-query',
+      'https://cloudflare-dns.com/dns-query',
+    ])
     List<String> nameserver,
     @Default(['tls://8.8.4.4', 'tls://1.1.1.1']) List<String> fallback,
-    @Default(['https://doh.pub/dns-query'])
+    @Default(['tls://8.8.8.8:853', 'tls://1.1.1.1:853'])
     @JsonKey(name: 'proxy-server-nameserver')
     List<String> proxyServerNameserver,
     @Default(FallbackFilter())
