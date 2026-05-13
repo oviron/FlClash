@@ -91,7 +91,7 @@ class Request {
         }
       }
 
-      final future = dio
+      final future = _clashDio
           .get<Map<String, dynamic>>(
             source.key,
             cancelToken: token,
