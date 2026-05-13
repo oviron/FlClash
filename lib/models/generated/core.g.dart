@@ -268,6 +268,7 @@ const _$ActionMethodEnumMap = {
   ActionMethod.getProxies: 'getProxies',
   ActionMethod.changeProxy: 'changeProxy',
   ActionMethod.testDelay: 'testDelay',
+  ActionMethod.probeCurrentProxyIp: 'probeCurrentProxyIp',
   ActionMethod.queryExternalProviders: 'queryExternalProviders',
   ActionMethod.getExternalProvider: 'getExternalProvider',
   ActionMethod.updateExternalProvider: 'updateExternalProvider',
