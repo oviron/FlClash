@@ -51,12 +51,18 @@ class ResourcesView extends ConsumerStatefulWidget {
 
 class _ResourcesViewState extends ConsumerState<ResourcesView> {
   Future<void> _updateAllGeoData() async {
+    // Sequential, not parallel. mihomo's HTTP transport sets
+    // `DisableKeepAlives:true` on Android (component/http/http.go:71) — every
+    // request opens a fresh TLS connection. Four concurrent fetches to the
+    // same host (fastly.jsdelivr.net) end up racing through one socket pool
+    // and 3 out of 4 silently abort. Sequentially the 4 ~5–10s downloads
+    // sum to ~30s — UI per-item spinner shows the progression.
     final messages = <UpdatingMessage>[];
-    final futures = _geoItems.map<Future<void>>((item) async {
+    for (final item in _geoItems) {
       final updatingNotifier = ref.read(
         isUpdatingProvider(item.updatingKey).notifier,
       );
-      if (updatingNotifier.value) return;
+      if (updatingNotifier.value) continue;
       updatingNotifier.value = true;
       try {
         final message = await _updateGeoItem(item);
@@ -68,8 +74,7 @@ class _ResourcesViewState extends ConsumerState<ResourcesView> {
       } finally {
         updatingNotifier.value = false;
       }
-    });
-    await Future.wait(futures);
+    }
     if (messages.isNotEmpty) {
       unawaited(globalState.showAllUpdatingMessagesDialog(messages));
     }

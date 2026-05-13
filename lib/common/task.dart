@@ -222,16 +222,29 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     rules = List<String>.from(rawConfig['rules']);
   }
   rawConfig.remove('rules');
-  // Force mihomo's own outbound fetches (GeoX updater, MMDB autodownload, any
-  // future internal HTTP) to bypass user rules. In a whitelist-mode profile
-  // with `MATCH,REJECT` at the tail, mihomo's internal fetches would get
-  // caught by the catch-all REJECT and silently die. Same infra-injection
-  // pattern as `proxyProvider['proxy'] ??= 'DIRECT'` above.
-  // `inner.HandleTcp` in mihomo unconditionally sets `metadata.Process="mihomo"`
-  // for every INNER request, so PROCESS-NAME match is reliable.
-  const innerBypassRule = 'PROCESS-NAME,mihomo,DIRECT';
-  if (!rules.contains(innerBypassRule)) {
-    rules.insert(0, innerBypassRule);
+  // Two infrastructure rule injections — same pattern as `proxyProvider['proxy']
+  // ??= 'DIRECT'` above for HTTP-vehicle providers. Ensure FlClash itself works
+  // independently of the user's catch-all rule (typical whitelist-mode profiles
+  // end in `MATCH,REJECT` which would otherwise eat both).
+  //
+  // 1) mihomo's own outbound fetches (GeoX updater, MMDB autodownload, any
+  //    future internal HTTP) → DIRECT. `inner.HandleTcp` in mihomo unconditionally
+  //    sets `metadata.Process="mihomo"` for every INNER request, so PROCESS-NAME
+  //    match is reliable.
+  // 2) FlClash app's own outbound fetches (Dashboard checkIp, future probes) →
+  //    current selected proxy via the builtin GLOBAL selector. checkIp through
+  //    `_clashDio` (lib/common/request.dart) hits mihomo's mixed inbound, mihomo
+  //    sees the connecting UID = com.follow.clash via Android's
+  //    getConnectionOwnerUid (API 29+) and matches PROCESS-NAME. GLOBAL gives
+  //    the user's active proxy member regardless of profile group naming.
+  const infraRules = [
+    'PROCESS-NAME,mihomo,DIRECT',
+    'PROCESS-NAME,com.follow.clash,GLOBAL',
+  ];
+  for (final rule in infraRules.reversed) {
+    if (!rules.contains(rule)) {
+      rules.insert(0, rule);
+    }
   }
   if (addedRules.isNotEmpty) {
     final parsedNewRules = addedRules
