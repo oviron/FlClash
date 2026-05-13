@@ -605,7 +605,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ресурсы актуальны",
     ),
     "detectionRejected": MessageLookupByLibrary.simpleMessage(
-      "Default-маршрут отброшен",
+      "REJECT",
     ),
     "respectRules": MessageLookupByLibrary.simpleMessage("Соблюдение правил"),
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(

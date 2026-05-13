@@ -222,32 +222,14 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     rules = List<String>.from(rawConfig['rules']);
   }
   rawConfig.remove('rules');
-  // Two infrastructure rule injections — same pattern as `proxyProvider['proxy']
-  // ??= 'DIRECT'` above for HTTP-vehicle providers. Ensure FlClash itself works
-  // independently of the user's catch-all rule (typical whitelist-mode profiles
-  // end in `MATCH,REJECT` which would otherwise eat both).
-  //
-  // 1) mihomo's own outbound fetches (GeoX updater, MMDB autodownload, any
-  //    future internal HTTP) → DIRECT. `inner.HandleTcp` in mihomo unconditionally
-  //    sets `metadata.Process="mihomo"` for every INNER request, so PROCESS-NAME
-  //    match is reliable.
-  // 2) FlClash app's own outbound fetches (Dashboard checkIp, future probes) →
-  //    current selected proxy via the builtin GLOBAL selector. checkIp through
-  //    `_clashDio` (lib/common/request.dart) hits mihomo's mixed inbound from
-  //    loopback (127.0.0.1). On CMFA-build (-tags cmfa) `DefaultPackageNameResolver`
-  //    is registered only for TUN packets (listener/sing_tun/server_android.go
-  //    !features.CMFA path), so PROCESS-NAME has no metadata.Process to match
-  //    against — we use SRC-IP-CIDR which matches metadata.SrcIP set by
-  //    adapter/inbound/http.go:15-17 from RemoteAddr (always 127.0.0.1 for
-  //    loopback connections from FlClash to its own mixed-port).
-  const infraRules = [
-    'PROCESS-NAME,mihomo,DIRECT',
-    'SRC-IP-CIDR,127.0.0.1/32,GLOBAL,no-resolve',
-  ];
-  for (final rule in infraRules.reversed) {
-    if (!rules.contains(rule)) {
-      rules.insert(0, rule);
-    }
+  // Bypass user catch-all (typical whitelist-mode `MATCH,REJECT`) for mihomo's
+  // own outbound fetches: GeoX updater, MMDB autodownload, future internal
+  // HTTP. `inner.HandleTcp` always sets metadata.Process="mihomo", so the
+  // rule matches reliably. Same infra-injection pattern as
+  // `proxyProvider['proxy'] ??= 'DIRECT'` for HTTP-vehicle providers above.
+  const innerBypassRule = 'PROCESS-NAME,mihomo,DIRECT';
+  if (!rules.contains(innerBypassRule)) {
+    rules.insert(0, innerBypassRule);
   }
   if (addedRules.isNotEmpty) {
     final parsedNewRules = addedRules

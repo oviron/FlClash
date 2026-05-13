@@ -576,7 +576,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Resources up to date",
     ),
     "detectionRejected": MessageLookupByLibrary.simpleMessage(
-      "Default route rejected",
+      "REJECT",
     ),
     "respectRules": MessageLookupByLibrary.simpleMessage("Respect rules"),
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(

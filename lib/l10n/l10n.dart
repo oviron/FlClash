@@ -134,10 +134,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Default route rejected`
+  /// `REJECT`
   String get detectionRejected {
     return Intl.message(
-      'Default route rejected',
+      'REJECT',
       name: 'detectionRejected',
       desc: '',
       args: [],
