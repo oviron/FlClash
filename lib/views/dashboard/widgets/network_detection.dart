@@ -49,12 +49,18 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  ipInfo != null
-                      ? Text(
+                  ipInfo == null
+                      ? Icon(Icons.network_check, color: titleTextStyle)
+                      : ipInfo.countryCode == 'REJECT'
+                      ? Icon(
+                          Icons.block,
+                          color: context.colorScheme.error,
+                          size: 20.ap,
+                        )
+                      : Text(
                           _countryCodeToEmoji(ipInfo.countryCode),
                           style: emojiTextStyle,
-                        )
-                      : Icon(Icons.network_check, color: titleTextStyle),
+                        ),
                   const SizedBox(width: 8),
                   Flexible(
                     flex: 1,
@@ -97,15 +103,26 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                 height: globalState.measure.bodyMediumHeight + 2,
                 child: FadeThroughBox(
                   child: ipInfo != null
-                      ? TooltipText(
-                          text: Text(
-                            ipInfo.ip,
-                            style: context.textTheme.bodyMedium?.toLight
-                                .adjustSize(1),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        )
+                      ? ipInfo.countryCode == 'REJECT'
+                            ? TooltipText(
+                                text: Text(
+                                  appLocalizations.detectionRejected,
+                                  style: context.textTheme.bodyMedium
+                                      ?.copyWith(color: context.colorScheme.error)
+                                      .adjustSize(1),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
+                            : TooltipText(
+                                text: Text(
+                                  ipInfo.ip,
+                                  style: context.textTheme.bodyMedium?.toLight
+                                      .adjustSize(1),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
                       : isLoading == false && ipInfo == null
                       ? Text(
                           'timeout',

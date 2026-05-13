@@ -134,6 +134,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Default route rejected`
+  String get detectionRejected {
+    return Intl.message(
+      'Default route rejected',
+      name: 'detectionRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Traffic usage`
   String get trafficUsage {
     return Intl.message(

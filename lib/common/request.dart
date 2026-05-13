@@ -93,6 +93,15 @@ class Request {
         final raw = await coreController.probeCurrentProxyIp();
         if (raw.isNotEmpty) {
           final data = json.decode(raw) as Map<String, dynamic>;
+          // Sentinel from Go-side: profile's default-route catch-all is
+          // MATCH,REJECT (typical whitelist-mode). There's no real exit-IP
+          // for unspecified traffic — UI должна рисовать REJECT-бэдж, а
+          // не вечно крутить спиннер.
+          if (data['status'] == 'REJECT') {
+            return Result.success(
+              const IpInfo(ip: '', countryCode: 'REJECT'),
+            );
+          }
           return Result.success(IpInfo.fromIpInfoIoJson(data));
         }
       } catch (e) {

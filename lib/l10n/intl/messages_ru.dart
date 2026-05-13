@@ -604,6 +604,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "resourcesUpToDate": MessageLookupByLibrary.simpleMessage(
       "Ресурсы актуальны",
     ),
+    "detectionRejected": MessageLookupByLibrary.simpleMessage(
+      "Default-маршрут отброшен",
+    ),
     "respectRules": MessageLookupByLibrary.simpleMessage("Соблюдение правил"),
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(
       "DNS-соединение следует правилам, необходимо настроить proxy-server-nameserver",

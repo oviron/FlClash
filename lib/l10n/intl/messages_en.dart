@@ -575,6 +575,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "resourcesUpToDate": MessageLookupByLibrary.simpleMessage(
       "Resources up to date",
     ),
+    "detectionRejected": MessageLookupByLibrary.simpleMessage(
+      "Default route rejected",
+    ),
     "respectRules": MessageLookupByLibrary.simpleMessage("Respect rules"),
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(
       "DNS connection following rules, need to configure proxy-server-nameserver",
