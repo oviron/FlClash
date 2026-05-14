@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:fl_clash/manager/underlying_network_bridge.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/network_rules/probe.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,6 @@ import 'package:flutter/material.dart';
 class ConnectivityManager extends StatefulWidget {
   final Function(List<ConnectivityResult> results)? onConnectivityChanged;
 
-  /// Fired with a fully-resolved [NetworkSnapshot] (type + sanitized SSID)
-  /// once on mount and on every connectivity change. The Network Rules
-  /// engine listens here.
   final void Function(NetworkSnapshot snapshot)? onNetworkSnapshot;
 
   final Widget child;
@@ -28,6 +26,7 @@ class ConnectivityManager extends StatefulWidget {
 
 class _ConnectivityManagerState extends State<ConnectivityManager> {
   late StreamSubscription<List<ConnectivityResult>> subscription;
+  late StreamSubscription<String> _underlyingSubscription;
   final NetworkProbe _probe = const NetworkProbe();
 
   @override
@@ -38,6 +37,12 @@ class _ConnectivityManagerState extends State<ConnectivityManager> {
         widget.onConnectivityChanged!(results);
       }
       await _emitSnapshot();
+    });
+    // Backfills underlying-network flips that connectivity_plus drops
+    // while the VPN is the default network.
+    _underlyingSubscription =
+        UnderlyingNetworkBridge.instance.stream.listen((_) {
+      _emitSnapshot();
     });
     // Fire once on mount so the engine has an initial snapshot to work from.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -56,6 +61,7 @@ class _ConnectivityManagerState extends State<ConnectivityManager> {
   @override
   void dispose() {
     subscription.cancel();
+    _underlyingSubscription.cancel();
     super.dispose();
   }
 
