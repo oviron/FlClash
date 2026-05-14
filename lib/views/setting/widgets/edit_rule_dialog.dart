@@ -1,12 +1,3 @@
-// Edit/create dialog for a network rule. WifiNamed is gated by
-// `ensureLocationPermissionForSsid`: the dialog will not let the user
-// save a name-rule without ACCESS_FINE_LOCATION granted.
-//
-// Form layout: a single-select group of three condition kinds plus a
-// two-chip row for the action. The previous SegmentedButton with three
-// long Russian labels wrapped vertically on phone widths and was the
-// main reason for this redesign.
-
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/network_rules/permission_gate.dart';
@@ -104,10 +95,8 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
       ),
     );
     if (picked == null) return;
-    // Run user-typed SSIDs through the same sanitizer the live probe uses
-    // (strip surrounding quotes / whitespace, treat <unknown ssid> as null)
-    // so a copy-pasted "home" matches the home the probe will read at
-    // runtime.
+    // Sanitize through the probe path so a copy-pasted `"home"` matches
+    // what the runtime reads.
     final sanitized = NetworkProbe.sanitizeSsid(picked);
     setState(() => _wifiNamedSsid = sanitized);
   }

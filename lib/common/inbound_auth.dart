@@ -26,17 +26,9 @@ Future<String> _ensureInboundPassword() async {
   return pwd;
 }
 
-/// If the assembled YAML config exposes any local inbound listener
-/// (mixed-port, port, socks-port) without its own `authentication:` block,
-/// inject a per-device random credential. The password is generated once
-/// and persisted in shared preferences; subsequent runs reuse it so external
-/// tools that pinned the value keep working. User-supplied authentication
-/// is preserved untouched.
-///
-/// Closes the class of side-channel attacks where any app on the device
-/// (including those outside our per-app whitelist) could connect to
-/// 127.0.0.1:7890 as an unauthenticated SOCKS5/HTTP proxy and probe the
-/// VPN exit IP.
+// Closes a side-channel: an unauthenticated local SOCKS5/HTTP inbound is
+// reachable from any app on the device, even those outside the per-app
+// whitelist, and would leak the VPN exit IP.
 Future<void> ensureInboundAuth(Map<String, dynamic> config) async {
   final hasInbound =
       ((config['mixed-port'] as num?)?.toInt() ?? 0) > 0 ||

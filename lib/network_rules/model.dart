@@ -1,7 +1,4 @@
-// We deliberately use NetworkRule / NetworkAction / NetworkCondition prefixes
-// because the existing fl_clash codebase already has a `Rule` type in
-// lib/models/clash_config.dart for clash routing rules and reusing the same
-// name would force every consumer to alias one of them.
+// Network* prefix avoids collision with the existing clash routing `Rule`.
 
 import 'dart:convert';
 
@@ -152,11 +149,9 @@ class NetworkConditionListCodec {
         'Expected JSON array of conditions, got: $raw',
       );
     }
-    // Skip individual unknown / malformed entries instead of failing the
-    // whole list. A single bad record (e.g. a condition kind written by
-    // a future version) used to bubble out of NetworkRulesDao.watchAll
-    // and turn the entire stream into an empty list, wiping every rule
-    // from the user's UI.
+    // Skip unknown entries individually: a single bad record (e.g. future
+    // version's condition kind) used to bubble out of watchAll and wipe
+    // every rule from the UI.
     final result = <NetworkCondition>[];
     for (final entry in decoded) {
       try {

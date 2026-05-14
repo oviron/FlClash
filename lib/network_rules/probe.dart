@@ -1,19 +1,5 @@
-// Network Rules v1: live network probe.
-//
-// Asks connectivity_plus what kind of link the device is on right now and,
-// for Wi-Fi, asks network_info_plus for the SSID. The two raw signals are
-// massaged into a [NetworkSnapshot] that the engine can match against.
-//
-// Sanitization rules for the SSID, learned the hard way from the Android API:
-//   * `null` => null
-//   * the literal string `<unknown ssid>` (returned when ACCESS_FINE_LOCATION
-//     was denied or location services are off) => null
-//   * empty after trim => null
-//   * surrounding double quotes (Android wraps SSIDs as `"home"`) => stripped
-//   * any whitespace at the edges => trimmed
-//
-// Failures from getWifiName (permission throws, plugin errors) are caught
-// and degraded to `ssid=null` so a probe call never crashes the caller.
+// Android quirks the SSID returns: `<unknown ssid>` stub when location is
+// missing, and the value is double-quote-wrapped. Strip both before match.
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:network_info_plus/network_info_plus.dart';

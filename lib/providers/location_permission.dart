@@ -1,21 +1,6 @@
-// Network Rules v1: foreground-only location permission state.
-//
-// Android 10+ requires ACCESS_FINE_LOCATION to read the current Wi-Fi SSID.
-// We do NOT request ACCESS_BACKGROUND_LOCATION: the rules engine reacts to
-// connectivity changes only while the app session is active, so foreground
-// is enough. The provider exposes a four-state machine the UI can branch on:
-//
-//   * granted            => SSID reads work, name-rules are usable
-//   * denied             => user said no but can still be re-prompted
-//   * notDetermined      => not yet asked, request() will pop the system dialog
-//   * permanentlyDenied  => user picked "Don't ask again" or device policy
-//                           blocks it; only Settings can flip it
-//
-// Mapping rationale:
-//   * `provisional` (iOS-only) and `limited` are sufficient for our SSID read,
-//     so we treat them as `granted` rather than nudging the user.
-//   * `restricted` (corporate / parental policy) cannot be lifted by re-asking,
-//     so it folds into `permanentlyDenied`.
+// Foreground-only: no ACCESS_BACKGROUND_LOCATION because the engine only
+// reacts while the session is active. `restricted` folds into
+// permanentlyDenied (policy-blocked, re-asking can't lift it).
 
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -1,8 +1,3 @@
-// Top-level screen for network rules. Each rule is a single condition
-// matched against the current network snapshot, producing an ON or OFF
-// action. When no rule matches the runner does nothing — there is no
-// explicit fallback row, by design.
-
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/providers/network_rules.dart';

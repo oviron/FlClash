@@ -121,16 +121,9 @@ extension AccessControlPropsExt on AccessControlProps {
   };
 }
 
-/// Derives an [AccessControlProps] from a parsed mihomo YAML map by reading
-/// `tun.include-package` (acceptSelected) or `tun.exclude-package`
-/// (rejectSelected). Returns null when neither is present or the shape is
-/// unexpected. The [base] keeps the caller's view fields (sort, filters).
-///
-/// Android `VpnService.Builder` allows allow XOR disallow, never both. When
-/// YAML defines both keys non-empty we mirror mihomo's sing-tun semantics by
-/// returning `acceptList = include \ exclude` (whitelist minus exclusions).
-/// If subtraction empties the set we fall back to `include` and warn, since
-/// an empty allow-list would leave only FlClash itself in the tunnel.
+// VpnService.Builder is allow XOR disallow. With both YAML keys non-empty
+// we mirror mihomo sing-tun: acceptList = include \ exclude, fall back to
+// include if subtraction empties the set (else only FlClash itself routes).
 AccessControlProps? aclFromTunYaml(
   Map<String, dynamic> raw, {
   AccessControlProps base = const AccessControlProps(),

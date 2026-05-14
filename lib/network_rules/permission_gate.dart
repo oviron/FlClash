@@ -1,8 +1,3 @@
-// Centralized location-permission flow for Wi-Fi SSID reads, so the same
-// branching (rationale dialog, system request, permanently-denied →
-// Settings fallback) does not get copy-pasted into every widget that
-// needs it.
-
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/providers/location_permission.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +6,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../views/setting/widgets/location_permission_dialog.dart';
 
-/// Drives the location-permission flow needed to read Wi-Fi SSID.
-///
-/// Returns `true` only when the permission ends up granted. All other
-/// outcomes (user dismissed the rationale, system denied, OS-permanently
-/// denied) return `false`. Callers should disable name-rule features when
-/// they get `false` so the user understands why nothing happened.
 Future<bool> ensureLocationPermissionForSsid(
   BuildContext context,
   WidgetRef ref,
@@ -42,9 +31,6 @@ Future<bool> ensureLocationPermissionForSsid(
     case LocationPermissionState.permanentlyDenied:
       if (!context.mounted) return false;
       await _showOpenSettingsDialog(context);
-      // We do not refresh again here: the user has to leave the app to
-      // change the setting. Whoever called us will see `false`, and the
-      // next interaction will refresh and pick up the new state.
       return false;
   }
 }

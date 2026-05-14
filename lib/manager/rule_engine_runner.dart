@@ -1,11 +1,5 @@
-// Runtime dispatcher for the rule engine.
-//
-// Network events from connectivity, drift, and settings can fire in
-// rapid bursts during a Wi-Fi to cellular handover. We debounce them
-// into a single decision: any event resets a short timer, and only the
-// final stable state triggers a dispatch. This avoids both flapping
-// (multiple toggles inside one transition) and stuck states (an event
-// arriving during an old cooldown was dropped on the previous design).
+// Debounce, not cooldown: Wi-Fi↔cellular handovers fire bursts and a
+// cooldown would silently drop the final stable state.
 
 import 'dart:async';
 

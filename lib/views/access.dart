@@ -198,11 +198,9 @@ class _AccessViewState extends ConsumerState<AccessView> {
     if (packages.isEmpty) {
       return accessControl;
     }
-    // Persist intersects with installed packages only, never with the
-    // currently visible view. Filtering by `isFilterSystemApp` /
-    // `isFilterNonInternetApp` here would silently drop entries the user
-    // imported (clipboard, intelligent select, YAML override) the moment
-    // they are hidden from the list, in both whitelist and blacklist mode.
+    // Intersect with installed packages, not the visible view: filtering
+    // by isFilter* here would silently drop imported entries the moment
+    // they are hidden from the list.
     final installedPackageNames = packages
         .map((item) => item.packageName)
         .toSet()

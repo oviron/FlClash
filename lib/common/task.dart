@@ -144,11 +144,9 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   if (rawConfig['profile'] == null) {
     rawConfig['profile'] = {};
   }
-  // Default `proxy: DIRECT` on every HTTP-vehicle provider so mihomo's own
-  // fetcher uses SpecialProxy="DIRECT" — bypass user routing rules entirely
-  // (in particular a trailing MATCH,REJECT that would otherwise REJECT every
-  // rule-provider's own download, chicken-and-egg). User can still override
-  // by writing an explicit `proxy:` in the profile.
+  // Default proxy: DIRECT routes the provider's own download via
+  // SpecialProxy and skips user rules; otherwise a trailing MATCH,REJECT
+  // REJECTs the fetch and the provider never loads.
   if (rawConfig['proxy-providers'] != null) {
     final proxyProviders = rawConfig['proxy-providers'] as Map;
     for (final key in proxyProviders.keys) {
@@ -222,12 +220,9 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     rules = List<String>.from(rawConfig['rules']);
   }
   rawConfig.remove('rules');
-  // Route mihomo's own INNER traffic to DIRECT so whitelist `MATCH,REJECT`
-  // catch-all does not strand it. Covers both INNER paths: GeoX/MMDB fetches
-  // (Type=INNER, Process="mihomo") and DoH lookups under `respect-rules: true`
-  // (Type=INNER, Process=""). IN-TYPE matches by Type and ignores Process, so
-  // it catches both. If the user already has IN-TYPE,INNER,X or
-  // PROCESS-NAME,mihomo,X, respect their choice.
+  // IN-TYPE matches Type and ignores Process: covers both INNER paths
+  // (GeoX fetch with Process=mihomo, DoH with Process="") so a trailing
+  // MATCH,REJECT in whitelist profiles doesn't strand them.
   const innerBypassRule = 'IN-TYPE,INNER,DIRECT';
   final hasUserInnerRule = rules.any(
     (r) =>

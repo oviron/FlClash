@@ -125,10 +125,6 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
 
     final profileAcl = profile.accessControlProps;
     final overrideActive = profileAcl != null && profileAcl.enable;
-    // Seed strategy: if the profile already has an active UI override, start
-    // with that. Otherwise show the YAML-derived list under a disabled switch
-    // so the user sees what is currently in effect, and flipping the switch
-    // converts it into a stored override on save.
     final initial = overrideActive
         ? profileAcl
         : (yamlAcl?.copyWith(enable: false) ??

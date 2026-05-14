@@ -1,9 +1,3 @@
-// Pre-prompt dialog for ACCESS_FINE_LOCATION. Android requires the user
-// to see *why* an app wants location before the system dialog appears,
-// so we show this explanation right before calling permission_handler.
-// The actual request lives in [permission_gate.dart] so business logic
-// does not leak into the widget tree.
-
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 

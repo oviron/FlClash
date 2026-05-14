@@ -1,9 +1,5 @@
 part of 'database.dart';
 
-/// Persisted form of a [NetworkRule]. Conditions are stored as a JSON
-/// array in a single TEXT column, action is stored as the underlying
-/// enum index (0 turnOn, 1 turnOff, 2 keep) so it stays compact and
-/// migrations stay trivial.
 @DataClassName('RawNetworkRule')
 class NetworkRules extends Table {
   @override
