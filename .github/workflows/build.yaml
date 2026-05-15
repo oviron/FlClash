@@ -80,9 +80,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            android/byedpi/.cxx
             android/core/.cxx
-          key: cmake-${{ runner.os }}-${{ matrix.flavor }}-${{ hashFiles('android/byedpi/src/main/cpp/CMakeLists.txt', 'android/byedpi/src/main/cpp/byedpi/**/*.c', 'android/byedpi/src/main/cpp/byedpi/**/*.h', 'android/byedpi/src/main/cpp/native-lib.c', 'android/byedpi/src/main/cpp/main.h', 'android/core/src/main/cpp/CMakeLists.txt', 'android/core/src/main/cpp/*.cpp', 'android/core/src/main/cpp/*.h') }}
+          key: cmake-${{ runner.os }}-${{ matrix.flavor }}-${{ hashFiles('android/core/src/main/cpp/CMakeLists.txt', 'android/core/src/main/cpp/*.cpp', 'android/core/src/main/cpp/*.h') }}
           restore-keys: |
             cmake-${{ runner.os }}-${{ matrix.flavor }}-
             cmake-${{ runner.os }}-
