@@ -49,11 +49,13 @@ android {
     productFlavors {
         create("classic") {
             dimension = "variant"
+            manifestPlaceholders["appLabel"] = "FlClash"
         }
         create("bydpi") {
             dimension = "variant"
             applicationIdSuffix = ".bydpi"
             versionNameSuffix = "-bydpi"
+            manifestPlaceholders["appLabel"] = "FlClash ByeDPI"
             buildConfigField("Boolean", "BYDPI_ENABLED", "true")
         }
     }

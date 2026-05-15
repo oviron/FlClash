@@ -198,7 +198,7 @@ class BuildAndroidCommand extends Command<void> {
     if (!dist.existsSync()) dist.createSync(recursive: true);
 
     for (final item in items) {
-      final src = File(join(flutterApkDir.path, 'app-$flavor-${item.archName}-release.apk'));
+      final src = File(join(flutterApkDir.path, 'app-${item.archName}-$flavor-release.apk'));
       if (!src.existsSync()) {
         throw 'Missing Flutter APK: ${src.path}';
       }
