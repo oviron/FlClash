@@ -27,7 +27,9 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
     ndkVersion = libs.versions.ndkVersion.get()
 
-
+    buildFeatures {
+        buildConfig = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -40,6 +42,20 @@ android {
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        buildConfigField("Boolean", "BYDPI_ENABLED", "false")
+    }
+
+    flavorDimensions += "variant"
+    productFlavors {
+        create("classic") {
+            dimension = "variant"
+        }
+        create("bydpi") {
+            dimension = "variant"
+            applicationIdSuffix = ".bydpi"
+            versionNameSuffix = "-bydpi"
+            buildConfigField("Boolean", "BYDPI_ENABLED", "true")
+        }
     }
 
     signingConfigs {
@@ -101,4 +117,5 @@ dependencies {
     implementation(libs.smali.dexlib2) {
         exclude(group = "com.google.guava", module = "guava")
     }
+    "bydpiImplementation"(project(":byedpi"))
 }

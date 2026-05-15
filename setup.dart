@@ -160,6 +160,11 @@ class BuildAndroidCommand extends Command<void> {
       valueHelp: 'app,core',
       help: 'Build target: app (apk) or core (libclash.so only)',
     );
+    argParser.addOption(
+      'flavor',
+      valueHelp: 'classic,bydpi',
+      help: 'Android product flavor (default: classic)',
+    );
   }
 
   @override
@@ -183,7 +188,7 @@ class BuildAndroidCommand extends Command<void> {
     return raw.split('+').first;
   }
 
-  Future<void> _copyApks(List<BuildItem> items) async {
+  Future<void> _copyApks(List<BuildItem> items, String flavor) async {
     final version = _readPubspecVersion();
     final flutterApkDir = Directory(
       join(current, 'build', 'app', 'outputs', 'flutter-apk'),
@@ -192,11 +197,11 @@ class BuildAndroidCommand extends Command<void> {
     if (!dist.existsSync()) dist.createSync(recursive: true);
 
     for (final item in items) {
-      final src = File(join(flutterApkDir.path, 'app-${item.archName}-release.apk'));
+      final src = File(join(flutterApkDir.path, 'app-$flavor-${item.archName}-release.apk'));
       if (!src.existsSync()) {
         throw 'Missing Flutter APK: ${src.path}';
       }
-      final dst = File(join(dist.path, 'FlClash-$version-android-${item.archName}.apk'));
+      final dst = File(join(dist.path, 'FlClash-$flavor-$version-android-${item.archName}.apk'));
       await src.copy(dst.path);
       print('copied ${src.path} -> ${dst.path}');
     }
@@ -207,6 +212,11 @@ class BuildAndroidCommand extends Command<void> {
     final archName = argResults?['arch'] as String?;
     final env = (argResults?['env'] as String?) ?? 'pre';
     final out = (argResults?['out'] as String?) ?? 'app';
+    final flavor = (argResults?['flavor'] as String?) ?? 'classic';
+
+    if (!['classic', 'bydpi'].contains(flavor)) {
+      throw 'Invalid flavor: $flavor. Must be one of: classic, bydpi';
+    }
 
     Arch? arch;
     if (archName != null) {
@@ -231,13 +241,15 @@ class BuildAndroidCommand extends Command<void> {
       [
         'flutter', 'build', 'apk', '--release',
         '--split-per-abi',
+        '--flavor', flavor,
         '--target-platform', flutterTargets,
         '--dart-define-from-file=env.json',
+        '--dart-define=BYDPI=${flavor == 'bydpi'}',
       ],
-      name: 'flutter build apk',
+      name: 'flutter build apk ($flavor)',
     );
 
-    await _copyApks(items);
+    await _copyApks(items, flavor);
   }
 }
 
