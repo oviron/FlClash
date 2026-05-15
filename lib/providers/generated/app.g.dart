@@ -1822,7 +1822,7 @@ final class NetworkDetectionProvider
   }
 }
 
-String _$networkDetectionHash() => r'b955cbe70e41060d23b46bbbab1885b4951fa504';
+String _$networkDetectionHash() => r'c93f93a853923d010be37e24c8c24dc204212b74';
 
 abstract class _$NetworkDetection extends $Notifier<NetworkDetectionState> {
   NetworkDetectionState build();

@@ -4,12 +4,14 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/network_rules/model.dart';
 
 part 'generated/database.g.dart';
+part 'byedpi.dart';
 part 'links.dart';
 part 'network_rules.dart';
 part 'profiles.dart';
@@ -17,14 +19,14 @@ part 'rules.dart';
 part 'scripts.dart';
 
 @DriftDatabase(
-  tables: [Profiles, Scripts, Rules, ProfileRuleLinks, NetworkRules],
-  daos: [ProfilesDao, ScriptsDao, RulesDao, NetworkRulesDao],
+  tables: [Profiles, Scripts, Rules, ProfileRuleLinks, NetworkRules, BypassProfiles],
+  daos: [ProfilesDao, ScriptsDao, RulesDao, NetworkRulesDao, BypassProfilesDao],
 )
 class Database extends _$Database {
   Database([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -34,6 +36,9 @@ class Database extends _$Database {
       }
       if (from < 3) {
         await m.createTable(networkRules);
+      }
+      if (from < 4) {
+        await m.createTable(bypassProfiles);
       }
     },
   );

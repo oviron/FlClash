@@ -15,9 +15,8 @@ class ByeDpiModule(context: Context) : Module() {
     private var job: Job? = null
 
     override fun onInstall() {
-        if (!state.enabled) return
-        val args = ByeDpiArgs.build(state.toConfig())
-        job = scope.launch { ByeDpiProxy.start(args) }
+        val config = state.read() ?: return
+        job = scope.launch { ByeDpiProxy.start(ByeDpiArgs.build(config)) }
     }
 
     override fun onUninstall() {

@@ -688,6 +688,8 @@ extension SetupControllerExt on AppController {
         appendSystemDns: appendSystemDns,
         addedRules: addedRules,
         defaultUA: defaultUA,
+        byeDpiSettings: setupState.byeDpiSettings,
+        bypassProfiles: setupState.bypassProfiles,
       ),
     );
     return res;

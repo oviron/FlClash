@@ -1,21 +1,23 @@
 package com.follow.clash.byedpi
 
 import android.content.Context
-import android.content.SharedPreferences
+import org.json.JSONObject
+import java.io.File
 
 class ByeDpiState(context: Context) {
-    private val prefs: SharedPreferences =
-        context.getSharedPreferences("byedpi", Context.MODE_PRIVATE)
+    private val file = File(context.filesDir, "byedpi-runtime.json")
 
-    val enabled: Boolean get() = prefs.getBoolean(KEY_ENABLED, false)
-    val port: Int get() = prefs.getInt(KEY_PORT, 1080)
-    val cliArgs: String get() = prefs.getString(KEY_CLI_ARGS, "") ?: ""
-
-    fun toConfig() = ByeDpiConfig(port = port, cliArgs = cliArgs)
-
-    companion object {
-        const val KEY_ENABLED = "byedpi_enabled"
-        const val KEY_PORT = "byedpi_port"
-        const val KEY_CLI_ARGS = "byedpi_cli_args"
+    fun read(): ByeDpiConfig? {
+        if (!file.exists()) return null
+        return try {
+            val json = JSONObject(file.readText())
+            if (!json.optBoolean("enabled", false)) return null
+            ByeDpiConfig(
+                port = json.optInt("port", 1080),
+                cliArgs = json.optString("cliArgs", "")
+            )
+        } catch (_: Exception) {
+            null
+        }
     }
 }

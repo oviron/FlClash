@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:fl_clash/byedpi/engine.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -230,6 +231,13 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
         r.startsWith('PROCESS-NAME,mihomo,'),
   );
   if (!hasUserInnerRule) rules.insert(0, innerBypassRule);
+  rawConfig['rules'] = rules;
+  injectByeDpiConfig(
+    rawConfig: rawConfig.cast<String, dynamic>(),
+    settings: data.byeDpiSettings,
+    profiles: data.bypassProfiles,
+  );
+  rules = rawConfig['rules'] != null ? List<String>.from(rawConfig['rules']) : rules;
   if (addedRules.isNotEmpty) {
     final parsedNewRules = addedRules
         .map((item) => ParsedRule.parseString(item.value))

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'app.dart';
+import 'byedpi.dart';
 import 'config.dart';
 import 'database.dart';
 
@@ -689,6 +690,8 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
   final List<Rule> addedRules = profileId != null
       ? await ref.watch(addedRuleStreamProvider(profileId).future)
       : [];
+  final byeDpiSettings = ref.watch(byeDpiSettingsProvider);
+  final bypassProfiles = await ref.watch(bypassProfilesOnceProvider.future);
   return SetupState(
     profileId: profileId,
     profileLastUpdateDate: profileLastUpdateDate,
@@ -697,6 +700,8 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
     script: script,
     overrideDns: overrideDns,
     dns: dns,
+    byeDpiSettings: byeDpiSettings,
+    bypassProfiles: bypassProfiles,
   );
 }
 

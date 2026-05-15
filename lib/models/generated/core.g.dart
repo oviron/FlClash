@@ -268,9 +268,6 @@ const _$ActionMethodEnumMap = {
   ActionMethod.getProxies: 'getProxies',
   ActionMethod.changeProxy: 'changeProxy',
   ActionMethod.testDelay: 'testDelay',
-  // Generated artefact; entry added manually for a new enum value. build_runner
-  // would regenerate it identically from lib/enum/enum.dart (verified).
-  // See commit 3dba068.
   ActionMethod.probeCurrentProxyIp: 'probeCurrentProxyIp',
   ActionMethod.queryExternalProviders: 'queryExternalProviders',
   ActionMethod.getExternalProvider: 'getExternalProvider',
