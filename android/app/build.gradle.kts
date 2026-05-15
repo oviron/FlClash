@@ -60,6 +60,12 @@ android {
         }
     }
 
+    sourceSets {
+        getByName("bydpi") {
+            kotlin.srcDirs("src/bydpi/kotlin")
+        }
+    }
+
     signingConfigs {
         if (isRelease) {
             create("release") {
@@ -111,6 +117,23 @@ flutter {
 }
 
 
+val libbyedpiVersion = "0.1.0"
+val libbyedpiAar = layout.buildDirectory.file("libs/libbyedpi-android-v$libbyedpiVersion.aar")
+
+val downloadLibbyedpi = tasks.register("downloadLibbyedpi") {
+    inputs.property("version", libbyedpiVersion)
+    outputs.file(libbyedpiAar)
+    doLast {
+        val target = libbyedpiAar.get().asFile
+        if (target.exists()) return@doLast
+        target.parentFile.mkdirs()
+        val url = "https://github.com/oviron/libbyedpi-android/releases/download/v$libbyedpiVersion/libbyedpi-android-v$libbyedpiVersion.aar"
+        target.outputStream().use { out ->
+            uri(url).toURL().openStream().use { it.copyTo(out) }
+        }
+    }
+}
+
 dependencies {
     implementation(project(":service"))
     implementation(project(":common"))
@@ -119,5 +142,6 @@ dependencies {
     implementation(libs.smali.dexlib2) {
         exclude(group = "com.google.guava", module = "guava")
     }
-    "bydpiImplementation"(project(":byedpi"))
+    "bydpiImplementation"(libs.kotlinx.coroutines.android)
+    "bydpiImplementation"(files(libbyedpiAar).builtBy(downloadLibbyedpi))
 }
