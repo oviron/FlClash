@@ -349,7 +349,7 @@ abstract class MakeRealProfileState with _$MakeRealProfileState {
     required List<Rule> addedRules,
     required String defaultUA,
     @Default(ByeDpiSettings()) ByeDpiSettings byeDpiSettings,
-    @Default([]) List<BypassProfile> bypassProfiles,
+    @Default([]) List<String> byeDpiHostList,
   }) = _MakeRealProfileState;
 }
 
@@ -376,7 +376,7 @@ abstract class SetupState with _$SetupState {
     required bool overrideDns,
     required Dns dns,
     @Default(ByeDpiSettings()) ByeDpiSettings byeDpiSettings,
-    @Default([]) List<BypassProfile> bypassProfiles,
+    @Default([]) List<String> byeDpiHostList,
   }) = _SetupState;
 }
 
@@ -416,10 +416,6 @@ extension SetupStateExt on SetupState {
       return true;
     }
     if (byeDpiSettings != lastSetupState.byeDpiSettings) {
-      return true;
-    }
-    if (!bypassProfileListEquality.equals(
-        bypassProfiles, lastSetupState.bypassProfiles)) {
       return true;
     }
     return false;

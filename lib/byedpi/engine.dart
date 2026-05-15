@@ -1,18 +1,11 @@
 import 'model.dart';
 
-String _slugify(String s) =>
-    s.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-').replaceAll(RegExp(r'-+$|^-+'), '');
-
-Map<String, dynamic> injectByeDpiConfig({
+void injectByeDpi({
   required Map<String, dynamic> rawConfig,
   required ByeDpiSettings settings,
-  required List<BypassProfile> profiles,
+  required List<String> hosts,
 }) {
-  if (!settings.enabled) return rawConfig;
-  final active = profiles
-      .where((p) => p.enabled && p.apps.isNotEmpty && p.domains.isNotEmpty)
-      .toList();
-  if (active.isEmpty) return rawConfig;
+  if (!settings.enabled) return;
 
   final proxies = _ensureList(rawConfig, 'proxies');
   if (!proxies.any((p) => p is Map && p['name'] == 'byedpi-local')) {
@@ -21,69 +14,50 @@ Map<String, dynamic> injectByeDpiConfig({
       'type': 'socks5',
       'server': '127.0.0.1',
       'port': settings.port,
+      'udp': false,
     });
+    rawConfig['proxies'] = proxies;
   }
-  rawConfig['proxies'] = proxies;
 
-  final groups = _ensureList(rawConfig, 'proxy-groups');
-  final subRules = _ensureMap(rawConfig, 'sub-rules');
-  final rules = _ensureList(rawConfig, 'rules');
+  if (settings.mode != ByeDpiMode.auto) return;
 
-  final List<String> prependRules = [];
+  final cleanedHosts = hosts
+      .map((h) => h.trim())
+      .where((h) => h.isNotEmpty && !h.startsWith('#'))
+      .toList(growable: false);
+  if (cleanedHosts.isEmpty) return;
 
-  for (final profile in active) {
-    final slug = _slugify(profile.name);
-    final groupName = '$slug-route';
-    final subRuleKey = '$slug-rules';
+  final target = settings.fallbackEnabled && settings.fallbackGroup.isNotEmpty
+      ? 'byedpi-fallback'
+      : 'byedpi-local';
 
-    if (!groups.any((g) => g is Map && g['name'] == groupName)) {
+  if (target == 'byedpi-fallback') {
+    final groups = _ensureList(rawConfig, 'proxy-groups');
+    if (!groups.any((g) => g is Map && g['name'] == 'byedpi-fallback')) {
       groups.add({
-        'name': groupName,
+        'name': 'byedpi-fallback',
         'type': 'fallback',
         'proxies': ['byedpi-local', settings.fallbackGroup],
         'url': 'https://www.gstatic.com/generate_204',
         'interval': 60,
-        'lazy': true,
+        'tolerance': 50,
       });
-    }
-
-    if (!subRules.containsKey(subRuleKey)) {
-      final List<String> entries = [
-        for (final d in profile.domains) 'DOMAIN-SUFFIX,$d,$groupName',
-        'MATCH,${settings.fallbackGroup}',
-      ];
-      subRules[subRuleKey] = entries;
-    }
-
-    for (final app in profile.apps) {
-      final entry = 'SUB-RULE,(PROCESS-NAME,$app),$subRuleKey';
-      if (!prependRules.contains(entry)) {
-        prependRules.add(entry);
-      }
+      rawConfig['proxy-groups'] = groups;
     }
   }
 
-  rawConfig['proxy-groups'] = groups;
-  rawConfig['sub-rules'] = subRules;
-
-  for (final r in prependRules.reversed) {
-    if (!rules.contains(r)) {
-      rules.insert(0, r);
-    }
-  }
+  final rules = _ensureList(rawConfig, 'rules');
+  final innerIdx = rules.indexWhere(
+    (r) => r is String && r.startsWith('IN-TYPE,INNER,'),
+  );
+  final insertAt = innerIdx >= 0 ? innerIdx + 1 : 0;
+  final newRules = [for (final h in cleanedHosts) 'DOMAIN-SUFFIX,$h,$target'];
+  rules.insertAll(insertAt, newRules);
   rawConfig['rules'] = rules;
-
-  return rawConfig;
 }
 
 List<dynamic> _ensureList(Map<String, dynamic> config, String key) {
   final v = config[key];
   if (v is List) return List<dynamic>.from(v);
   return <dynamic>[];
-}
-
-Map<String, dynamic> _ensureMap(Map<String, dynamic> config, String key) {
-  final v = config[key];
-  if (v is Map) return Map<String, dynamic>.from(v);
-  return <String, dynamic>{};
 }

@@ -1,4 +1,5 @@
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:fl_clash/byedpi/host_list.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -691,7 +692,8 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
       ? await ref.watch(addedRuleStreamProvider(profileId).future)
       : [];
   final byeDpiSettings = ref.watch(byeDpiSettingsProvider);
-  final bypassProfiles = await ref.watch(bypassProfilesOnceProvider.future);
+  final hostListText = await readHostList();
+  final byeDpiHostList = hostListText.split('\n');
   return SetupState(
     profileId: profileId,
     profileLastUpdateDate: profileLastUpdateDate,
@@ -701,7 +703,7 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
     overrideDns: overrideDns,
     dns: dns,
     byeDpiSettings: byeDpiSettings,
-    bypassProfiles: bypassProfiles,
+    byeDpiHostList: byeDpiHostList,
   );
 }
 

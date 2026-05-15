@@ -232,10 +232,10 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   );
   if (!hasUserInnerRule) rules.insert(0, innerBypassRule);
   rawConfig['rules'] = rules;
-  injectByeDpiConfig(
+  injectByeDpi(
     rawConfig: rawConfig.cast<String, dynamic>(),
     settings: data.byeDpiSettings,
-    profiles: data.bypassProfiles,
+    hosts: data.byeDpiHostList,
   );
   rules = rawConfig['rules'] != null ? List<String>.from(rawConfig['rules']) : rules;
   if (addedRules.isNotEmpty) {

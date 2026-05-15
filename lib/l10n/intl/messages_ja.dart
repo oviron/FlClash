@@ -648,7 +648,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleNameOptional": MessageLookupByLibrary.simpleMessage("名前（任意）"),
     "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
-      "指定したドメインとアプリのDPIをバイパス",
+      "ローカル SOCKS5 プロキシ経由でDPIをバイパス",
     ),
     "byedpiEnable":
         MessageLookupByLibrary.simpleMessage("ByeDPIを有効にする"),
@@ -656,24 +656,26 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
     "byedpiCliArgsHint":
         MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
-    "byedpiProfilesEmpty": MessageLookupByLibrary.simpleMessage(
-      "プロファイルがありません。+ を押して追加してください。",
+    "byedpiMode": MessageLookupByLibrary.simpleMessage("モード"),
+    "byedpiModeManual": MessageLookupByLibrary.simpleMessage("手動"),
+    "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("自動"),
+    "byedpiFallback": MessageLookupByLibrary.simpleMessage(
+      "byedpi 失敗時にプロキシグループへフォールバック",
     ),
-    "byedpiAddProfile":
-        MessageLookupByLibrary.simpleMessage("プロファイルを追加"),
-    "byedpiEditProfile":
-        MessageLookupByLibrary.simpleMessage("プロファイルを編集"),
-    "byedpiNewProfile":
-        MessageLookupByLibrary.simpleMessage("新しいプロファイル"),
-    "byedpiName": MessageLookupByLibrary.simpleMessage("プロファイル名"),
-    "byedpiDomains":
-        MessageLookupByLibrary.simpleMessage("ドメイン（1行に1つ）"),
-    "byedpiApps": MessageLookupByLibrary.simpleMessage(
-      "アプリ（パッケージ名、1行に1つ）",
+    "byedpiFallbackProxy":
+        MessageLookupByLibrary.simpleMessage("フォールバックプロキシ"),
+    "byedpiHostList": MessageLookupByLibrary.simpleMessage("ホストリスト"),
+    "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("編集"),
+    "byedpiHostListReset":
+        MessageLookupByLibrary.simpleMessage("デフォルトに戻す"),
+    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
+      "ホストリストを内蔵のデフォルトにリセットしますか？",
     ),
-    "byedpiConfirmDelete": MessageLookupByLibrary.simpleMessage(
-      "このプロファイルを削除しますか?",
+    "byedpiHostListSaved":
+        MessageLookupByLibrary.simpleMessage("ホストリストを保存しました"),
+    "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage(
+      "現在のプロファイルにプロキシグループがありません",
     ),
-    "byedpiDelete": MessageLookupByLibrary.simpleMessage("削除"),
+    "byedpiPort": MessageLookupByLibrary.simpleMessage("リッスンポート"),
   };
 }

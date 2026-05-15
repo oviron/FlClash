@@ -3520,17 +3520,15 @@ class AppLocalizations {
     return Intl.message('ByeDPI', name: 'byedpiTitle', desc: '', args: []);
   }
 
-  /// `DPI bypass for selected domains and apps`
   String get byedpiDesc {
     return Intl.message(
-      'DPI bypass for selected domains and apps',
+      'DPI bypass via local SOCKS5 proxy',
       name: 'byedpiDesc',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enable ByeDPI`
   String get byedpiEnable {
     return Intl.message(
       'Enable ByeDPI',
@@ -3540,7 +3538,6 @@ class AppLocalizations {
     );
   }
 
-  /// `ByeDPI CLI args`
   String get byedpiCliArgs {
     return Intl.message(
       'ByeDPI CLI args',
@@ -3550,7 +3547,6 @@ class AppLocalizations {
     );
   }
 
-  /// `--auto=tlsrec`
   String get byedpiCliArgsHint {
     return Intl.message(
       '--auto=tlsrec',
@@ -3560,89 +3556,97 @@ class AppLocalizations {
     );
   }
 
-  /// `No profiles yet. Tap + to add one.`
-  String get byedpiProfilesEmpty {
+  String get byedpiMode {
+    return Intl.message('Mode', name: 'byedpiMode', desc: '', args: []);
+  }
+
+  String get byedpiModeManual {
+    return Intl.message('Manual', name: 'byedpiModeManual', desc: '', args: []);
+  }
+
+  String get byedpiModeAuto {
     return Intl.message(
-      'No profiles yet. Tap + to add one.',
-      name: 'byedpiProfilesEmpty',
+      'Automatic',
+      name: 'byedpiModeAuto',
       desc: '',
       args: [],
     );
   }
 
-  /// `Add profile`
-  String get byedpiAddProfile {
+  String get byedpiFallback {
     return Intl.message(
-      'Add profile',
-      name: 'byedpiAddProfile',
+      'Fallback to a proxy group on byedpi failure',
+      name: 'byedpiFallback',
       desc: '',
       args: [],
     );
   }
 
-  /// `Edit profile`
-  String get byedpiEditProfile {
+  String get byedpiFallbackProxy {
     return Intl.message(
-      'Edit profile',
-      name: 'byedpiEditProfile',
+      'Fallback proxy',
+      name: 'byedpiFallbackProxy',
       desc: '',
       args: [],
     );
   }
 
-  /// `New profile`
-  String get byedpiNewProfile {
+  String get byedpiHostList {
     return Intl.message(
-      'New profile',
-      name: 'byedpiNewProfile',
+      'Host list',
+      name: 'byedpiHostList',
       desc: '',
       args: [],
     );
   }
 
-  /// `Profile name`
-  String get byedpiName {
+  String get byedpiHostListEdit {
+    return Intl.message('Edit', name: 'byedpiHostListEdit', desc: '', args: []);
+  }
+
+  String get byedpiHostListReset {
     return Intl.message(
-      'Profile name',
-      name: 'byedpiName',
+      'Reset to defaults',
+      name: 'byedpiHostListReset',
       desc: '',
       args: [],
     );
   }
 
-  /// `Domains (one per line)`
-  String get byedpiDomains {
+  String get byedpiHostListResetConfirm {
     return Intl.message(
-      'Domains (one per line)',
-      name: 'byedpiDomains',
+      'Reset the host list to the bundled default?',
+      name: 'byedpiHostListResetConfirm',
       desc: '',
       args: [],
     );
   }
 
-  /// `Apps (package name, one per line)`
-  String get byedpiApps {
+  String get byedpiHostListSaved {
     return Intl.message(
-      'Apps (package name, one per line)',
-      name: 'byedpiApps',
+      'Host list saved',
+      name: 'byedpiHostListSaved',
       desc: '',
       args: [],
     );
   }
 
-  /// `Delete this profile?`
-  String get byedpiConfirmDelete {
+  String get byedpiNoProxyGroups {
     return Intl.message(
-      'Delete this profile?',
-      name: 'byedpiConfirmDelete',
+      'No proxy groups in current profile',
+      name: 'byedpiNoProxyGroups',
       desc: '',
       args: [],
     );
   }
 
-  /// `Delete`
-  String get byedpiDelete {
-    return Intl.message('Delete', name: 'byedpiDelete', desc: '', args: []);
+  String get byedpiPort {
+    return Intl.message(
+      'Listening port',
+      name: 'byedpiPort',
+      desc: '',
+      args: [],
+    );
   }
 }
 

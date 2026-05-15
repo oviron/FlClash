@@ -6,42 +6,29 @@ part of '../model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_BypassProfile _$BypassProfileFromJson(Map<String, dynamic> json) =>
-    _BypassProfile(
-      id: (json['id'] as num).toInt(),
-      name: json['name'] as String? ?? '',
-      enabled: json['enabled'] as bool? ?? true,
-      domains:
-          (json['domains'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
-      apps:
-          (json['apps'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-          const [],
-    );
-
-Map<String, dynamic> _$BypassProfileToJson(_BypassProfile instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'enabled': instance.enabled,
-      'domains': instance.domains,
-      'apps': instance.apps,
-    };
-
 _ByeDpiSettings _$ByeDpiSettingsFromJson(Map<String, dynamic> json) =>
     _ByeDpiSettings(
       enabled: json['enabled'] as bool? ?? false,
+      mode:
+          $enumDecodeNullable(_$ByeDpiModeEnumMap, json['mode']) ??
+          ByeDpiMode.auto,
+      fallbackEnabled: json['fallbackEnabled'] as bool? ?? true,
+      fallbackGroup: json['fallbackGroup'] as String? ?? '',
       port: (json['port'] as num?)?.toInt() ?? 1080,
-      cliArgs: json['cliArgs'] as String? ?? '',
-      fallbackGroup: json['fallbackGroup'] as String? ?? 'VPN',
+      cliArgs: json['cliArgs'] as String? ?? '--auto=tlsrec',
     );
 
 Map<String, dynamic> _$ByeDpiSettingsToJson(_ByeDpiSettings instance) =>
     <String, dynamic>{
       'enabled': instance.enabled,
+      'mode': _$ByeDpiModeEnumMap[instance.mode]!,
+      'fallbackEnabled': instance.fallbackEnabled,
+      'fallbackGroup': instance.fallbackGroup,
       'port': instance.port,
       'cliArgs': instance.cliArgs,
-      'fallbackGroup': instance.fallbackGroup,
     };
+
+const _$ByeDpiModeEnumMap = {
+  ByeDpiMode.manual: 'manual',
+  ByeDpiMode.auto: 'auto',
+};

@@ -796,27 +796,34 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
-      "DPI bypass for selected domains and apps",
+      "DPI bypass via local SOCKS5 proxy",
     ),
     "byedpiEnable": MessageLookupByLibrary.simpleMessage("Enable ByeDPI"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLI args"),
     "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
-    "byedpiProfilesEmpty": MessageLookupByLibrary.simpleMessage(
-      "No profiles yet. Tap + to add one.",
+    "byedpiMode": MessageLookupByLibrary.simpleMessage("Mode"),
+    "byedpiModeManual": MessageLookupByLibrary.simpleMessage("Manual"),
+    "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("Automatic"),
+    "byedpiFallback": MessageLookupByLibrary.simpleMessage(
+      "Fallback to a proxy group on byedpi failure",
     ),
-    "byedpiAddProfile": MessageLookupByLibrary.simpleMessage("Add profile"),
-    "byedpiEditProfile": MessageLookupByLibrary.simpleMessage("Edit profile"),
-    "byedpiNewProfile": MessageLookupByLibrary.simpleMessage("New profile"),
-    "byedpiName": MessageLookupByLibrary.simpleMessage("Profile name"),
-    "byedpiDomains": MessageLookupByLibrary.simpleMessage(
-      "Domains (one per line)",
+    "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage(
+      "Fallback proxy",
     ),
-    "byedpiApps": MessageLookupByLibrary.simpleMessage(
-      "Apps (package name, one per line)",
+    "byedpiHostList": MessageLookupByLibrary.simpleMessage("Host list"),
+    "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "byedpiHostListReset": MessageLookupByLibrary.simpleMessage(
+      "Reset to defaults",
     ),
-    "byedpiConfirmDelete": MessageLookupByLibrary.simpleMessage(
-      "Delete this profile?",
+    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
+      "Reset the host list to the bundled default?",
     ),
-    "byedpiDelete": MessageLookupByLibrary.simpleMessage("Delete"),
+    "byedpiHostListSaved": MessageLookupByLibrary.simpleMessage(
+      "Host list saved",
+    ),
+    "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage(
+      "No proxy groups in current profile",
+    ),
+    "byedpiPort": MessageLookupByLibrary.simpleMessage("Listening port"),
   };
 }

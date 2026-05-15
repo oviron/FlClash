@@ -689,7 +689,7 @@ extension SetupControllerExt on AppController {
         addedRules: addedRules,
         defaultUA: defaultUA,
         byeDpiSettings: setupState.byeDpiSettings,
-        bypassProfiles: setupState.bypassProfiles,
+        byeDpiHostList: setupState.byeDpiHostList,
       ),
     );
     return res;

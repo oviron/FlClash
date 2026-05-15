@@ -847,33 +847,37 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
-      "Обход DPI для выбранных доменов и приложений",
+      "Обход DPI через локальный SOCKS5-прокси",
     ),
     "byedpiEnable": MessageLookupByLibrary.simpleMessage("Включить ByeDPI"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("Аргументы ByeDPI"),
     "byedpiCliArgsHint":
         MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
-    "byedpiProfilesEmpty": MessageLookupByLibrary.simpleMessage(
-      "Профилей пока нет. Нажмите + чтобы добавить.",
+    "byedpiMode": MessageLookupByLibrary.simpleMessage("Режим"),
+    "byedpiModeManual": MessageLookupByLibrary.simpleMessage("Ручной"),
+    "byedpiModeAuto":
+        MessageLookupByLibrary.simpleMessage("Автоматический"),
+    "byedpiFallback": MessageLookupByLibrary.simpleMessage(
+      "Переключаться на группу при сбое byedpi",
     ),
-    "byedpiAddProfile":
-        MessageLookupByLibrary.simpleMessage("Добавить профиль"),
-    "byedpiEditProfile": MessageLookupByLibrary.simpleMessage(
-      "Редактировать профиль",
+    "byedpiFallbackProxy":
+        MessageLookupByLibrary.simpleMessage("Запасной прокси"),
+    "byedpiHostList":
+        MessageLookupByLibrary.simpleMessage("Список хостов"),
+    "byedpiHostListEdit":
+        MessageLookupByLibrary.simpleMessage("Редактировать"),
+    "byedpiHostListReset": MessageLookupByLibrary.simpleMessage(
+      "Сбросить к умолчанию",
     ),
-    "byedpiNewProfile":
-        MessageLookupByLibrary.simpleMessage("Новый профиль"),
-    "byedpiName":
-        MessageLookupByLibrary.simpleMessage("Название профиля"),
-    "byedpiDomains": MessageLookupByLibrary.simpleMessage(
-      "Домены (по одному на строке)",
+    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
+      "Сбросить список хостов к встроенному умолчанию?",
     ),
-    "byedpiApps": MessageLookupByLibrary.simpleMessage(
-      "Приложения (package name, по одному на строке)",
+    "byedpiHostListSaved": MessageLookupByLibrary.simpleMessage(
+      "Список хостов сохранён",
     ),
-    "byedpiConfirmDelete": MessageLookupByLibrary.simpleMessage(
-      "Удалить этот профиль?",
+    "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage(
+      "В текущем профиле нет прокси-групп",
     ),
-    "byedpiDelete": MessageLookupByLibrary.simpleMessage("Удалить"),
+    "byedpiPort": MessageLookupByLibrary.simpleMessage("Порт прослушивания"),
   };
 }

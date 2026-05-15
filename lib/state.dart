@@ -20,6 +20,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'byedpi/host_list.dart';
 import 'common/common.dart';
 import 'database/database.dart';
 import 'l10n/l10n.dart';
@@ -113,6 +114,7 @@ class GlobalState {
       unawaited(
         container.read(byeDpiSettingsProvider.notifier).init(),
       );
+      unawaited(ensureDefaultPresent());
     }
     await AppLocalizations.load(
       utils.getLocaleForString(config.appSettingProps.locale) ??

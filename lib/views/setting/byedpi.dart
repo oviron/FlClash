@@ -1,8 +1,9 @@
+import 'package:fl_clash/byedpi/host_list.dart';
 import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/byedpi.dart';
-import 'package:fl_clash/views/setting/widgets/byedpi_profile_card.dart';
-import 'package:fl_clash/views/setting/widgets/edit_byedpi_profile_dialog.dart';
+import 'package:fl_clash/views/setting/widgets/byedpi_host_list_editor.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,71 +11,126 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ByeDpiView extends ConsumerWidget {
   const ByeDpiView({super.key});
 
-  Future<void> _openCreateDialog(BuildContext context, WidgetRef ref) async {
-    final created = await EditByeDpiProfileDialog.show(context: context);
-    if (created == null) return;
-    await ref.read(bypassProfilesRepoProvider.notifier).add(created);
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(byeDpiSettingsProvider);
-    final profilesAsync = ref.watch(bypassProfilesStreamProvider);
 
     return BaseScaffold(
       title: appLocalizations.byedpiTitle,
-      body: Stack(
+      body: ListView(
         children: [
-          Column(
-            children: [
-              _MasterToggleCard(enabled: settings.enabled),
-              const Divider(height: 0),
-              _CliArgsField(cliArgs: settings.cliArgs),
-              const Divider(height: 0),
-              Expanded(
-                child: profilesAsync.when(
-                  loading: () => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  error: (e, _) => Center(child: Text('$e')),
-                  data: (profiles) => _ProfilesList(
-                    profiles: profiles,
-                    masterEnabled: settings.enabled,
-                  ),
-                ),
+          SwitchListTile(
+            secondary: const Icon(Icons.toggle_on_outlined),
+            title: Text(appLocalizations.byedpiEnable),
+            value: settings.enabled,
+            onChanged: (v) =>
+                ref.read(byeDpiSettingsProvider.notifier).setEnabled(v),
+          ),
+          const Divider(height: 0),
+          if (settings.enabled) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+              child: Text(
+                appLocalizations.byedpiMode,
+                style: Theme.of(context).textTheme.labelLarge,
               ),
-            ],
-          ),
-          Positioned(
-            right: 16,
-            bottom: 80,
-            child: FloatingActionButton.extended(
-              onPressed: settings.enabled
-                  ? () => _openCreateDialog(context, ref)
-                  : null,
-              icon: const Icon(Icons.add),
-              label: Text(appLocalizations.byedpiAddProfile),
             ),
-          ),
+            RadioGroup<ByeDpiMode>(
+              groupValue: settings.mode,
+              onChanged: (v) {
+                if (v != null) {
+                  ref.read(byeDpiSettingsProvider.notifier).setMode(v);
+                }
+              },
+              child: Column(
+                children: [
+                  RadioListTile<ByeDpiMode>(
+                    title: Text(appLocalizations.byedpiModeAuto),
+                    value: ByeDpiMode.auto,
+                  ),
+                  if (settings.mode == ByeDpiMode.auto) ...[
+                    SwitchListTile(
+                      contentPadding: const EdgeInsets.only(left: 32, right: 16),
+                      title: Text(appLocalizations.byedpiFallback),
+                      value: settings.fallbackEnabled,
+                      onChanged: (v) => ref
+                          .read(byeDpiSettingsProvider.notifier)
+                          .setFallbackEnabled(v),
+                    ),
+                    if (settings.fallbackEnabled)
+                      _FallbackGroupTile(selected: settings.fallbackGroup),
+                  ],
+                  RadioListTile<ByeDpiMode>(
+                    title: Text(appLocalizations.byedpiModeManual),
+                    value: ByeDpiMode.manual,
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 0),
+            _CliArgsField(cliArgs: settings.cliArgs),
+            _PortField(port: settings.port),
+            const Divider(height: 0),
+            _HostListTile(),
+          ],
         ],
       ),
     );
   }
 }
 
-class _MasterToggleCard extends ConsumerWidget {
-  final bool enabled;
-  const _MasterToggleCard({required this.enabled});
+class _FallbackGroupTile extends ConsumerWidget {
+  final String selected;
+  const _FallbackGroupTile({required this.selected});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SwitchListTile(
-      secondary: const Icon(Icons.toggle_on_outlined),
-      title: Text(appLocalizations.byedpiEnable),
-      value: enabled,
-      onChanged: (v) {
-        ref.read(byeDpiSettingsProvider.notifier).setEnabled(v);
-      },
+    final groups = ref.watch(groupsProvider);
+    final names = groups.map((g) => g.name).where((n) => n.isNotEmpty).toList();
+
+    if (names.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(32, 0, 16, 8),
+        child: Text(
+          appLocalizations.byedpiNoProxyGroups,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.error,
+          ),
+        ),
+      );
+    }
+
+    final effective = names.contains(selected) ? selected : names.first;
+    if (effective != selected) {
+      Future.microtask(() => ref
+          .read(byeDpiSettingsProvider.notifier)
+          .setFallbackGroup(effective));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(32, 0, 16, 8),
+      child: Row(
+        children: [
+          Text(
+            appLocalizations.byedpiFallbackProxy,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(width: 12),
+          DropdownButton<String>(
+            value: effective,
+            items: names
+                .map((n) => DropdownMenuItem(value: n, child: Text(n)))
+                .toList(),
+            onChanged: (v) {
+              if (v != null) {
+                ref
+                    .read(byeDpiSettingsProvider.notifier)
+                    .setFallbackGroup(v);
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -142,99 +198,89 @@ class _CliArgsFieldState extends ConsumerState<_CliArgsField> {
   }
 }
 
-class _ProfilesList extends ConsumerWidget {
-  final List<BypassProfile> profiles;
-  final bool masterEnabled;
+class _PortField extends ConsumerStatefulWidget {
+  final int port;
+  const _PortField({required this.port});
 
-  const _ProfilesList({required this.profiles, required this.masterEnabled});
+  @override
+  ConsumerState<_PortField> createState() => _PortFieldState();
+}
 
-  Future<void> _openEditDialog(
-    BuildContext context,
-    WidgetRef ref,
-    BypassProfile profile,
-  ) async {
-    final updated = await EditByeDpiProfileDialog.show(
-      context: context,
-      initial: profile,
-    );
-    if (updated == null) return;
-    await ref.read(bypassProfilesRepoProvider.notifier).update(updated);
-  }
+class _PortFieldState extends ConsumerState<_PortField> {
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
 
-  Future<void> _confirmDelete(
-    BuildContext context,
-    WidgetRef ref,
-    BypassProfile profile,
-  ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        content: Text(appLocalizations.byedpiConfirmDelete),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(appLocalizations.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(appLocalizations.byedpiDelete),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true) return;
-    await ref.read(bypassProfilesRepoProvider.notifier).delete(profile.id);
-  }
-
-  Future<void> _toggleEnabled(WidgetRef ref, BypassProfile profile) async {
-    await ref
-        .read(bypassProfilesRepoProvider.notifier)
-        .update(profile.copyWith(enabled: !profile.enabled));
-  }
-
-  Future<void> _onReorder(WidgetRef ref, int oldIndex, int newIndex) async {
-    final ids = profiles.map((p) => p.id).toList();
-    final adjusted = newIndex > oldIndex ? newIndex - 1 : newIndex;
-    final moved = ids.removeAt(oldIndex);
-    ids.insert(adjusted, moved);
-    await ref.read(bypassProfilesRepoProvider.notifier).reorder(ids);
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.port.toString());
+    _focusNode = FocusNode()..addListener(_onFocusChange);
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (profiles.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Text(
-            appLocalizations.byedpiProfilesEmpty,
-            style: context.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
+  void didUpdateWidget(_PortField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.port != widget.port) {
+      final s = widget.port.toString();
+      if (_controller.text != s) _controller.text = s;
     }
-    return Opacity(
-      opacity: masterEnabled ? 1.0 : 0.5,
-      child: IgnorePointer(
-        ignoring: !masterEnabled,
-        child: ReorderableListView.builder(
-          itemCount: profiles.length,
-          buildDefaultDragHandles: false,
-          padding: const EdgeInsets.only(bottom: 160),
-          onReorder: (oldIndex, newIndex) =>
-              _onReorder(ref, oldIndex, newIndex),
-          itemBuilder: (_, index) {
-            final profile = profiles[index];
-            return ByeDpiProfileCard(
-              key: ValueKey(profile.id),
-              profile: profile,
-              dragIndex: index,
-              onEdit: () => _openEditDialog(context, ref, profile),
-              onDelete: () => _confirmDelete(context, ref, profile),
-              onToggleEnabled: () => _toggleEnabled(ref, profile),
-            );
-          },
+  }
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_onFocusChange);
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChange() {
+    if (_focusNode.hasFocus) return;
+    final v = int.tryParse(_controller.text);
+    if (v == null || v == widget.port) return;
+    ref.read(byeDpiSettingsProvider.notifier).setPort(v);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: TextField(
+        controller: _controller,
+        focusNode: _focusNode,
+        decoration: InputDecoration(labelText: appLocalizations.byedpiPort),
+        keyboardType: TextInputType.number,
+      ),
+    );
+  }
+}
+
+class _HostListTile extends StatefulWidget {
+  @override
+  State<_HostListTile> createState() => _HostListTileState();
+}
+
+class _HostListTileState extends State<_HostListTile> {
+  int _count = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    countHosts().then((n) {
+      if (mounted) setState(() => _count = n);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.list_alt_outlined),
+      title: Text(appLocalizations.byedpiHostList),
+      subtitle: Text('$_count hosts'),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => const ByeDpiHostListEditor(),
         ),
       ),
     );
