@@ -162,8 +162,9 @@ class BuildAndroidCommand extends Command<void> {
     );
     argParser.addOption(
       'flavor',
-      valueHelp: 'classic,bydpi',
-      help: 'Android product flavor (default: classic)',
+      allowed: ['classic', 'bydpi'],
+      defaultsTo: 'classic',
+      help: 'Android product flavor',
     );
   }
 
@@ -212,11 +213,7 @@ class BuildAndroidCommand extends Command<void> {
     final archName = argResults?['arch'] as String?;
     final env = (argResults?['env'] as String?) ?? 'pre';
     final out = (argResults?['out'] as String?) ?? 'app';
-    final flavor = (argResults?['flavor'] as String?) ?? 'classic';
-
-    if (!['classic', 'bydpi'].contains(flavor)) {
-      throw 'Invalid flavor: $flavor. Must be one of: classic, bydpi';
-    }
+    final flavor = argResults?['flavor'] as String? ?? 'classic';
 
     Arch? arch;
     if (archName != null) {

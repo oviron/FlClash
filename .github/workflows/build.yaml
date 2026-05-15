@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Setup Android Signing
         run: |
@@ -64,7 +66,7 @@ jobs:
           shopt -s nullglob
           apks=(./dist/*.apk)
           if [ ${#apks[@]} -eq 0 ]; then
-            echo "No APK in ./dist — nothing to verify"
+            echo "No APK in ./dist, nothing to verify"
             exit 0
           fi
           for apk in "${apks[@]}"; do

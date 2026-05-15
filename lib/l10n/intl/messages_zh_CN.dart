@@ -585,7 +585,6 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("ByeDPI 命令行参数"),
     "byedpiCliArgsHint":
         MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
-    "byedpiProfiles": MessageLookupByLibrary.simpleMessage("绕过配置"),
     "byedpiProfilesEmpty":
         MessageLookupByLibrary.simpleMessage("暂无配置，点击 + 添加"),
     "byedpiAddProfile": MessageLookupByLibrary.simpleMessage("添加配置"),

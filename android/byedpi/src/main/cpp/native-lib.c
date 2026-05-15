@@ -3,14 +3,14 @@
 #include <jni.h>
 #include <getopt.h>
 #include <signal.h>
-#include <setjmp.h>
+#include <stdatomic.h>
 #include <stdlib.h>
 
 #include "byedpi/error.h"
 #include "main.h"
 
 extern int server_fd;
-static int g_proxy_running = 0;
+static _Atomic int g_proxy_running = 0;
 
 struct params default_params = {
         .await_int = 10,
@@ -35,7 +35,8 @@ void reset_params(void) {
 
 JNIEXPORT jint JNICALL
 Java_com_follow_clash_byedpi_ByeDpiProxy_nativeStart(JNIEnv *env, __attribute__((unused)) jobject thiz, jobjectArray args) {
-    if (g_proxy_running) {
+    int expected = 0;
+    if (!atomic_compare_exchange_strong(&g_proxy_running, &expected, 1)) {
         LOG(LOG_S, "proxy already running");
         return -1;
     }
@@ -66,13 +67,12 @@ Java_com_follow_clash_byedpi_ByeDpiProxy_nativeStart(JNIEnv *env, __attribute__(
 
     LOG(LOG_S, "starting proxy with %d args", argc);
     reset_params();
-    g_proxy_running = 1;
     optind = 1;
 
     int result = main(argc, argv);
 
     LOG(LOG_S, "proxy return code %d", result);
-    g_proxy_running = 0;
+    atomic_store(&g_proxy_running, 0);
 
     for (int i = 0; i < argc; i++) free(argv[i]);
     free(argv);
@@ -84,28 +84,11 @@ JNIEXPORT jint JNICALL
 Java_com_follow_clash_byedpi_ByeDpiProxy_nativeStop(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jobject thiz) {
     LOG(LOG_S, "send shutdown to proxy");
 
-    if (!g_proxy_running) {
+    if (!atomic_load(&g_proxy_running)) {
         LOG(LOG_S, "proxy is not running");
         return -1;
     }
 
     shutdown(server_fd, SHUT_RDWR);
-    g_proxy_running = 0;
-
-    return 0;
-}
-
-JNIEXPORT jint JNICALL
-Java_com_follow_clash_byedpi_ByeDpiProxy_nativeForceClose(__attribute__((unused)) JNIEnv *env, __attribute__((unused)) jobject thiz) {
-    LOG(LOG_S, "closing server socket (fd: %d)", server_fd);
-
-    if (close(server_fd) == -1) {
-        LOG(LOG_S, "failed to close server socket (fd: %d)", server_fd);
-        return -1;
-    }
-
-    LOG(LOG_S, "proxy socket force close");
-    g_proxy_running = 0;
-
     return 0;
 }

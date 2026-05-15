@@ -3560,16 +3560,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Bypass profiles`
-  String get byedpiProfiles {
-    return Intl.message(
-      'Bypass profiles',
-      name: 'byedpiProfiles',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `No profiles yet. Tap + to add one.`
   String get byedpiProfilesEmpty {
     return Intl.message(

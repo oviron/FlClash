@@ -47,7 +47,12 @@ class VpnService : SystemVpnService(), IBaseService,
         Class.forName("com.follow.clash.byedpi.ByeDpiModule")
             .getConstructor(Context::class.java)
             .newInstance(ctx) as Module
-    } catch (_: ClassNotFoundException) { null }
+    } catch (_: ClassNotFoundException) {
+        null
+    } catch (e: LinkageError) {
+        GlobalState.log("ByeDpi module link failed: ${e.message}")
+        null
+    }
 
     private var wakeLock: PowerManager.WakeLock? = null
     private var wifiLock: WifiManager.WifiLock? = null

@@ -418,6 +418,10 @@ extension SetupStateExt on SetupState {
     if (byeDpiSettings != lastSetupState.byeDpiSettings) {
       return true;
     }
+    if (!bypassProfileListEquality.equals(
+        bypassProfiles, lastSetupState.bypassProfiles)) {
+      return true;
+    }
     return false;
   }
 }

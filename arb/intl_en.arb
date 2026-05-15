@@ -440,7 +440,6 @@
   "byedpiEnable": "Enable ByeDPI",
   "byedpiCliArgs": "ByeDPI CLI args",
   "byedpiCliArgsHint": "--auto=tlsrec",
-  "byedpiProfiles": "Bypass profiles",
   "byedpiProfilesEmpty": "No profiles yet. Tap + to add one.",
   "byedpiAddProfile": "Add profile",
   "byedpiEditProfile": "Edit profile",

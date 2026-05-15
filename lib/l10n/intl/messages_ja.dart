@@ -656,8 +656,6 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
     "byedpiCliArgsHint":
         MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
-    "byedpiProfiles":
-        MessageLookupByLibrary.simpleMessage("バイパスプロファイル"),
     "byedpiProfilesEmpty": MessageLookupByLibrary.simpleMessage(
       "プロファイルがありません。+ を押して追加してください。",
     ),

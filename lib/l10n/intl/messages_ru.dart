@@ -853,8 +853,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("Аргументы ByeDPI"),
     "byedpiCliArgsHint":
         MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
-    "byedpiProfiles":
-        MessageLookupByLibrary.simpleMessage("Профили обхода"),
     "byedpiProfilesEmpty": MessageLookupByLibrary.simpleMessage(
       "Профилей пока нет. Нажмите + чтобы добавить.",
     ),

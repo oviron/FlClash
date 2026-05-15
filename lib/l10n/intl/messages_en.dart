@@ -801,7 +801,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiEnable": MessageLookupByLibrary.simpleMessage("Enable ByeDPI"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLI args"),
     "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
-    "byedpiProfiles": MessageLookupByLibrary.simpleMessage("Bypass profiles"),
     "byedpiProfilesEmpty": MessageLookupByLibrary.simpleMessage(
       "No profiles yet. Tap + to add one.",
     ),

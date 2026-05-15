@@ -449,7 +449,6 @@
   "byedpiEnable": "Включить ByeDPI",
   "byedpiCliArgs": "Аргументы ByeDPI",
   "byedpiCliArgsHint": "--auto=tlsrec",
-  "byedpiProfiles": "Профили обхода",
   "byedpiProfilesEmpty": "Профилей пока нет. Нажмите + чтобы добавить.",
   "byedpiAddProfile": "Добавить профиль",
   "byedpiEditProfile": "Редактировать профиль",

@@ -20,11 +20,6 @@ object ByeDpiProxy {
 
     fun stop(): Int = nativeStop()
 
-    fun forceClose(): Int = nativeForceClose()
-
-    fun isRunning(): Boolean = running.get()
-
     private external fun nativeStart(args: Array<String>): Int
     private external fun nativeStop(): Int
-    private external fun nativeForceClose(): Int
 }

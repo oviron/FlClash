@@ -441,7 +441,6 @@
   "byedpiEnable": "ByeDPIを有効にする",
   "byedpiCliArgs": "ByeDPI CLIオプション",
   "byedpiCliArgsHint": "--auto=tlsrec",
-  "byedpiProfiles": "バイパスプロファイル",
   "byedpiProfilesEmpty": "プロファイルがありません。+ を押して追加してください。",
   "byedpiAddProfile": "プロファイルを追加",
   "byedpiEditProfile": "プロファイルを編集",

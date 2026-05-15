@@ -441,7 +441,6 @@
   "byedpiEnable": "启用 ByeDPI",
   "byedpiCliArgs": "ByeDPI 命令行参数",
   "byedpiCliArgsHint": "--auto=tlsrec",
-  "byedpiProfiles": "绕过配置",
   "byedpiProfilesEmpty": "暂无配置，点击 + 添加",
   "byedpiAddProfile": "添加配置",
   "byedpiEditProfile": "编辑配置",

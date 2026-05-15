@@ -137,9 +137,6 @@ class _CliArgsFieldState extends ConsumerState<_CliArgsField> {
         maxLines: 3,
         minLines: 1,
         keyboardType: TextInputType.multiline,
-        onSubmitted: (v) {
-          ref.read(byeDpiSettingsProvider.notifier).setCliArgs(v);
-        },
       ),
     );
   }
