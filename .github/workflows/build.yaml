@@ -53,7 +53,7 @@ jobs:
         id: ndk-cache
         uses: actions/cache@v4
         with:
-          path: ${{ env.ANDROID_HOME }}/ndk/28.0.13004108
+          path: /usr/local/lib/android/sdk/ndk/28.0.13004108
           key: ndk-28.0.13004108-${{ runner.os }}
 
       - name: Setup ccache for NDK compilation
@@ -87,6 +87,16 @@ jobs:
           go-version: '1.24.0'
           cache-dependency-path: |
             core/go.sum
+
+      - name: Cache Go build cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+          key: gobuild-${{ runner.os }}-${{ matrix.flavor }}-${{ hashFiles('core/go.sum', 'core/**/*.go') }}
+          restore-keys: |
+            gobuild-${{ runner.os }}-${{ matrix.flavor }}-
+            gobuild-${{ runner.os }}-
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2

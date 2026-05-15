@@ -94,12 +94,14 @@ class Build {
       if (dir.existsSync()) dir.deleteSync(recursive: true);
       final realOutPath = join(outFilePath, '$libName.so');
 
+      final cc = _getCc(item.archName);
+      final ccache = Platform.environment['NDK_CCACHE'];
       final env = <String, String>{
         ...Platform.environment,
         'GOOS': 'android',
         'GOARCH': item.arch.name,
         'CGO_ENABLED': '1',
-        'CC': _getCc(item.archName),
+        'CC': (ccache != null && ccache.isNotEmpty) ? '$ccache $cc' : cc,
         'CFLAGS': '-O3 -Werror',
       };
       await exec(
