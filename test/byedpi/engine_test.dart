@@ -69,7 +69,7 @@ void main() {
 
   test('applying twice is idempotent', () {
     final cfg = baseConfig();
-    final settings = const ByeDpiSettings(enabled: true, port: 1080, fallbackGroup: 'VPN');
+    const settings = ByeDpiSettings(enabled: true, port: 1080, fallbackGroup: 'VPN');
 
     injectByeDpiConfig(rawConfig: cfg, settings: settings, profiles: [ytProfile]);
     final after1Proxies = (cfg['proxies'] as List).length;
