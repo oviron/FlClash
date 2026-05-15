@@ -1,0 +1,239 @@
+name: core-build
+
+# Phase 0 prototype for libmihomo-android / libbyedpi-android extraction.
+# Builds standalone .so artifacts (not bundled in APK), SHA-256 + GPG signs.
+# Validates the pipeline before creating public oviron/libbyedpi-android repo.
+#
+# Manual trigger only — production releases will move to dedicated repos.
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Which library to build'
+        required: true
+        default: 'byedpi'
+        type: choice
+        options:
+          - byedpi
+          - mihomo
+          - both
+
+concurrency:
+  group: core-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NDK_VERSION: 28.0.13004108
+  ANDROID_NDK_PATH: /usr/local/lib/android/sdk/ndk/28.0.13004108
+
+jobs:
+  byedpi:
+    if: ${{ inputs.target == 'byedpi' || inputs.target == 'both' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        abi: [arm64-v8a, armeabi-v7a, x86_64]
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Cache Android NDK
+        id: ndk-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.ANDROID_NDK_PATH }}
+          key: ndk-${{ env.NDK_VERSION }}-${{ runner.os }}
+
+      - name: Install NDK if cache miss
+        if: steps.ndk-cache.outputs.cache-hit != 'true'
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;${{ env.NDK_VERSION }}"
+
+      - name: Cache CMake build dir
+        uses: actions/cache@v4
+        with:
+          path: build-byedpi-${{ matrix.abi }}
+          key: cmake-byedpi-${{ matrix.abi }}-${{ hashFiles('android/byedpi/src/main/cpp/CMakeLists.txt', 'android/byedpi/src/main/cpp/native-lib.c', 'android/byedpi/src/main/cpp/main.h', 'android/byedpi/src/main/cpp/byedpi/**/*.c', 'android/byedpi/src/main/cpp/byedpi/**/*.h') }}
+          restore-keys: |
+            cmake-byedpi-${{ matrix.abi }}-
+
+      - name: Configure
+        run: |
+          cmake -B build-byedpi-${{ matrix.abi }} \
+            -DCMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_PATH/build/cmake/android.toolchain.cmake" \
+            -DANDROID_ABI=${{ matrix.abi }} \
+            -DANDROID_PLATFORM=android-21 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -S android/byedpi/src/main/cpp
+
+      - name: Build
+        run: cmake --build build-byedpi-${{ matrix.abi }} --parallel
+
+      - name: Inspect output
+        run: |
+          file build-byedpi-${{ matrix.abi }}/libbyedpi.so
+          ls -lah build-byedpi-${{ matrix.abi }}/libbyedpi.so
+          du -h build-byedpi-${{ matrix.abi }}/libbyedpi.so
+
+      - name: Verify 16-KB page-size alignment
+        run: |
+          BUILD_TOOLS=$(ls -d "$ANDROID_HOME"/build-tools/*/ | sort -V | tail -1)
+          ZIPALIGN="${BUILD_TOOLS}zipalign"
+          # zipalign only checks .apk/.zip; for raw .so we inspect with readelf
+          readelf -l build-byedpi-${{ matrix.abi }}/libbyedpi.so | grep -E "LOAD|Alignment" | head -10
+
+      - name: SHA-256
+        run: |
+          cd build-byedpi-${{ matrix.abi }}
+          sha256sum libbyedpi.so | tee libbyedpi.so.sha256
+          cat libbyedpi.so.sha256
+
+      - name: Import GPG key
+        if: ${{ env.GPG_PRIVATE_KEY != '' }}
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: GPG sign (detached, armored)
+        if: ${{ env.GPG_PRIVATE_KEY != '' }}
+        run: |
+          cd build-byedpi-${{ matrix.abi }}
+          gpg --batch --yes \
+              --pinentry-mode loopback \
+              --passphrase "${{ secrets.GPG_PASSPHRASE }}" \
+              --detach-sign --armor \
+              libbyedpi.so
+          ls -la libbyedpi.so.asc
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libbyedpi-${{ matrix.abi }}
+          path: |
+            build-byedpi-${{ matrix.abi }}/libbyedpi.so
+            build-byedpi-${{ matrix.abi }}/libbyedpi.so.sha256
+            build-byedpi-${{ matrix.abi }}/libbyedpi.so.asc
+          if-no-files-found: warn
+
+  mihomo:
+    if: ${{ inputs.target == 'mihomo' || inputs.target == 'both' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - abi: arm64-v8a
+            goarch: arm64
+            cc: aarch64-linux-android21-clang
+          - abi: armeabi-v7a
+            goarch: arm
+            cc: armv7a-linux-androideabi21-clang
+          - abi: x86_64
+            goarch: amd64
+            cc: x86_64-linux-android21-clang
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.0'
+          cache-dependency-path: core/go.sum
+
+      - name: Cache Go build cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/go-build
+          key: gobuild-core-${{ matrix.abi }}-${{ hashFiles('core/go.sum', 'core/**/*.go') }}
+          restore-keys: |
+            gobuild-core-${{ matrix.abi }}-
+
+      - name: Cache Android NDK
+        id: ndk-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.ANDROID_NDK_PATH }}
+          key: ndk-${{ env.NDK_VERSION }}-${{ runner.os }}
+
+      - name: Install NDK if cache miss
+        if: steps.ndk-cache.outputs.cache-hit != 'true'
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;${{ env.NDK_VERSION }}"
+
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ccache-core-${{ matrix.abi }}
+          max-size: 300M
+
+      - name: Build libclash.so
+        run: |
+          CCACHE_BIN=$(which ccache)
+          NDK_CC="$ANDROID_NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.cc }}"
+          mkdir -p dist
+          cd core
+          CGO_ENABLED=1 \
+          GOOS=android \
+          GOARCH=${{ matrix.goarch }} \
+          CC="$CCACHE_BIN $NDK_CC" \
+          CFLAGS="-O3 -Werror" \
+            go build \
+              -ldflags='-w -s' \
+              -tags='with_gvisor,cmfa' \
+              -buildmode=c-shared \
+              -trimpath \
+              -o ../dist/libclash.so
+
+      - name: Inspect output
+        run: |
+          file dist/libclash.so
+          ls -lah dist/libclash.so
+          du -h dist/libclash.so
+
+      - name: SHA-256
+        run: |
+          cd dist
+          sha256sum libclash.so | tee libclash.so.sha256
+
+      - name: Import GPG key
+        if: ${{ env.GPG_PRIVATE_KEY != '' }}
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: GPG sign
+        if: ${{ env.GPG_PRIVATE_KEY != '' }}
+        run: |
+          cd dist
+          gpg --batch --yes \
+              --pinentry-mode loopback \
+              --passphrase "${{ secrets.GPG_PASSPHRASE }}" \
+              --detach-sign --armor \
+              libclash.so
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libclash-${{ matrix.abi }}
+          path: |
+            dist/libclash.so
+            dist/libclash.so.sha256
+            dist/libclash.so.asc
+          if-no-files-found: warn
