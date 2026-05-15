@@ -20,10 +20,11 @@ import com.follow.clash.service.models.VpnOptions
 import com.follow.clash.service.models.getIpv4RouteAddress
 import com.follow.clash.service.models.getIpv6RouteAddress
 import com.follow.clash.service.models.toCIDR
+import com.follow.clash.common.modules.Module
+import com.follow.clash.common.modules.moduleLoader
 import com.follow.clash.service.modules.NetworkObserveModule
 import com.follow.clash.service.modules.NotificationModule
 import com.follow.clash.service.modules.SuspendModule
-import com.follow.clash.service.modules.moduleLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.InetSocketAddress
@@ -39,7 +40,14 @@ class VpnService : SystemVpnService(), IBaseService,
         install(NetworkObserveModule(self))
         install(NotificationModule(self))
         install(SuspendModule(self))
+        tryByeDpiModule(self)?.let { install(it) }
     }
+
+    private fun tryByeDpiModule(ctx: Context): Module? = try {
+        Class.forName("com.follow.clash.byedpi.ByeDpiModule")
+            .getConstructor(Context::class.java)
+            .newInstance(ctx) as Module
+    } catch (_: ClassNotFoundException) { null }
 
     private var wakeLock: PowerManager.WakeLock? = null
     private var wifiLock: WifiManager.WifiLock? = null

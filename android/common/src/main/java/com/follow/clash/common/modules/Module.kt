@@ -1,4 +1,4 @@
-package com.follow.clash.service.modules
+package com.follow.clash.common.modules
 
 abstract class Module {
 

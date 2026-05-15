@@ -1,6 +1,7 @@
 package com.follow.clash.service.modules
 
 import android.app.Service
+import com.follow.clash.common.modules.Module
 import android.content.Intent
 import android.os.PowerManager
 import androidx.core.content.getSystemService

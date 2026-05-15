@@ -1,6 +1,7 @@
 package com.follow.clash.service.modules
 
 import android.app.Service
+import com.follow.clash.common.modules.Module
 import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.Network
