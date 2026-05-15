@@ -63,7 +63,7 @@ Per-profile ByeDPI strategy (different CLI per profile via byedpi `--auto-mode p
 
 1.8. `android/byedpi/src/main/java/com/follow/clash/byedpi/ByeDpiArgs.kt`: build `Array<String>` from a serializable config (port, raw CLI string).
 
-1.9. `android/byedpi/src/main/java/com/follow/clash/byedpi/ByeDpiState.kt`: SharedPreferences holder in `:remote` process (key `byedpi_enabled`, `byedpi_args`). Dart writes via a MethodChannel handler that we add in Phase 4.
+1.9. `android/byedpi/src/main/java/com/follow/clash/byedpi/ByeDpiState.kt`: SharedPreferences holder in `:remote` process. Keys: `byedpi_enabled` (Boolean), `byedpi_port` (Int, default 1080), `byedpi_cli_args` (String). Dart writes via a MethodChannel handler that we add in Phase 4.
 
 **Verify**: `./gradlew :byedpi:assembleRelease`. Inspect `byedpi/build/outputs/aar/byedpi-release.aar`: three `.so` files under `jni/<abi>/`.
 

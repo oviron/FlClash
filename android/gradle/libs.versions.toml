@@ -10,6 +10,7 @@ coreSplashscreen = "1.0.1"
 gson = "2.13.1"
 kotlin = "2.2.10"
 smaliDexlib2 = "3.0.9"
+coroutines = "1.9.0"
 
 [libraries]
 build-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -18,3 +19,4 @@ annotation-jvm = { module = "androidx.annotation:annotation-jvm", version.ref = 
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 smali-dexlib2 = { module = "com.android.tools.smali:smali-dexlib2", version.ref = "smaliDexlib2" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
