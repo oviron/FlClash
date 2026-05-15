@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:drift/drift.dart' show Value;
 import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/byedpi/repository.dart';
 import 'package:fl_clash/byedpi/settings_store.dart';
@@ -71,4 +72,34 @@ Stream<List<BypassProfile>> bypassProfilesStream(Ref ref) {
 @riverpod
 Future<List<BypassProfile>> bypassProfilesOnce(Ref ref) {
   return currentBypassProfiles(database);
+}
+
+@Riverpod(keepAlive: true)
+class BypassProfilesRepo extends _$BypassProfilesRepo {
+  @override
+  List<BypassProfile> build() {
+    return ref.watch(bypassProfilesStreamProvider).value ?? const [];
+  }
+
+  Future<void> add(BypassProfile profile) =>
+      database.bypassProfilesDao.upsert(profile);
+
+  Future<void> update(BypassProfile profile) =>
+      database.bypassProfilesDao.upsert(profile);
+
+  Future<void> delete(int id) =>
+      database.bypassProfilesDao.deleteById(id);
+
+  Future<void> reorder(List<int> idsInNewOrder) async {
+    if (idsInNewOrder.isEmpty) return;
+    await database.batch((b) {
+      for (var i = 0; i < idsInNewOrder.length; i++) {
+        b.update(
+          database.bypassProfiles,
+          BypassProfilesCompanion(sortOrder: Value(i)),
+          where: (t) => t.id.equals(idsInNewOrder[i]),
+        );
+      }
+    });
+  }
 }

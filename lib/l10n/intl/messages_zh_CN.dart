@@ -578,5 +578,26 @@ class MessageLookup extends MessageLookupByLibrary {
       "删除此规则？",
     ),
     "ruleNameOptional": MessageLookupByLibrary.simpleMessage("名称（可选）"),
+    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
+    "byedpiDesc": MessageLookupByLibrary.simpleMessage("为指定域名和应用绕过 DPI"),
+    "byedpiEnable": MessageLookupByLibrary.simpleMessage("启用 ByeDPI"),
+    "byedpiCliArgs":
+        MessageLookupByLibrary.simpleMessage("ByeDPI 命令行参数"),
+    "byedpiCliArgsHint":
+        MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
+    "byedpiProfiles": MessageLookupByLibrary.simpleMessage("绕过配置"),
+    "byedpiProfilesEmpty":
+        MessageLookupByLibrary.simpleMessage("暂无配置，点击 + 添加"),
+    "byedpiAddProfile": MessageLookupByLibrary.simpleMessage("添加配置"),
+    "byedpiEditProfile": MessageLookupByLibrary.simpleMessage("编辑配置"),
+    "byedpiNewProfile": MessageLookupByLibrary.simpleMessage("新建配置"),
+    "byedpiName": MessageLookupByLibrary.simpleMessage("配置名称"),
+    "byedpiDomains":
+        MessageLookupByLibrary.simpleMessage("域名（每行一个）"),
+    "byedpiApps":
+        MessageLookupByLibrary.simpleMessage("应用（包名，每行一个）"),
+    "byedpiConfirmDelete":
+        MessageLookupByLibrary.simpleMessage("删除此配置？"),
+    "byedpiDelete": MessageLookupByLibrary.simpleMessage("删除"),
   };
 }

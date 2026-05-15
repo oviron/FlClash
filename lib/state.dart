@@ -23,6 +23,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'common/common.dart';
 import 'database/database.dart';
 import 'l10n/l10n.dart';
+import 'providers/byedpi.dart';
 import 'models/models.dart';
 
 typedef UpdateTasks = List<FutureOr<void> Function()>;
@@ -108,6 +109,11 @@ class GlobalState {
     );
     final profiles = await database.profilesDao.all().get();
     container.read(profilesProvider.notifier).setAndReorder(profiles);
+    if (kByeDpiEnabled) {
+      unawaited(
+        container.read(byeDpiSettingsProvider.notifier).init(),
+      );
+    }
     await AppLocalizations.load(
       utils.getLocaleForString(config.appSettingProps.locale) ??
           WidgetsBinding.instance.platformDispatcher.locale,

@@ -646,5 +646,36 @@ class MessageLookup extends MessageLookupByLibrary {
       "このルールを削除しますか?",
     ),
     "ruleNameOptional": MessageLookupByLibrary.simpleMessage("名前（任意）"),
+    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
+    "byedpiDesc": MessageLookupByLibrary.simpleMessage(
+      "指定したドメインとアプリのDPIをバイパス",
+    ),
+    "byedpiEnable":
+        MessageLookupByLibrary.simpleMessage("ByeDPIを有効にする"),
+    "byedpiCliArgs":
+        MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
+    "byedpiCliArgsHint":
+        MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
+    "byedpiProfiles":
+        MessageLookupByLibrary.simpleMessage("バイパスプロファイル"),
+    "byedpiProfilesEmpty": MessageLookupByLibrary.simpleMessage(
+      "プロファイルがありません。+ を押して追加してください。",
+    ),
+    "byedpiAddProfile":
+        MessageLookupByLibrary.simpleMessage("プロファイルを追加"),
+    "byedpiEditProfile":
+        MessageLookupByLibrary.simpleMessage("プロファイルを編集"),
+    "byedpiNewProfile":
+        MessageLookupByLibrary.simpleMessage("新しいプロファイル"),
+    "byedpiName": MessageLookupByLibrary.simpleMessage("プロファイル名"),
+    "byedpiDomains":
+        MessageLookupByLibrary.simpleMessage("ドメイン（1行に1つ）"),
+    "byedpiApps": MessageLookupByLibrary.simpleMessage(
+      "アプリ（パッケージ名、1行に1つ）",
+    ),
+    "byedpiConfirmDelete": MessageLookupByLibrary.simpleMessage(
+      "このプロファイルを削除しますか?",
+    ),
+    "byedpiDelete": MessageLookupByLibrary.simpleMessage("削除"),
   };
 }

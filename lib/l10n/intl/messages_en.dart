@@ -794,5 +794,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleNameOptional": MessageLookupByLibrary.simpleMessage(
       "Name (optional)",
     ),
+    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
+    "byedpiDesc": MessageLookupByLibrary.simpleMessage(
+      "DPI bypass for selected domains and apps",
+    ),
+    "byedpiEnable": MessageLookupByLibrary.simpleMessage("Enable ByeDPI"),
+    "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLI args"),
+    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
+    "byedpiProfiles": MessageLookupByLibrary.simpleMessage("Bypass profiles"),
+    "byedpiProfilesEmpty": MessageLookupByLibrary.simpleMessage(
+      "No profiles yet. Tap + to add one.",
+    ),
+    "byedpiAddProfile": MessageLookupByLibrary.simpleMessage("Add profile"),
+    "byedpiEditProfile": MessageLookupByLibrary.simpleMessage("Edit profile"),
+    "byedpiNewProfile": MessageLookupByLibrary.simpleMessage("New profile"),
+    "byedpiName": MessageLookupByLibrary.simpleMessage("Profile name"),
+    "byedpiDomains": MessageLookupByLibrary.simpleMessage(
+      "Domains (one per line)",
+    ),
+    "byedpiApps": MessageLookupByLibrary.simpleMessage(
+      "Apps (package name, one per line)",
+    ),
+    "byedpiConfirmDelete": MessageLookupByLibrary.simpleMessage(
+      "Delete this profile?",
+    ),
+    "byedpiDelete": MessageLookupByLibrary.simpleMessage("Delete"),
   };
 }

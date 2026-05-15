@@ -435,5 +435,20 @@
   "networkRulesConditionAnyWifi": "任意のWi-Fi",
   "networkRulesConditionAnyCellular": "モバイル通信",
   "networkRulesConfirmDelete": "このルールを削除しますか?",
-  "ruleNameOptional": "名前（任意）"
+  "ruleNameOptional": "名前（任意）",
+  "byedpiTitle": "ByeDPI",
+  "byedpiDesc": "指定したドメインとアプリのDPIをバイパス",
+  "byedpiEnable": "ByeDPIを有効にする",
+  "byedpiCliArgs": "ByeDPI CLIオプション",
+  "byedpiCliArgsHint": "--auto=tlsrec",
+  "byedpiProfiles": "バイパスプロファイル",
+  "byedpiProfilesEmpty": "プロファイルがありません。+ を押して追加してください。",
+  "byedpiAddProfile": "プロファイルを追加",
+  "byedpiEditProfile": "プロファイルを編集",
+  "byedpiNewProfile": "新しいプロファイル",
+  "byedpiName": "プロファイル名",
+  "byedpiDomains": "ドメイン（1行に1つ）",
+  "byedpiApps": "アプリ（パッケージ名、1行に1つ）",
+  "byedpiConfirmDelete": "このプロファイルを削除しますか?",
+  "byedpiDelete": "削除"
 }

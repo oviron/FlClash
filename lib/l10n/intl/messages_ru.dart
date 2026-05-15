@@ -845,5 +845,37 @@ class MessageLookup extends MessageLookupByLibrary {
     "ruleNameOptional": MessageLookupByLibrary.simpleMessage(
       "Название (необязательно)",
     ),
+    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
+    "byedpiDesc": MessageLookupByLibrary.simpleMessage(
+      "Обход DPI для выбранных доменов и приложений",
+    ),
+    "byedpiEnable": MessageLookupByLibrary.simpleMessage("Включить ByeDPI"),
+    "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("Аргументы ByeDPI"),
+    "byedpiCliArgsHint":
+        MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
+    "byedpiProfiles":
+        MessageLookupByLibrary.simpleMessage("Профили обхода"),
+    "byedpiProfilesEmpty": MessageLookupByLibrary.simpleMessage(
+      "Профилей пока нет. Нажмите + чтобы добавить.",
+    ),
+    "byedpiAddProfile":
+        MessageLookupByLibrary.simpleMessage("Добавить профиль"),
+    "byedpiEditProfile": MessageLookupByLibrary.simpleMessage(
+      "Редактировать профиль",
+    ),
+    "byedpiNewProfile":
+        MessageLookupByLibrary.simpleMessage("Новый профиль"),
+    "byedpiName":
+        MessageLookupByLibrary.simpleMessage("Название профиля"),
+    "byedpiDomains": MessageLookupByLibrary.simpleMessage(
+      "Домены (по одному на строке)",
+    ),
+    "byedpiApps": MessageLookupByLibrary.simpleMessage(
+      "Приложения (package name, по одному на строке)",
+    ),
+    "byedpiConfirmDelete": MessageLookupByLibrary.simpleMessage(
+      "Удалить этот профиль?",
+    ),
+    "byedpiDelete": MessageLookupByLibrary.simpleMessage("Удалить"),
   };
 }

@@ -3514,6 +3514,146 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `ByeDPI`
+  String get byedpiTitle {
+    return Intl.message('ByeDPI', name: 'byedpiTitle', desc: '', args: []);
+  }
+
+  /// `DPI bypass for selected domains and apps`
+  String get byedpiDesc {
+    return Intl.message(
+      'DPI bypass for selected domains and apps',
+      name: 'byedpiDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable ByeDPI`
+  String get byedpiEnable {
+    return Intl.message(
+      'Enable ByeDPI',
+      name: 'byedpiEnable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ByeDPI CLI args`
+  String get byedpiCliArgs {
+    return Intl.message(
+      'ByeDPI CLI args',
+      name: 'byedpiCliArgs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `--auto=tlsrec`
+  String get byedpiCliArgsHint {
+    return Intl.message(
+      '--auto=tlsrec',
+      name: 'byedpiCliArgsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bypass profiles`
+  String get byedpiProfiles {
+    return Intl.message(
+      'Bypass profiles',
+      name: 'byedpiProfiles',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No profiles yet. Tap + to add one.`
+  String get byedpiProfilesEmpty {
+    return Intl.message(
+      'No profiles yet. Tap + to add one.',
+      name: 'byedpiProfilesEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add profile`
+  String get byedpiAddProfile {
+    return Intl.message(
+      'Add profile',
+      name: 'byedpiAddProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit profile`
+  String get byedpiEditProfile {
+    return Intl.message(
+      'Edit profile',
+      name: 'byedpiEditProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New profile`
+  String get byedpiNewProfile {
+    return Intl.message(
+      'New profile',
+      name: 'byedpiNewProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile name`
+  String get byedpiName {
+    return Intl.message(
+      'Profile name',
+      name: 'byedpiName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Domains (one per line)`
+  String get byedpiDomains {
+    return Intl.message(
+      'Domains (one per line)',
+      name: 'byedpiDomains',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apps (package name, one per line)`
+  String get byedpiApps {
+    return Intl.message(
+      'Apps (package name, one per line)',
+      name: 'byedpiApps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete this profile?`
+  String get byedpiConfirmDelete {
+    return Intl.message(
+      'Delete this profile?',
+      name: 'byedpiConfirmDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get byedpiDelete {
+    return Intl.message('Delete', name: 'byedpiDelete', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

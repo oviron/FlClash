@@ -34,6 +34,26 @@ class AboutView extends StatelessWidget {
     );
   }
 
+  List<Widget> _buildNoticesSection(BuildContext context) {
+    if (!kByeDpiEnabled) return [];
+    return generateSection(
+      separated: false,
+      title: 'Third-party notices',
+      items: [
+        ListItem(
+          title: const Text('byedpi'),
+          subtitle: const Text(
+            'by hufrea, MIT, commit ba532298 (2026-03-26)',
+          ),
+          trailing: const Icon(Icons.launch),
+          onTap: () {
+            globalState.openUrl('https://github.com/hufrea/byedpi');
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _buildUpstreamNote(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 16),
@@ -111,6 +131,7 @@ class AboutView extends StatelessWidget {
       ),
       const SizedBox(height: 12),
       ..._buildMoreSection(context),
+      ..._buildNoticesSection(context),
       _buildUpstreamNote(context),
     ];
     return BaseScaffold(

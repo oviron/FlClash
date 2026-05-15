@@ -434,5 +434,20 @@
   "networkRulesConditionAnyWifi": "Any Wi-Fi",
   "networkRulesConditionAnyCellular": "Cellular",
   "networkRulesConfirmDelete": "Delete this rule?",
-  "ruleNameOptional": "Name (optional)"
+  "ruleNameOptional": "Name (optional)",
+  "byedpiTitle": "ByeDPI",
+  "byedpiDesc": "DPI bypass for selected domains and apps",
+  "byedpiEnable": "Enable ByeDPI",
+  "byedpiCliArgs": "ByeDPI CLI args",
+  "byedpiCliArgsHint": "--auto=tlsrec",
+  "byedpiProfiles": "Bypass profiles",
+  "byedpiProfilesEmpty": "No profiles yet. Tap + to add one.",
+  "byedpiAddProfile": "Add profile",
+  "byedpiEditProfile": "Edit profile",
+  "byedpiNewProfile": "New profile",
+  "byedpiName": "Profile name",
+  "byedpiDomains": "Domains (one per line)",
+  "byedpiApps": "Apps (package name, one per line)",
+  "byedpiConfirmDelete": "Delete this profile?",
+  "byedpiDelete": "Delete"
 }

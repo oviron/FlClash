@@ -10,6 +10,7 @@ import 'package:fl_clash/views/access.dart';
 import 'package:fl_clash/views/application_setting.dart';
 import 'package:fl_clash/views/backup_and_restore.dart';
 import 'package:fl_clash/views/config/config.dart';
+import 'package:fl_clash/views/setting/byedpi.dart';
 import 'package:fl_clash/views/setting/network_rules.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +68,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     return generateSection(
       title: context.appLocalizations.settings,
       items: [
+        if (kByeDpiEnabled) const _ByeDpiItem(),
         const _NetworkRulesItem(),
         const _LocaleItem(),
         const _ThemeItem(),
@@ -230,6 +232,20 @@ class _SettingItem extends StatelessWidget {
       title: Text(context.appLocalizations.application),
       subtitle: Text(context.appLocalizations.applicationDesc),
       delegate: const OpenDelegate(widget: ApplicationSettingView()),
+    );
+  }
+}
+
+class _ByeDpiItem extends StatelessWidget {
+  const _ByeDpiItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem.open(
+      leading: const Icon(Icons.shield_outlined),
+      title: Text(context.appLocalizations.byedpiTitle),
+      subtitle: Text(context.appLocalizations.byedpiDesc),
+      delegate: const OpenDelegate(widget: ByeDpiView()),
     );
   }
 }

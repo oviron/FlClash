@@ -443,5 +443,20 @@
   "networkRulesConditionAnyWifi": "Любая Wi-Fi",
   "networkRulesConditionAnyCellular": "Мобильная сеть",
   "networkRulesConfirmDelete": "Удалить правило?",
-  "ruleNameOptional": "Название (необязательно)"
+  "ruleNameOptional": "Название (необязательно)",
+  "byedpiTitle": "ByeDPI",
+  "byedpiDesc": "Обход DPI для выбранных доменов и приложений",
+  "byedpiEnable": "Включить ByeDPI",
+  "byedpiCliArgs": "Аргументы ByeDPI",
+  "byedpiCliArgsHint": "--auto=tlsrec",
+  "byedpiProfiles": "Профили обхода",
+  "byedpiProfilesEmpty": "Профилей пока нет. Нажмите + чтобы добавить.",
+  "byedpiAddProfile": "Добавить профиль",
+  "byedpiEditProfile": "Редактировать профиль",
+  "byedpiNewProfile": "Новый профиль",
+  "byedpiName": "Название профиля",
+  "byedpiDomains": "Домены (по одному на строке)",
+  "byedpiApps": "Приложения (package name, по одному на строке)",
+  "byedpiConfirmDelete": "Удалить этот профиль?",
+  "byedpiDelete": "Удалить"
 }

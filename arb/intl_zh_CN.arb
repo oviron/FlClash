@@ -435,5 +435,20 @@
   "networkRulesConditionAnyWifi": "任意 Wi-Fi",
   "networkRulesConditionAnyCellular": "移动网络",
   "networkRulesConfirmDelete": "删除此规则？",
-  "ruleNameOptional": "名称（可选）"
+  "ruleNameOptional": "名称（可选）",
+  "byedpiTitle": "ByeDPI",
+  "byedpiDesc": "为指定域名和应用绕过 DPI",
+  "byedpiEnable": "启用 ByeDPI",
+  "byedpiCliArgs": "ByeDPI 命令行参数",
+  "byedpiCliArgsHint": "--auto=tlsrec",
+  "byedpiProfiles": "绕过配置",
+  "byedpiProfilesEmpty": "暂无配置，点击 + 添加",
+  "byedpiAddProfile": "添加配置",
+  "byedpiEditProfile": "编辑配置",
+  "byedpiNewProfile": "新建配置",
+  "byedpiName": "配置名称",
+  "byedpiDomains": "域名（每行一个）",
+  "byedpiApps": "应用（包名，每行一个）",
+  "byedpiConfirmDelete": "删除此配置？",
+  "byedpiDelete": "删除"
 }
