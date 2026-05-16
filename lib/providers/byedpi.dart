@@ -21,6 +21,8 @@ Future<void> writeByeDpiRuntime(ByeDpiSettings s) async {
     'port': s.port,
     'cliArgs': s.cliArgs,
     'hostsFile': hostsFile,
+    'udpEnabled': s.udpEnabled,
+    'udpFakeCount': s.udpFakeCount,
   }));
   await tmp.rename(target.path);
 }
@@ -51,6 +53,11 @@ class ByeDpiSettingsNotifier extends _$ByeDpiSettingsNotifier
   Future<void> setPort(int v) => _persist(value.copyWith(port: v));
 
   Future<void> setCliArgs(String v) => _persist(value.copyWith(cliArgs: v));
+
+  Future<void> setUdpEnabled(bool v) => _persist(value.copyWith(udpEnabled: v));
+
+  Future<void> setUdpFakeCount(int v) =>
+      _persist(value.copyWith(udpFakeCount: v.clamp(0, 10)));
 
   Future<void> _persist(ByeDpiSettings next) async {
     value = next;

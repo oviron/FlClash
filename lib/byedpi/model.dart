@@ -14,6 +14,8 @@ abstract class ByeDpiSettings with _$ByeDpiSettings {
     @Default('') String fallbackGroup,
     @Default(1080) int port,
     @Default('--auto=tlsrec') String cliArgs,
+    @Default(false) bool udpEnabled,
+    @Default(0) int udpFakeCount,
   }) = _ByeDpiSettings;
 
   factory ByeDpiSettings.fromJson(Map<String, Object?> json) =>

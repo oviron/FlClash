@@ -16,6 +16,8 @@ _ByeDpiSettings _$ByeDpiSettingsFromJson(Map<String, dynamic> json) =>
       fallbackGroup: json['fallbackGroup'] as String? ?? '',
       port: (json['port'] as num?)?.toInt() ?? 1080,
       cliArgs: json['cliArgs'] as String? ?? '--auto=tlsrec',
+      udpEnabled: json['udpEnabled'] as bool? ?? false,
+      udpFakeCount: (json['udpFakeCount'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$ByeDpiSettingsToJson(_ByeDpiSettings instance) =>
@@ -26,6 +28,8 @@ Map<String, dynamic> _$ByeDpiSettingsToJson(_ByeDpiSettings instance) =>
       'fallbackGroup': instance.fallbackGroup,
       'port': instance.port,
       'cliArgs': instance.cliArgs,
+      'udpEnabled': instance.udpEnabled,
+      'udpFakeCount': instance.udpFakeCount,
     };
 
 const _$ByeDpiModeEnumMap = {

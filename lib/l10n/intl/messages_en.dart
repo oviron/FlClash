@@ -35,29 +35,29 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(label) => "Current ${label} already exists";
 
-  static String m6(count) =>
-      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
+  static String m6(upstream) => "Fork of ${upstream}";
 
   static String m7(count) =>
-      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
+      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
 
   static String m8(count) =>
+      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
+
+  static String m9(count) =>
       "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
 
-  static String m9(label) => "No ${label} yet";
+  static String m10(label) => "No ${label} yet";
 
-  static String m10(label) => "${label} must be a number";
+  static String m11(label) => "${label} must be a number";
 
-  static String m11(label) => "${label} must be between 1024 and 49151";
+  static String m12(label) => "${label} must be between 1024 and 49151";
 
-  static String m12(count) => "${count} items have been selected";
+  static String m13(count) => "${count} items have been selected";
 
-  static String m13(label) => "${label} must be a url";
+  static String m14(label) => "${label} must be a url";
 
-  static String m14(count) =>
+  static String m15(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
-
-  static String m15(upstream) => "Fork of ${upstream}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -72,11 +72,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessControlNotAllowDesc": MessageLookupByLibrary.simpleMessage(
       "The selected application will be excluded from VPN",
     ),
-    "accessControlResetToYaml": MessageLookupByLibrary.simpleMessage(
-      "Reset to YAML",
-    ),
     "accessControlProfileLock": MessageLookupByLibrary.simpleMessage(
       "App list is set by the active profile (tun.include-package / tun.exclude-package). GUI editing is disabled.",
+    ),
+    "accessControlResetToYaml": MessageLookupByLibrary.simpleMessage(
+      "Reset to YAML",
     ),
     "accessControlSettings": MessageLookupByLibrary.simpleMessage(
       "Access Control Settings",
@@ -137,13 +137,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
       "When the proxy node changes, active connections are closed so new ones use the new node",
     ),
-    "releases": MessageLookupByLibrary.simpleMessage("Releases"),
-    "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
-      "Include WebDAV credentials in backup",
-    ),
-    "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
-      "Off by default. Turn on only if you trust the storage where the backup will live.",
-    ),
     "autoLaunch": MessageLookupByLibrary.simpleMessage("Start on device boot"),
     "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
       "VPN service launches automatically after the phone reboots (requires OEM whitelisting)",
@@ -173,6 +166,57 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "bind": MessageLookupByLibrary.simpleMessage("Bind"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("Blacklist mode"),
+    "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLI args"),
+    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
+    "byedpiDesc": MessageLookupByLibrary.simpleMessage(
+      "DPI bypass via local SOCKS5 proxy",
+    ),
+    "byedpiEnable": MessageLookupByLibrary.simpleMessage("Enable ByeDPI"),
+    "byedpiFallback": MessageLookupByLibrary.simpleMessage(
+      "Fallback to a proxy group on byedpi failure",
+    ),
+    "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage(
+      "Fallback proxy",
+    ),
+    "byedpiGeoipList": MessageLookupByLibrary.simpleMessage("GEOIP categories"),
+    "byedpiGeoipListReset": MessageLookupByLibrary.simpleMessage(
+      "Reset to defaults",
+    ),
+    "byedpiGeoipListResetConfirm": MessageLookupByLibrary.simpleMessage(
+      "Reset the GEOIP list to the bundled default?",
+    ),
+    "byedpiGeoipListSaved": MessageLookupByLibrary.simpleMessage(
+      "GEOIP list saved",
+    ),
+    "byedpiHostList": MessageLookupByLibrary.simpleMessage("Host list"),
+    "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "byedpiHostListReset": MessageLookupByLibrary.simpleMessage(
+      "Reset to defaults",
+    ),
+    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
+      "Reset the host list to the bundled default?",
+    ),
+    "byedpiHostListSaved": MessageLookupByLibrary.simpleMessage(
+      "Host list saved",
+    ),
+    "byedpiMode": MessageLookupByLibrary.simpleMessage("Mode"),
+    "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("Automatic"),
+    "byedpiModeManual": MessageLookupByLibrary.simpleMessage("Manual"),
+    "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage(
+      "No proxy groups in current profile",
+    ),
+    "byedpiPort": MessageLookupByLibrary.simpleMessage("Listening port"),
+    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
+    "byedpiUdpEnabled": MessageLookupByLibrary.simpleMessage("UDP support"),
+    "byedpiUdpEnabledHint": MessageLookupByLibrary.simpleMessage(
+      "Allow SOCKS5 UDP through byedpi (for QUIC DPI bypass)",
+    ),
+    "byedpiUdpFakeCount": MessageLookupByLibrary.simpleMessage(
+      "UDP fake packets",
+    ),
+    "byedpiUdpFakeCountHint": MessageLookupByLibrary.simpleMessage(
+      "Decoy UDP packets sent before real ones (0 = off)",
+    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Bypass domain"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "Only takes effect when the system proxy is enabled",
@@ -217,6 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "copyLink": MessageLookupByLibrary.simpleMessage("Copy link"),
     "copySuccess": MessageLookupByLibrary.simpleMessage("Copy success"),
+    "core": MessageLookupByLibrary.simpleMessage("Core"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Core status"),
     "country": MessageLookupByLibrary.simpleMessage("Country"),
     "crashTest": MessageLookupByLibrary.simpleMessage("Crash test"),
@@ -240,9 +285,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteMultipTip": m1,
     "deleteTip": m2,
     "desc": MessageLookupByLibrary.simpleMessage(
-      "Android mihomo client. Open source, no ads, no telemetry.",
+      "A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.",
     ),
-    "forkOf": m15,
     "destination": MessageLookupByLibrary.simpleMessage("Destination"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage(
       "Destination GeoIP",
@@ -251,6 +295,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Destination IPASN",
     ),
     "details": m3,
+    "detectionRejected": MessageLookupByLibrary.simpleMessage("REJECT"),
+    "detectionTimeout": MessageLookupByLibrary.simpleMessage("timeout"),
     "detectionTip": MessageLookupByLibrary.simpleMessage(
       "Relying on third-party api is for reference only",
     ),
@@ -316,6 +362,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to force restart the core?",
     ),
+    "forkOf": m6,
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("FruitSalad"),
     "general": MessageLookupByLibrary.simpleMessage("General"),
     "geodataLoader": MessageLookupByLibrary.simpleMessage(
@@ -343,13 +390,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "Use keyboard to control applications",
     ),
     "hours": MessageLookupByLibrary.simpleMessage("Hours"),
-    "hoursAgo": m6,
+    "hoursAgo": m7,
     "icon": MessageLookupByLibrary.simpleMessage("Icon"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("Icon style"),
     "import": MessageLookupByLibrary.simpleMessage("Import"),
     "importFile": MessageLookupByLibrary.simpleMessage("Import from file"),
     "importFromURL": MessageLookupByLibrary.simpleMessage("Import from URL"),
     "importUrl": MessageLookupByLibrary.simpleMessage("Import from URL"),
+    "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
+      "Include WebDAV credentials in backup",
+    ),
+    "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
+      "Off by default. Turn on only if you trust the storage where the backup will live.",
+    ),
     "infiniteTime": MessageLookupByLibrary.simpleMessage("Long term effective"),
     "init": MessageLookupByLibrary.simpleMessage("Init"),
     "inputCorrectHotkey": MessageLookupByLibrary.simpleMessage(
@@ -387,6 +440,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "localBackupDesc": MessageLookupByLibrary.simpleMessage(
       "Backup local data to local",
     ),
+    "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
+      "To detect the name of your Wi-Fi network, Android requires location permission. We use it only to read the SSID and do not store any coordinates.",
+    ),
+    "locationPermissionTitle": MessageLookupByLibrary.simpleMessage(
+      "Location permission",
+    ),
     "log": MessageLookupByLibrary.simpleMessage("Log"),
     "logLevel": MessageLookupByLibrary.simpleMessage("LogLevel"),
     "logcat": MessageLookupByLibrary.simpleMessage("Record in-app log"),
@@ -414,12 +473,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Back button sends the app to background instead of closing it",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("Minutes"),
-    "minutesAgo": m7,
+    "minutesAgo": m8,
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed Port"),
     "mode": MessageLookupByLibrary.simpleMessage("Mode"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
     "months": MessageLookupByLibrary.simpleMessage("Months"),
-    "monthsAgo": m8,
+    "monthsAgo": m9,
     "more": MessageLookupByLibrary.simpleMessage("More"),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
     "nameserver": MessageLookupByLibrary.simpleMessage("Nameserver"),
@@ -442,6 +501,38 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkException": MessageLookupByLibrary.simpleMessage(
       "Network exception, please check your connection and try again",
     ),
+    "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("OFF"),
+    "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ON"),
+    "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(
+      "Turn VPN off",
+    ),
+    "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
+      "Turn VPN on",
+    ),
+    "networkRulesAdd": MessageLookupByLibrary.simpleMessage("Add rule"),
+    "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
+      "Cellular",
+    ),
+    "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
+      "Any Wi-Fi",
+    ),
+    "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fi named",
+    ),
+    "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
+      "Delete this rule?",
+    ),
+    "networkRulesDelete": MessageLookupByLibrary.simpleMessage("Delete"),
+    "networkRulesDisable": MessageLookupByLibrary.simpleMessage("Disable"),
+    "networkRulesEdit": MessageLookupByLibrary.simpleMessage("Edit"),
+    "networkRulesEmpty": MessageLookupByLibrary.simpleMessage(
+      "Add your first rule",
+    ),
+    "networkRulesEnable": MessageLookupByLibrary.simpleMessage(
+      "Enable network rules",
+    ),
+    "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("Enable"),
+    "networkRulesTitle": MessageLookupByLibrary.simpleMessage("Network rules"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "networkType": MessageLookupByLibrary.simpleMessage("Network type"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Neutral"),
@@ -458,8 +549,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "No profile, Please add a profile",
     ),
-    "nullTip": m9,
-    "numberTip": m10,
+    "nullTip": m10,
+    "numberTip": m11,
     "onlyIcon": MessageLookupByLibrary.simpleMessage("Icon"),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage(
       "Only statistics proxy",
@@ -467,8 +558,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "onlyStatisticsProxyDesc": MessageLookupByLibrary.simpleMessage(
       "When turned on, only statistics proxy traffic",
     ),
+    "openSettings": MessageLookupByLibrary.simpleMessage("Open settings"),
     "options": MessageLookupByLibrary.simpleMessage("Options"),
     "other": MessageLookupByLibrary.simpleMessage("Other"),
+    "otherContributors": MessageLookupByLibrary.simpleMessage(
+      "Other contributors",
+    ),
     "outboundMode": MessageLookupByLibrary.simpleMessage("Outbound mode"),
     "override": MessageLookupByLibrary.simpleMessage("Override"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("Override Dns"),
@@ -480,6 +575,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("Palette"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "paste": MessageLookupByLibrary.simpleMessage("Paste"),
+    "permissionAllow": MessageLookupByLibrary.simpleMessage("Allow"),
+    "permissionNotNow": MessageLookupByLibrary.simpleMessage("Not now"),
+    "permissionRequiredHint": MessageLookupByLibrary.simpleMessage(
+      "Permission required",
+    ),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "Please bind WebDAV",
     ),
@@ -496,7 +596,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Please enter a different port",
     ),
-    "portTip": m11,
+    "portTip": m12,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Prioritize the use of DOH\'s http/3",
     ),
@@ -549,6 +649,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir Port"),
     "redo": MessageLookupByLibrary.simpleMessage("redo"),
     "regExp": MessageLookupByLibrary.simpleMessage("RegExp"),
+    "releases": MessageLookupByLibrary.simpleMessage("Releases"),
     "remote": MessageLookupByLibrary.simpleMessage("Remote"),
     "remoteBackupDesc": MessageLookupByLibrary.simpleMessage(
       "Backup local data to WebDAV",
@@ -573,12 +674,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "resourcesUpToDate": MessageLookupByLibrary.simpleMessage(
       "Resources up to date",
-    ),
-    "detectionRejected": MessageLookupByLibrary.simpleMessage(
-      "REJECT",
-    ),
-    "detectionTimeout": MessageLookupByLibrary.simpleMessage(
-      "timeout",
     ),
     "respectRules": MessageLookupByLibrary.simpleMessage("Respect rules"),
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(
@@ -625,6 +720,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ru": MessageLookupByLibrary.simpleMessage("Russian"),
     "rule": MessageLookupByLibrary.simpleMessage("Rule"),
     "ruleName": MessageLookupByLibrary.simpleMessage("Rule name"),
+    "ruleNameOptional": MessageLookupByLibrary.simpleMessage("Name (optional)"),
     "ruleProviders": MessageLookupByLibrary.simpleMessage("Rule providers"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Rule target"),
     "save": MessageLookupByLibrary.simpleMessage("Save"),
@@ -639,7 +735,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Seconds"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m12,
+    "selectedCountTitle": m13,
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
@@ -725,7 +821,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m13,
+    "urlTip": m14,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "value": MessageLookupByLibrary.simpleMessage("Value"),
@@ -745,85 +841,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "years": MessageLookupByLibrary.simpleMessage("Years"),
-    "yearsAgo": m14,
+    "yearsAgo": m15,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
-    "locationPermissionTitle": MessageLookupByLibrary.simpleMessage(
-      "Location permission",
-    ),
-    "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
-      "To detect the name of your Wi-Fi network, Android requires location permission. We use it only to read the SSID and do not store any coordinates.",
-    ),
-    "permissionAllow": MessageLookupByLibrary.simpleMessage("Allow"),
-    "permissionNotNow": MessageLookupByLibrary.simpleMessage("Not now"),
-    "permissionRequiredHint": MessageLookupByLibrary.simpleMessage(
-      "Permission required",
-    ),
-    "openSettings": MessageLookupByLibrary.simpleMessage("Open settings"),
-    "networkRulesTitle": MessageLookupByLibrary.simpleMessage("Network rules"),
-    "networkRulesEnable": MessageLookupByLibrary.simpleMessage(
-      "Enable network rules",
-    ),
-    "networkRulesEmpty": MessageLookupByLibrary.simpleMessage(
-      "Add your first rule",
-    ),
-    "networkRulesAdd": MessageLookupByLibrary.simpleMessage("Add rule"),
-    "networkRulesEdit": MessageLookupByLibrary.simpleMessage("Edit"),
-    "networkRulesDelete": MessageLookupByLibrary.simpleMessage("Delete"),
-    "networkRulesDisable": MessageLookupByLibrary.simpleMessage("Disable"),
-    "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("Enable"),
-    "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
-      "Turn VPN on",
-    ),
-    "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(
-      "Turn VPN off",
-    ),
-    "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ON"),
-    "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("OFF"),
-    "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
-      "Wi-Fi named",
-    ),
-    "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
-      "Any Wi-Fi",
-    ),
-    "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
-      "Cellular",
-    ),
-    "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
-      "Delete this rule?",
-    ),
-    "ruleNameOptional": MessageLookupByLibrary.simpleMessage(
-      "Name (optional)",
-    ),
-    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
-    "byedpiDesc": MessageLookupByLibrary.simpleMessage(
-      "DPI bypass via local SOCKS5 proxy",
-    ),
-    "byedpiEnable": MessageLookupByLibrary.simpleMessage("Enable ByeDPI"),
-    "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLI args"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
-    "byedpiMode": MessageLookupByLibrary.simpleMessage("Mode"),
-    "byedpiModeManual": MessageLookupByLibrary.simpleMessage("Manual"),
-    "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("Automatic"),
-    "byedpiFallback": MessageLookupByLibrary.simpleMessage(
-      "Fallback to a proxy group on byedpi failure",
-    ),
-    "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage(
-      "Fallback proxy",
-    ),
-    "byedpiHostList": MessageLookupByLibrary.simpleMessage("Host list"),
-    "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("Edit"),
-    "byedpiHostListReset": MessageLookupByLibrary.simpleMessage(
-      "Reset to defaults",
-    ),
-    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
-      "Reset the host list to the bundled default?",
-    ),
-    "byedpiHostListSaved": MessageLookupByLibrary.simpleMessage(
-      "Host list saved",
-    ),
-    "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage(
-      "No proxy groups in current profile",
-    ),
-    "byedpiPort": MessageLookupByLibrary.simpleMessage("Listening port"),
   };
 }

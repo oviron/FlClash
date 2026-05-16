@@ -451,5 +451,27 @@
   "byedpiHostListResetConfirm": "Reset the host list to the bundled default?",
   "byedpiHostListSaved": "Host list saved",
   "byedpiNoProxyGroups": "No proxy groups in current profile",
-  "byedpiPort": "Listening port"
+  "byedpiPort": "Listening port",
+  "byedpiUdpEnabled": "UDP support",
+  "byedpiUdpEnabledHint": "Allow SOCKS5 UDP through byedpi (for QUIC DPI bypass)",
+  "byedpiUdpFakeCount": "UDP fake packets",
+  "byedpiUdpFakeCountHint": "Decoy UDP packets sent before real ones (0 = off)",
+  "byedpiGeoipList": "GEOIP categories",
+  "byedpiGeoipListReset": "Reset to defaults",
+  "byedpiGeoipListResetConfirm": "Reset the GEOIP list to the bundled default?",
+  "byedpiGeoipListSaved": "GEOIP list saved",
+  "releases": "Releases",
+  "forkOf": "Fork of {upstream}",
+  "@forkOf": {
+    "placeholders": {
+      "upstream": {}
+    }
+  },
+  "includeDavCredsInBackup": "Include WebDAV credentials in backup",
+  "detectionRejected": "REJECT",
+  "detectionTimeout": "timeout",
+  "includeDavCredsInBackupDesc": "Off by default. Turn on only if you trust the storage where the backup will live.",
+  "onlyStatisticsProxy": "Only statistics proxy",
+  "onlyStatisticsProxyDesc": "When turned on, only statistics proxy traffic",
+  "resourcesUpToDate": "Resources up to date"
 }

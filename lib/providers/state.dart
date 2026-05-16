@@ -1,4 +1,5 @@
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:fl_clash/byedpi/geoip_list.dart';
 import 'package:fl_clash/byedpi/host_list.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
@@ -694,6 +695,8 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
   final byeDpiSettings = ref.watch(byeDpiSettingsProvider);
   final hostListText = await readHostList();
   final byeDpiHostList = hostListText.split('\n');
+  final geoipListText = await readGeoipList();
+  final byeDpiGeoipList = geoipListText.split('\n');
   return SetupState(
     profileId: profileId,
     profileLastUpdateDate: profileLastUpdateDate,
@@ -704,6 +707,7 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
     dns: dns,
     byeDpiSettings: byeDpiSettings,
     byeDpiHostList: byeDpiHostList,
+    byeDpiGeoipList: byeDpiGeoipList,
   );
 }
 

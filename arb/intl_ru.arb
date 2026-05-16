@@ -460,5 +460,27 @@
   "byedpiHostListResetConfirm": "Сбросить список хостов к встроенному умолчанию?",
   "byedpiHostListSaved": "Список хостов сохранён",
   "byedpiNoProxyGroups": "В текущем профиле нет прокси-групп",
-  "byedpiPort": "Порт прослушивания"
+  "byedpiPort": "Порт прослушивания",
+  "byedpiUdpEnabled": "Поддержка UDP",
+  "byedpiUdpEnabledHint": "Разрешить SOCKS5 UDP через byedpi (обход DPI для QUIC)",
+  "byedpiUdpFakeCount": "Фейковые UDP-пакеты",
+  "byedpiUdpFakeCountHint": "Сколько ложных UDP-пакетов посылать перед реальным (0 = отключено)",
+  "byedpiGeoipList": "GEOIP-категории",
+  "byedpiGeoipListReset": "Сбросить к умолчанию",
+  "byedpiGeoipListResetConfirm": "Сбросить список GEOIP-категорий к встроенному умолчанию?",
+  "byedpiGeoipListSaved": "Список GEOIP сохранён",
+  "releases": "Релизы",
+  "forkOf": "Форк {upstream}",
+  "@forkOf": {
+    "placeholders": {
+      "upstream": {}
+    }
+  },
+  "includeDavCredsInBackup": "Включить учётные данные WebDAV в резервную копию",
+  "detectionRejected": "REJECT",
+  "detectionTimeout": "timeout",
+  "includeDavCredsInBackupDesc": "Off by default. Turn on only if you trust the storage where the backup will live.",
+  "onlyStatisticsProxy": "Only statistics proxy",
+  "onlyStatisticsProxyDesc": "When turned on, only statistics proxy traffic",
+  "resourcesUpToDate": "Resources up to date"
 }

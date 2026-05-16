@@ -32,25 +32,25 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(label) => "現在の${label}は既に存在しています";
 
-  static String m6(count) => "${count}時間前";
+  static String m6(upstream) => "Fork of ${upstream}";
 
-  static String m7(count) => "${count}分前";
+  static String m7(count) => "${count}時間前";
 
-  static String m8(count) => "${count}ヶ月前";
+  static String m8(count) => "${count}分前";
 
-  static String m9(label) => "まだ${label}はありません";
+  static String m9(count) => "${count}ヶ月前";
 
-  static String m10(label) => "${label}は数字でなければなりません";
+  static String m10(label) => "まだ${label}はありません";
 
-  static String m11(label) => "${label} は 1024 から 49151 の間でなければなりません";
+  static String m11(label) => "${label}は数字でなければなりません";
 
-  static String m12(count) => "${count} 項目が選択されています";
+  static String m12(label) => "${label} は 1024 から 49151 の間でなければなりません";
 
-  static String m13(label) => "${label}はURLである必要があります";
+  static String m13(count) => "${count} 項目が選択されています";
 
-  static String m14(count) => "${count}年前";
+  static String m14(label) => "${label}はURLである必要があります";
 
-  static String m15(upstream) => "${upstream} のフォーク";
+  static String m15(count) => "${count}年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -65,11 +65,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessControlNotAllowDesc": MessageLookupByLibrary.simpleMessage(
       "選択したアプリをVPNから除外",
     ),
-    "accessControlResetToYaml": MessageLookupByLibrary.simpleMessage(
-      "YAML に戻す",
-    ),
     "accessControlProfileLock": MessageLookupByLibrary.simpleMessage(
       "アプリリストはアクティブなプロファイル (tun.include-package / tun.exclude-package) によって設定されています。GUI での編集は無効です。",
+    ),
+    "accessControlResetToYaml": MessageLookupByLibrary.simpleMessage(
+      "YAML に戻す",
     ),
     "accessControlSettings": MessageLookupByLibrary.simpleMessage("アクセス制御設定"),
     "account": MessageLookupByLibrary.simpleMessage("アカウント"),
@@ -110,13 +110,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
       "When the proxy node changes, active connections are closed so new ones use the new node",
     ),
-    "releases": MessageLookupByLibrary.simpleMessage("リリース"),
-    "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
-      "WebDAV認証情報をバックアップに含める",
-    ),
-    "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
-      "デフォルトはオフ。バックアップの保存先を信頼できる場合のみオンにしてください。",
-    ),
     "autoLaunch": MessageLookupByLibrary.simpleMessage("Start on device boot"),
     "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
       "VPN service launches automatically after the phone reboots (requires OEM whitelisting)",
@@ -138,6 +131,53 @@ class MessageLookup extends MessageLookupByLibrary {
     "basicConfigDesc": MessageLookupByLibrary.simpleMessage("基本設定をグローバルに変更"),
     "bind": MessageLookupByLibrary.simpleMessage("バインド"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("ブラックリストモード"),
+    "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
+    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
+    "byedpiDesc": MessageLookupByLibrary.simpleMessage(
+      "ローカル SOCKS5 プロキシ経由でDPIをバイパス",
+    ),
+    "byedpiEnable": MessageLookupByLibrary.simpleMessage("ByeDPIを有効にする"),
+    "byedpiFallback": MessageLookupByLibrary.simpleMessage(
+      "byedpi 失敗時にプロキシグループへフォールバック",
+    ),
+    "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage("フォールバックプロキシ"),
+    "byedpiGeoipList": MessageLookupByLibrary.simpleMessage("GEOIP categories"),
+    "byedpiGeoipListReset": MessageLookupByLibrary.simpleMessage(
+      "Reset to defaults",
+    ),
+    "byedpiGeoipListResetConfirm": MessageLookupByLibrary.simpleMessage(
+      "Reset the GEOIP list to the bundled default?",
+    ),
+    "byedpiGeoipListSaved": MessageLookupByLibrary.simpleMessage(
+      "GEOIP list saved",
+    ),
+    "byedpiHostList": MessageLookupByLibrary.simpleMessage("ホストリスト"),
+    "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("編集"),
+    "byedpiHostListReset": MessageLookupByLibrary.simpleMessage("デフォルトに戻す"),
+    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
+      "ホストリストを内蔵のデフォルトにリセットしますか？",
+    ),
+    "byedpiHostListSaved": MessageLookupByLibrary.simpleMessage(
+      "ホストリストを保存しました",
+    ),
+    "byedpiMode": MessageLookupByLibrary.simpleMessage("モード"),
+    "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("自動"),
+    "byedpiModeManual": MessageLookupByLibrary.simpleMessage("手動"),
+    "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage(
+      "現在のプロファイルにプロキシグループがありません",
+    ),
+    "byedpiPort": MessageLookupByLibrary.simpleMessage("リッスンポート"),
+    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
+    "byedpiUdpEnabled": MessageLookupByLibrary.simpleMessage("UDP support"),
+    "byedpiUdpEnabledHint": MessageLookupByLibrary.simpleMessage(
+      "Allow SOCKS5 UDP through byedpi (for QUIC DPI bypass)",
+    ),
+    "byedpiUdpFakeCount": MessageLookupByLibrary.simpleMessage(
+      "UDP fake packets",
+    ),
+    "byedpiUdpFakeCountHint": MessageLookupByLibrary.simpleMessage(
+      "Decoy UDP packets sent before real ones (0 = off)",
+    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("バイパスドメイン"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage("システムプロキシ有効時のみ適用"),
     "cacheCorrupt": MessageLookupByLibrary.simpleMessage(
@@ -174,6 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "copyEnvVar": MessageLookupByLibrary.simpleMessage("環境変数をコピー"),
     "copyLink": MessageLookupByLibrary.simpleMessage("リンクをコピー"),
     "copySuccess": MessageLookupByLibrary.simpleMessage("コピー成功"),
+    "core": MessageLookupByLibrary.simpleMessage("コア"),
     "coreStatus": MessageLookupByLibrary.simpleMessage("コアステータス"),
     "country": MessageLookupByLibrary.simpleMessage("国"),
     "crashTest": MessageLookupByLibrary.simpleMessage("クラッシュテスト"),
@@ -195,13 +236,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteMultipTip": m1,
     "deleteTip": m2,
     "desc": MessageLookupByLibrary.simpleMessage(
-      "Android向けmihomoクライアント。オープンソース、広告なし、テレメトリーなし。",
+      "ClashMetaベースのマルチプラットフォームプロキシクライアント。シンプルで使いやすく、オープンソースで広告なし。",
     ),
-    "forkOf": m15,
     "destination": MessageLookupByLibrary.simpleMessage("宛先"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage("宛先地理情報"),
     "destinationIPASN": MessageLookupByLibrary.simpleMessage("宛先IP ASN"),
     "details": m3,
+    "detectionRejected": MessageLookupByLibrary.simpleMessage("REJECT"),
+    "detectionTimeout": MessageLookupByLibrary.simpleMessage("timeout"),
     "detectionTip": MessageLookupByLibrary.simpleMessage("サードパーティAPIに依存（参考値）"),
     "developerMode": MessageLookupByLibrary.simpleMessage("デベロッパーモード"),
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
@@ -257,6 +299,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "コアを強制再起動してもよろしいですか？",
     ),
+    "forkOf": m6,
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("フルーツサラダ"),
     "general": MessageLookupByLibrary.simpleMessage("一般"),
     "geodataLoader": MessageLookupByLibrary.simpleMessage("Geo低メモリモード"),
@@ -276,13 +319,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "キーボードでアプリを制御",
     ),
     "hours": MessageLookupByLibrary.simpleMessage("時間"),
-    "hoursAgo": m6,
+    "hoursAgo": m7,
     "icon": MessageLookupByLibrary.simpleMessage("アイコン"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("アイコンスタイル"),
     "import": MessageLookupByLibrary.simpleMessage("インポート"),
     "importFile": MessageLookupByLibrary.simpleMessage("ファイルからインポート"),
     "importFromURL": MessageLookupByLibrary.simpleMessage("URLからインポート"),
     "importUrl": MessageLookupByLibrary.simpleMessage("URLからインポート"),
+    "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
+      "Include WebDAV credentials in backup",
+    ),
+    "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
+      "Off by default. Turn on only if you trust the storage where the backup will live.",
+    ),
     "infiniteTime": MessageLookupByLibrary.simpleMessage("長期有効"),
     "init": MessageLookupByLibrary.simpleMessage("初期化"),
     "inputCorrectHotkey": MessageLookupByLibrary.simpleMessage("正しいホットキーを入力"),
@@ -308,6 +357,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "loading": MessageLookupByLibrary.simpleMessage("読み込み中..."),
     "local": MessageLookupByLibrary.simpleMessage("ローカル"),
     "localBackupDesc": MessageLookupByLibrary.simpleMessage("ローカルにデータをバックアップ"),
+    "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fiネットワーク名を取得するため、Androidは位置情報の権限を必要とします。SSIDの読み取りにのみ使用し、座標は保存しません。",
+    ),
+    "locationPermissionTitle": MessageLookupByLibrary.simpleMessage("位置情報の権限"),
     "log": MessageLookupByLibrary.simpleMessage("ログ"),
     "logLevel": MessageLookupByLibrary.simpleMessage("ログレベル"),
     "logcat": MessageLookupByLibrary.simpleMessage("Record in-app log"),
@@ -331,12 +384,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Back button sends the app to background instead of closing it",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("分"),
-    "minutesAgo": m7,
+    "minutesAgo": m8,
     "mixedPort": MessageLookupByLibrary.simpleMessage("混合ポート"),
     "mode": MessageLookupByLibrary.simpleMessage("モード"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("モノクローム"),
     "months": MessageLookupByLibrary.simpleMessage("月"),
-    "monthsAgo": m8,
+    "monthsAgo": m9,
     "more": MessageLookupByLibrary.simpleMessage("詳細"),
     "name": MessageLookupByLibrary.simpleMessage("名前"),
     "nameserver": MessageLookupByLibrary.simpleMessage("ネームサーバー"),
@@ -351,6 +404,32 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkException": MessageLookupByLibrary.simpleMessage(
       "ネットワーク例外、接続を確認してもう一度お試しください",
     ),
+    "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("OFF"),
+    "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ON"),
+    "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage("VPNをオフ"),
+    "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage("VPNをオン"),
+    "networkRulesAdd": MessageLookupByLibrary.simpleMessage("ルールを追加"),
+    "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
+      "モバイル通信",
+    ),
+    "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
+      "任意のWi-Fi",
+    ),
+    "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fi名を指定",
+    ),
+    "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
+      "このルールを削除しますか?",
+    ),
+    "networkRulesDelete": MessageLookupByLibrary.simpleMessage("削除"),
+    "networkRulesDisable": MessageLookupByLibrary.simpleMessage("無効にする"),
+    "networkRulesEdit": MessageLookupByLibrary.simpleMessage("編集"),
+    "networkRulesEmpty": MessageLookupByLibrary.simpleMessage("最初のルールを追加"),
+    "networkRulesEnable": MessageLookupByLibrary.simpleMessage(
+      "ネットワークルールを有効にする",
+    ),
+    "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("有効にする"),
+    "networkRulesTitle": MessageLookupByLibrary.simpleMessage("ネットワークルール"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("ネットワーク速度"),
     "networkType": MessageLookupByLibrary.simpleMessage("ネットワーク種別"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("ニュートラル"),
@@ -367,15 +446,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "プロファイルがありません。追加してください",
     ),
-    "nullTip": m9,
-    "numberTip": m10,
+    "nullTip": m10,
+    "numberTip": m11,
     "onlyIcon": MessageLookupByLibrary.simpleMessage("アイコンのみ"),
-    "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage("プロキシのみ統計"),
-    "onlyStatisticsProxyDesc": MessageLookupByLibrary.simpleMessage(
-      "有効化するとプロキシトラフィックのみ統計",
+    "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage(
+      "Only statistics proxy",
     ),
+    "onlyStatisticsProxyDesc": MessageLookupByLibrary.simpleMessage(
+      "When turned on, only statistics proxy traffic",
+    ),
+    "openSettings": MessageLookupByLibrary.simpleMessage("設定を開く"),
     "options": MessageLookupByLibrary.simpleMessage("オプション"),
     "other": MessageLookupByLibrary.simpleMessage("その他"),
+    "otherContributors": MessageLookupByLibrary.simpleMessage("その他の貢献者"),
     "outboundMode": MessageLookupByLibrary.simpleMessage("アウトバウンドモード"),
     "override": MessageLookupByLibrary.simpleMessage("上書き"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("DNS上書き"),
@@ -387,6 +470,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("パレット"),
     "password": MessageLookupByLibrary.simpleMessage("パスワード"),
     "paste": MessageLookupByLibrary.simpleMessage("貼り付け"),
+    "permissionAllow": MessageLookupByLibrary.simpleMessage("許可"),
+    "permissionNotNow": MessageLookupByLibrary.simpleMessage("今はしない"),
+    "permissionRequiredHint": MessageLookupByLibrary.simpleMessage("権限が必要です"),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "WebDAVをバインドしてください",
     ),
@@ -401,7 +487,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "port": MessageLookupByLibrary.simpleMessage("ポート"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("別のポートを入力してください"),
-    "portTip": m11,
+    "portTip": m12,
     "preferH3Desc": MessageLookupByLibrary.simpleMessage("DOHのHTTP/3を優先使用"),
     "pressKeyboard": MessageLookupByLibrary.simpleMessage("キーボードを押してください"),
     "preview": MessageLookupByLibrary.simpleMessage("プレビュー"),
@@ -444,6 +530,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "redirPort": MessageLookupByLibrary.simpleMessage("Redirポート"),
     "redo": MessageLookupByLibrary.simpleMessage("やり直す"),
     "regExp": MessageLookupByLibrary.simpleMessage("正規表現"),
+    "releases": MessageLookupByLibrary.simpleMessage("Releases"),
     "remote": MessageLookupByLibrary.simpleMessage("リモート"),
     "remoteBackupDesc": MessageLookupByLibrary.simpleMessage(
       "WebDAVにデータをバックアップ",
@@ -460,6 +547,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "resetTip": MessageLookupByLibrary.simpleMessage("リセットを確定"),
     "resources": MessageLookupByLibrary.simpleMessage("リソース"),
     "resourcesDesc": MessageLookupByLibrary.simpleMessage("外部リソース関連情報"),
+    "resourcesUpToDate": MessageLookupByLibrary.simpleMessage(
+      "Resources up to date",
+    ),
     "respectRules": MessageLookupByLibrary.simpleMessage("ルール尊重"),
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(
       "DNS接続がルールに従う（proxy-server-nameserverの設定が必要）",
@@ -493,6 +583,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ru": MessageLookupByLibrary.simpleMessage("ロシア語"),
     "rule": MessageLookupByLibrary.simpleMessage("ルール"),
     "ruleName": MessageLookupByLibrary.simpleMessage("ルール名"),
+    "ruleNameOptional": MessageLookupByLibrary.simpleMessage("名前（任意）"),
     "ruleProviders": MessageLookupByLibrary.simpleMessage("ルールプロバイダー"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("ルール対象"),
     "save": MessageLookupByLibrary.simpleMessage("保存"),
@@ -505,7 +596,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
     "selectAll": MessageLookupByLibrary.simpleMessage("すべて選択"),
     "selected": MessageLookupByLibrary.simpleMessage("選択済み"),
-    "selectedCountTitle": m12,
+    "selectedCountTitle": m13,
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("表示"),
     "shrink": MessageLookupByLibrary.simpleMessage("縮小"),
@@ -579,7 +670,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL経由でプロファイルを取得"),
-    "urlTip": m13,
+    "urlTip": m14,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
     "value": MessageLookupByLibrary.simpleMessage("値"),
@@ -595,87 +686,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m14,
+    "yearsAgo": m15,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
-    "locationPermissionTitle": MessageLookupByLibrary.simpleMessage(
-      "位置情報の権限",
-    ),
-    "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
-      "Wi-Fiネットワーク名を取得するため、Androidは位置情報の権限を必要とします。SSIDの読み取りにのみ使用し、座標は保存しません。",
-    ),
-    "permissionAllow": MessageLookupByLibrary.simpleMessage("許可"),
-    "permissionNotNow": MessageLookupByLibrary.simpleMessage("今はしない"),
-    "permissionRequiredHint": MessageLookupByLibrary.simpleMessage(
-      "権限が必要です",
-    ),
-    "openSettings": MessageLookupByLibrary.simpleMessage("設定を開く"),
-    "networkRulesTitle": MessageLookupByLibrary.simpleMessage(
-      "ネットワークルール",
-    ),
-    "networkRulesEnable": MessageLookupByLibrary.simpleMessage(
-      "ネットワークルールを有効にする",
-    ),
-    "networkRulesEmpty": MessageLookupByLibrary.simpleMessage(
-      "最初のルールを追加",
-    ),
-    "networkRulesAdd": MessageLookupByLibrary.simpleMessage("ルールを追加"),
-    "networkRulesEdit": MessageLookupByLibrary.simpleMessage("編集"),
-    "networkRulesDelete": MessageLookupByLibrary.simpleMessage("削除"),
-    "networkRulesDisable": MessageLookupByLibrary.simpleMessage("無効にする"),
-    "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage(
-      "有効にする",
-    ),
-    "networkRulesActionTurnOn": MessageLookupByLibrary.simpleMessage(
-      "VPNをオン",
-    ),
-    "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(
-      "VPNをオフ",
-    ),
-    "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ON"),
-    "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("OFF"),
-    "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
-      "Wi-Fi名を指定",
-    ),
-    "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
-      "任意のWi-Fi",
-    ),
-    "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
-      "モバイル通信",
-    ),
-    "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
-      "このルールを削除しますか?",
-    ),
-    "ruleNameOptional": MessageLookupByLibrary.simpleMessage("名前（任意）"),
-    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
-    "byedpiDesc": MessageLookupByLibrary.simpleMessage(
-      "ローカル SOCKS5 プロキシ経由でDPIをバイパス",
-    ),
-    "byedpiEnable":
-        MessageLookupByLibrary.simpleMessage("ByeDPIを有効にする"),
-    "byedpiCliArgs":
-        MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
-    "byedpiCliArgsHint":
-        MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
-    "byedpiMode": MessageLookupByLibrary.simpleMessage("モード"),
-    "byedpiModeManual": MessageLookupByLibrary.simpleMessage("手動"),
-    "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("自動"),
-    "byedpiFallback": MessageLookupByLibrary.simpleMessage(
-      "byedpi 失敗時にプロキシグループへフォールバック",
-    ),
-    "byedpiFallbackProxy":
-        MessageLookupByLibrary.simpleMessage("フォールバックプロキシ"),
-    "byedpiHostList": MessageLookupByLibrary.simpleMessage("ホストリスト"),
-    "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("編集"),
-    "byedpiHostListReset":
-        MessageLookupByLibrary.simpleMessage("デフォルトに戻す"),
-    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
-      "ホストリストを内蔵のデフォルトにリセットしますか？",
-    ),
-    "byedpiHostListSaved":
-        MessageLookupByLibrary.simpleMessage("ホストリストを保存しました"),
-    "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage(
-      "現在のプロファイルにプロキシグループがありません",
-    ),
-    "byedpiPort": MessageLookupByLibrary.simpleMessage("リッスンポート"),
   };
 }

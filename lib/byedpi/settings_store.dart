@@ -15,6 +15,8 @@ class ByeDpiSettingsStore {
     fallbackGroup: _prefs.getString('byedpi.fallbackGroup') ?? '',
     port: _prefs.getInt('byedpi.port') ?? 1080,
     cliArgs: _prefs.getString('byedpi.cliArgs') ?? '--auto=tlsrec',
+    udpEnabled: _prefs.getBool('byedpi.udpEnabled') ?? false,
+    udpFakeCount: _prefs.getInt('byedpi.udpFakeCount') ?? 0,
   );
 
   Future<void> write(ByeDpiSettings s) async {
@@ -24,5 +26,7 @@ class ByeDpiSettingsStore {
     await _prefs.setString('byedpi.fallbackGroup', s.fallbackGroup);
     await _prefs.setInt('byedpi.port', s.port);
     await _prefs.setString('byedpi.cliArgs', s.cliArgs);
+    await _prefs.setBool('byedpi.udpEnabled', s.udpEnabled);
+    await _prefs.setInt('byedpi.udpFakeCount', s.udpFakeCount);
   }
 }

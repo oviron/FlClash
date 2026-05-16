@@ -124,36 +124,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Resources up to date`
-  String get resourcesUpToDate {
-    return Intl.message(
-      'Resources up to date',
-      name: 'resourcesUpToDate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `REJECT`
-  String get detectionRejected {
-    return Intl.message(
-      'REJECT',
-      name: 'detectionRejected',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `timeout`
-  String get detectionTimeout {
-    return Intl.message(
-      'timeout',
-      name: 'detectionTimeout',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Traffic usage`
   String get trafficUsage {
     return Intl.message(
@@ -804,6 +774,11 @@ class AppLocalizations {
     return Intl.message('Project', name: 'project', desc: '', args: []);
   }
 
+  /// `Core`
+  String get core {
+    return Intl.message('Core', name: 'core', desc: '', args: []);
+  }
+
   /// `Tab animation`
   String get tabAnimation {
     return Intl.message(
@@ -814,23 +789,13 @@ class AppLocalizations {
     );
   }
 
-  /// `Android mihomo client. Open source, no ads, no telemetry.`
+  /// `A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.`
   String get desc {
     return Intl.message(
-      'Android mihomo client. Open source, no ads, no telemetry.',
+      'A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.',
       name: 'desc',
       desc: '',
       args: [],
-    );
-  }
-
-  /// `Fork of {upstream}`
-  String forkOf(Object upstream) {
-    return Intl.message(
-      'Fork of $upstream',
-      name: 'forkOf',
-      desc: '',
-      args: [upstream],
     );
   }
 
@@ -962,16 +927,6 @@ class AppLocalizations {
   /// `Password`
   String get password {
     return Intl.message('Password', name: 'password', desc: '', args: []);
-  }
-
-  /// `Releases`
-  String get releases {
-    return Intl.message(
-      'Releases',
-      name: 'releases',
-      desc: '',
-      args: [],
-    );
   }
 
   /// `Unknown`
@@ -1279,6 +1234,15 @@ class AppLocalizations {
     );
   }
 
+  /// `Other contributors`
+  String get otherContributors {
+    return Intl.message(
+      'Other contributors',
+      name: 'otherContributors',
+      desc: '',
+      args: [],
+    );
+  }
 
   /// `Drop connections on node switch`
   String get autoCloseConnections {
@@ -1295,46 +1259,6 @@ class AppLocalizations {
     return Intl.message(
       'When the proxy node changes, active connections are closed so new ones use the new node',
       name: 'autoCloseConnectionsDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Include WebDAV credentials in backup`
-  String get includeDavCredsInBackup {
-    return Intl.message(
-      'Include WebDAV credentials in backup',
-      name: 'includeDavCredsInBackup',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Off by default. Turn on only if you trust the storage where the backup will live.`
-  String get includeDavCredsInBackupDesc {
-    return Intl.message(
-      'Off by default. Turn on only if you trust the storage where the backup will live.',
-      name: 'includeDavCredsInBackupDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Only statistics proxy`
-  String get onlyStatisticsProxy {
-    return Intl.message(
-      'Only statistics proxy',
-      name: 'onlyStatisticsProxy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `When turned on, only statistics proxy traffic`
-  String get onlyStatisticsProxyDesc {
-    return Intl.message(
-      'When turned on, only statistics proxy traffic',
-      name: 'onlyStatisticsProxyDesc',
       desc: '',
       args: [],
     );
@@ -3307,12 +3231,7 @@ class AppLocalizations {
 
   /// `Allow`
   String get permissionAllow {
-    return Intl.message(
-      'Allow',
-      name: 'permissionAllow',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Allow', name: 'permissionAllow', desc: '', args: []);
   }
 
   /// `Not now`
@@ -3387,12 +3306,7 @@ class AppLocalizations {
 
   /// `Edit`
   String get networkRulesEdit {
-    return Intl.message(
-      'Edit',
-      name: 'networkRulesEdit',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Edit', name: 'networkRulesEdit', desc: '', args: []);
   }
 
   /// `Delete`
@@ -3520,6 +3434,7 @@ class AppLocalizations {
     return Intl.message('ByeDPI', name: 'byedpiTitle', desc: '', args: []);
   }
 
+  /// `DPI bypass via local SOCKS5 proxy`
   String get byedpiDesc {
     return Intl.message(
       'DPI bypass via local SOCKS5 proxy',
@@ -3529,6 +3444,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Enable ByeDPI`
   String get byedpiEnable {
     return Intl.message(
       'Enable ByeDPI',
@@ -3538,6 +3454,7 @@ class AppLocalizations {
     );
   }
 
+  /// `ByeDPI CLI args`
   String get byedpiCliArgs {
     return Intl.message(
       'ByeDPI CLI args',
@@ -3547,6 +3464,7 @@ class AppLocalizations {
     );
   }
 
+  /// `--auto=tlsrec`
   String get byedpiCliArgsHint {
     return Intl.message(
       '--auto=tlsrec',
@@ -3556,14 +3474,17 @@ class AppLocalizations {
     );
   }
 
+  /// `Mode`
   String get byedpiMode {
     return Intl.message('Mode', name: 'byedpiMode', desc: '', args: []);
   }
 
+  /// `Manual`
   String get byedpiModeManual {
     return Intl.message('Manual', name: 'byedpiModeManual', desc: '', args: []);
   }
 
+  /// `Automatic`
   String get byedpiModeAuto {
     return Intl.message(
       'Automatic',
@@ -3573,6 +3494,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Fallback to a proxy group on byedpi failure`
   String get byedpiFallback {
     return Intl.message(
       'Fallback to a proxy group on byedpi failure',
@@ -3582,6 +3504,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Fallback proxy`
   String get byedpiFallbackProxy {
     return Intl.message(
       'Fallback proxy',
@@ -3591,6 +3514,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Host list`
   String get byedpiHostList {
     return Intl.message(
       'Host list',
@@ -3600,10 +3524,12 @@ class AppLocalizations {
     );
   }
 
+  /// `Edit`
   String get byedpiHostListEdit {
     return Intl.message('Edit', name: 'byedpiHostListEdit', desc: '', args: []);
   }
 
+  /// `Reset to defaults`
   String get byedpiHostListReset {
     return Intl.message(
       'Reset to defaults',
@@ -3613,6 +3539,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Reset the host list to the bundled default?`
   String get byedpiHostListResetConfirm {
     return Intl.message(
       'Reset the host list to the bundled default?',
@@ -3622,6 +3549,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Host list saved`
   String get byedpiHostListSaved {
     return Intl.message(
       'Host list saved',
@@ -3631,6 +3559,7 @@ class AppLocalizations {
     );
   }
 
+  /// `No proxy groups in current profile`
   String get byedpiNoProxyGroups {
     return Intl.message(
       'No proxy groups in current profile',
@@ -3640,10 +3569,176 @@ class AppLocalizations {
     );
   }
 
+  /// `Listening port`
   String get byedpiPort {
     return Intl.message(
       'Listening port',
       name: 'byedpiPort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `UDP support`
+  String get byedpiUdpEnabled {
+    return Intl.message(
+      'UDP support',
+      name: 'byedpiUdpEnabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow SOCKS5 UDP through byedpi (for QUIC DPI bypass)`
+  String get byedpiUdpEnabledHint {
+    return Intl.message(
+      'Allow SOCKS5 UDP through byedpi (for QUIC DPI bypass)',
+      name: 'byedpiUdpEnabledHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `UDP fake packets`
+  String get byedpiUdpFakeCount {
+    return Intl.message(
+      'UDP fake packets',
+      name: 'byedpiUdpFakeCount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Decoy UDP packets sent before real ones (0 = off)`
+  String get byedpiUdpFakeCountHint {
+    return Intl.message(
+      'Decoy UDP packets sent before real ones (0 = off)',
+      name: 'byedpiUdpFakeCountHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GEOIP categories`
+  String get byedpiGeoipList {
+    return Intl.message(
+      'GEOIP categories',
+      name: 'byedpiGeoipList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset to defaults`
+  String get byedpiGeoipListReset {
+    return Intl.message(
+      'Reset to defaults',
+      name: 'byedpiGeoipListReset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset the GEOIP list to the bundled default?`
+  String get byedpiGeoipListResetConfirm {
+    return Intl.message(
+      'Reset the GEOIP list to the bundled default?',
+      name: 'byedpiGeoipListResetConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GEOIP list saved`
+  String get byedpiGeoipListSaved {
+    return Intl.message(
+      'GEOIP list saved',
+      name: 'byedpiGeoipListSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Releases`
+  String get releases {
+    return Intl.message('Releases', name: 'releases', desc: '', args: []);
+  }
+
+  /// `Fork of {upstream}`
+  String forkOf(Object upstream) {
+    return Intl.message(
+      'Fork of $upstream',
+      name: 'forkOf',
+      desc: '',
+      args: [upstream],
+    );
+  }
+
+  /// `Include WebDAV credentials in backup`
+  String get includeDavCredsInBackup {
+    return Intl.message(
+      'Include WebDAV credentials in backup',
+      name: 'includeDavCredsInBackup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `REJECT`
+  String get detectionRejected {
+    return Intl.message(
+      'REJECT',
+      name: 'detectionRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `timeout`
+  String get detectionTimeout {
+    return Intl.message(
+      'timeout',
+      name: 'detectionTimeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Off by default. Turn on only if you trust the storage where the backup will live.`
+  String get includeDavCredsInBackupDesc {
+    return Intl.message(
+      'Off by default. Turn on only if you trust the storage where the backup will live.',
+      name: 'includeDavCredsInBackupDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only statistics proxy`
+  String get onlyStatisticsProxy {
+    return Intl.message(
+      'Only statistics proxy',
+      name: 'onlyStatisticsProxy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When turned on, only statistics proxy traffic`
+  String get onlyStatisticsProxyDesc {
+    return Intl.message(
+      'When turned on, only statistics proxy traffic',
+      name: 'onlyStatisticsProxyDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resources up to date`
+  String get resourcesUpToDate {
+    return Intl.message(
+      'Resources up to date',
+      name: 'resourcesUpToDate',
       desc: '',
       args: [],
     );

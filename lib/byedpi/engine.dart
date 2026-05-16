@@ -4,6 +4,7 @@ void injectByeDpi({
   required Map<String, dynamic> rawConfig,
   required ByeDpiSettings settings,
   required List<String> hosts,
+  required List<String> geoipCategories,
 }) {
   if (!settings.enabled) return;
 
@@ -14,7 +15,7 @@ void injectByeDpi({
       'type': 'socks5',
       'server': '127.0.0.1',
       'port': settings.port,
-      'udp': false,
+      'udp': settings.udpEnabled,
     });
     rawConfig['proxies'] = proxies;
   }
@@ -25,7 +26,11 @@ void injectByeDpi({
       .map((h) => h.trim())
       .where((h) => h.isNotEmpty && !h.startsWith('#'))
       .toList(growable: false);
-  if (cleanedHosts.isEmpty) return;
+  final cleanedGeoip = geoipCategories
+      .map((c) => c.trim())
+      .where((c) => c.isNotEmpty && !c.startsWith('#'))
+      .toList(growable: false);
+  if (cleanedHosts.isEmpty && cleanedGeoip.isEmpty) return;
 
   final target = settings.fallbackEnabled && settings.fallbackGroup.isNotEmpty
       ? 'byedpi-fallback'
@@ -51,7 +56,11 @@ void injectByeDpi({
     (r) => r is String && r.startsWith('IN-TYPE,INNER,'),
   );
   final insertAt = innerIdx >= 0 ? innerIdx + 1 : 0;
-  final newRules = [for (final h in cleanedHosts) 'DOMAIN-SUFFIX,$h,$target'];
+  final newRules = <String>[
+    for (final c in cleanedGeoip) 'GEOSITE,$c,$target',
+    for (final c in cleanedGeoip) 'GEOIP,$c,$target,no-resolve',
+    for (final h in cleanedHosts) 'DOMAIN-SUFFIX,$h,$target',
+  ];
   rules.insertAll(insertAt, newRules);
   rawConfig['rules'] = rules;
 }

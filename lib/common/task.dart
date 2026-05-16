@@ -236,6 +236,7 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     rawConfig: rawConfig.cast<String, dynamic>(),
     settings: data.byeDpiSettings,
     hosts: data.byeDpiHostList,
+    geoipCategories: data.byeDpiGeoipList,
   );
   rules = rawConfig['rules'] != null ? List<String>.from(rawConfig['rules']) : rules;
   if (addedRules.isNotEmpty) {
