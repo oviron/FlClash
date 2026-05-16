@@ -1,3 +1,5 @@
+//go:build android && cgo
+
 package main
 
 import (
@@ -67,7 +69,6 @@ const (
 	initClashMethod                Method = "initClash"
 	getIsInitMethod                Method = "getIsInit"
 	forceGcMethod                  Method = "forceGc"
-	shutdownMethod                 Method = "shutdown"
 	validateConfigMethod           Method = "validateConfig"
 	updateConfigMethod             Method = "updateConfig"
 	resetTrafficMethod             Method = "resetTraffic"

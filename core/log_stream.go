@@ -1,3 +1,5 @@
+//go:build android && cgo
+
 package main
 
 import (
@@ -7,29 +9,28 @@ import (
 	"github.com/metacubex/mihomo/log"
 )
 
-// logSubscriber is guarded by logSubMu so concurrent start/stop cannot leak
-// orphan subscriptions or spawn duplicate fan-out goroutines.
+// logSubscriber is guarded by logSubMu; logDone signals the fan-out goroutine
+// has fully drained, so a fresh subscribe never overlaps the previous one.
 var (
 	logSubscriber observable.Subscription[log.Event]
 	logSubMu      sync.Mutex
+	logDone       chan struct{}
 )
 
 func handleStartLog() {
 	logSubMu.Lock()
-	if logSubscriber != nil {
-		log.UnSubscribe(logSubscriber)
-		logSubscriber = nil
-	}
-	sub := log.Subscribe()
-	logSubscriber = sub
-	logSubMu.Unlock()
+	defer logSubMu.Unlock()
+	stopLogLocked()
 
+	sub := log.Subscribe()
 	if sub == nil {
 		return
 	}
-	// Range over the local `sub` (not the package-level var) so that a future
-	// start/stop reassigning logSubscriber does not race this goroutine.
+	logSubscriber = sub
+	done := make(chan struct{})
+	logDone = done
 	go func() {
+		defer close(done)
 		for logData := range sub {
 			if logData.LogLevel < log.Level() {
 				continue
@@ -45,8 +46,19 @@ func handleStartLog() {
 func handleStopLog() {
 	logSubMu.Lock()
 	defer logSubMu.Unlock()
-	if logSubscriber != nil {
-		log.UnSubscribe(logSubscriber)
-		logSubscriber = nil
+	stopLogLocked()
+}
+
+// stopLogLocked unsubscribes and waits for the fan-out goroutine; caller must
+// hold logSubMu. UnSubscribe closes the channel so `range sub` terminates.
+func stopLogLocked() {
+	if logSubscriber == nil {
+		return
+	}
+	log.UnSubscribe(logSubscriber)
+	logSubscriber = nil
+	if logDone != nil {
+		<-logDone
+		logDone = nil
 	}
 }

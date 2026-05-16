@@ -1,3 +1,5 @@
+//go:build android && cgo
+
 package main
 
 import (
@@ -6,8 +8,6 @@ import (
 	"runtime/debug"
 
 	"github.com/metacubex/mihomo/constant"
-	"github.com/metacubex/mihomo/hub/executor"
-	"github.com/metacubex/mihomo/listener"
 	"github.com/metacubex/mihomo/log"
 )
 
@@ -32,29 +32,4 @@ func handleForceGC() {
 	log.Infoln("[APP] request force GC")
 	runtime.GC()
 	debug.FreeOSMemory()
-}
-
-// Subscription cleanup runs outside runLock (each has its own mutex); the
-// executor/listener/eventListener teardown runs under runLock to be exclusive
-// with applyConfig/updateConfig.
-func handleShutdown() bool {
-	handleUnsubscribeConnections()
-	handleStopLog()
-
-	runLock.Lock()
-	listener.Cleanup()
-	executor.Shutdown()
-	handleForceGC()
-	isInit.Store(false)
-	runLock.Unlock()
-
-	// Symmetric with setEventListener: release the final JNI global ref so
-	// it does not leak past process lifetime.
-	eventListenerMu.Lock()
-	if eventListener != nil {
-		releaseObject(eventListener)
-		eventListener = nil
-	}
-	eventListenerMu.Unlock()
-	return true
 }

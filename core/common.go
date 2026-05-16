@@ -1,3 +1,5 @@
+//go:build android && cgo
+
 package main
 
 import (
@@ -5,7 +7,6 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
-	"runtime"
 	"sync"
 	"sync/atomic"
 
@@ -21,6 +22,9 @@ import (
 	"github.com/metacubex/mihomo/log"
 	"github.com/metacubex/mihomo/tunnel"
 )
+
+// Mihomo profile filename FlClash writes to its home directory.
+const configFileName = "config.yaml"
 
 // Package-level state shared across goroutines: cgo-export entrypoints and
 // the action goroutine all read/write these without holding runLock, so they
@@ -167,10 +171,9 @@ func updateConfig(params *UpdateParams) {
 // to the embedded default on any failure so the VPN stays up; the first
 // error from read > unmarshal > parse is returned for the caller to surface.
 func applyConfig(params *SetupParams) error {
-	runtime.GC()
 	runLock.Lock()
 	defer runLock.Unlock()
-	configPath := filepath.Join(C.Path.HomeDir(), "config.yaml")
+	configPath := filepath.Join(C.Path.HomeDir(), configFileName)
 
 	var (
 		raw  *config.RawConfig
@@ -189,9 +192,11 @@ func applyConfig(params *SetupParams) error {
 	}
 
 	captureProxyGroupOrder(raw)
+	// executor.ApplyConfig(force=true) runs mihomo's own updateListeners,
+	// so our local updateListeners is redundant here (it stays useful for
+	// the partial-update path in updateConfig).
 	executor.ApplyConfig(currentConfig, true)
 	patchSelectGroup(params.SelectedMap)
-	updateListeners()
 
 	switch {
 	case rerr != nil:

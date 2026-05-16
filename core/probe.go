@@ -1,3 +1,5 @@
+//go:build android && cgo
+
 package main
 
 import (
@@ -15,6 +17,9 @@ import (
 // Sentinel checked by Dart UI to render a REJECT badge instead of spinning.
 const rejectedProbeBody = `{"status":"REJECT"}`
 
+// Public IP/geo probe endpoint. Returns JSON the Dart UI parses as-is.
+const probeURL = "https://ipinfo.io/json"
+
 // handleProbeCurrentProxyIp uses WithSpecialProxy so resolveMetadata bypasses
 // user rules. Empty modeHint falls back to tunnel.Mode(), which can lag a
 // mode switch by one Dart-side debounce.
@@ -27,7 +32,7 @@ func handleProbeCurrentProxyIp(modeHint string) string {
 	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
 	defer cancel()
 	resp, err := mihomoHttp.HttpRequest(
-		ctx, "https://ipinfo.io/json", http.MethodGet, nil, nil,
+		ctx, probeURL, http.MethodGet, nil, nil,
 		mihomoHttp.WithSpecialProxy(target),
 	)
 	if err != nil || resp.StatusCode != http.StatusOK {

@@ -1,3 +1,5 @@
+//go:build android && cgo
+
 package main
 
 import (
@@ -76,9 +78,6 @@ func handleAction(action *Action, result ActionResult) {
 	case forceGcMethod:
 		handleForceGC()
 		result.success(true)
-		return
-	case shutdownMethod:
-		result.success(handleShutdown())
 		return
 	case validateConfigMethod:
 		path, ok := parseStringData(action.Data, &result)
@@ -251,13 +250,11 @@ func handleAction(action *Action, result ActionResult) {
 			result.error(err.Error())
 			return
 		}
-		go func() {
-			if errMsg := updateExternalProvider(params.Type, params.Name); errMsg != "" {
-				result.error(errMsg)
-			} else {
-				result.success(true)
-			}
-		}()
+		if errMsg := updateExternalProvider(params.Type, params.Name); errMsg != "" {
+			result.error(errMsg)
+		} else {
+			result.success(true)
+		}
 		return
 	case getTrafficMethod:
 		result.success(handleGetTraffic())

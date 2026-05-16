@@ -1,3 +1,5 @@
+//go:build android && cgo
+
 package main
 
 import (
@@ -26,15 +28,17 @@ type externalProvider interface {
 
 // lookupExternalProvider returns the Proxy/Rule provider matching name,
 // skipping the implicit Compatible (global) provider. ok=false signals that
-// nothing usable exists under that (pType, name) pair.
+// nothing usable exists under that (pType, name) pair. Compared against
+// mihomo's canonical ProviderType.String() so a future upstream rename
+// surfaces as a build break, not a silent miss.
 func lookupExternalProvider(pType, name string) (externalProvider, bool) {
 	var p externalProvider
 	switch pType {
-	case "Proxy":
+	case P.Proxy.String():
 		if v, ok := tunnel.Providers()[name]; ok {
 			p = v
 		}
-	case "Rule":
+	case P.Rule.String():
 		if v, ok := tunnel.RuleProviders()[name]; ok {
 			p = v
 		}
