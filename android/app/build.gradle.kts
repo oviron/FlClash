@@ -27,10 +27,6 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
     ndkVersion = libs.versions.ndkVersion.get()
 
-    buildFeatures {
-        buildConfig = true
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -42,7 +38,6 @@ android {
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        buildConfigField("Boolean", "BYDPI_ENABLED", "false")
     }
 
     flavorDimensions += "variant"
@@ -56,7 +51,6 @@ android {
             applicationIdSuffix = ".bydpi"
             versionNameSuffix = "-bydpi"
             manifestPlaceholders["appLabel"] = "FlClash ByeDPI"
-            buildConfigField("Boolean", "BYDPI_ENABLED", "true")
         }
     }
 

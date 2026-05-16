@@ -20,6 +20,7 @@ void main() {
       rawConfig: cfg,
       settings: const ByeDpiSettings(enabled: false),
       hosts: hosts,
+      geoipCategories: const [],
     );
     expect(cfg['proxies'] as List, isEmpty);
     expect((cfg['rules'] as List).length, 2);
@@ -34,6 +35,7 @@ void main() {
         mode: ByeDpiMode.manual,
       ),
       hosts: hosts,
+      geoipCategories: const [],
     );
     final proxies = cfg['proxies'] as List;
     expect(proxies.any((p) => p is Map && p['name'] == 'byedpi-local'), isTrue);
@@ -54,6 +56,7 @@ void main() {
         fallbackEnabled: false,
       ),
       hosts: hosts,
+      geoipCategories: const [],
     );
     final proxies = cfg['proxies'] as List;
     expect(proxies.any((p) => p is Map && p['name'] == 'byedpi-local'), isTrue);
@@ -81,6 +84,7 @@ void main() {
         fallbackGroup: 'VPN',
       ),
       hosts: hosts,
+      geoipCategories: const [],
     );
     final proxies = cfg['proxies'] as List;
     expect(proxies.any((p) => p is Map && p['name'] == 'byedpi-local'), isTrue);
@@ -114,6 +118,7 @@ void main() {
         fallbackEnabled: false,
       ),
       hosts: ['example.com'],
+      geoipCategories: const [],
     );
     final rules = cfg['rules'] as List;
     final innerIdx = rules.indexWhere(
@@ -136,6 +141,7 @@ void main() {
         fallbackEnabled: false,
       ),
       hosts: ['# comment', '', '  ', 'valid.com', '#another'],
+      geoipCategories: const [],
     );
     final rules = cfg['rules'] as List;
     final domainRules = rules.whereType<String>()
@@ -154,11 +160,11 @@ void main() {
       fallbackGroup: 'VPN',
     );
 
-    injectByeDpi(rawConfig: cfg, settings: settings, hosts: hosts);
+    injectByeDpi(rawConfig: cfg, settings: settings, hosts: hosts, geoipCategories: const []);
     final proxiesAfter1 = (cfg['proxies'] as List).length;
     final groupsAfter1 = (cfg['proxy-groups'] as List).length;
 
-    injectByeDpi(rawConfig: cfg, settings: settings, hosts: hosts);
+    injectByeDpi(rawConfig: cfg, settings: settings, hosts: hosts, geoipCategories: const []);
     expect((cfg['proxies'] as List).length, proxiesAfter1);
     expect((cfg['proxy-groups'] as List).length, groupsAfter1);
   });
@@ -173,6 +179,7 @@ void main() {
         fallbackEnabled: false,
       ),
       hosts: [],
+      geoipCategories: const [],
     );
     final proxies = cfg['proxies'] as List;
     expect(proxies.any((p) => p is Map && p['name'] == 'byedpi-local'), isTrue);

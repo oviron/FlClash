@@ -369,21 +369,196 @@ class AppLocalizations {
     );
   }
 
-  /// `Record in-app log`
-  String get logcat {
+  /// `In-app log buffer`
+  String get inAppLogBuffer {
     return Intl.message(
-      'Record in-app log',
-      name: 'logcat',
+      'In-app log buffer',
+      name: 'inAppLogBuffer',
       desc: '',
       args: [],
     );
   }
 
-  /// `Keep recent events in the Logs view (internal buffer, not Android logcat)`
-  String get logcatDesc {
+  /// `Keep recent events in the Logs view (internal buffer, separate from adb logcat)`
+  String get inAppLogBufferDesc {
     return Intl.message(
-      'Keep recent events in the Logs view (internal buffer, not Android logcat)',
-      name: 'logcatDesc',
+      'Keep recent events in the Logs view (internal buffer, separate from adb logcat)',
+      name: 'inAppLogBufferDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logging`
+  String get loggingTitle {
+    return Intl.message('Logging', name: 'loggingTitle', desc: '', args: []);
+  }
+
+  /// `Logcat verbosity, file sink, in-app buffer`
+  String get loggingDesc {
+    return Intl.message(
+      'Logcat verbosity, file sink, in-app buffer',
+      name: 'loggingDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source`
+  String get loggingSourceSection {
+    return Intl.message(
+      'Source',
+      name: 'loggingSourceSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source log level`
+  String get loggingSourceLevel {
+    return Intl.message(
+      'Source log level',
+      name: 'loggingSourceLevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maximum verbosity mihomo emits. Per-sink filters below cannot raise above this.`
+  String get loggingSourceLevelDesc {
+    return Intl.message(
+      'Maximum verbosity mihomo emits. Per-sink filters below cannot raise above this.',
+      name: 'loggingSourceLevelDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Android logcat (adb)`
+  String get loggingLogcatSection {
+    return Intl.message(
+      'Android logcat (adb)',
+      name: 'loggingLogcatSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logcat level`
+  String get loggingLogcatLevel {
+    return Intl.message(
+      'Logcat level',
+      name: 'loggingLogcatLevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter for the always-on logcat sink. View via: adb logcat -s libclash:V libclash-stderr:V proxy:V FlClash:V flutter:V`
+  String get loggingLogcatLevelDesc {
+    return Intl.message(
+      'Filter for the always-on logcat sink. View via: adb logcat -s libclash:V libclash-stderr:V proxy:V FlClash:V flutter:V',
+      name: 'loggingLogcatLevelDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Persistent file`
+  String get loggingFileSection {
+    return Intl.message(
+      'Persistent file',
+      name: 'loggingFileSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Write log file`
+  String get loggingFileEnabled {
+    return Intl.message(
+      'Write log file',
+      name: 'loggingFileEnabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Append events to a rotated file under the app's external dir`
+  String get loggingFileEnabledDesc {
+    return Intl.message(
+      'Append events to a rotated file under the app\'s external dir',
+      name: 'loggingFileEnabledDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `File level`
+  String get loggingFileLevel {
+    return Intl.message(
+      'File level',
+      name: 'loggingFileLevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter for the persistent file sink`
+  String get loggingFileLevelDesc {
+    return Intl.message(
+      'Filter for the persistent file sink',
+      name: 'loggingFileLevelDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `File path`
+  String get loggingFilePathLabel {
+    return Intl.message(
+      'File path',
+      name: 'loggingFilePathLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rotates at 5 MB, keeps 5 files (.log + .1 .. .4)`
+  String get loggingFileRotationHint {
+    return Intl.message(
+      'Rotates at 5 MB, keeps 5 files (.log + .1 .. .4)',
+      name: 'loggingFileRotationHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In-app viewer`
+  String get loggingInAppSection {
+    return Intl.message(
+      'In-app viewer',
+      name: 'loggingInAppSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open log viewer`
+  String get loggingOpenViewer {
+    return Intl.message(
+      'Open log viewer',
+      name: 'loggingOpenViewer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ADB tip: adb pull <file path> to fetch the log to your machine without root`
+  String get loggingHintAdb {
+    return Intl.message(
+      'ADB tip: adb pull <file path> to fetch the log to your machine without root',
+      name: 'loggingHintAdb',
       desc: '',
       args: [],
     );
@@ -742,11 +917,6 @@ class AppLocalizations {
   /// `Port`
   String get port {
     return Intl.message('Port', name: 'port', desc: '', args: []);
-  }
-
-  /// `LogLevel`
-  String get logLevel {
-    return Intl.message('LogLevel', name: 'logLevel', desc: '', args: []);
   }
 
   /// `Show`
@@ -3464,14 +3634,76 @@ class AppLocalizations {
     );
   }
 
-  /// `--auto=tlsrec`
+  /// `--disorder 1 --auto=t,r,s --tlsrec 1+s`
   String get byedpiCliArgsHint {
     return Intl.message(
-      '--auto=tlsrec',
+      '--disorder 1 --auto=t,r,s --tlsrec 1+s',
       name: 'byedpiCliArgsHint',
       desc: '',
       args: [],
     );
+  }
+
+  /// `Strategy preset`
+  String get byedpiPreset {
+    return Intl.message(
+      'Strategy preset',
+      name: 'byedpiPreset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byedpiPresetUniversal {
+    return Intl.message(
+      'Universal (recommended)',
+      name: 'byedpiPresetUniversal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byedpiPresetTele2 {
+    return Intl.message(
+      'Tele2 / Tinkoff Mobile',
+      name: 'byedpiPresetTele2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byedpiPresetMrDrone {
+    return Intl.message(
+      'MrDrone (aggressive)',
+      name: 'byedpiPresetMrDrone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byedpiPresetAntiGgc {
+    return Intl.message(
+      'Anti-GGC buffering',
+      name: 'byedpiPresetAntiGgc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byedpiPresetCustom {
+    return Intl.message('Custom', name: 'byedpiPresetCustom', desc: '', args: []);
+  }
+
+  String get byedpiRestart {
+    return Intl.message('Restart ByeDPI', name: 'byedpiRestart', desc: '', args: []);
+  }
+
+  String get byedpiRestartOk {
+    return Intl.message('ByeDPI restarted', name: 'byedpiRestartOk', desc: '', args: []);
+  }
+
+  String get byedpiRestartFail {
+    return Intl.message('Restart failed (VPN not running?)', name: 'byedpiRestartFail', desc: '', args: []);
   }
 
   /// `Mode`
@@ -3574,86 +3806,6 @@ class AppLocalizations {
     return Intl.message(
       'Listening port',
       name: 'byedpiPort',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `UDP support`
-  String get byedpiUdpEnabled {
-    return Intl.message(
-      'UDP support',
-      name: 'byedpiUdpEnabled',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Allow SOCKS5 UDP through byedpi (for QUIC DPI bypass)`
-  String get byedpiUdpEnabledHint {
-    return Intl.message(
-      'Allow SOCKS5 UDP through byedpi (for QUIC DPI bypass)',
-      name: 'byedpiUdpEnabledHint',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `UDP fake packets`
-  String get byedpiUdpFakeCount {
-    return Intl.message(
-      'UDP fake packets',
-      name: 'byedpiUdpFakeCount',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Decoy UDP packets sent before real ones (0 = off)`
-  String get byedpiUdpFakeCountHint {
-    return Intl.message(
-      'Decoy UDP packets sent before real ones (0 = off)',
-      name: 'byedpiUdpFakeCountHint',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GEOIP categories`
-  String get byedpiGeoipList {
-    return Intl.message(
-      'GEOIP categories',
-      name: 'byedpiGeoipList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset to defaults`
-  String get byedpiGeoipListReset {
-    return Intl.message(
-      'Reset to defaults',
-      name: 'byedpiGeoipListReset',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset the GEOIP list to the bundled default?`
-  String get byedpiGeoipListResetConfirm {
-    return Intl.message(
-      'Reset the GEOIP list to the bundled default?',
-      name: 'byedpiGeoipListResetConfirm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GEOIP list saved`
-  String get byedpiGeoipListSaved {
-    return Intl.message(
-      'GEOIP list saved',
-      name: 'byedpiGeoipListSaved',
       desc: '',
       args: [],
     );

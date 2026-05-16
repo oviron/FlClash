@@ -99,6 +99,10 @@ class App {
   Future<bool?> setAutoStartEnabled(bool enabled) {
     return methodChannel.invokeMethod<bool>('setAutoStartEnabled', enabled);
   }
+
+  Future<String?> getLogDirectory() async {
+    return await methodChannel.invokeMethod<String>('getLogDirectory');
+  }
 }
 
 final app = system.isAndroid ? App() : null;

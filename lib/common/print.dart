@@ -1,4 +1,5 @@
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,16 @@ class CommonPrint {
       return;
     }
     appController.addLog(Log.app(payload).copyWith(logLevel: logLevel));
+    // Skip if core not connected; logcat + ring buffer already captured it.
+    try {
+      if (coreController.isCompleted) {
+        coreController.forwardHostLog(
+          level: logLevel,
+          tag: 'dart',
+          payload: payload,
+        );
+      }
+    } catch (_) {}
   }
 }
 

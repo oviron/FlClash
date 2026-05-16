@@ -7,36 +7,6 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LogLevelItem extends ConsumerWidget {
-  const LogLevelItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final logLevel = ref.watch(
-      patchClashConfigProvider.select((state) => state.logLevel),
-    );
-    return ListItem<LogLevel>.options(
-      leading: const Icon(Icons.info_outline),
-      title: Text(appLocalizations.logLevel),
-      subtitle: Text(logLevel.name),
-      delegate: OptionsDelegate<LogLevel>(
-        title: appLocalizations.logLevel,
-        options: LogLevel.values,
-        onChanged: (LogLevel? value) {
-          if (value == null) {
-            return;
-          }
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith(logLevel: value));
-        },
-        textBuilder: (logLevel) => logLevel.name,
-        value: logLevel,
-      ),
-    );
-  }
-}
-
 class UaItem extends ConsumerWidget {
   const UaItem({super.key});
 
@@ -342,7 +312,6 @@ class GeodataLoaderItem extends ConsumerWidget {
 }
 
 final generalItems = <Widget>[
-  const LogLevelItem(),
   const UaItem(),
   const TestUrlItem(),
   const PortItem(),

@@ -281,6 +281,11 @@ const _$ActionMethodEnumMap = {
   ActionMethod.closeConnection: 'closeConnection',
   ActionMethod.closeAllConnections: 'closeAllConnections',
   ActionMethod.queryProxyGroupOrder: 'queryProxyGroupOrder',
+  ActionMethod.setLogcatLevel: 'setLogcatLevel',
+  ActionMethod.setFileLevel: 'setFileLevel',
+  ActionMethod.setFileEnabled: 'setFileEnabled',
+  ActionMethod.setLogFilePath: 'setLogFilePath',
+  ActionMethod.forwardHostLog: 'forwardHostLog',
 };
 
 _ProxiesData _$ProxiesDataFromJson(Map<String, dynamic> json) => _ProxiesData(

@@ -1,10 +1,9 @@
-import 'package:fl_clash/byedpi/geoip_list.dart';
 import 'package:fl_clash/byedpi/host_list.dart';
 import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/byedpi.dart';
-import 'package:fl_clash/views/setting/widgets/byedpi_geoip_list_editor.dart';
 import 'package:fl_clash/views/setting/widgets/byedpi_host_list_editor.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -70,25 +69,136 @@ class ByeDpiView extends ConsumerWidget {
               ),
             ),
             const Divider(height: 0),
-            _CliArgsField(cliArgs: settings.cliArgs),
+            _PresetPicker(preset: settings.preset),
+            if (settings.preset == ByeDpiPreset.custom)
+              _CliArgsField(cliArgs: settings.cliArgs)
+            else
+              _PresetArgsPreview(preset: settings.preset),
+            const _RestartButton(),
             _PortField(port: settings.port),
             const Divider(height: 0),
-            SwitchListTile(
-              secondary: const Icon(Icons.network_check_outlined),
-              title: Text(appLocalizations.byedpiUdpEnabled),
-              subtitle: Text(appLocalizations.byedpiUdpEnabledHint),
-              value: settings.udpEnabled,
-              onChanged: (v) => ref
-                  .read(byeDpiSettingsProvider.notifier)
-                  .setUdpEnabled(v),
-            ),
-            if (settings.udpEnabled)
-              _UdpFakeCountField(count: settings.udpFakeCount),
-            const Divider(height: 0),
             _HostListTile(),
-            _GeoipListTile(),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _PresetPicker extends ConsumerWidget {
+  final ByeDpiPreset preset;
+  const _PresetPicker({required this.preset});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: appLocalizations.byedpiPreset,
+          border: const OutlineInputBorder(),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<ByeDpiPreset>(
+            isExpanded: true,
+            value: preset,
+            items: ByeDpiPreset.values
+                .map((p) => DropdownMenuItem(
+                      value: p,
+                      child: Text(_presetLabel(p)),
+                    ))
+                .toList(),
+            onChanged: (v) {
+              if (v != null) {
+                ref.read(byeDpiSettingsProvider.notifier).setPreset(v);
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _presetLabel(ByeDpiPreset p) {
+    switch (p) {
+      case ByeDpiPreset.universal:
+        return appLocalizations.byedpiPresetUniversal;
+      case ByeDpiPreset.tele2:
+        return appLocalizations.byedpiPresetTele2;
+      case ByeDpiPreset.mrDrone:
+        return appLocalizations.byedpiPresetMrDrone;
+      case ByeDpiPreset.antiGgc:
+        return appLocalizations.byedpiPresetAntiGgc;
+      case ByeDpiPreset.custom:
+        return appLocalizations.byedpiPresetCustom;
+    }
+  }
+}
+
+class _RestartButton extends StatefulWidget {
+  const _RestartButton();
+
+  @override
+  State<_RestartButton> createState() => _RestartButtonState();
+}
+
+class _RestartButtonState extends State<_RestartButton> {
+  bool _busy = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton.tonalIcon(
+          icon: _busy
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.restart_alt),
+          label: Text(appLocalizations.byedpiRestart),
+          onPressed: _busy ? null : _onPressed,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onPressed() async {
+    final svc = service;
+    if (svc == null) return;
+    setState(() => _busy = true);
+    final ok = await svc.restartByeDpi();
+    if (!mounted) return;
+    setState(() => _busy = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(ok
+            ? appLocalizations.byedpiRestartOk
+            : appLocalizations.byedpiRestartFail),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+}
+
+class _PresetArgsPreview extends StatelessWidget {
+  final ByeDpiPreset preset;
+  const _PresetArgsPreview({required this.preset});
+
+  @override
+  Widget build(BuildContext context) {
+    final args = byeDpiPresetArgs[preset] ?? '';
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: SelectableText(
+        args,
+        style: const TextStyle(
+          fontFamily: 'JetBrainsMono',
+          fontSize: 12,
+        ),
       ),
     );
   }
@@ -302,94 +412,3 @@ class _HostListTileState extends State<_HostListTile> {
   }
 }
 
-class _GeoipListTile extends StatefulWidget {
-  @override
-  State<_GeoipListTile> createState() => _GeoipListTileState();
-}
-
-class _GeoipListTileState extends State<_GeoipListTile> {
-  int _count = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    countGeoipCategories().then((n) {
-      if (mounted) setState(() => _count = n);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.public_outlined),
-      title: Text(appLocalizations.byedpiGeoipList),
-      subtitle: Text('$_count categories'),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => const ByeDpiGeoipListEditor(),
-        ),
-      ),
-    );
-  }
-}
-
-class _UdpFakeCountField extends ConsumerStatefulWidget {
-  final int count;
-  const _UdpFakeCountField({required this.count});
-
-  @override
-  ConsumerState<_UdpFakeCountField> createState() => _UdpFakeCountFieldState();
-}
-
-class _UdpFakeCountFieldState extends ConsumerState<_UdpFakeCountField> {
-  late final TextEditingController _controller;
-  late final FocusNode _focusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.count.toString());
-    _focusNode = FocusNode()..addListener(_onFocusChange);
-  }
-
-  @override
-  void didUpdateWidget(_UdpFakeCountField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.count != widget.count) {
-      final s = widget.count.toString();
-      if (_controller.text != s) _controller.text = s;
-    }
-  }
-
-  @override
-  void dispose() {
-    _focusNode.removeListener(_onFocusChange);
-    _focusNode.dispose();
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _onFocusChange() {
-    if (_focusNode.hasFocus) return;
-    final v = int.tryParse(_controller.text);
-    if (v == null || v == widget.count) return;
-    ref.read(byeDpiSettingsProvider.notifier).setUdpFakeCount(v);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: TextField(
-        controller: _controller,
-        focusNode: _focusNode,
-        decoration: InputDecoration(
-          labelText: appLocalizations.byedpiUdpFakeCount,
-          helperText: appLocalizations.byedpiUdpFakeCountHint,
-        ),
-        keyboardType: TextInputType.number,
-      ),
-    );
-  }
-}

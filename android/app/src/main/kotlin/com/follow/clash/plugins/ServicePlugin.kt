@@ -61,8 +61,19 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
             handleStop(result)
         }
 
+        "restartByeDpi" -> {
+            handleRestartByeDpi(result)
+        }
+
         else -> {
             result.notImplemented()
+        }
+    }
+
+    private fun handleRestartByeDpi(result: MethodChannel.Result) {
+        launch {
+            val ok = Service.restartByeDpi()
+            launch(Dispatchers.Main) { result.success(ok) }
         }
     }
 

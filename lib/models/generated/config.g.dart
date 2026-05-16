@@ -16,7 +16,14 @@ _AppSettingProps _$AppSettingPropsFromJson(
   autoLaunch: json['autoLaunch'] as bool? ?? false,
   silentLaunch: json['silentLaunch'] as bool? ?? false,
   autoRun: json['autoRun'] as bool? ?? false,
-  openLogs: json['openLogs'] as bool? ?? false,
+  inAppLogsEnabled: json['openLogs'] as bool? ?? false,
+  logcatLevel:
+      $enumDecodeNullable(_$LogLevelEnumMap, json['logcatLevel']) ??
+      LogLevel.debug,
+  fileLogLevel:
+      $enumDecodeNullable(_$LogLevelEnumMap, json['fileLogLevel']) ??
+      LogLevel.info,
+  fileLogEnabled: json['fileLogEnabled'] as bool? ?? false,
   closeConnections: json['closeConnections'] as bool? ?? true,
   testUrl: json['testUrl'] as String? ?? defaultTestUrl,
   isAnimateToPage: json['isAnimateToPage'] as bool? ?? true,
@@ -41,7 +48,10 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'autoLaunch': instance.autoLaunch,
       'silentLaunch': instance.silentLaunch,
       'autoRun': instance.autoRun,
-      'openLogs': instance.openLogs,
+      'openLogs': instance.inAppLogsEnabled,
+      'logcatLevel': _$LogLevelEnumMap[instance.logcatLevel]!,
+      'fileLogLevel': _$LogLevelEnumMap[instance.fileLogLevel]!,
+      'fileLogEnabled': instance.fileLogEnabled,
       'closeConnections': instance.closeConnections,
       'testUrl': instance.testUrl,
       'isAnimateToPage': instance.isAnimateToPage,
@@ -54,6 +64,14 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'showTrayTitle': instance.showTrayTitle,
       'includeDavCredsInBackup': instance.includeDavCredsInBackup,
     };
+
+const _$LogLevelEnumMap = {
+  LogLevel.debug: 'debug',
+  LogLevel.info: 'info',
+  LogLevel.warning: 'warning',
+  LogLevel.error: 'error',
+  LogLevel.silent: 'silent',
+};
 
 const _$RestoreStrategyEnumMap = {
   RestoreStrategy.compatible: 'compatible',

@@ -2,7 +2,6 @@ package com.follow.clash.common
 
 
 import android.app.Application
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -26,7 +25,7 @@ object GlobalState : CoroutineScope by CoroutineScope(Dispatchers.Default) {
 
 
     fun log(text: String) {
-        Log.d("[FlClash]", text)
+        Logger.d("FlClash", text)
     }
 
     fun init(application: Application) {

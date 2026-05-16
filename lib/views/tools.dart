@@ -11,6 +11,7 @@ import 'package:fl_clash/views/application_setting.dart';
 import 'package:fl_clash/views/backup_and_restore.dart';
 import 'package:fl_clash/views/config/config.dart';
 import 'package:fl_clash/views/setting/byedpi.dart';
+import 'package:fl_clash/views/setting/logging.dart';
 import 'package:fl_clash/views/setting/network_rules.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -76,6 +77,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
         const _AccessItem(),
         const _ConfigItem(),
         const _AdvancedConfigItem(),
+        const _LoggingItem(),
         const _SettingItem(),
       ],
     );
@@ -218,6 +220,20 @@ class _AdvancedConfigItem extends StatelessWidget {
       title: Text(context.appLocalizations.advancedConfig),
       subtitle: Text(context.appLocalizations.advancedConfigDesc),
       delegate: const OpenDelegate(widget: AdvancedConfigView()),
+    );
+  }
+}
+
+class _LoggingItem extends StatelessWidget {
+  const _LoggingItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem.open(
+      leading: const Icon(Icons.article_outlined),
+      title: Text(context.appLocalizations.loggingTitle),
+      subtitle: Text(context.appLocalizations.loggingDesc),
+      delegate: const OpenDelegate(widget: LoggingView()),
     );
   }
 }

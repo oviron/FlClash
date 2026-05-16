@@ -6,12 +6,14 @@ import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' show join;
 
 class CoreManager extends ConsumerStatefulWidget {
   final Widget child;
@@ -45,12 +47,15 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     ref.listenManual(updateParamsProvider, (prev, next) {
       if (prev != next) appController.updateConfigDebounce();
     });
-    ref.listenManual(appSettingProvider.select((state) => state.openLogs), (
-      prev,
-      next,
-    ) {
-      next ? coreController.startLog() : coreController.stopLog();
-    }, fireImmediately: true);
+    ref.listenManual(
+      appSettingProvider.select((state) => state.inAppLogsEnabled),
+      (prev, next) {
+        next ? coreController.startLog() : coreController.stopLog();
+      },
+      fireImmediately: true,
+    );
+    // Strict order: path first, then enable — else file sink opens without path.
+    unawaited(_bootLogging());
     ref.listenManual(coreStatusProvider, (prev, next) {
       if (next == CoreStatus.connected) {
         coreController.subscribeConnections();
@@ -59,6 +64,27 @@ class _CoreContainerState extends ConsumerState<CoreManager>
         _seenIds.clear();
       }
     }, fireImmediately: true);
+  }
+
+  Future<void> _bootLogging() async {
+    await _initLogFilePath();
+    final s = ref.read(appSettingProvider);
+    coreController.setLogcatLevel(s.logcatLevel);
+    coreController.setFileLevel(s.fileLogLevel);
+    coreController.setFileEnabled(s.fileLogEnabled);
+    if (!mounted) return;
+    ref.listenManual(
+      appSettingProvider.select((state) => state.logcatLevel),
+      (prev, next) => coreController.setLogcatLevel(next),
+    );
+    ref.listenManual(
+      appSettingProvider.select((state) => state.fileLogLevel),
+      (prev, next) => coreController.setFileLevel(next),
+    );
+    ref.listenManual(
+      appSettingProvider.select((state) => state.fileLogEnabled),
+      (prev, next) => coreController.setFileEnabled(next),
+    );
   }
 
   @override
@@ -80,6 +106,20 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     coreEventManager.removeListener(this);
     unawaited(coreController.unsubscribeConnections());
     super.dispose();
+  }
+
+  Future<void> _initLogFilePath() async {
+    if (app == null) return;
+    try {
+      final dir = await app!.getLogDirectory();
+      if (dir == null || dir.isEmpty) return;
+      coreController.setLogFilePath(join(dir, 'debug.log'));
+    } catch (e) {
+      commonPrint.log(
+        'log file path init failed: $e',
+        logLevel: LogLevel.warning,
+      );
+    }
   }
 
   @override

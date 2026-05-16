@@ -11,10 +11,10 @@ import android.os.IBinder
 import android.os.Parcel
 import android.os.PowerManager
 import android.os.RemoteException
-import android.util.Log
 import androidx.core.content.getSystemService
 import com.follow.clash.common.AccessControlMode
 import com.follow.clash.common.GlobalState
+import com.follow.clash.common.Logger
 import com.follow.clash.core.Core
 import com.follow.clash.service.models.VpnOptions
 import com.follow.clash.service.models.getIpv4RouteAddress
@@ -49,8 +49,9 @@ class VpnService : SystemVpnService(), IBaseService,
             .newInstance(ctx) as Module
     } catch (_: ClassNotFoundException) {
         null
-    } catch (e: LinkageError) {
-        GlobalState.log("ByeDpi module link failed: ${e.message}")
+    } catch (e: Throwable) {
+        Logger.e("VpnService", "tryByeDpiModule failed: $e")
+        GlobalState.log("ByeDpi module load failed: ${e.message}")
         null
     }
 
@@ -158,14 +159,14 @@ class VpnService : SystemVpnService(), IBaseService,
         val fd = with(Builder()) {
             val cidr = IPV4_ADDRESS.toCIDR()
             addAddress(cidr.address, cidr.prefixLength)
-            Log.d(
+            Logger.d(
                 "addAddress", "address: ${cidr.address} prefixLength:${cidr.prefixLength}"
             )
             val routeAddress = options.getIpv4RouteAddress()
             if (routeAddress.isNotEmpty()) {
                 try {
                     routeAddress.forEach { i ->
-                        Log.d(
+                        Logger.d(
                             "addRoute4", "address: ${i.address} prefixLength:${i.prefixLength}"
                         )
                         addRoute(i.address, i.prefixLength)
@@ -179,12 +180,12 @@ class VpnService : SystemVpnService(), IBaseService,
             if (options.ipv6) {
                 try {
                     val cidr = IPV6_ADDRESS.toCIDR()
-                    Log.d(
+                    Logger.d(
                         "addAddress6", "address: ${cidr.address} prefixLength:${cidr.prefixLength}"
                     )
                     addAddress(cidr.address, cidr.prefixLength)
                 } catch (_: Exception) {
-                    Log.d(
+                    Logger.d(
                         "addAddress6", "IPv6 is not supported."
                     )
                 }
@@ -194,7 +195,7 @@ class VpnService : SystemVpnService(), IBaseService,
                     if (routeAddress.isNotEmpty()) {
                         try {
                             routeAddress.forEach { i ->
-                                Log.d(
+                                Logger.d(
                                     "addRoute6",
                                     "address: ${i.address} prefixLength:${i.prefixLength}"
                                 )
@@ -215,21 +216,29 @@ class VpnService : SystemVpnService(), IBaseService,
                 addDnsServer(DNS6)
             }
             setMtu(9000)
+            val byeDpiActive = packageName.contains(".bydpi")
             options.accessControlProps.let { accessControl ->
                 if (accessControl.enable) {
                     when (accessControl.mode) {
                         AccessControlMode.ACCEPT_SELECTED -> {
-                            (accessControl.acceptList + packageName).forEach {
-                                addAllowedApplication(it)
-                            }
+                            val list = if (byeDpiActive)
+                                accessControl.acceptList - packageName
+                            else
+                                accessControl.acceptList + packageName
+                            list.forEach { addAllowedApplication(it) }
                         }
 
                         AccessControlMode.REJECT_SELECTED -> {
-                            (accessControl.rejectList - packageName).forEach {
-                                addDisallowedApplication(it)
-                            }
+                            val list = if (byeDpiActive)
+                                accessControl.rejectList + packageName
+                            else
+                                accessControl.rejectList - packageName
+                            list.forEach { addDisallowedApplication(it) }
                         }
                     }
+                } else if (byeDpiActive) {
+                    // Invariant: own UID must skip TUN, else byedpi loops via mihomo.
+                    addDisallowedApplication(packageName)
                 }
             }
             setSession("FlClash")

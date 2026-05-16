@@ -167,7 +167,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "bind": MessageLookupByLibrary.simpleMessage("Bind"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("Blacklist mode"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLI args"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
+    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--disorder 1 --auto=t,r,s --tlsrec 1+s"),
+    "byedpiPreset": MessageLookupByLibrary.simpleMessage("Strategy preset"),
+    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage("Universal (recommended)"),
+    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage("Tele2 / Tinkoff Mobile"),
+    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage("MrDrone (aggressive)"),
+    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage("Anti-GGC buffering"),
+    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "byedpiRestart": MessageLookupByLibrary.simpleMessage("Restart ByeDPI"),
+    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPI restarted"),
+    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage("Restart failed (VPN not running?)"),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "DPI bypass via local SOCKS5 proxy",
     ),
@@ -177,16 +186,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage(
       "Fallback proxy",
-    ),
-    "byedpiGeoipList": MessageLookupByLibrary.simpleMessage("GEOIP categories"),
-    "byedpiGeoipListReset": MessageLookupByLibrary.simpleMessage(
-      "Reset to defaults",
-    ),
-    "byedpiGeoipListResetConfirm": MessageLookupByLibrary.simpleMessage(
-      "Reset the GEOIP list to the bundled default?",
-    ),
-    "byedpiGeoipListSaved": MessageLookupByLibrary.simpleMessage(
-      "GEOIP list saved",
     ),
     "byedpiHostList": MessageLookupByLibrary.simpleMessage("Host list"),
     "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("Edit"),
@@ -207,16 +206,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("Listening port"),
     "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
-    "byedpiUdpEnabled": MessageLookupByLibrary.simpleMessage("UDP support"),
-    "byedpiUdpEnabledHint": MessageLookupByLibrary.simpleMessage(
-      "Allow SOCKS5 UDP through byedpi (for QUIC DPI bypass)",
-    ),
-    "byedpiUdpFakeCount": MessageLookupByLibrary.simpleMessage(
-      "UDP fake packets",
-    ),
-    "byedpiUdpFakeCountHint": MessageLookupByLibrary.simpleMessage(
-      "Decoy UDP packets sent before real ones (0 = off)",
-    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Bypass domain"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "Only takes effect when the system proxy is enabled",
@@ -397,6 +386,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "importFile": MessageLookupByLibrary.simpleMessage("Import from file"),
     "importFromURL": MessageLookupByLibrary.simpleMessage("Import from URL"),
     "importUrl": MessageLookupByLibrary.simpleMessage("Import from URL"),
+    "inAppLogBuffer": MessageLookupByLibrary.simpleMessage("In-app log buffer"),
+    "inAppLogBufferDesc": MessageLookupByLibrary.simpleMessage(
+      "Keep recent events in the Logs view (internal buffer, separate from adb logcat)",
+    ),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
       "Include WebDAV credentials in backup",
     ),
@@ -447,11 +440,50 @@ class MessageLookup extends MessageLookupByLibrary {
       "Location permission",
     ),
     "log": MessageLookupByLibrary.simpleMessage("Log"),
-    "logLevel": MessageLookupByLibrary.simpleMessage("LogLevel"),
-    "logcat": MessageLookupByLibrary.simpleMessage("Record in-app log"),
-    "logcatDesc": MessageLookupByLibrary.simpleMessage(
-      "Keep recent events in the Logs view (internal buffer, not Android logcat)",
+    "loggingDesc": MessageLookupByLibrary.simpleMessage(
+      "Logcat verbosity, file sink, in-app buffer",
     ),
+    "loggingFileEnabled": MessageLookupByLibrary.simpleMessage(
+      "Write log file",
+    ),
+    "loggingFileEnabledDesc": MessageLookupByLibrary.simpleMessage(
+      "Append events to a rotated file under the app\'s external dir",
+    ),
+    "loggingFileLevel": MessageLookupByLibrary.simpleMessage("File level"),
+    "loggingFileLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "Filter for the persistent file sink",
+    ),
+    "loggingFilePathLabel": MessageLookupByLibrary.simpleMessage("File path"),
+    "loggingFileRotationHint": MessageLookupByLibrary.simpleMessage(
+      "Rotates at 5 MB, keeps 5 files (.log + .1 .. .4)",
+    ),
+    "loggingFileSection": MessageLookupByLibrary.simpleMessage(
+      "Persistent file",
+    ),
+    "loggingHintAdb": MessageLookupByLibrary.simpleMessage(
+      "ADB tip: adb pull <file path> to fetch the log to your machine without root",
+    ),
+    "loggingInAppSection": MessageLookupByLibrary.simpleMessage(
+      "In-app viewer",
+    ),
+    "loggingLogcatLevel": MessageLookupByLibrary.simpleMessage("Logcat level"),
+    "loggingLogcatLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "Filter for the always-on logcat sink. View via: adb logcat -s libclash:V libclash-stderr:V proxy:V FlClash:V flutter:V",
+    ),
+    "loggingLogcatSection": MessageLookupByLibrary.simpleMessage(
+      "Android logcat (adb)",
+    ),
+    "loggingOpenViewer": MessageLookupByLibrary.simpleMessage(
+      "Open log viewer",
+    ),
+    "loggingSourceLevel": MessageLookupByLibrary.simpleMessage(
+      "Source log level",
+    ),
+    "loggingSourceLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "Maximum verbosity mihomo emits. Per-sink filters below cannot raise above this.",
+    ),
+    "loggingSourceSection": MessageLookupByLibrary.simpleMessage("Source"),
+    "loggingTitle": MessageLookupByLibrary.simpleMessage("Logging"),
     "logs": MessageLookupByLibrary.simpleMessage("Logs"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("Log capture records"),
     "logsTest": MessageLookupByLibrary.simpleMessage("Logs test"),

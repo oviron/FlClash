@@ -1,5 +1,0 @@
-# mihomo GEOIP / GEOSITE category names — one per line, '#' starts a comment.
-# Resolved against the user's bundled geoip.dat / geosite.dat. Loyalsoldier
-# and runetfreedom variants include these buckets out of the box.
-youtube
-discord

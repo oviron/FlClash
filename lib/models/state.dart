@@ -350,7 +350,6 @@ abstract class MakeRealProfileState with _$MakeRealProfileState {
     required String defaultUA,
     @Default(ByeDpiSettings()) ByeDpiSettings byeDpiSettings,
     @Default([]) List<String> byeDpiHostList,
-    @Default([]) List<String> byeDpiGeoipList,
   }) = _MakeRealProfileState;
 }
 
@@ -378,7 +377,6 @@ abstract class SetupState with _$SetupState {
     required Dns dns,
     @Default(ByeDpiSettings()) ByeDpiSettings byeDpiSettings,
     @Default([]) List<String> byeDpiHostList,
-    @Default([]) List<String> byeDpiGeoipList,
   }) = _SetupState;
 }
 

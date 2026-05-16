@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppSettingProps {
 
- String? get locale;@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> get dashboardWidgets; bool get autoLaunch; bool get silentLaunch; bool get autoRun; bool get openLogs; bool get closeConnections; String get testUrl; bool get isAnimateToPage; bool get showLabel; bool get disclaimerAccepted; bool get minimizeOnExit; bool get hidden; bool get developerMode; RestoreStrategy get restoreStrategy; bool get showTrayTitle; bool get includeDavCredsInBackup;
+ String? get locale;@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> get dashboardWidgets; bool get autoLaunch; bool get silentLaunch; bool get autoRun;@JsonKey(name: 'openLogs') bool get inAppLogsEnabled; LogLevel get logcatLevel; LogLevel get fileLogLevel; bool get fileLogEnabled; bool get closeConnections; String get testUrl; bool get isAnimateToPage; bool get showLabel; bool get disclaimerAccepted; bool get minimizeOnExit; bool get hidden; bool get developerMode; RestoreStrategy get restoreStrategy; bool get showTrayTitle; bool get includeDavCredsInBackup;
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AppSettingPropsCopyWith<AppSettingProps> get copyWith => _$AppSettingPropsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other.dashboardWidgets, dashboardWidgets)&&(identical(other.autoLaunch, autoLaunch) || other.autoLaunch == autoLaunch)&&(identical(other.silentLaunch, silentLaunch) || other.silentLaunch == silentLaunch)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.openLogs, openLogs) || other.openLogs == openLogs)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.showLabel, showLabel) || other.showLabel == showLabel)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.showTrayTitle, showTrayTitle) || other.showTrayTitle == showTrayTitle)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other.dashboardWidgets, dashboardWidgets)&&(identical(other.autoLaunch, autoLaunch) || other.autoLaunch == autoLaunch)&&(identical(other.silentLaunch, silentLaunch) || other.silentLaunch == silentLaunch)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.inAppLogsEnabled, inAppLogsEnabled) || other.inAppLogsEnabled == inAppLogsEnabled)&&(identical(other.logcatLevel, logcatLevel) || other.logcatLevel == logcatLevel)&&(identical(other.fileLogLevel, fileLogLevel) || other.fileLogLevel == fileLogLevel)&&(identical(other.fileLogEnabled, fileLogEnabled) || other.fileLogEnabled == fileLogEnabled)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.showLabel, showLabel) || other.showLabel == showLabel)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.showTrayTitle, showTrayTitle) || other.showTrayTitle == showTrayTitle)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,locale,const DeepCollectionEquality().hash(dashboardWidgets),autoLaunch,silentLaunch,autoRun,openLogs,closeConnections,testUrl,isAnimateToPage,showLabel,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,showTrayTitle,includeDavCredsInBackup);
+int get hashCode => Object.hashAll([runtimeType,locale,const DeepCollectionEquality().hash(dashboardWidgets),autoLaunch,silentLaunch,autoRun,inAppLogsEnabled,logcatLevel,fileLogLevel,fileLogEnabled,closeConnections,testUrl,isAnimateToPage,showLabel,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,showTrayTitle,includeDavCredsInBackup]);
 
 @override
 String toString() {
-  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoLaunch: $autoLaunch, silentLaunch: $silentLaunch, autoRun: $autoRun, openLogs: $openLogs, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, showLabel: $showLabel, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, showTrayTitle: $showTrayTitle, includeDavCredsInBackup: $includeDavCredsInBackup)';
+  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoLaunch: $autoLaunch, silentLaunch: $silentLaunch, autoRun: $autoRun, inAppLogsEnabled: $inAppLogsEnabled, logcatLevel: $logcatLevel, fileLogLevel: $fileLogLevel, fileLogEnabled: $fileLogEnabled, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, showLabel: $showLabel, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, showTrayTitle: $showTrayTitle, includeDavCredsInBackup: $includeDavCredsInBackup)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AppSettingPropsCopyWith<$Res>  {
   factory $AppSettingPropsCopyWith(AppSettingProps value, $Res Function(AppSettingProps) _then) = _$AppSettingPropsCopyWithImpl;
 @useResult
 $Res call({
- String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoLaunch, bool silentLaunch, bool autoRun, bool openLogs, bool closeConnections, String testUrl, bool isAnimateToPage, bool showLabel, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool showTrayTitle, bool includeDavCredsInBackup
+ String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoLaunch, bool silentLaunch, bool autoRun,@JsonKey(name: 'openLogs') bool inAppLogsEnabled, LogLevel logcatLevel, LogLevel fileLogLevel, bool fileLogEnabled, bool closeConnections, String testUrl, bool isAnimateToPage, bool showLabel, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool showTrayTitle, bool includeDavCredsInBackup
 });
 
 
@@ -65,14 +65,17 @@ class _$AppSettingPropsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoLaunch = null,Object? silentLaunch = null,Object? autoRun = null,Object? openLogs = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? showLabel = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? showTrayTitle = null,Object? includeDavCredsInBackup = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoLaunch = null,Object? silentLaunch = null,Object? autoRun = null,Object? inAppLogsEnabled = null,Object? logcatLevel = null,Object? fileLogLevel = null,Object? fileLogEnabled = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? showLabel = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? showTrayTitle = null,Object? includeDavCredsInBackup = null,}) {
   return _then(_self.copyWith(
 locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,dashboardWidgets: null == dashboardWidgets ? _self.dashboardWidgets : dashboardWidgets // ignore: cast_nullable_to_non_nullable
 as List<DashboardWidget>,autoLaunch: null == autoLaunch ? _self.autoLaunch : autoLaunch // ignore: cast_nullable_to_non_nullable
 as bool,silentLaunch: null == silentLaunch ? _self.silentLaunch : silentLaunch // ignore: cast_nullable_to_non_nullable
 as bool,autoRun: null == autoRun ? _self.autoRun : autoRun // ignore: cast_nullable_to_non_nullable
-as bool,openLogs: null == openLogs ? _self.openLogs : openLogs // ignore: cast_nullable_to_non_nullable
+as bool,inAppLogsEnabled: null == inAppLogsEnabled ? _self.inAppLogsEnabled : inAppLogsEnabled // ignore: cast_nullable_to_non_nullable
+as bool,logcatLevel: null == logcatLevel ? _self.logcatLevel : logcatLevel // ignore: cast_nullable_to_non_nullable
+as LogLevel,fileLogLevel: null == fileLogLevel ? _self.fileLogLevel : fileLogLevel // ignore: cast_nullable_to_non_nullable
+as LogLevel,fileLogEnabled: null == fileLogEnabled ? _self.fileLogEnabled : fileLogEnabled // ignore: cast_nullable_to_non_nullable
 as bool,closeConnections: null == closeConnections ? _self.closeConnections : closeConnections // ignore: cast_nullable_to_non_nullable
 as bool,testUrl: null == testUrl ? _self.testUrl : testUrl // ignore: cast_nullable_to_non_nullable
 as String,isAnimateToPage: null == isAnimateToPage ? _self.isAnimateToPage : isAnimateToPage // ignore: cast_nullable_to_non_nullable
@@ -169,10 +172,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool silentLaunch,  bool autoRun,  bool openLogs,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool showTrayTitle,  bool includeDavCredsInBackup)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool silentLaunch,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool showTrayTitle,  bool includeDavCredsInBackup)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettingProps() when $default != null:
-return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silentLaunch,_that.autoRun,_that.openLogs,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.showTrayTitle,_that.includeDavCredsInBackup);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silentLaunch,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.showTrayTitle,_that.includeDavCredsInBackup);case _:
   return orElse();
 
 }
@@ -190,10 +193,10 @@ return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silen
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool silentLaunch,  bool autoRun,  bool openLogs,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool showTrayTitle,  bool includeDavCredsInBackup)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool silentLaunch,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool showTrayTitle,  bool includeDavCredsInBackup)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettingProps():
-return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silentLaunch,_that.autoRun,_that.openLogs,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.showTrayTitle,_that.includeDavCredsInBackup);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silentLaunch,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.showTrayTitle,_that.includeDavCredsInBackup);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -210,10 +213,10 @@ return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silen
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool silentLaunch,  bool autoRun,  bool openLogs,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool showTrayTitle,  bool includeDavCredsInBackup)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool silentLaunch,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool showTrayTitle,  bool includeDavCredsInBackup)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettingProps() when $default != null:
-return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silentLaunch,_that.autoRun,_that.openLogs,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.showTrayTitle,_that.includeDavCredsInBackup);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silentLaunch,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.showTrayTitle,_that.includeDavCredsInBackup);case _:
   return null;
 
 }
@@ -225,7 +228,7 @@ return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silen
 @JsonSerializable()
 
 class _AppSettingProps implements AppSettingProps {
-  const _AppSettingProps({this.locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson) final  List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets, this.autoLaunch = false, this.silentLaunch = false, this.autoRun = false, this.openLogs = false, this.closeConnections = true, this.testUrl = defaultTestUrl, this.isAnimateToPage = true, this.showLabel = false, this.disclaimerAccepted = false, this.minimizeOnExit = true, this.hidden = false, this.developerMode = false, this.restoreStrategy = RestoreStrategy.compatible, this.showTrayTitle = true, this.includeDavCredsInBackup = false}): _dashboardWidgets = dashboardWidgets;
+  const _AppSettingProps({this.locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson) final  List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets, this.autoLaunch = false, this.silentLaunch = false, this.autoRun = false, @JsonKey(name: 'openLogs') this.inAppLogsEnabled = false, this.logcatLevel = LogLevel.debug, this.fileLogLevel = LogLevel.info, this.fileLogEnabled = false, this.closeConnections = true, this.testUrl = defaultTestUrl, this.isAnimateToPage = true, this.showLabel = false, this.disclaimerAccepted = false, this.minimizeOnExit = true, this.hidden = false, this.developerMode = false, this.restoreStrategy = RestoreStrategy.compatible, this.showTrayTitle = true, this.includeDavCredsInBackup = false}): _dashboardWidgets = dashboardWidgets;
   factory _AppSettingProps.fromJson(Map<String, dynamic> json) => _$AppSettingPropsFromJson(json);
 
 @override final  String? locale;
@@ -239,7 +242,10 @@ class _AppSettingProps implements AppSettingProps {
 @override@JsonKey() final  bool autoLaunch;
 @override@JsonKey() final  bool silentLaunch;
 @override@JsonKey() final  bool autoRun;
-@override@JsonKey() final  bool openLogs;
+@override@JsonKey(name: 'openLogs') final  bool inAppLogsEnabled;
+@override@JsonKey() final  LogLevel logcatLevel;
+@override@JsonKey() final  LogLevel fileLogLevel;
+@override@JsonKey() final  bool fileLogEnabled;
 @override@JsonKey() final  bool closeConnections;
 @override@JsonKey() final  String testUrl;
 @override@JsonKey() final  bool isAnimateToPage;
@@ -265,16 +271,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other._dashboardWidgets, _dashboardWidgets)&&(identical(other.autoLaunch, autoLaunch) || other.autoLaunch == autoLaunch)&&(identical(other.silentLaunch, silentLaunch) || other.silentLaunch == silentLaunch)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.openLogs, openLogs) || other.openLogs == openLogs)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.showLabel, showLabel) || other.showLabel == showLabel)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.showTrayTitle, showTrayTitle) || other.showTrayTitle == showTrayTitle)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other._dashboardWidgets, _dashboardWidgets)&&(identical(other.autoLaunch, autoLaunch) || other.autoLaunch == autoLaunch)&&(identical(other.silentLaunch, silentLaunch) || other.silentLaunch == silentLaunch)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.inAppLogsEnabled, inAppLogsEnabled) || other.inAppLogsEnabled == inAppLogsEnabled)&&(identical(other.logcatLevel, logcatLevel) || other.logcatLevel == logcatLevel)&&(identical(other.fileLogLevel, fileLogLevel) || other.fileLogLevel == fileLogLevel)&&(identical(other.fileLogEnabled, fileLogEnabled) || other.fileLogEnabled == fileLogEnabled)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.showLabel, showLabel) || other.showLabel == showLabel)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.showTrayTitle, showTrayTitle) || other.showTrayTitle == showTrayTitle)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,locale,const DeepCollectionEquality().hash(_dashboardWidgets),autoLaunch,silentLaunch,autoRun,openLogs,closeConnections,testUrl,isAnimateToPage,showLabel,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,showTrayTitle,includeDavCredsInBackup);
+int get hashCode => Object.hashAll([runtimeType,locale,const DeepCollectionEquality().hash(_dashboardWidgets),autoLaunch,silentLaunch,autoRun,inAppLogsEnabled,logcatLevel,fileLogLevel,fileLogEnabled,closeConnections,testUrl,isAnimateToPage,showLabel,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,showTrayTitle,includeDavCredsInBackup]);
 
 @override
 String toString() {
-  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoLaunch: $autoLaunch, silentLaunch: $silentLaunch, autoRun: $autoRun, openLogs: $openLogs, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, showLabel: $showLabel, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, showTrayTitle: $showTrayTitle, includeDavCredsInBackup: $includeDavCredsInBackup)';
+  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoLaunch: $autoLaunch, silentLaunch: $silentLaunch, autoRun: $autoRun, inAppLogsEnabled: $inAppLogsEnabled, logcatLevel: $logcatLevel, fileLogLevel: $fileLogLevel, fileLogEnabled: $fileLogEnabled, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, showLabel: $showLabel, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, showTrayTitle: $showTrayTitle, includeDavCredsInBackup: $includeDavCredsInBackup)';
 }
 
 
@@ -285,7 +291,7 @@ abstract mixin class _$AppSettingPropsCopyWith<$Res> implements $AppSettingProps
   factory _$AppSettingPropsCopyWith(_AppSettingProps value, $Res Function(_AppSettingProps) _then) = __$AppSettingPropsCopyWithImpl;
 @override @useResult
 $Res call({
- String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoLaunch, bool silentLaunch, bool autoRun, bool openLogs, bool closeConnections, String testUrl, bool isAnimateToPage, bool showLabel, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool showTrayTitle, bool includeDavCredsInBackup
+ String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoLaunch, bool silentLaunch, bool autoRun,@JsonKey(name: 'openLogs') bool inAppLogsEnabled, LogLevel logcatLevel, LogLevel fileLogLevel, bool fileLogEnabled, bool closeConnections, String testUrl, bool isAnimateToPage, bool showLabel, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool showTrayTitle, bool includeDavCredsInBackup
 });
 
 
@@ -302,14 +308,17 @@ class __$AppSettingPropsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoLaunch = null,Object? silentLaunch = null,Object? autoRun = null,Object? openLogs = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? showLabel = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? showTrayTitle = null,Object? includeDavCredsInBackup = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoLaunch = null,Object? silentLaunch = null,Object? autoRun = null,Object? inAppLogsEnabled = null,Object? logcatLevel = null,Object? fileLogLevel = null,Object? fileLogEnabled = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? showLabel = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? showTrayTitle = null,Object? includeDavCredsInBackup = null,}) {
   return _then(_AppSettingProps(
 locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,dashboardWidgets: null == dashboardWidgets ? _self._dashboardWidgets : dashboardWidgets // ignore: cast_nullable_to_non_nullable
 as List<DashboardWidget>,autoLaunch: null == autoLaunch ? _self.autoLaunch : autoLaunch // ignore: cast_nullable_to_non_nullable
 as bool,silentLaunch: null == silentLaunch ? _self.silentLaunch : silentLaunch // ignore: cast_nullable_to_non_nullable
 as bool,autoRun: null == autoRun ? _self.autoRun : autoRun // ignore: cast_nullable_to_non_nullable
-as bool,openLogs: null == openLogs ? _self.openLogs : openLogs // ignore: cast_nullable_to_non_nullable
+as bool,inAppLogsEnabled: null == inAppLogsEnabled ? _self.inAppLogsEnabled : inAppLogsEnabled // ignore: cast_nullable_to_non_nullable
+as bool,logcatLevel: null == logcatLevel ? _self.logcatLevel : logcatLevel // ignore: cast_nullable_to_non_nullable
+as LogLevel,fileLogLevel: null == fileLogLevel ? _self.fileLogLevel : fileLogLevel // ignore: cast_nullable_to_non_nullable
+as LogLevel,fileLogEnabled: null == fileLogEnabled ? _self.fileLogEnabled : fileLogEnabled // ignore: cast_nullable_to_non_nullable
 as bool,closeConnections: null == closeConnections ? _self.closeConnections : closeConnections // ignore: cast_nullable_to_non_nullable
 as bool,testUrl: null == testUrl ? _self.testUrl : testUrl // ignore: cast_nullable_to_non_nullable
 as String,isAnimateToPage: null == isAnimateToPage ? _self.isAnimateToPage : isAnimateToPage // ignore: cast_nullable_to_non_nullable

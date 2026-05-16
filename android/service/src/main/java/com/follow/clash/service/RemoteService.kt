@@ -4,7 +4,9 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import com.follow.clash.common.GlobalState
+import com.follow.clash.common.Logger
 import com.follow.clash.common.ServiceDelegate
+import com.follow.clash.common.buildHostLogAction
 import com.follow.clash.common.chunkedForAidl
 import com.follow.clash.common.intent
 import com.follow.clash.core.Core
@@ -24,6 +26,15 @@ import kotlin.coroutines.resume
 
 class RemoteService : Service(),
     CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
+
+    override fun onCreate() {
+        super.onCreate()
+        // :remote owns libclash.so → direct JNI, no IPC.
+        Logger.installRemoteForward { level, tag, payload ->
+            Core.invokeAction(buildHostLogAction(level, tag, payload)) { _ -> }
+        }
+    }
+
     private fun handleStopService(result: IResultInterface) {
         launch {
             runLock.withLock {
@@ -178,6 +189,20 @@ class RemoteService : Service(),
 
         override fun getRunTime(): Long {
             return State.runTime
+        }
+
+        override fun restartByeDpi(result: IResultInterface) {
+            launch {
+                val ok = try {
+                    val clazz = Class.forName("com.follow.clash.byedpi.ByeDpiModule")
+                    val m = clazz.getDeclaredMethod("restartCurrent")
+                    (m.invoke(null) as? Boolean) == true
+                } catch (e: Throwable) {
+                    GlobalState.log("restartByeDpi failed: ${e.message}")
+                    false
+                }
+                result.onResult(if (ok) 1L else 0L)
+            }
         }
     }
 

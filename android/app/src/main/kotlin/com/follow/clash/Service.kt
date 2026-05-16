@@ -14,6 +14,7 @@ import com.follow.clash.service.RemoteService
 import com.follow.clash.service.models.NotificationParams
 import com.follow.clash.service.models.VpnOptions
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -176,4 +177,15 @@ object Service {
             it.runTime
         }.getOrNull() ?: 0L
     }
+
+    suspend fun restartByeDpi(): Boolean {
+        val rc = delegate.useService {
+            withTimeoutOrNull(RESTART_TIMEOUT_MS) {
+                awaitIResultInterface { callback -> it.restartByeDpi(callback) }
+            }
+        }.getOrNull()
+        return rc == 1L
+    }
+
+    private const val RESTART_TIMEOUT_MS = 10_000L
 }

@@ -55,6 +55,14 @@ type TestDelayParams struct {
 	Timeout   int64  `json:"timeout"`
 }
 
+// Level is raw int — Dart LogLevel.index / Kotlin .ordinal. Avoids coupling
+// to mihomo's LogLevel.UnmarshalText (only fires on JSON strings).
+type HostLogParams struct {
+	Level   int    `json:"level"`
+	Tag     string `json:"tag"`
+	Payload string `json:"payload"`
+}
+
 type ExternalProvider struct {
 	Name        string    `json:"name"`
 	Type        string    `json:"type"`
@@ -100,6 +108,11 @@ const (
 	unsubscribeConnectionsMethod   Method = "unsubscribeConnections"
 	closeConnectionMethod          Method = "closeConnection"
 	closeAllConnectionsMethod      Method = "closeAllConnections"
+	setLogcatLevelMethod           Method = "setLogcatLevel"
+	setFileLevelMethod             Method = "setFileLevel"
+	setFileEnabledMethod           Method = "setFileEnabled"
+	setLogFilePathMethod           Method = "setLogFilePath"
+	forwardHostLogMethod           Method = "forwardHostLog"
 )
 
 type Method string

@@ -93,6 +93,10 @@ class Service {
     return DateTime.fromMillisecondsSinceEpoch(ms);
   }
 
+  Future<bool> restartByeDpi() async {
+    return await methodChannel.invokeMethod<bool>('restartByeDpi') ?? false;
+  }
+
   bool get hasListeners {
     return _listeners.isNotEmpty;
   }

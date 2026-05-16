@@ -7,7 +7,7 @@ class Navigation {
   static Navigation? _instance;
 
   List<NavigationItem> getItems({
-    bool openLogs = false,
+    bool inAppLogsEnabled = false,
     bool hasProxies = false,
   }) {
     return [
@@ -62,7 +62,7 @@ class Navigation {
         label: PageLabel.logs,
         builder: (_) => const LogsView(key: GlobalObjectKey(PageLabel.logs)),
         description: 'logsDesc',
-        modes: openLogs
+        modes: inAppLogsEnabled
             ? [NavigationItemMode.desktop, NavigationItemMode.more]
             : [],
       ),

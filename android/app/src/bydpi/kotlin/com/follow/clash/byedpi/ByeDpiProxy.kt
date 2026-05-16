@@ -18,4 +18,6 @@ object ByeDpiProxy {
     }
 
     fun stop(): Int = ByeDpi.nativeStop()
+
+    fun forceClose(): Int = ByeDpi.nativeForceClose()
 }

@@ -172,7 +172,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "Режим черного списка",
     ),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("Аргументы ByeDPI"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
+    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--disorder 1 --auto=t,r,s --tlsrec 1+s"),
+    "byedpiPreset": MessageLookupByLibrary.simpleMessage("Пресет стратегии"),
+    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage("Универсальный (рекомендуется)"),
+    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage("Tele2 / Tinkoff Mobile"),
+    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage("MrDrone (агрессивный)"),
+    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage("Anti-GGC буферизация"),
+    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Свой"),
+    "byedpiRestart": MessageLookupByLibrary.simpleMessage("Перезапустить ByeDPI"),
+    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPI перезапущен"),
+    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage("Не удалось (VPN не запущен?)"),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "Обход DPI через локальный SOCKS5-прокси",
     ),
@@ -182,16 +191,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage(
       "Запасной прокси",
-    ),
-    "byedpiGeoipList": MessageLookupByLibrary.simpleMessage("GEOIP-категории"),
-    "byedpiGeoipListReset": MessageLookupByLibrary.simpleMessage(
-      "Сбросить к умолчанию",
-    ),
-    "byedpiGeoipListResetConfirm": MessageLookupByLibrary.simpleMessage(
-      "Сбросить список GEOIP-категорий к встроенному умолчанию?",
-    ),
-    "byedpiGeoipListSaved": MessageLookupByLibrary.simpleMessage(
-      "Список GEOIP сохранён",
     ),
     "byedpiHostList": MessageLookupByLibrary.simpleMessage("Список хостов"),
     "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("Редактировать"),
@@ -212,16 +211,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("Порт прослушивания"),
     "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
-    "byedpiUdpEnabled": MessageLookupByLibrary.simpleMessage("Поддержка UDP"),
-    "byedpiUdpEnabledHint": MessageLookupByLibrary.simpleMessage(
-      "Разрешить SOCKS5 UDP через byedpi (обход DPI для QUIC)",
-    ),
-    "byedpiUdpFakeCount": MessageLookupByLibrary.simpleMessage(
-      "Фейковые UDP-пакеты",
-    ),
-    "byedpiUdpFakeCountHint": MessageLookupByLibrary.simpleMessage(
-      "Сколько ложных UDP-пакетов посылать перед реальным (0 = отключено)",
-    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Обход домена"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "Действует только при включенном системном прокси",
@@ -414,6 +403,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "importFile": MessageLookupByLibrary.simpleMessage("Импорт из файла"),
     "importFromURL": MessageLookupByLibrary.simpleMessage("Импорт из URL"),
     "importUrl": MessageLookupByLibrary.simpleMessage("Импорт по URL"),
+    "inAppLogBuffer": MessageLookupByLibrary.simpleMessage("Внутренний журнал"),
+    "inAppLogBufferDesc": MessageLookupByLibrary.simpleMessage(
+      "Хранить последние события на экране Логи (внутренний буфер, не Android logcat)",
+    ),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
       "Включить учётные данные WebDAV в резервную копию",
     ),
@@ -466,11 +459,54 @@ class MessageLookup extends MessageLookupByLibrary {
       "Разрешение на геолокацию",
     ),
     "log": MessageLookupByLibrary.simpleMessage("Журнал"),
-    "logLevel": MessageLookupByLibrary.simpleMessage("Уровень логов"),
-    "logcat": MessageLookupByLibrary.simpleMessage("Записывать журнал"),
-    "logcatDesc": MessageLookupByLibrary.simpleMessage(
-      "Хранить последние события в Logs (внутренний буфер, не Android logcat)",
+    "loggingDesc": MessageLookupByLibrary.simpleMessage(
+      "Уровень logcat, файловый sink, внутренний буфер",
     ),
+    "loggingFileEnabled": MessageLookupByLibrary.simpleMessage(
+      "Писать лог в файл",
+    ),
+    "loggingFileEnabledDesc": MessageLookupByLibrary.simpleMessage(
+      "Дописывать события в файл с ротацией во внешней директории приложения",
+    ),
+    "loggingFileLevel": MessageLookupByLibrary.simpleMessage("Уровень файла"),
+    "loggingFileLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "Фильтр для файлового sink\'а",
+    ),
+    "loggingFilePathLabel": MessageLookupByLibrary.simpleMessage(
+      "Путь к файлу",
+    ),
+    "loggingFileRotationHint": MessageLookupByLibrary.simpleMessage(
+      "Ротация при 5 МБ, хранится 5 файлов (.log + .1 .. .4)",
+    ),
+    "loggingFileSection": MessageLookupByLibrary.simpleMessage(
+      "Постоянный файл",
+    ),
+    "loggingHintAdb": MessageLookupByLibrary.simpleMessage(
+      "Подсказка ADB: adb pull <путь к файлу> — забрать лог на компьютер без root",
+    ),
+    "loggingInAppSection": MessageLookupByLibrary.simpleMessage(
+      "Внутренний просмотр",
+    ),
+    "loggingLogcatLevel": MessageLookupByLibrary.simpleMessage(
+      "Уровень logcat",
+    ),
+    "loggingLogcatLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "Фильтр для всегда-включённого logcat sink\'а. Смотреть: adb logcat -s libclash:V libclash-stderr:V proxy:V FlClash:V flutter:V",
+    ),
+    "loggingLogcatSection": MessageLookupByLibrary.simpleMessage(
+      "Android logcat (adb)",
+    ),
+    "loggingOpenViewer": MessageLookupByLibrary.simpleMessage(
+      "Открыть просмотр логов",
+    ),
+    "loggingSourceLevel": MessageLookupByLibrary.simpleMessage(
+      "Уровень источника",
+    ),
+    "loggingSourceLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "Максимальная детализация, которую отдаёт mihomo. Фильтры sink\'ов ниже не могут поднять её выше.",
+    ),
+    "loggingSourceSection": MessageLookupByLibrary.simpleMessage("Источник"),
+    "loggingTitle": MessageLookupByLibrary.simpleMessage("Логирование"),
     "logs": MessageLookupByLibrary.simpleMessage("Логи"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("Записи захвата логов"),
     "logsTest": MessageLookupByLibrary.simpleMessage("Тест журналов"),

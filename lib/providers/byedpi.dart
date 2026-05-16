@@ -19,10 +19,8 @@ Future<void> writeByeDpiRuntime(ByeDpiSettings s) async {
   await tmp.writeAsString(jsonEncode({
     'enabled': s.enabled,
     'port': s.port,
-    'cliArgs': s.cliArgs,
+    'cliArgs': effectiveByeDpiCliArgs(s),
     'hostsFile': hostsFile,
-    'udpEnabled': s.udpEnabled,
-    'udpFakeCount': s.udpFakeCount,
   }));
   await tmp.rename(target.path);
 }
@@ -33,11 +31,6 @@ class ByeDpiSettingsNotifier extends _$ByeDpiSettingsNotifier
   @override
   ByeDpiSettings build() {
     return const ByeDpiSettings();
-  }
-
-  Future<void> init() async {
-    final prefs = await SharedPreferences.getInstance();
-    value = ByeDpiSettingsStore(prefs).read();
   }
 
   Future<void> setEnabled(bool v) => _persist(value.copyWith(enabled: v));
@@ -52,12 +45,9 @@ class ByeDpiSettingsNotifier extends _$ByeDpiSettingsNotifier
 
   Future<void> setPort(int v) => _persist(value.copyWith(port: v));
 
+  Future<void> setPreset(ByeDpiPreset v) => _persist(value.copyWith(preset: v));
+
   Future<void> setCliArgs(String v) => _persist(value.copyWith(cliArgs: v));
-
-  Future<void> setUdpEnabled(bool v) => _persist(value.copyWith(udpEnabled: v));
-
-  Future<void> setUdpFakeCount(int v) =>
-      _persist(value.copyWith(udpFakeCount: v.clamp(0, 10)));
 
   Future<void> _persist(ByeDpiSettings next) async {
     value = next;

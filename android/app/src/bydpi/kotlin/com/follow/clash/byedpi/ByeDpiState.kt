@@ -16,8 +16,6 @@ class ByeDpiState(context: Context) {
                 port = json.optInt("port", 1080),
                 cliArgs = json.optString("cliArgs", ""),
                 hostsFilePath = json.optString("hostsFile", "").takeIf { it.isNotEmpty() },
-                udpEnabled = json.optBoolean("udpEnabled", false),
-                udpFakeCount = json.optInt("udpFakeCount", 0),
             )
         } catch (_: Exception) {
             null

@@ -182,6 +182,13 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 result.success(true)
             }
 
+            "getLogDirectory" -> {
+                // App-scoped external — no MANAGE_EXTERNAL_STORAGE needed.
+                val dir = File(applicationContext.getExternalFilesDir(null), "FlClash")
+                if (!dir.exists()) dir.mkdirs()
+                result.success(dir.absolutePath)
+            }
+
             else -> {
                 result.notImplemented()
             }

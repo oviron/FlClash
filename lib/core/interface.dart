@@ -67,6 +67,20 @@ mixin CoreInterface {
 
   FutureOr<void> stopLog();
 
+  FutureOr<void> setLogcatLevel(LogLevel level);
+
+  FutureOr<void> setFileLevel(LogLevel level);
+
+  FutureOr<void> setFileEnabled(bool enabled);
+
+  FutureOr<void> setLogFilePath(String path);
+
+  FutureOr<void> forwardHostLog({
+    required LogLevel level,
+    required String tag,
+    required String payload,
+  });
+
   Future<bool> crash();
 
   FutureOr<String> getConnections();
@@ -235,6 +249,42 @@ abstract class CoreHandlerInterface with CoreInterface {
   @override
   void stopLog() {
     _invoke<bool>(method: ActionMethod.stopLog);
+  }
+
+  @override
+  void setLogcatLevel(LogLevel level) {
+    _invoke(method: ActionMethod.setLogcatLevel, data: level.index);
+  }
+
+  @override
+  void setFileLevel(LogLevel level) {
+    _invoke(method: ActionMethod.setFileLevel, data: level.index);
+  }
+
+  @override
+  void setFileEnabled(bool enabled) {
+    _invoke(method: ActionMethod.setFileEnabled, data: enabled);
+  }
+
+  @override
+  void setLogFilePath(String path) {
+    _invoke(method: ActionMethod.setLogFilePath, data: path);
+  }
+
+  @override
+  void forwardHostLog({
+    required LogLevel level,
+    required String tag,
+    required String payload,
+  }) {
+    _invoke(
+      method: ActionMethod.forwardHostLog,
+      data: json.encode({
+        'level': level.index,
+        'tag': tag,
+        'payload': payload,
+      }),
+    );
   }
 
   @override

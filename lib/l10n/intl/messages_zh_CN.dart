@@ -124,21 +124,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "bind": MessageLookupByLibrary.simpleMessage("绑定"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("黑名单模式"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI 命令行参数"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
+    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--disorder 1 --auto=t,r,s --tlsrec 1+s"),
+    "byedpiPreset": MessageLookupByLibrary.simpleMessage("策略预设"),
+    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage("通用 (推荐)"),
+    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage("Tele2 / Tinkoff Mobile"),
+    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage("MrDrone (激进)"),
+    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage("Anti-GGC 缓冲"),
+    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("自定义"),
+    "byedpiRestart": MessageLookupByLibrary.simpleMessage("重启 ByeDPI"),
+    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPI 已重启"),
+    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage("重启失败 (VPN 未运行?)"),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage("通过本地 SOCKS5 代理绕过 DPI"),
     "byedpiEnable": MessageLookupByLibrary.simpleMessage("启用 ByeDPI"),
     "byedpiFallback": MessageLookupByLibrary.simpleMessage("byedpi 失败时切换到代理组"),
     "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage("备用代理"),
-    "byedpiGeoipList": MessageLookupByLibrary.simpleMessage("GEOIP categories"),
-    "byedpiGeoipListReset": MessageLookupByLibrary.simpleMessage(
-      "Reset to defaults",
-    ),
-    "byedpiGeoipListResetConfirm": MessageLookupByLibrary.simpleMessage(
-      "Reset the GEOIP list to the bundled default?",
-    ),
-    "byedpiGeoipListSaved": MessageLookupByLibrary.simpleMessage(
-      "GEOIP list saved",
-    ),
     "byedpiHostList": MessageLookupByLibrary.simpleMessage("域名列表"),
     "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("编辑"),
     "byedpiHostListReset": MessageLookupByLibrary.simpleMessage("恢复默认"),
@@ -152,16 +151,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage("当前配置中没有代理组"),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("监听端口"),
     "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
-    "byedpiUdpEnabled": MessageLookupByLibrary.simpleMessage("UDP support"),
-    "byedpiUdpEnabledHint": MessageLookupByLibrary.simpleMessage(
-      "Allow SOCKS5 UDP through byedpi (for QUIC DPI bypass)",
-    ),
-    "byedpiUdpFakeCount": MessageLookupByLibrary.simpleMessage(
-      "UDP fake packets",
-    ),
-    "byedpiUdpFakeCountHint": MessageLookupByLibrary.simpleMessage(
-      "Decoy UDP packets sent before real ones (0 = off)",
-    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("排除域名"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage("仅在系统代理启用时生效"),
     "cacheCorrupt": MessageLookupByLibrary.simpleMessage("缓存已损坏，是否清空？"),
@@ -288,6 +277,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "importFile": MessageLookupByLibrary.simpleMessage("通过文件导入"),
     "importFromURL": MessageLookupByLibrary.simpleMessage("从URL导入"),
     "importUrl": MessageLookupByLibrary.simpleMessage("通过URL导入"),
+    "inAppLogBuffer": MessageLookupByLibrary.simpleMessage("应用内日志缓冲"),
+    "inAppLogBufferDesc": MessageLookupByLibrary.simpleMessage(
+      "在日志页保留最近事件（内部缓冲，与 adb logcat 分开）",
+    ),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
       "Include WebDAV credentials in backup",
     ),
@@ -322,11 +315,38 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "locationPermissionTitle": MessageLookupByLibrary.simpleMessage("位置权限"),
     "log": MessageLookupByLibrary.simpleMessage("日志"),
-    "logLevel": MessageLookupByLibrary.simpleMessage("日志等级"),
-    "logcat": MessageLookupByLibrary.simpleMessage("Record in-app log"),
-    "logcatDesc": MessageLookupByLibrary.simpleMessage(
-      "Keep recent events in the Logs view (internal buffer, not Android logcat)",
+    "loggingDesc": MessageLookupByLibrary.simpleMessage(
+      "logcat 详细程度、文件输出、应用内缓冲",
     ),
+    "loggingFileEnabled": MessageLookupByLibrary.simpleMessage("写入日志文件"),
+    "loggingFileEnabledDesc": MessageLookupByLibrary.simpleMessage(
+      "追加到应用专属外部目录中按大小轮转的文件",
+    ),
+    "loggingFileLevel": MessageLookupByLibrary.simpleMessage("文件级别"),
+    "loggingFileLevelDesc": MessageLookupByLibrary.simpleMessage("文件 sink 的过滤"),
+    "loggingFilePathLabel": MessageLookupByLibrary.simpleMessage("文件路径"),
+    "loggingFileRotationHint": MessageLookupByLibrary.simpleMessage(
+      "5 MB 轮转,保留 5 个文件 (.log + .1 .. .4)",
+    ),
+    "loggingFileSection": MessageLookupByLibrary.simpleMessage("持久文件"),
+    "loggingHintAdb": MessageLookupByLibrary.simpleMessage(
+      "ADB 提示：adb pull <文件路径>（无需 root 即可拉取）",
+    ),
+    "loggingInAppSection": MessageLookupByLibrary.simpleMessage("应用内查看器"),
+    "loggingLogcatLevel": MessageLookupByLibrary.simpleMessage("logcat 级别"),
+    "loggingLogcatLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "常开 logcat sink 的过滤。查看：adb logcat -s libclash:V libclash-stderr:V proxy:V FlClash:V flutter:V",
+    ),
+    "loggingLogcatSection": MessageLookupByLibrary.simpleMessage(
+      "Android logcat (adb)",
+    ),
+    "loggingOpenViewer": MessageLookupByLibrary.simpleMessage("打开日志查看器"),
+    "loggingSourceLevel": MessageLookupByLibrary.simpleMessage("来源日志级别"),
+    "loggingSourceLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "mihomo 输出的最高详细度。下面的每个 sink 过滤不能高于此设置。",
+    ),
+    "loggingSourceSection": MessageLookupByLibrary.simpleMessage("来源"),
+    "loggingTitle": MessageLookupByLibrary.simpleMessage("日志"),
     "logs": MessageLookupByLibrary.simpleMessage("日志"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("日志捕获记录"),
     "logsTest": MessageLookupByLibrary.simpleMessage("日志测试"),

@@ -202,6 +202,11 @@ enum ActionMethod {
   closeConnection,
   closeAllConnections,
   queryProxyGroupOrder,
+  setLogcatLevel,
+  setFileLevel,
+  setFileEnabled,
+  setLogFilePath,
+  forwardHostLog,
 }
 
 enum AuthorizeCode { none, success, error }

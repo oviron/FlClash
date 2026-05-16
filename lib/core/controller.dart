@@ -269,6 +269,30 @@ class CoreController {
     _interface.stopLog();
   }
 
+  void setLogcatLevel(LogLevel level) {
+    _interface.setLogcatLevel(level);
+  }
+
+  void setFileLevel(LogLevel level) {
+    _interface.setFileLevel(level);
+  }
+
+  void setFileEnabled(bool enabled) {
+    _interface.setFileEnabled(enabled);
+  }
+
+  void setLogFilePath(String path) {
+    _interface.setLogFilePath(path);
+  }
+
+  void forwardHostLog({
+    required LogLevel level,
+    required String tag,
+    required String payload,
+  }) {
+    _interface.forwardHostLog(level: level, tag: tag, payload: payload);
+  }
+
   Future<void> requestGc() async {
     await _interface.forceGc();
   }

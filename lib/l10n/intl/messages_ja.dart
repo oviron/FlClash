@@ -132,7 +132,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "bind": MessageLookupByLibrary.simpleMessage("バインド"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("ブラックリストモード"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--auto=tlsrec"),
+    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--disorder 1 --auto=t,r,s --tlsrec 1+s"),
+    "byedpiPreset": MessageLookupByLibrary.simpleMessage("ストラテジー プリセット"),
+    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage("汎用 (推奨)"),
+    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage("Tele2 / Tinkoff Mobile"),
+    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage("MrDrone (アグレッシブ)"),
+    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage("Anti-GGC バッファリング"),
+    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
+    "byedpiRestart": MessageLookupByLibrary.simpleMessage("ByeDPIを再起動"),
+    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPIを再起動しました"),
+    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage("再起動失敗 (VPN未起動?)"),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "ローカル SOCKS5 プロキシ経由でDPIをバイパス",
     ),
@@ -141,16 +150,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "byedpi 失敗時にプロキシグループへフォールバック",
     ),
     "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage("フォールバックプロキシ"),
-    "byedpiGeoipList": MessageLookupByLibrary.simpleMessage("GEOIP categories"),
-    "byedpiGeoipListReset": MessageLookupByLibrary.simpleMessage(
-      "Reset to defaults",
-    ),
-    "byedpiGeoipListResetConfirm": MessageLookupByLibrary.simpleMessage(
-      "Reset the GEOIP list to the bundled default?",
-    ),
-    "byedpiGeoipListSaved": MessageLookupByLibrary.simpleMessage(
-      "GEOIP list saved",
-    ),
     "byedpiHostList": MessageLookupByLibrary.simpleMessage("ホストリスト"),
     "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("編集"),
     "byedpiHostListReset": MessageLookupByLibrary.simpleMessage("デフォルトに戻す"),
@@ -168,16 +167,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("リッスンポート"),
     "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
-    "byedpiUdpEnabled": MessageLookupByLibrary.simpleMessage("UDP support"),
-    "byedpiUdpEnabledHint": MessageLookupByLibrary.simpleMessage(
-      "Allow SOCKS5 UDP through byedpi (for QUIC DPI bypass)",
-    ),
-    "byedpiUdpFakeCount": MessageLookupByLibrary.simpleMessage(
-      "UDP fake packets",
-    ),
-    "byedpiUdpFakeCountHint": MessageLookupByLibrary.simpleMessage(
-      "Decoy UDP packets sent before real ones (0 = off)",
-    ),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("バイパスドメイン"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage("システムプロキシ有効時のみ適用"),
     "cacheCorrupt": MessageLookupByLibrary.simpleMessage(
@@ -326,6 +315,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "importFile": MessageLookupByLibrary.simpleMessage("ファイルからインポート"),
     "importFromURL": MessageLookupByLibrary.simpleMessage("URLからインポート"),
     "importUrl": MessageLookupByLibrary.simpleMessage("URLからインポート"),
+    "inAppLogBuffer": MessageLookupByLibrary.simpleMessage("アプリ内ログバッファ"),
+    "inAppLogBufferDesc": MessageLookupByLibrary.simpleMessage(
+      "最近のイベントをログ画面に保持します（内部バッファ、adb logcat とは別）",
+    ),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
       "Include WebDAV credentials in backup",
     ),
@@ -362,11 +355,40 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "locationPermissionTitle": MessageLookupByLibrary.simpleMessage("位置情報の権限"),
     "log": MessageLookupByLibrary.simpleMessage("ログ"),
-    "logLevel": MessageLookupByLibrary.simpleMessage("ログレベル"),
-    "logcat": MessageLookupByLibrary.simpleMessage("Record in-app log"),
-    "logcatDesc": MessageLookupByLibrary.simpleMessage(
-      "Keep recent events in the Logs view (internal buffer, not Android logcat)",
+    "loggingDesc": MessageLookupByLibrary.simpleMessage(
+      "logcat の詳細度、ファイルシンク、アプリ内バッファ",
     ),
+    "loggingFileEnabled": MessageLookupByLibrary.simpleMessage("ファイルにログを書き込む"),
+    "loggingFileEnabledDesc": MessageLookupByLibrary.simpleMessage(
+      "アプリ専用外部ディレクトリにローテーションされたファイルへ追記します",
+    ),
+    "loggingFileLevel": MessageLookupByLibrary.simpleMessage("ファイルレベル"),
+    "loggingFileLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "ファイルシンクのフィルタ",
+    ),
+    "loggingFilePathLabel": MessageLookupByLibrary.simpleMessage("ファイルパス"),
+    "loggingFileRotationHint": MessageLookupByLibrary.simpleMessage(
+      "5 MB でローテーション、5 ファイル保持 (.log + .1 .. .4)",
+    ),
+    "loggingFileSection": MessageLookupByLibrary.simpleMessage("永続ファイル"),
+    "loggingHintAdb": MessageLookupByLibrary.simpleMessage(
+      "ADB ヒント: adb pull <ファイルパス> でルートなしにログを取得",
+    ),
+    "loggingInAppSection": MessageLookupByLibrary.simpleMessage("アプリ内ビューア"),
+    "loggingLogcatLevel": MessageLookupByLibrary.simpleMessage("logcat レベル"),
+    "loggingLogcatLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "常時 ON の logcat シンクのフィルタ。表示: adb logcat -s libclash:V libclash-stderr:V proxy:V FlClash:V flutter:V",
+    ),
+    "loggingLogcatSection": MessageLookupByLibrary.simpleMessage(
+      "Android logcat (adb)",
+    ),
+    "loggingOpenViewer": MessageLookupByLibrary.simpleMessage("ログビューアを開く"),
+    "loggingSourceLevel": MessageLookupByLibrary.simpleMessage("ソースログレベル"),
+    "loggingSourceLevelDesc": MessageLookupByLibrary.simpleMessage(
+      "mihomo が出力する最大詳細度。下のシンクごとのフィルタはこれより上には設定できません。",
+    ),
+    "loggingSourceSection": MessageLookupByLibrary.simpleMessage("ソース"),
+    "loggingTitle": MessageLookupByLibrary.simpleMessage("ロギング"),
     "logs": MessageLookupByLibrary.simpleMessage("ログ"),
     "logsDesc": MessageLookupByLibrary.simpleMessage("ログキャプチャ記録"),
     "logsTest": MessageLookupByLibrary.simpleMessage("ログテスト"),

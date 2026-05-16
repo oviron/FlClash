@@ -690,7 +690,6 @@ extension SetupControllerExt on AppController {
         defaultUA: defaultUA,
         byeDpiSettings: setupState.byeDpiSettings,
         byeDpiHostList: setupState.byeDpiHostList,
-        byeDpiGeoipList: setupState.byeDpiGeoipList,
       ),
     );
     return res;

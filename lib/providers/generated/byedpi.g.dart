@@ -42,7 +42,7 @@ final class ByeDpiSettingsNotifierProvider
 }
 
 String _$byeDpiSettingsNotifierHash() =>
-    r'65e72dc19ca156ed4783af6603094406fd390e66';
+    r'3201c1e9ebf83d9c44e067efcaa425895620bd3a';
 
 abstract class _$ByeDpiSettingsNotifier extends $Notifier<ByeDpiSettings> {
   ByeDpiSettings build();

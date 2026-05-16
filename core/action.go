@@ -5,6 +5,8 @@ package main
 import (
 	"encoding/json"
 	"unsafe"
+
+	"github.com/metacubex/mihomo/log"
 )
 
 type Action struct {
@@ -50,9 +52,26 @@ func parseStringData(data any, result *ActionResult) (string, bool) {
 	return s, true
 }
 
-// actionCallback wraps an ActionResult into the "" = success, non-empty =
-// error contract used by geo_data.go-style handlers, so an inner error string
-// reaches Dart with Code=-1 instead of being smuggled in a success payload.
+func parseLogLevelData(data any, result *ActionResult) (log.LogLevel, bool) {
+	switch v := data.(type) {
+	case float64:
+		return log.LogLevel(int(v)), true
+	case int:
+		return log.LogLevel(v), true
+	case string:
+		l, ok := log.LogLevelMapping[v]
+		if !ok {
+			result.error("invalid log level: " + v)
+			return log.INFO, false
+		}
+		return l, true
+	default:
+		result.error("invalid data type")
+		return log.INFO, false
+	}
+}
+
+// Wraps "" = success, non-empty = error contract used by geo_data.go.
 func actionCallback(result *ActionResult) func(string) {
 	return func(value string) {
 		if value == "" {
@@ -288,6 +307,55 @@ func handleAction(action *Action, result ActionResult) {
 		return
 	case closeAllConnectionsMethod:
 		result.success(handleCloseAllConnections())
+		return
+	case setLogcatLevelMethod:
+		level, ok := parseLogLevelData(action.Data, &result)
+		if !ok {
+			return
+		}
+		setLogcatLevelImpl(level)
+		result.success(true)
+		return
+	case setFileLevelMethod:
+		level, ok := parseLogLevelData(action.Data, &result)
+		if !ok {
+			return
+		}
+		setFileLevelImpl(level)
+		result.success(true)
+		return
+	case setFileEnabledMethod:
+		enabled, ok := action.Data.(bool)
+		if !ok {
+			result.error("invalid data type")
+			return
+		}
+		setFileEnabledImpl(enabled)
+		result.success(true)
+		return
+	case setLogFilePathMethod:
+		path, ok := parseStringData(action.Data, &result)
+		if !ok {
+			return
+		}
+		if err := setLogFilePathImpl(path); err != nil {
+			result.error(err.Error())
+			return
+		}
+		result.success(true)
+		return
+	case forwardHostLogMethod:
+		s, ok := parseStringData(action.Data, &result)
+		if !ok {
+			return
+		}
+		var params HostLogParams
+		if err := json.Unmarshal([]byte(s), &params); err != nil {
+			result.error(err.Error())
+			return
+		}
+		hostLog(log.LogLevel(params.Level), params.Tag, params.Payload)
+		result.success(true)
 		return
 	default:
 		result.error("unknown method: " + string(action.Method))

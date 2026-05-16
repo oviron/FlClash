@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ByeDpiSettings {
 
- bool get enabled; ByeDpiMode get mode; bool get fallbackEnabled; String get fallbackGroup; int get port; String get cliArgs; bool get udpEnabled; int get udpFakeCount;
+ bool get enabled; ByeDpiMode get mode; bool get fallbackEnabled; String get fallbackGroup; int get port; ByeDpiPreset get preset; String get cliArgs;
 /// Create a copy of ByeDpiSettings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ByeDpiSettingsCopyWith<ByeDpiSettings> get copyWith => _$ByeDpiSettingsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ByeDpiSettings&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.fallbackEnabled, fallbackEnabled) || other.fallbackEnabled == fallbackEnabled)&&(identical(other.fallbackGroup, fallbackGroup) || other.fallbackGroup == fallbackGroup)&&(identical(other.port, port) || other.port == port)&&(identical(other.cliArgs, cliArgs) || other.cliArgs == cliArgs)&&(identical(other.udpEnabled, udpEnabled) || other.udpEnabled == udpEnabled)&&(identical(other.udpFakeCount, udpFakeCount) || other.udpFakeCount == udpFakeCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ByeDpiSettings&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.fallbackEnabled, fallbackEnabled) || other.fallbackEnabled == fallbackEnabled)&&(identical(other.fallbackGroup, fallbackGroup) || other.fallbackGroup == fallbackGroup)&&(identical(other.port, port) || other.port == port)&&(identical(other.preset, preset) || other.preset == preset)&&(identical(other.cliArgs, cliArgs) || other.cliArgs == cliArgs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enabled,mode,fallbackEnabled,fallbackGroup,port,cliArgs,udpEnabled,udpFakeCount);
+int get hashCode => Object.hash(runtimeType,enabled,mode,fallbackEnabled,fallbackGroup,port,preset,cliArgs);
 
 @override
 String toString() {
-  return 'ByeDpiSettings(enabled: $enabled, mode: $mode, fallbackEnabled: $fallbackEnabled, fallbackGroup: $fallbackGroup, port: $port, cliArgs: $cliArgs, udpEnabled: $udpEnabled, udpFakeCount: $udpFakeCount)';
+  return 'ByeDpiSettings(enabled: $enabled, mode: $mode, fallbackEnabled: $fallbackEnabled, fallbackGroup: $fallbackGroup, port: $port, preset: $preset, cliArgs: $cliArgs)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ByeDpiSettingsCopyWith<$Res>  {
   factory $ByeDpiSettingsCopyWith(ByeDpiSettings value, $Res Function(ByeDpiSettings) _then) = _$ByeDpiSettingsCopyWithImpl;
 @useResult
 $Res call({
- bool enabled, ByeDpiMode mode, bool fallbackEnabled, String fallbackGroup, int port, String cliArgs, bool udpEnabled, int udpFakeCount
+ bool enabled, ByeDpiMode mode, bool fallbackEnabled, String fallbackGroup, int port, ByeDpiPreset preset, String cliArgs
 });
 
 
@@ -65,17 +65,16 @@ class _$ByeDpiSettingsCopyWithImpl<$Res>
 
 /// Create a copy of ByeDpiSettings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,Object? mode = null,Object? fallbackEnabled = null,Object? fallbackGroup = null,Object? port = null,Object? cliArgs = null,Object? udpEnabled = null,Object? udpFakeCount = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,Object? mode = null,Object? fallbackEnabled = null,Object? fallbackGroup = null,Object? port = null,Object? preset = null,Object? cliArgs = null,}) {
   return _then(_self.copyWith(
 enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
 as bool,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
 as ByeDpiMode,fallbackEnabled: null == fallbackEnabled ? _self.fallbackEnabled : fallbackEnabled // ignore: cast_nullable_to_non_nullable
 as bool,fallbackGroup: null == fallbackGroup ? _self.fallbackGroup : fallbackGroup // ignore: cast_nullable_to_non_nullable
 as String,port: null == port ? _self.port : port // ignore: cast_nullable_to_non_nullable
-as int,cliArgs: null == cliArgs ? _self.cliArgs : cliArgs // ignore: cast_nullable_to_non_nullable
-as String,udpEnabled: null == udpEnabled ? _self.udpEnabled : udpEnabled // ignore: cast_nullable_to_non_nullable
-as bool,udpFakeCount: null == udpFakeCount ? _self.udpFakeCount : udpFakeCount // ignore: cast_nullable_to_non_nullable
-as int,
+as int,preset: null == preset ? _self.preset : preset // ignore: cast_nullable_to_non_nullable
+as ByeDpiPreset,cliArgs: null == cliArgs ? _self.cliArgs : cliArgs // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -160,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  String cliArgs,  bool udpEnabled,  int udpFakeCount)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  ByeDpiPreset preset,  String cliArgs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ByeDpiSettings() when $default != null:
-return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGroup,_that.port,_that.cliArgs,_that.udpEnabled,_that.udpFakeCount);case _:
+return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGroup,_that.port,_that.preset,_that.cliArgs);case _:
   return orElse();
 
 }
@@ -181,10 +180,10 @@ return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGro
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  String cliArgs,  bool udpEnabled,  int udpFakeCount)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  ByeDpiPreset preset,  String cliArgs)  $default,) {final _that = this;
 switch (_that) {
 case _ByeDpiSettings():
-return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGroup,_that.port,_that.cliArgs,_that.udpEnabled,_that.udpFakeCount);case _:
+return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGroup,_that.port,_that.preset,_that.cliArgs);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +200,10 @@ return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGro
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  String cliArgs,  bool udpEnabled,  int udpFakeCount)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  ByeDpiPreset preset,  String cliArgs)?  $default,) {final _that = this;
 switch (_that) {
 case _ByeDpiSettings() when $default != null:
-return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGroup,_that.port,_that.cliArgs,_that.udpEnabled,_that.udpFakeCount);case _:
+return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGroup,_that.port,_that.preset,_that.cliArgs);case _:
   return null;
 
 }
@@ -216,7 +215,7 @@ return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGro
 @JsonSerializable()
 
 class _ByeDpiSettings implements ByeDpiSettings {
-  const _ByeDpiSettings({this.enabled = false, this.mode = ByeDpiMode.auto, this.fallbackEnabled = true, this.fallbackGroup = '', this.port = 1080, this.cliArgs = '--auto=tlsrec', this.udpEnabled = false, this.udpFakeCount = 0});
+  const _ByeDpiSettings({this.enabled = false, this.mode = ByeDpiMode.auto, this.fallbackEnabled = true, this.fallbackGroup = '', this.port = 1080, this.preset = ByeDpiPreset.universal, this.cliArgs = '--disorder 1 --auto=t,r,s --tlsrec 1+s'});
   factory _ByeDpiSettings.fromJson(Map<String, dynamic> json) => _$ByeDpiSettingsFromJson(json);
 
 @override@JsonKey() final  bool enabled;
@@ -224,9 +223,8 @@ class _ByeDpiSettings implements ByeDpiSettings {
 @override@JsonKey() final  bool fallbackEnabled;
 @override@JsonKey() final  String fallbackGroup;
 @override@JsonKey() final  int port;
+@override@JsonKey() final  ByeDpiPreset preset;
 @override@JsonKey() final  String cliArgs;
-@override@JsonKey() final  bool udpEnabled;
-@override@JsonKey() final  int udpFakeCount;
 
 /// Create a copy of ByeDpiSettings
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +239,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ByeDpiSettings&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.fallbackEnabled, fallbackEnabled) || other.fallbackEnabled == fallbackEnabled)&&(identical(other.fallbackGroup, fallbackGroup) || other.fallbackGroup == fallbackGroup)&&(identical(other.port, port) || other.port == port)&&(identical(other.cliArgs, cliArgs) || other.cliArgs == cliArgs)&&(identical(other.udpEnabled, udpEnabled) || other.udpEnabled == udpEnabled)&&(identical(other.udpFakeCount, udpFakeCount) || other.udpFakeCount == udpFakeCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ByeDpiSettings&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.fallbackEnabled, fallbackEnabled) || other.fallbackEnabled == fallbackEnabled)&&(identical(other.fallbackGroup, fallbackGroup) || other.fallbackGroup == fallbackGroup)&&(identical(other.port, port) || other.port == port)&&(identical(other.preset, preset) || other.preset == preset)&&(identical(other.cliArgs, cliArgs) || other.cliArgs == cliArgs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enabled,mode,fallbackEnabled,fallbackGroup,port,cliArgs,udpEnabled,udpFakeCount);
+int get hashCode => Object.hash(runtimeType,enabled,mode,fallbackEnabled,fallbackGroup,port,preset,cliArgs);
 
 @override
 String toString() {
-  return 'ByeDpiSettings(enabled: $enabled, mode: $mode, fallbackEnabled: $fallbackEnabled, fallbackGroup: $fallbackGroup, port: $port, cliArgs: $cliArgs, udpEnabled: $udpEnabled, udpFakeCount: $udpFakeCount)';
+  return 'ByeDpiSettings(enabled: $enabled, mode: $mode, fallbackEnabled: $fallbackEnabled, fallbackGroup: $fallbackGroup, port: $port, preset: $preset, cliArgs: $cliArgs)';
 }
 
 
@@ -261,7 +259,7 @@ abstract mixin class _$ByeDpiSettingsCopyWith<$Res> implements $ByeDpiSettingsCo
   factory _$ByeDpiSettingsCopyWith(_ByeDpiSettings value, $Res Function(_ByeDpiSettings) _then) = __$ByeDpiSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- bool enabled, ByeDpiMode mode, bool fallbackEnabled, String fallbackGroup, int port, String cliArgs, bool udpEnabled, int udpFakeCount
+ bool enabled, ByeDpiMode mode, bool fallbackEnabled, String fallbackGroup, int port, ByeDpiPreset preset, String cliArgs
 });
 
 
@@ -278,17 +276,16 @@ class __$ByeDpiSettingsCopyWithImpl<$Res>
 
 /// Create a copy of ByeDpiSettings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? enabled = null,Object? mode = null,Object? fallbackEnabled = null,Object? fallbackGroup = null,Object? port = null,Object? cliArgs = null,Object? udpEnabled = null,Object? udpFakeCount = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? enabled = null,Object? mode = null,Object? fallbackEnabled = null,Object? fallbackGroup = null,Object? port = null,Object? preset = null,Object? cliArgs = null,}) {
   return _then(_ByeDpiSettings(
 enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
 as bool,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
 as ByeDpiMode,fallbackEnabled: null == fallbackEnabled ? _self.fallbackEnabled : fallbackEnabled // ignore: cast_nullable_to_non_nullable
 as bool,fallbackGroup: null == fallbackGroup ? _self.fallbackGroup : fallbackGroup // ignore: cast_nullable_to_non_nullable
 as String,port: null == port ? _self.port : port // ignore: cast_nullable_to_non_nullable
-as int,cliArgs: null == cliArgs ? _self.cliArgs : cliArgs // ignore: cast_nullable_to_non_nullable
-as String,udpEnabled: null == udpEnabled ? _self.udpEnabled : udpEnabled // ignore: cast_nullable_to_non_nullable
-as bool,udpFakeCount: null == udpFakeCount ? _self.udpFakeCount : udpFakeCount // ignore: cast_nullable_to_non_nullable
-as int,
+as int,preset: null == preset ? _self.preset : preset // ignore: cast_nullable_to_non_nullable
+as ByeDpiPreset,cliArgs: null == cliArgs ? _self.cliArgs : cliArgs // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
