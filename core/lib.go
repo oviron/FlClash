@@ -1,4 +1,4 @@
-//go:build cgo
+//go:build android && cgo
 
 package main
 
@@ -28,6 +28,14 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
+// Semaphore weight=full = exclusive critical section; weight=1 = shared hot path.
+const (
+	tunSemCapacity = 4
+	tunSemFullLock = tunSemCapacity
+)
+
+func main() {}
+
 var (
 	eventListener   unsafe.Pointer
 	eventListenerMu sync.RWMutex
@@ -43,8 +51,8 @@ type TunHandler struct {
 func (th *TunHandler) start(fd int, stack, address, dns string) {
 	runLock.Lock()
 	defer runLock.Unlock()
-	_ = th.limit.Acquire(context.TODO(), 4)
-	defer th.limit.Release(4)
+	_ = th.limit.Acquire(context.Background(), tunSemFullLock)
+	defer th.limit.Release(tunSemFullLock)
 	th.initHook()
 	tunListener := t.Start(fd, stack, address, dns)
 	if tunListener != nil {
@@ -56,8 +64,8 @@ func (th *TunHandler) start(fd int, stack, address, dns string) {
 }
 
 func (th *TunHandler) close() {
-	_ = th.limit.Acquire(context.TODO(), 4)
-	defer th.limit.Release(4)
+	_ = th.limit.Acquire(context.Background(), tunSemFullLock)
+	defer th.limit.Release(tunSemFullLock)
 	th.clear()
 }
 
@@ -149,7 +157,7 @@ func handleStartTun(callback unsafe.Pointer, fd int, stack, address, dns string)
 	if fd != 0 {
 		tunHandler = &TunHandler{
 			callback: callback,
-			limit:    semaphore.NewWeighted(4),
+			limit:    semaphore.NewWeighted(tunSemCapacity),
 		}
 		tunHandler.start(fd, stack, address, dns)
 	}

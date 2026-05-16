@@ -2,7 +2,6 @@
 
 package tun
 
-import "C"
 import (
 	"net"
 	"net/netip"
@@ -14,6 +13,13 @@ import (
 	"github.com/metacubex/mihomo/log"
 	"github.com/metacubex/mihomo/tunnel"
 )
+
+// Fork-specific TUN device name. Will be parameterized when this code is
+// extracted to libmihomo-android (Phase 3).
+const deviceName = "FlClash"
+
+// Hardcoded MTU matches CMfA. Android VpnService.Builder caps at 65535.
+const tunMTU = 9000
 
 func Start(fd int, stack string, address, dns string) *sing_tun.Listener {
 	var prefix4 []netip.Prefix
@@ -50,14 +56,14 @@ func Start(fd int, stack string, address, dns string) *sing_tun.Listener {
 
 	options := LC.Tun{
 		Enable:              true,
-		Device:              "FlClash",
+		Device:              deviceName,
 		Stack:               tunStack,
 		DNSHijack:           dnsHijack,
-		AutoRoute:           false,
+		AutoRoute:           false, // Route configured by Android VpnService.Builder, not mihomo.
 		AutoDetectInterface: false,
 		Inet4Address:        prefix4,
 		Inet6Address:        prefix6,
-		MTU:                 9000,
+		MTU:                 tunMTU,
 		FileDescriptor:      fd,
 	}
 

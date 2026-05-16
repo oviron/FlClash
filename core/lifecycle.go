@@ -6,8 +6,8 @@ import (
 	"runtime/debug"
 
 	"github.com/metacubex/mihomo/constant"
-	"github.com/metacubex/mihomo/constant/features"
 	"github.com/metacubex/mihomo/hub/executor"
+	"github.com/metacubex/mihomo/listener"
 	"github.com/metacubex/mihomo/log"
 )
 
@@ -33,15 +33,13 @@ func handleGetIsInit() bool {
 func handleForceGC() {
 	log.Infoln("[APP] request force GC")
 	runtime.GC()
-	if features.CMFA {
-		debug.FreeOSMemory()
-	}
+	debug.FreeOSMemory()
 }
 
 func handleShutdown() bool {
 	handleUnsubscribeConnections()
 	handleStopLog()
-	stopListeners()
+	listener.Cleanup()
 	executor.Shutdown()
 	handleForceGC()
 	isInit = false

@@ -21,11 +21,10 @@ func handleStartLog() {
 			if logData.LogLevel < log.Level() {
 				continue
 			}
-			message := &Message{
+			sendMessage(Message{
 				Type: LogMessage,
 				Data: logData,
-			}
-			sendMessage(*message)
+			})
 		}
 	}()
 }

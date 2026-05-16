@@ -68,10 +68,7 @@ func doQuery(path string, sIP net.IP, sPort int) int {
 	if err != nil {
 		return -1
 	}
-
-	defer func(file *os.File) {
-		_ = file.Close()
-	}(file)
+	defer file.Close() // #nosec G307 -- read-only file, close error is not actionable
 
 	reader := bufio.NewReader(file)
 
@@ -117,37 +114,39 @@ func nativeEndianIP(ip net.IP) []byte {
 }
 
 func init() {
+	// Byte-order probe — populates nativeEndian for nativeEndianIP().
+	var x uint32 = 0x01020304
+	if *(*byte)(unsafe.Pointer(&x)) == 0x01 { // #nosec G103 -- byte-order probe
+		nativeEndian = binary.BigEndian
+	} else {
+		nativeEndian = binary.LittleEndian
+	}
+
+	// Discover column indices in /proc/net/tcp header for {local_address, uid}.
+	// Kernel column count varies by version; tx_queue/rx_queue and tr/tm->when
+	// are merged in `cat` output, so we compensate offsets for each pair seen.
 	file, err := os.Open("/proc/net/tcp") // #nosec G304 -- literal procfs path
 	if err != nil {
 		return
 	}
-
-	defer func(file *os.File) {
-		_ = file.Close()
-	}(file)
+	defer file.Close() // #nosec G307 -- read-only file
 
 	reader := bufio.NewReader(file)
-
 	header, _, err := reader.ReadLine()
 	if err != nil {
 		return
 	}
 
 	columns := strings.Fields(string(header))
-
 	var txQueue, rxQueue, tr, tmWhen bool
-
 	for idx, col := range columns {
 		offset := 0
-
 		if txQueue && rxQueue {
 			offset--
 		}
-
 		if tr && tmWhen {
 			offset--
 		}
-
 		switch col {
 		case "tx_queue":
 			txQueue = true
@@ -162,14 +161,5 @@ func init() {
 		case "uid":
 			netIndexOfUid = idx + offset
 		}
-	}
-}
-
-func init() {
-	var x uint32 = 0x01020304
-	if *(*byte)(unsafe.Pointer(&x)) == 0x01 { // #nosec G103 -- byte-order probe
-		nativeEndian = binary.BigEndian
-	} else {
-		nativeEndian = binary.LittleEndian
 	}
 }

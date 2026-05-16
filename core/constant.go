@@ -1,11 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"net/netip"
 	"time"
 
-	"github.com/metacubex/mihomo/adapter/provider"
 	P "github.com/metacubex/mihomo/component/process"
 	"github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/log"
@@ -19,7 +17,6 @@ type InitParams struct {
 
 type SetupParams struct {
 	SelectedMap map[string]string `json:"selected-map"`
-	TestURL     string            `json:"test-url"`
 }
 
 type UpdateParams struct {
@@ -57,13 +54,12 @@ type TestDelayParams struct {
 }
 
 type ExternalProvider struct {
-	Name             string                     `json:"name"`
-	Type             string                     `json:"type"`
-	VehicleType      string                     `json:"vehicle-type"`
-	Count            int                        `json:"count"`
-	Path             string                     `json:"path"`
-	UpdateAt         time.Time                  `json:"update-at"`
-	SubscriptionInfo *provider.SubscriptionInfo `json:"subscription-info"`
+	Name        string    `json:"name"`
+	Type        string    `json:"type"`
+	VehicleType string    `json:"vehicle-type"`
+	Count       int       `json:"count"`
+	Path        string    `json:"path"`
+	UpdateAt    time.Time `json:"update-at"`
 }
 
 const (
@@ -109,12 +105,6 @@ type Method string
 
 type MessageType string
 
-type Delay struct {
-	Url   string `json:"url"`
-	Name  string `json:"name"`
-	Value int32  `json:"value"`
-}
-
 type Message struct {
 	Type MessageType `json:"type"`
 	Data interface{} `json:"data"`
@@ -124,8 +114,3 @@ const (
 	LogMessage         MessageType = "log"
 	ConnectionsMessage MessageType = "connections"
 )
-
-func (message *Message) Json() (string, error) {
-	data, err := json.Marshal(message)
-	return string(data), err
-}

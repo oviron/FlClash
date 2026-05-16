@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"strconv"
 
 	"github.com/metacubex/mihomo/component/resolver"
 	"github.com/metacubex/mihomo/listener"
@@ -61,5 +61,5 @@ func handleGetTotalTraffic() string {
 }
 
 func handleGetMemory() string {
-	return fmt.Sprintf("%d", statistic.DefaultManager.Memory())
+	return strconv.FormatUint(statistic.DefaultManager.Memory(), 10)
 }
