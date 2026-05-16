@@ -19,6 +19,9 @@ var netIndexOfUid = -1
 
 var nativeEndian binary.ByteOrder
 
+// QuerySocketUidFromProcFs returns the UID owning the socket whose local
+// endpoint matches `source`, or -1 if not found. Android <29 only — newer
+// versions block /proc/net/{tcp,udp} reads and need the public Network API.
 func QuerySocketUidFromProcFs(source, _ net.Addr) int {
 	if netIndexOfLocal < 0 || netIndexOfUid < 0 {
 		return -1

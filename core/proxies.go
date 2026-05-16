@@ -39,8 +39,6 @@ func handleGetProxies() string {
 	return string(data)
 }
 
-// handleChangeProxy switches the SelectAble adapter `group` to `name`. Returns
-// an error if the group is not found or is not a selector-style group.
 func handleChangeProxy(group, name string) error {
 	proxy, ok := tunnel.Proxies()[group]
 	if !ok {
@@ -57,8 +55,6 @@ func handleChangeProxy(group, name string) error {
 	return nil
 }
 
-// handleAsyncTestDelay runs a URL-test against `name` with the given URL and
-// timeout (ms). Returns the round-trip in ms, or -1 on timeout/failure.
 func handleAsyncTestDelay(name, url string, timeoutMs int) int {
 	proxy, ok := proxyByName(name)
 	if !ok {

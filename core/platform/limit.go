@@ -1,5 +1,8 @@
 //go:build linux
 
+// Package platform implements Android/Linux-specific helpers used by the
+// mihomo bridge: FD-pressure guards (this file) and /proc/net UID lookup
+// (procfs.go). Adapted from MetaCubeX/ClashMetaForAndroid (GPL-3.0).
 package platform
 
 import (
@@ -35,6 +38,9 @@ func init() {
 	maxFdCount = maxFdCount * (fdSafetyDenom - 1) / fdSafetyDenom
 }
 
+// ShouldBlockConnection returns true when the process is near its FD limit,
+// so the dialer hook can refuse new sockets before exhausting the table.
+// If the /dev/null guard could not be opened at init, this is a no-op.
 func ShouldBlockConnection() bool {
 	if nullFd < 0 {
 		return false
@@ -43,8 +49,6 @@ func ShouldBlockConnection() bool {
 	if err != nil {
 		return true
 	}
-
 	_ = syscall.Close(fd)
-
 	return fd > maxFdCount
 }

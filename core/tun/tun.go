@@ -1,5 +1,9 @@
 //go:build android && cgo
 
+// Package tun builds a sing-tun listener over the file descriptor supplied
+// by Android's VpnService.Builder. Adapted from MetaCubeX/ClashMetaForAndroid
+// (GPL-3.0); FlClash-specific delta: hardcoded device name and AutoRoute=false
+// (route is configured by VpnService.Builder, not mihomo).
 package tun
 
 import (

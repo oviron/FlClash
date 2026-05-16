@@ -12,16 +12,12 @@ import (
 	"github.com/metacubex/mihomo/tunnel"
 )
 
-// rejectedProbeBody is a sentinel JSON the Dart side checks for so the UI can
-// render a REJECT badge instead of an endless spinner when the user's default
-// route is REJECT.
+// Sentinel checked by Dart UI to render a REJECT badge instead of spinning.
 const rejectedProbeBody = `{"status":"REJECT"}`
 
-// handleProbeCurrentProxyIp returns ipinfo.io JSON for the default-route
-// exit-IP. The target is picked from the Dart UI mode (modeHint), then the
-// request is sent with WithSpecialProxy so resolveMetadata early-returns when
-// SpecialProxy is non-empty and user rules are bypassed. An empty modeHint
-// falls back to tunnel.Mode(), which may lag a mode switch by one debounce.
+// handleProbeCurrentProxyIp uses WithSpecialProxy so resolveMetadata bypasses
+// user rules. Empty modeHint falls back to tunnel.Mode(), which can lag a
+// mode switch by one Dart-side debounce.
 func handleProbeCurrentProxyIp(modeHint string) string {
 	target := determineProbeTarget(modeHint)
 	if target == "REJECT" {

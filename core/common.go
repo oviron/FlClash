@@ -210,9 +210,10 @@ func queryProxyGroupOrder() string {
 	return string(data)
 }
 
+// UnmarshalJson decodes with UseNumber so large integers from Dart (timeout
+// in ms, ports, etc.) keep precision instead of being converted to float64.
 func UnmarshalJson(data []byte, v any) error {
 	decoder := json.NewDecoder(b.NewReader(data))
 	decoder.UseNumber()
-	err := decoder.Decode(v)
-	return err
+	return decoder.Decode(v)
 }

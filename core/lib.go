@@ -255,11 +255,15 @@ func setEventListener(listener unsafe.Pointer) {
 	}
 }
 
+// getTraffic returns a C string the caller must free via free_string.
+//
 //export getTraffic
 func getTraffic() *C.char {
 	return C.CString(handleGetTraffic())
 }
 
+// getTotalTraffic returns a C string the caller must free via free_string.
+//
 //export getTotalTraffic
 func getTotalTraffic() *C.char {
 	return C.CString(handleGetTotalTraffic())
