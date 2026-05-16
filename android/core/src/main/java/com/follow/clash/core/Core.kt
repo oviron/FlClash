@@ -8,6 +8,7 @@ data object Core {
     private external fun startTun(
         fd: Int,
         cb: TunInterface,
+        device: String,
         stack: String,
         address: String,
         dns: String,
@@ -30,6 +31,7 @@ data object Core {
         fd: Int,
         protect: (Int) -> Boolean,
         resolverProcess: (protocol: Int, source: InetSocketAddress, target: InetSocketAddress, uid: Int) -> String,
+        device: String,
         stack: String,
         address: String,
         dns: String,
@@ -55,6 +57,7 @@ data object Core {
                     )
                 }
             },
+            device,
             stack,
             address,
             dns
@@ -130,7 +133,15 @@ data object Core {
 
     external fun getTotalTraffic(): String
 
+    external fun bridgeABI(): Int
+
+    const val EXPECTED_BRIDGE_ABI: Int = 1
+
     init {
         System.loadLibrary("core")
+        val abi = bridgeABI()
+        check(abi == EXPECTED_BRIDGE_ABI) {
+            "libclash bridge ABI mismatch: stub expects $EXPECTED_BRIDGE_ABI, .so reports $abi"
+        }
     }
 }

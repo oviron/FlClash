@@ -12,6 +12,10 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
+        ndk {
+            // Match libmihomo-android Release artifacts: 32-bit x86 is dropped.
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
+        }
     }
 
 
@@ -54,24 +58,16 @@ dependencies {
     implementation(libs.annotation.jvm)
 }
 
+// Copy libclash.so per ABI from libclash/android/ (populated by setup.dart
+// from libmihomo-android Release) into the AGP-watched jniLibs/ layout.
+// Headers are vendored under src/main/cpp/vendored/ — they no longer flow
+// through this task.
 val copyNativeLibs by tasks.register<Copy>("copyNativeLibs") {
     doFirst {
         delete("src/main/jniLibs")
     }
     from("../../libclash/android")
     into("src/main/jniLibs")
-
-    doLast {
-        val includesDir = file("src/main/jniLibs/includes")
-        val targetDir = file("src/main/cpp/includes")
-        if (includesDir.exists()) {
-            copy {
-                from(includesDir)
-                into(targetDir)
-            }
-            delete(includesDir)
-        }
-    }
 }
 
 afterEvaluate {

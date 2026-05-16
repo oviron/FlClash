@@ -264,9 +264,10 @@ class VpnService : SystemVpnService(), IBaseService,
             fd,
             protect = this::protect,
             resolverProcess = this::resolverProcess,
-            options.stack,
-            options.address,
-            options.dns
+            device = "FlClash",
+            stack = options.stack,
+            address = options.address,
+            dns = options.dns,
         )
     }
 

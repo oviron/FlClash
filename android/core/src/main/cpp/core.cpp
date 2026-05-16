@@ -1,8 +1,6 @@
 #include <jni.h>
 #include <cstring>
 
-#ifdef LIBCLASH
-
 #include "jni_helper.h"
 #include "libclash.h"
 #include "bridge.h"
@@ -10,9 +8,11 @@
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_follow_clash_core_Core_startTun(JNIEnv *env, jobject thiz, jint fd, jobject cb,
-                                         jstring stack, jstring address, jstring dns) {
+                                         jstring device, jstring stack, jstring address,
+                                         jstring dns) {
     const auto interface = new_global(cb);
-    startTUN(interface, fd, get_string(stack), get_string(address), get_string(dns));
+    startTUN(interface, fd, get_string(device), get_string(stack), get_string(address),
+             get_string(dns));
 }
 
 extern "C"
@@ -81,6 +81,12 @@ Java_com_follow_clash_core_Core_quickSetup(JNIEnv *env, jobject thiz, jstring in
                                            jstring setup_params_string, jobject cb) {
     const auto interface = new_global(cb);
     quickSetup(interface, get_string(init_params_string), get_string(setup_params_string));
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_follow_clash_core_Core_bridgeABI(JNIEnv *env, jobject thiz) {
+    return bridgeABI();
 }
 
 
@@ -160,58 +166,3 @@ JNI_OnLoad(JavaVM *vm, void *) {
 
     return JNI_VERSION_1_6;
 }
-#else
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_follow_clash_core_Core_startTun(JNIEnv *env, jobject thiz, jint fd, jobject cb,
-                                         jstring stack, jstring address, jstring dns) {
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_follow_clash_core_Core_stopTun(JNIEnv *env, jobject thiz) {
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_follow_clash_core_Core_invokeAction(JNIEnv *env, jobject thiz, jstring data, jobject cb) {
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_follow_clash_core_Core_forceGC(JNIEnv *env, jobject thiz) {
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_follow_clash_core_Core_updateDNS(JNIEnv *env, jobject thiz, jstring dns) {
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_follow_clash_core_Core_setEventListener(JNIEnv *env, jobject thiz, jobject cb) {
-}
-
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_follow_clash_core_Core_getTraffic(JNIEnv *env, jobject thiz) {
-    return env->NewStringUTF("");
-}
-
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_follow_clash_core_Core_getTotalTraffic(JNIEnv *env, jobject thiz) {
-    return env->NewStringUTF("");
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_follow_clash_core_Core_suspended(JNIEnv *env, jobject thiz, jboolean suspended) {
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_follow_clash_core_Core_quickSetup(JNIEnv *env, jobject thiz, jstring init_params_string,
-                                           jstring setup_params_string, jobject cb) {
-}
-#endif
