@@ -17,6 +17,34 @@ type vehicleProvider interface {
 	Vehicle() P.Vehicle
 }
 
+// externalProvider is the common surface shared by ProxyProvider and
+// RuleProvider for our purposes: both implement Provider + Count.
+type externalProvider interface {
+	P.Provider
+	Count() int
+}
+
+// lookupExternalProvider returns the Proxy/Rule provider matching name,
+// skipping the implicit Compatible (global) provider. ok=false signals that
+// nothing usable exists under that (pType, name) pair.
+func lookupExternalProvider(pType, name string) (externalProvider, bool) {
+	var p externalProvider
+	switch pType {
+	case "Proxy":
+		if v, ok := tunnel.Providers()[name]; ok {
+			p = v
+		}
+	case "Rule":
+		if v, ok := tunnel.RuleProviders()[name]; ok {
+			p = v
+		}
+	}
+	if p == nil || p.VehicleType() == P.Compatible {
+		return nil, false
+	}
+	return p, true
+}
+
 func queryExternalProviders() string {
 	list := make([]ExternalProvider, 0)
 	for _, p := range tunnel.Providers() {
@@ -36,34 +64,17 @@ func queryExternalProviders() string {
 }
 
 func getExternalProvider(pType, name string) string {
-	switch pType {
-	case "Proxy":
-		if p, ok := tunnel.Providers()[name]; ok && p.VehicleType() != P.Compatible {
-			data, _ := json.Marshal(providerView(p, p.Count()))
-			return string(data)
-		}
-	case "Rule":
-		if p, ok := tunnel.RuleProviders()[name]; ok && p.VehicleType() != P.Compatible {
-			data, _ := json.Marshal(providerView(p, p.Count()))
-			return string(data)
-		}
+	p, ok := lookupExternalProvider(pType, name)
+	if !ok {
+		return ""
 	}
-	return ""
+	data, _ := json.Marshal(providerView(p, p.Count()))
+	return string(data)
 }
 
 func updateExternalProvider(pType, name string) string {
-	var p P.Provider
-	switch pType {
-	case "Proxy":
-		if v, ok := tunnel.Providers()[name]; ok {
-			p = v
-		}
-	case "Rule":
-		if v, ok := tunnel.RuleProviders()[name]; ok {
-			p = v
-		}
-	}
-	if p == nil {
+	p, ok := lookupExternalProvider(pType, name)
+	if !ok {
 		return fmt.Sprintf("%s provider %q not found", pType, name)
 	}
 	if err := p.Update(); err != nil {

@@ -142,18 +142,23 @@ var (
 	tunHandler *TunHandler
 )
 
-func handleStopTun() {
-	tunLock.Lock()
-	defer tunLock.Unlock()
+// stopTunLocked tears down the active TunHandler; caller must hold tunLock.
+func stopTunLocked() {
 	if tunHandler != nil {
 		tunHandler.close()
 	}
 }
 
-func handleStartTun(callback unsafe.Pointer, fd int, stack, address, dns string) {
-	handleStopTun()
+func handleStopTun() {
 	tunLock.Lock()
 	defer tunLock.Unlock()
+	stopTunLocked()
+}
+
+func handleStartTun(callback unsafe.Pointer, fd int, stack, address, dns string) {
+	tunLock.Lock()
+	defer tunLock.Unlock()
+	stopTunLocked()
 	if fd != 0 {
 		tunHandler = &TunHandler{
 			callback: callback,
@@ -171,7 +176,7 @@ func handleUpdateDns(value string) {
 	}()
 }
 
-func (result ActionResult) send() {
+func (result *ActionResult) send() {
 	data, err := result.Json()
 	if err != nil {
 		return

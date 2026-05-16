@@ -13,21 +13,26 @@ import (
 	"github.com/metacubex/mihomo/tunnel"
 )
 
-// handleGetProxies returns a JSON snapshot of all proxies (from tunnel) and
-// proxies exposed by providers, merged into a single `{name: proxy}` map and
-// wrapped under `{"proxies": {...}}` to match the existing mihomo REST shape
-// the Dart layer already parses.
-func handleGetProxies() string {
-	all := make(map[string]C.Proxy)
+// allProxies returns a name->proxy snapshot that merges tunnel.Proxies() with
+// proxies exposed by all providers. Provider-supplied proxies override tunnel
+// entries on name collision (mirroring mihomo's REST shape).
+func allProxies() map[string]C.Proxy {
+	out := make(map[string]C.Proxy)
 	for name, proxy := range tunnel.Proxies() {
-		all[name] = proxy
+		out[name] = proxy
 	}
-	for _, p := range tunnel.Providers() {
-		for _, proxy := range p.Proxies() {
-			all[proxy.Name()] = proxy
+	for _, prov := range tunnel.Providers() {
+		for _, proxy := range prov.Proxies() {
+			out[proxy.Name()] = proxy
 		}
 	}
-	data, err := json.Marshal(map[string]any{"proxies": all})
+	return out
+}
+
+// handleGetProxies returns the merged proxy snapshot as JSON, wrapped under
+// `{"proxies": {...}}` to match the mihomo REST shape Dart already parses.
+func handleGetProxies() string {
+	data, err := json.Marshal(map[string]any{"proxies": allProxies()})
 	if err != nil {
 		return ""
 	}
@@ -72,15 +77,6 @@ func handleAsyncTestDelay(name, url string, timeoutMs int) int {
 }
 
 func proxyByName(name string) (C.Proxy, bool) {
-	if p, ok := tunnel.Proxies()[name]; ok {
-		return p, true
-	}
-	for _, prov := range tunnel.Providers() {
-		for _, p := range prov.Proxies() {
-			if p.Name() == name {
-				return p, true
-			}
-		}
-	}
-	return nil, false
+	p, ok := allProxies()[name]
+	return p, ok
 }

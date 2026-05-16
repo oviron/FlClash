@@ -65,32 +65,18 @@ func updateListeners() {
 }
 
 func patchSelectGroup(mapping map[string]string) {
-	allProxies := make(map[string]C.Proxy)
-	for name, proxy := range tunnel.Proxies() {
-		allProxies[name] = proxy
-	}
-	for _, p := range tunnel.Providers() {
-		for _, proxy := range p.Proxies() {
-			allProxies[proxy.Name()] = proxy
-		}
-	}
-	for name, proxy := range allProxies {
+	for name, proxy := range allProxies() {
 		outbound, ok := proxy.(*adapter.Proxy)
 		if !ok {
 			continue
 		}
-
 		selector, ok := outbound.ProxyAdapter.(outboundgroup.SelectAble)
 		if !ok {
 			continue
 		}
-
-		selected, exist := mapping[name]
-		if !exist {
-			continue
+		if selected, exist := mapping[name]; exist {
+			selector.ForceSet(selected)
 		}
-
-		selector.ForceSet(selected)
 	}
 }
 
@@ -167,43 +153,54 @@ func updateConfig(params *UpdateParams) {
 	updateListeners()
 }
 
+// applyConfig reads and parses config.yaml once, then feeds the result to
+// mihomo's executor and our proxy-group-order capture. On any read or parse
+// error we still apply the embedded default config so the VPN keeps a
+// working state, but the original error is returned to the caller.
 func applyConfig(params *SetupParams) error {
 	runtime.GC()
 	runLock.Lock()
 	defer runLock.Unlock()
 	configPath := filepath.Join(C.Path.HomeDir(), "config.yaml")
+
+	var raw *config.RawConfig
+	buf, rerr := readFile(configPath)
+	if rerr == nil {
+		raw, _ = config.UnmarshalRawConfig(buf)
+	}
+
 	var err error
-	currentConfig, err = executor.ParseWithPath(configPath)
-	if err != nil {
+	if raw != nil {
+		currentConfig, err = config.ParseRawConfig(raw)
+	} else {
+		err = rerr
+	}
+	if currentConfig == nil {
 		currentConfig, _ = config.ParseRawConfig(config.DefaultRawConfig())
 	}
-	captureProxyGroupOrder(configPath)
+
+	captureProxyGroupOrder(raw)
 	executor.ApplyConfig(currentConfig, true)
 	patchSelectGroup(params.SelectedMap)
 	updateListeners()
 	return err
 }
 
-func captureProxyGroupOrder(path string) {
+// captureProxyGroupOrder snapshots the YAML-declared order of proxy-groups
+// because mihomo's parsed Config drops it (groups become a map). An empty
+// snapshot is published when raw is nil to clear any stale state.
+func captureProxyGroupOrder(raw *config.RawConfig) {
 	order := []string{}
-	defer func() {
-		proxyGroupOrderMu.Lock()
-		proxyGroupOrder = order
-		proxyGroupOrderMu.Unlock()
-	}()
-	buf, rerr := readFile(path)
-	if rerr != nil {
-		return
-	}
-	raw, perr := config.UnmarshalRawConfig(buf)
-	if perr != nil || raw == nil {
-		return
-	}
-	for _, g := range raw.ProxyGroup {
-		if name, ok := g["name"].(string); ok && name != "" {
-			order = append(order, name)
+	if raw != nil {
+		for _, g := range raw.ProxyGroup {
+			if name, ok := g["name"].(string); ok && name != "" {
+				order = append(order, name)
+			}
 		}
 	}
+	proxyGroupOrderMu.Lock()
+	proxyGroupOrder = order
+	proxyGroupOrderMu.Unlock()
 }
 
 func queryProxyGroupOrder() string {
