@@ -71,12 +71,13 @@ func doQuery(path string, sIP net.IP, sPort int) int {
 	if err != nil {
 		return -1
 	}
-	defer file.Close() // #nosec G307 -- read-only file, close error is not actionable
+	defer func() { _ = file.Close() }() // read-only file, close error not actionable
 
 	reader := bufio.NewReader(file)
 
 	var bytes [2]byte
 
+	// #nosec G115 -- TCP/UDP port is bounded by 0..65535 per RFC 793/768.
 	binary.BigEndian.PutUint16(bytes[:], uint16(sPort))
 
 	local := fmt.Sprintf("%s:%s", hex.EncodeToString(nativeEndianIP(sIP)), hex.EncodeToString(bytes[:]))
@@ -132,7 +133,7 @@ func init() {
 	if err != nil {
 		return
 	}
-	defer file.Close() // #nosec G307 -- read-only file
+	defer func() { _ = file.Close() }() // read-only file
 
 	reader := bufio.NewReader(file)
 	header, _, err := reader.ReadLine()

@@ -6,8 +6,9 @@
 package platform
 
 import (
-	"github.com/metacubex/mihomo/log"
 	"syscall"
+
+	"github.com/metacubex/mihomo/log"
 )
 
 // fdSafetyDenom defines the soft reserve: blocked above 3/4 of process RLIMIT_NOFILE.
@@ -32,6 +33,7 @@ func init() {
 	if err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &limit); err != nil {
 		maxFdCount = fdRlimitFallback
 	} else {
+		// #nosec G115 -- RLIMIT_NOFILE on Android is bounded by kernel (<<2^31).
 		maxFdCount = int(limit.Cur)
 	}
 

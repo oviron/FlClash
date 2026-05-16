@@ -18,6 +18,7 @@ func handleInitClash(paramsString string) bool {
 	if err := json.Unmarshal([]byte(paramsString), &params); err != nil {
 		return false
 	}
+	// #nosec G115 -- Android Build.VERSION.SDK_INT is single-digit-decade int.
 	version.Store(int32(params.Version))
 	constant.SetHomeDir(params.HomeDir)
 	isInit.Store(true)
