@@ -59,7 +59,3 @@ func handleShutdown() bool {
 	eventListenerMu.Unlock()
 	return true
 }
-
-func handleCrash() {
-	panic("handle invoke crash")
-}

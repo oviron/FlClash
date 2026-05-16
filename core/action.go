@@ -90,7 +90,7 @@ func handleAction(action *Action, result ActionResult) {
 		}
 		config, err := handleGetConfig(path)
 		if err != nil {
-			result.error(err)
+			result.error(err.Error())
 			return
 		}
 		result.success(config)
@@ -110,7 +110,7 @@ func handleAction(action *Action, result ActionResult) {
 		}
 		var params = map[string]string{}
 		if err := json.Unmarshal([]byte(paramsString), &params); err != nil {
-			result.success(err.Error())
+			result.error(err.Error())
 			return
 		}
 		handleSideLoadExternalProvider(
@@ -126,9 +126,8 @@ func handleAction(action *Action, result ActionResult) {
 			return
 		}
 		var params = map[string]string{}
-		err := json.Unmarshal([]byte(paramsString), &params)
-		if err != nil {
-			result.success(err.Error())
+		if err := json.Unmarshal([]byte(paramsString), &params); err != nil {
+			result.error(err.Error())
 			return
 		}
 		geoType := params["geo-type"]
@@ -246,7 +245,11 @@ func handleAction(action *Action, result ActionResult) {
 			return
 		}
 		go func() {
-			result.success(updateExternalProvider(params.Type, params.Name))
+			if errMsg := updateExternalProvider(params.Type, params.Name); errMsg != "" {
+				result.error(errMsg)
+			} else {
+				result.success(true)
+			}
 		}()
 		return
 	case getTrafficMethod:

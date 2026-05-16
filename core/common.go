@@ -151,6 +151,10 @@ func updateConfig(params *UpdateParams) {
 		general.IPv6 = *params.IPv6
 		resolver.DisableIPv6 = !general.IPv6
 	}
+	if params.AllowLan != nil {
+		general.AllowLan = *params.AllowLan
+		listener.SetAllowLan(general.AllowLan)
+	}
 	if params.Tun != nil {
 		general.Tun.Enable = params.Tun.Enable
 		general.Tun.AutoRoute = *params.Tun.AutoRoute

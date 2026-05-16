@@ -200,14 +200,13 @@ func invokeAction(callback unsafe.Pointer, paramsChar *C.char) {
 }
 
 //export startTUN
-func startTUN(callback unsafe.Pointer, fd C.int, stackChar, addressChar, dnsChar *C.char) bool {
+func startTUN(callback unsafe.Pointer, fd C.int, stackChar, addressChar, dnsChar *C.char) {
 	handleStartTun(callback, int(fd), takeCString(stackChar), takeCString(addressChar), takeCString(dnsChar))
 	if !isRunning.Load() {
 		handleStartListener()
 	} else {
 		handleResetConnections()
 	}
-	return true
 }
 
 //export quickSetup
