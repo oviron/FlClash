@@ -107,7 +107,7 @@ func (th *TunHandler) handleResolveProcess(source, target net.Addr) string {
 	case "tcp", "tcp4", "tcp6":
 		protocol = syscall.IPPROTO_TCP
 	}
-	if version < 29 {
+	if version.Load() < 29 {
 		uid = platform.QuerySocketUidFromProcFs(source, target)
 	}
 	return resolveProcess(th.callback, protocol, source.String(), target.String(), uid)
@@ -202,7 +202,7 @@ func invokeAction(callback unsafe.Pointer, paramsChar *C.char) {
 //export startTUN
 func startTUN(callback unsafe.Pointer, fd C.int, stackChar, addressChar, dnsChar *C.char) bool {
 	handleStartTun(callback, int(fd), takeCString(stackChar), takeCString(addressChar), takeCString(dnsChar))
-	if !isRunning {
+	if !isRunning.Load() {
 		handleStartListener()
 	} else {
 		handleResetConnections()
@@ -220,8 +220,15 @@ func quickSetup(callback unsafe.Pointer, initParamsChar *C.char, setupParamsChar
 			invokeResult(callback, "init failed")
 			return
 		}
-		isRunning = true
+		// isRunning gates updateListeners inside applyConfig. Set it before
+		// handleSetupConfig so listeners are actually created; if config
+		// application fails, roll back so the (isInit, isRunning, listeners)
+		// state stays consistent for the next start attempt.
+		isRunning.Store(true)
 		message := handleSetupConfig([]byte(setupParamsString))
+		if message != "" {
+			isRunning.Store(false)
+		}
 		invokeResult(callback, message)
 	}()
 }
@@ -264,7 +271,7 @@ func sendMessage(message Message) {
 //export stopTun
 func stopTun() {
 	handleStopTun()
-	if isRunning {
+	if isRunning.Load() {
 		handleStopListener()
 	}
 }

@@ -13,7 +13,7 @@ import (
 func handleStartListener() bool {
 	runLock.Lock()
 	defer runLock.Unlock()
-	isRunning = true
+	isRunning.Store(true)
 	updateListeners()
 	resolver.ResetConnection()
 	return true
@@ -22,7 +22,7 @@ func handleStartListener() bool {
 func handleStopListener() bool {
 	runLock.Lock()
 	defer runLock.Unlock()
-	isRunning = false
+	isRunning.Store(false)
 	listener.Cleanup()
 	resolver.ResetConnection()
 	return true

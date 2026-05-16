@@ -11,8 +11,6 @@ import (
 	"github.com/metacubex/mihomo/log"
 )
 
-var isInit = false
-
 func handleInitClash(paramsString string) bool {
 	runLock.Lock()
 	defer runLock.Unlock()
@@ -20,14 +18,14 @@ func handleInitClash(paramsString string) bool {
 	if err := json.Unmarshal([]byte(paramsString), &params); err != nil {
 		return false
 	}
-	version = params.Version
+	version.Store(int32(params.Version))
 	constant.SetHomeDir(params.HomeDir)
-	isInit = true
-	return isInit
+	isInit.Store(true)
+	return true
 }
 
 func handleGetIsInit() bool {
-	return isInit
+	return isInit.Load()
 }
 
 func handleForceGC() {
@@ -36,13 +34,29 @@ func handleForceGC() {
 	debug.FreeOSMemory()
 }
 
+// handleShutdown tears down listeners, executor, log subscription, and the
+// JNI event-listener global ref. Subscription cleanup runs outside runLock
+// (each subscription owns its own mutex); the rest runs under runLock to be
+// exclusive with applyConfig/updateConfig.
 func handleShutdown() bool {
 	handleUnsubscribeConnections()
 	handleStopLog()
+
+	runLock.Lock()
 	listener.Cleanup()
 	executor.Shutdown()
 	handleForceGC()
-	isInit = false
+	isInit.Store(false)
+	runLock.Unlock()
+
+	// Symmetric with setEventListener: release the final JNI global ref so
+	// it does not leak past process lifetime.
+	eventListenerMu.Lock()
+	if eventListener != nil {
+		releaseObject(eventListener)
+		eventListener = nil
+	}
+	eventListenerMu.Unlock()
 	return true
 }
 

@@ -40,7 +40,7 @@ func handleUpdateConfig(bytes []byte) string {
 }
 
 func handleSetupConfig(bytes []byte) string {
-	if !isInit {
+	if !isInit.Load() {
 		return "not initialized"
 	}
 	var params = defaultSetupParams()

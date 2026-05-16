@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"sync"
+	"sync/atomic"
 
 	"github.com/metacubex/mihomo/adapter"
 	"github.com/metacubex/mihomo/adapter/inbound"
@@ -21,17 +22,21 @@ import (
 	"github.com/metacubex/mihomo/tunnel"
 )
 
+// Package-level state shared across goroutines: cgo-export entrypoints and
+// the action goroutine all read/write these without holding runLock, so they
+// must be atomic.
 var (
 	currentConfig     *config.Config
-	version           = 0
-	isRunning         = false
+	version           atomic.Int32
+	isRunning         atomic.Bool
+	isInit            atomic.Bool
 	runLock           sync.Mutex
 	proxyGroupOrder   []string
 	proxyGroupOrderMu sync.RWMutex
 )
 
 func updateListeners() {
-	if !isRunning {
+	if !isRunning.Load() {
 		return
 	}
 	if currentConfig == nil {
