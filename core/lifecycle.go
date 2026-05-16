@@ -34,10 +34,9 @@ func handleForceGC() {
 	debug.FreeOSMemory()
 }
 
-// handleShutdown tears down listeners, executor, log subscription, and the
-// JNI event-listener global ref. Subscription cleanup runs outside runLock
-// (each subscription owns its own mutex); the rest runs under runLock to be
-// exclusive with applyConfig/updateConfig.
+// Subscription cleanup runs outside runLock (each has its own mutex); the
+// executor/listener/eventListener teardown runs under runLock to be exclusive
+// with applyConfig/updateConfig.
 func handleShutdown() bool {
 	handleUnsubscribeConnections()
 	handleStopLog()

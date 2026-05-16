@@ -41,11 +41,9 @@ var (
 	eventListenerMu sync.RWMutex
 )
 
-// TunHandler owns one TUN listener plus the JNI global ref (callback) for
-// VpnService callbacks. Concurrency: clear() runs under semaphore weight=full
-// while hot paths take weight=1, so checks against `closed` after Acquire are
-// race-free. Caller must invoke close() before dropping the struct to avoid
-// leaking the JNI global ref.
+// TunHandler owns one TUN listener and one JNI global ref (callback).
+// Concurrency fence: clear() acquires weight=full while hot paths take
+// weight=1, so a `closed` check after Acquire is race-free. Always close().
 type TunHandler struct {
 	listener io.Closer
 	callback unsafe.Pointer
@@ -163,13 +161,18 @@ func handleStartTun(callback unsafe.Pointer, fd int, stack, address, dns string)
 	tunLock.Lock()
 	defer tunLock.Unlock()
 	stopTunLocked()
-	if fd != 0 {
-		tunHandler = &TunHandler{
-			callback: callback,
-			limit:    semaphore.NewWeighted(tunSemCapacity),
-		}
-		tunHandler.start(fd, stack, address, dns)
+	if fd == 0 {
+		// JNI glue always wraps the callback with new_global before invoking
+		// us; release here so the global ref does not leak when the caller
+		// passes fd=0 (no TUN to start).
+		releaseObject(callback)
+		return
 	}
+	tunHandler = &TunHandler{
+		callback: callback,
+		limit:    semaphore.NewWeighted(tunSemCapacity),
+	}
+	tunHandler.start(fd, stack, address, dns)
 }
 
 func handleUpdateDns(value string) {
@@ -231,10 +234,9 @@ func quickSetup(callback unsafe.Pointer, initParamsChar *C.char, setupParamsChar
 			invokeResult(callback, "init failed")
 			return
 		}
-		// isRunning gates updateListeners inside applyConfig. Set it before
-		// handleSetupConfig so listeners are actually created; if config
-		// application fails, roll back so the (isInit, isRunning, listeners)
-		// state stays consistent for the next start attempt.
+		// updateListeners inside applyConfig gates on isRunning, so set it
+		// before handleSetupConfig and roll back on failure to keep state
+		// consistent for the next start.
 		isRunning.Store(true)
 		message := handleSetupConfig([]byte(setupParamsString))
 		if message != "" {

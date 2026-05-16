@@ -143,37 +143,46 @@ func updateConfig(params *UpdateParams) {
 	}
 	if params.Tun != nil {
 		general.Tun.Enable = params.Tun.Enable
-		general.Tun.AutoRoute = *params.Tun.AutoRoute
-		general.Tun.Device = *params.Tun.Device
-		general.Tun.RouteAddress = *params.Tun.RouteAddress
-		general.Tun.DNSHijack = *params.Tun.DNSHijack
-		general.Tun.Stack = *params.Tun.Stack
+		if params.Tun.AutoRoute != nil {
+			general.Tun.AutoRoute = *params.Tun.AutoRoute
+		}
+		if params.Tun.Device != nil {
+			general.Tun.Device = *params.Tun.Device
+		}
+		if params.Tun.RouteAddress != nil {
+			general.Tun.RouteAddress = *params.Tun.RouteAddress
+		}
+		if params.Tun.DNSHijack != nil {
+			general.Tun.DNSHijack = *params.Tun.DNSHijack
+		}
+		if params.Tun.Stack != nil {
+			general.Tun.Stack = *params.Tun.Stack
+		}
 	}
 
 	updateListeners()
 }
 
-// applyConfig reads and parses config.yaml once, then feeds the result to
-// mihomo's executor and our proxy-group-order capture. On any read or parse
-// error we still apply the embedded default config so the VPN keeps a
-// working state, but the original error is returned to the caller.
+// applyConfig parses config.yaml once, applies it to mihomo, and falls back
+// to the embedded default on any failure so the VPN stays up; the first
+// error from read > unmarshal > parse is returned for the caller to surface.
 func applyConfig(params *SetupParams) error {
 	runtime.GC()
 	runLock.Lock()
 	defer runLock.Unlock()
 	configPath := filepath.Join(C.Path.HomeDir(), "config.yaml")
 
-	var raw *config.RawConfig
+	var (
+		raw  *config.RawConfig
+		uerr error
+		perr error
+	)
 	buf, rerr := readFile(configPath)
 	if rerr == nil {
-		raw, _ = config.UnmarshalRawConfig(buf)
+		raw, uerr = config.UnmarshalRawConfig(buf)
 	}
-
-	var err error
 	if raw != nil {
-		currentConfig, err = config.ParseRawConfig(raw)
-	} else {
-		err = rerr
+		currentConfig, perr = config.ParseRawConfig(raw)
 	}
 	if currentConfig == nil {
 		currentConfig, _ = config.ParseRawConfig(config.DefaultRawConfig())
@@ -183,12 +192,19 @@ func applyConfig(params *SetupParams) error {
 	executor.ApplyConfig(currentConfig, true)
 	patchSelectGroup(params.SelectedMap)
 	updateListeners()
-	return err
+
+	switch {
+	case rerr != nil:
+		return rerr
+	case uerr != nil:
+		return uerr
+	default:
+		return perr
+	}
 }
 
-// captureProxyGroupOrder snapshots the YAML-declared order of proxy-groups
-// because mihomo's parsed Config drops it (groups become a map). An empty
-// snapshot is published when raw is nil to clear any stale state.
+// captureProxyGroupOrder snapshots YAML-declared group order because mihomo's
+// parsed Config drops it. An empty snapshot is published when raw is nil.
 func captureProxyGroupOrder(raw *config.RawConfig) {
 	order := []string{}
 	if raw != nil {

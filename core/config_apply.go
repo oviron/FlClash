@@ -31,6 +31,12 @@ func handleGetConfig(path string) (*config.RawConfig, error) {
 }
 
 func handleUpdateConfig(bytes []byte) string {
+	if !isInit.Load() {
+		return "not initialized"
+	}
+	if currentConfig == nil {
+		return "config not loaded"
+	}
 	var params = &UpdateParams{}
 	if err := json.Unmarshal(bytes, params); err != nil {
 		return err.Error()

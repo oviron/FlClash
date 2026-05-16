@@ -48,6 +48,19 @@ func parseStringData(data any, result *ActionResult) (string, bool) {
 	return s, true
 }
 
+// actionCallback wraps an ActionResult into the "" = success, non-empty =
+// error contract used by geo_data.go-style handlers, so an inner error string
+// reaches Dart with Code=-1 instead of being smuggled in a success payload.
+func actionCallback(result *ActionResult) func(string) {
+	return func(value string) {
+		if value == "" {
+			result.success(true)
+		} else {
+			result.error(value)
+		}
+	}
+}
+
 func handleAction(action *Action, result ActionResult) {
 	switch action.Method {
 	case initClashMethod:
@@ -120,7 +133,7 @@ func handleAction(action *Action, result ActionResult) {
 		handleSideLoadExternalProvider(
 			params["providerName"],
 			[]byte(params["data"]),
-			func(value string) { result.success(value) },
+			actionCallback(&result),
 		)
 		return
 	case updateGeoDataMethod:
@@ -133,9 +146,7 @@ func handleAction(action *Action, result ActionResult) {
 			result.error(err.Error())
 			return
 		}
-		handleUpdateGeoData(params["geo-type"], func(value string) {
-			result.success(value)
-		})
+		handleUpdateGeoData(params["geo-type"], actionCallback(&result))
 		return
 	case startLogMethod:
 		handleStartLog()
