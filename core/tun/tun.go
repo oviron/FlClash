@@ -3,6 +3,7 @@
 package tun
 
 import (
+	"io"
 	"net"
 	"net/netip"
 	"strings"
@@ -21,7 +22,11 @@ const deviceName = "FlClash"
 // Hardcoded MTU matches CMfA. Android VpnService.Builder caps at 65535.
 const tunMTU = 9000
 
-func Start(fd int, stack string, address, dns string) *sing_tun.Listener {
+// Start builds a sing_tun listener from the address/dns/stack inputs supplied
+// by the Android VpnService.Builder side. Returns an io.Closer (the caller
+// only needs Close) so libmihomo-android consumers do not have to import
+// sing_tun directly.
+func Start(fd int, stack string, address, dns string) (io.Closer, error) {
 	var prefix4 []netip.Prefix
 	var prefix6 []netip.Prefix
 	tunStack, ok := constant.StackTypeMapping[strings.ToLower(stack)]
@@ -35,8 +40,7 @@ func Start(fd int, stack string, address, dns string) *sing_tun.Listener {
 		}
 		prefix, err := netip.ParsePrefix(a)
 		if err != nil {
-			log.Errorln("TUN: %v", err)
-			return nil
+			return nil, err
 		}
 		if prefix.Addr().Is4() {
 			prefix4 = append(prefix4, prefix)
@@ -68,11 +72,9 @@ func Start(fd int, stack string, address, dns string) *sing_tun.Listener {
 	}
 
 	listener, err := sing_tun.New(options, tunnel.Tunnel)
-
 	if err != nil {
-		log.Errorln("TUN: %v", err)
-		return nil
+		return nil, err
 	}
-
-	return listener
+	log.Infoln("TUN started: addresses=%s stack=%s", address, tunStack)
+	return listener, nil
 }

@@ -14,6 +14,7 @@ const connectionsTickInterval = time.Second
 var (
 	connectionsMu     sync.Mutex
 	connectionsCancel context.CancelFunc
+	connectionsDone   chan struct{}
 )
 
 func handleGetConnections() string {
@@ -24,12 +25,19 @@ func handleGetConnections() string {
 func handleSubscribeConnections() {
 	connectionsMu.Lock()
 	defer connectionsMu.Unlock()
+	// Wait for the previous ticker goroutine to fully exit before starting a
+	// new one; otherwise two tickers can both emit on the same tick during a
+	// re-subscribe race.
 	if connectionsCancel != nil {
 		connectionsCancel()
+		<-connectionsDone
 	}
 	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan struct{})
 	connectionsCancel = cancel
+	connectionsDone = done
 	go func() {
+		defer close(done)
 		ticker := time.NewTicker(connectionsTickInterval)
 		defer ticker.Stop()
 		for {
@@ -52,7 +60,9 @@ func handleUnsubscribeConnections() {
 	defer connectionsMu.Unlock()
 	if connectionsCancel != nil {
 		connectionsCancel()
+		<-connectionsDone
 		connectionsCancel = nil
+		connectionsDone = nil
 	}
 }
 

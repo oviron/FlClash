@@ -13,6 +13,7 @@ import (
 	t "core/tun"
 	"encoding/json"
 	"errors"
+	"io"
 	"net"
 	"strings"
 	"sync"
@@ -23,7 +24,6 @@ import (
 	"github.com/metacubex/mihomo/component/process"
 	"github.com/metacubex/mihomo/constant"
 	"github.com/metacubex/mihomo/dns"
-	"github.com/metacubex/mihomo/listener/sing_tun"
 	"github.com/metacubex/mihomo/log"
 	"golang.org/x/sync/semaphore"
 )
@@ -41,9 +41,15 @@ var (
 	eventListenerMu sync.RWMutex
 )
 
+// TunHandler owns one TUN listener plus the JNI global ref (callback) for
+// VpnService callbacks. Concurrency: clear() runs under semaphore weight=full
+// while hot paths take weight=1, so checks against `closed` after Acquire are
+// race-free. Caller must invoke close() before dropping the struct to avoid
+// leaking the JNI global ref.
 type TunHandler struct {
-	listener *sing_tun.Listener
+	listener io.Closer
 	callback unsafe.Pointer
+	closed   bool
 
 	limit *semaphore.Weighted
 }
@@ -54,13 +60,13 @@ func (th *TunHandler) start(fd int, stack, address, dns string) {
 	_ = th.limit.Acquire(context.Background(), tunSemFullLock)
 	defer th.limit.Release(tunSemFullLock)
 	th.initHook()
-	tunListener := t.Start(fd, stack, address, dns)
-	if tunListener != nil {
-		log.Infoln("TUN address: %v", tunListener.Address())
-		th.listener = tunListener
+	listener, err := t.Start(fd, stack, address, dns)
+	if err != nil {
+		log.Errorln("TUN start failed: %v", err)
+		th.clear()
 		return
 	}
-	th.clear()
+	th.listener = listener
 }
 
 func (th *TunHandler) close() {
@@ -70,33 +76,31 @@ func (th *TunHandler) close() {
 }
 
 func (th *TunHandler) clear() {
+	th.closed = true
 	th.removeHook()
 	if th.listener != nil {
 		_ = th.listener.Close()
+		th.listener = nil
 	}
 	if th.callback != nil {
 		releaseObject(th.callback)
+		th.callback = nil
 	}
-	th.callback = nil
-	th.listener = nil
 }
 
 func (th *TunHandler) handleProtect(fd int) {
 	_ = th.limit.Acquire(context.Background(), 1)
 	defer th.limit.Release(1)
-
-	if th.listener == nil {
+	if th.closed {
 		return
 	}
-
 	protect(th.callback, fd)
 }
 
 func (th *TunHandler) handleResolveProcess(source, target net.Addr) string {
 	_ = th.limit.Acquire(context.Background(), 1)
 	defer th.limit.Release(1)
-
-	if th.listener == nil || th.callback == nil {
+	if th.closed {
 		return ""
 	}
 	var protocol int
@@ -176,15 +180,18 @@ func handleUpdateDns(value string) {
 	}()
 }
 
+// send forwards the result to the C callback and releases the JNI global ref
+// when this is not the message-listener channel. The release is deferred so
+// JSON-marshal failure does not leak the global ref.
 func (result *ActionResult) send() {
+	if result.Method != messageMethod {
+		defer releaseObject(result.callback)
+	}
 	data, err := result.Json()
 	if err != nil {
 		return
 	}
 	invokeResult(result.callback, string(data))
-	if result.Method != messageMethod {
-		releaseObject(result.callback)
-	}
 }
 
 //export invokeAction
