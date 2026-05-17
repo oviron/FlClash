@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+// dart:ffi only here to type-check flutter_js's `rawResult` which is a native
+// Pointer on some platforms; needed by handleEvaluate's switch below.
 import 'dart:ffi' as ffi;
 
 import 'package:animations/animations.dart';
