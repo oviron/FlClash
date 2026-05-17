@@ -540,7 +540,7 @@ Future<String> _backupTask<T>(
       },
     );
   }
-  unawaited(encoder.close());
+  await encoder.close();
   await tempConfigFile.safeDelete();
   await tempDBFile.safeDelete();
   return tempZipFilePath;
