@@ -144,13 +144,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiEnable": MessageLookupByLibrary.simpleMessage("启用 ByeDPI"),
     "byedpiFallback": MessageLookupByLibrary.simpleMessage("byedpi 失败时切换到代理组"),
     "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage("备用代理"),
-    "byedpiHostList": MessageLookupByLibrary.simpleMessage("域名列表"),
-    "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("编辑"),
-    "byedpiHostListReset": MessageLookupByLibrary.simpleMessage("恢复默认"),
-    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
-      "将域名列表重置为内置默认值？",
-    ),
-    "byedpiHostListSaved": MessageLookupByLibrary.simpleMessage("域名列表已保存"),
     "byedpiMode": MessageLookupByLibrary.simpleMessage("模式"),
     "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("自动"),
     "byedpiModeManual": MessageLookupByLibrary.simpleMessage("手动"),

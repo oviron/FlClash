@@ -3800,51 +3800,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Host list`
-  String get byedpiHostList {
-    return Intl.message(
-      'Host list',
-      name: 'byedpiHostList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Edit`
-  String get byedpiHostListEdit {
-    return Intl.message('Edit', name: 'byedpiHostListEdit', desc: '', args: []);
-  }
-
-  /// `Reset to defaults`
-  String get byedpiHostListReset {
-    return Intl.message(
-      'Reset to defaults',
-      name: 'byedpiHostListReset',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset the host list to the bundled default?`
-  String get byedpiHostListResetConfirm {
-    return Intl.message(
-      'Reset the host list to the bundled default?',
-      name: 'byedpiHostListResetConfirm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Host list saved`
-  String get byedpiHostListSaved {
-    return Intl.message(
-      'Host list saved',
-      name: 'byedpiHostListSaved',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `No proxy groups in current profile`
   String get byedpiNoProxyGroups {
     return Intl.message(

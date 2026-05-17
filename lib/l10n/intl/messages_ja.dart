@@ -156,15 +156,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "byedpi 失敗時にプロキシグループへフォールバック",
     ),
     "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage("フォールバックプロキシ"),
-    "byedpiHostList": MessageLookupByLibrary.simpleMessage("ホストリスト"),
-    "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("編集"),
-    "byedpiHostListReset": MessageLookupByLibrary.simpleMessage("デフォルトに戻す"),
-    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
-      "ホストリストを内蔵のデフォルトにリセットしますか？",
-    ),
-    "byedpiHostListSaved": MessageLookupByLibrary.simpleMessage(
-      "ホストリストを保存しました",
-    ),
     "byedpiMode": MessageLookupByLibrary.simpleMessage("モード"),
     "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("自動"),
     "byedpiModeManual": MessageLookupByLibrary.simpleMessage("手動"),

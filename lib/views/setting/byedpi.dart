@@ -1,10 +1,8 @@
-import 'package:fl_clash/byedpi/host_list.dart';
 import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/byedpi.dart';
-import 'package:fl_clash/views/setting/widgets/byedpi_host_list_editor.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,8 +74,6 @@ class ByeDpiView extends ConsumerWidget {
               _PresetArgsPreview(preset: settings.preset),
             const _RestartButton(),
             _PortField(port: settings.port),
-            const Divider(height: 0),
-            _HostListTile(),
           ],
         ],
       ),
@@ -387,38 +383,6 @@ class _PortFieldState extends ConsumerState<_PortField> {
         focusNode: _focusNode,
         decoration: InputDecoration(labelText: appLocalizations.byedpiPort),
         keyboardType: TextInputType.number,
-      ),
-    );
-  }
-}
-
-class _HostListTile extends StatefulWidget {
-  @override
-  State<_HostListTile> createState() => _HostListTileState();
-}
-
-class _HostListTileState extends State<_HostListTile> {
-  int _count = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    countHosts().then((n) {
-      if (mounted) setState(() => _count = n);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.list_alt_outlined),
-      title: Text(appLocalizations.byedpiHostList),
-      subtitle: Text('$_count hosts'),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => const ByeDpiHostListEditor(),
-        ),
       ),
     );
   }

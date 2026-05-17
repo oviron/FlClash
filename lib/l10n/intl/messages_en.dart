@@ -193,17 +193,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage(
       "Fallback proxy",
     ),
-    "byedpiHostList": MessageLookupByLibrary.simpleMessage("Host list"),
-    "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("Edit"),
-    "byedpiHostListReset": MessageLookupByLibrary.simpleMessage(
-      "Reset to defaults",
-    ),
-    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
-      "Reset the host list to the bundled default?",
-    ),
-    "byedpiHostListSaved": MessageLookupByLibrary.simpleMessage(
-      "Host list saved",
-    ),
     "byedpiMode": MessageLookupByLibrary.simpleMessage("Mode"),
     "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("Automatic"),
     "byedpiModeManual": MessageLookupByLibrary.simpleMessage("Manual"),
