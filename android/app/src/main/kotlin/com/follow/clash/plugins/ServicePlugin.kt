@@ -17,6 +17,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 
+// Method-name constants — mirrored on the Dart side in
+// lib/plugins/method_names.dart. Renames here MUST land in the same PR
+// as the Dart-side rename, or the bridge silently breaks.
+private object ServiceMethod {
+    const val INIT = "init"
+    const val SHUTDOWN = "shutdown"
+    const val INVOKE_ACTION = "invokeAction"
+    const val GET_RUN_TIME = "getRunTime"
+    const val SYNC_STATE = "syncState"
+    const val START = "start"
+    const val STOP = "stop"
+    const val RESTART_BYEDPI = "restartByeDpi"
+    const val EVENT = "event"
+    const val CRASH = "crash"
+}
+
 class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
     private lateinit var flutterMethodChannel: MethodChannel
@@ -33,41 +49,15 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) = when (call.method) {
-        "init" -> {
-            handleInit(result)
-        }
-
-        "shutdown" -> {
-            handleShutdown(result)
-        }
-
-        "invokeAction" -> {
-            handleInvokeAction(call, result)
-        }
-
-        "getRunTime" -> {
-            handleGetRunTime(result)
-        }
-
-        "syncState" -> {
-            handleSyncState(call, result)
-        }
-
-        "start" -> {
-            handleStart(result)
-        }
-
-        "stop" -> {
-            handleStop(result)
-        }
-
-        "restartByeDpi" -> {
-            handleRestartByeDpi(result)
-        }
-
-        else -> {
-            result.notImplemented()
-        }
+        ServiceMethod.INIT -> handleInit(result)
+        ServiceMethod.SHUTDOWN -> handleShutdown(result)
+        ServiceMethod.INVOKE_ACTION -> handleInvokeAction(call, result)
+        ServiceMethod.GET_RUN_TIME -> handleGetRunTime(result)
+        ServiceMethod.SYNC_STATE -> handleSyncState(call, result)
+        ServiceMethod.START -> handleStart(result)
+        ServiceMethod.STOP -> handleStop(result)
+        ServiceMethod.RESTART_BYEDPI -> handleRestartByeDpi(result)
+        else -> result.notImplemented()
     }
 
     private fun handleRestartByeDpi(result: MethodChannel.Result) {
@@ -110,14 +100,14 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     fun handleSendEvent(value: String?) {
         launch(Dispatchers.Main) {
             semaphore.withPermit {
-                flutterMethodChannel.invokeMethod("event", value)
+                flutterMethodChannel.invokeMethod(ServiceMethod.EVENT, value)
             }
         }
     }
 
     private fun onServiceDisconnected(message: String) {
         State.runStateFlow.tryEmit(RunState.STOP)
-        flutterMethodChannel.invokeMethodOnMainThread<Any>("crash", message)
+        flutterMethodChannel.invokeMethodOnMainThread<Any>(ServiceMethod.CRASH, message)
     }
 
     private fun handleSyncState(call: MethodCall, result: MethodChannel.Result) {

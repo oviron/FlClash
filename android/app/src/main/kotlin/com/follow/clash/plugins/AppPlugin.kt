@@ -44,6 +44,25 @@ import java.io.File
 import java.lang.ref.WeakReference
 import java.util.zip.ZipFile
 
+// Method-name constants — mirrored on the Dart side in
+// lib/plugins/method_names.dart. Renames here MUST land in the same PR
+// as the Dart-side rename, or the bridge silently breaks.
+private object AppMethod {
+    const val EXIT = "exit"
+    const val MOVE_TASK_TO_BACK = "moveTaskToBack"
+    const val UPDATE_EXCLUDE_FROM_RECENTS = "updateExcludeFromRecents"
+    const val INIT_SHORTCUTS = "initShortcuts"
+    const val GET_PACKAGES = "getPackages"
+    const val GET_CHINA_PACKAGE_NAMES = "getChinaPackageNames"
+    const val GET_PACKAGE_ICON = "getPackageIcon"
+    const val TIP = "tip"
+    const val IS_AUTO_START_ENABLED = "isAutoStartEnabled"
+    const val SET_AUTO_START_ENABLED = "setAutoStartEnabled"
+    const val GET_LOG_DIRECTORY = "getLogDirectory"
+    const val REQUEST_NOTIFICATIONS_PERMISSION = "requestNotificationsPermission"
+    const val OPEN_FILE = "openFile"
+}
+
 class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
     private lateinit var applicationContext: Context
 
@@ -123,45 +142,45 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
-            "moveTaskToBack" -> {
+            AppMethod.MOVE_TASK_TO_BACK -> {
                 activityRef?.get()?.moveTaskToBack(true)
                 result.success(true)
             }
 
-            "updateExcludeFromRecents" -> {
+            AppMethod.UPDATE_EXCLUDE_FROM_RECENTS -> {
                 val value = call.argument<Boolean>("value")
                 updateExcludeFromRecents(value)
                 result.success(true)
             }
 
-            "initShortcuts" -> {
+            AppMethod.INIT_SHORTCUTS -> {
                 initShortcuts(call.arguments as String)
                 result.success(true)
             }
 
-            "getPackages" -> {
+            AppMethod.GET_PACKAGES -> {
                 scope.launch {
                     result.success(getPackagesToJson())
                 }
             }
 
-            "getChinaPackageNames" -> {
+            AppMethod.GET_CHINA_PACKAGE_NAMES -> {
                 scope.launch {
                     result.success(getChinaPackageNames())
                 }
             }
 
-            "getPackageIcon" -> {
+            AppMethod.GET_PACKAGE_ICON -> {
                 handleGetPackageIcon(call, result)
             }
 
-            "tip" -> {
+            AppMethod.TIP -> {
                 val message = call.argument<String>("message")
                 tip(message)
                 result.success(true)
             }
 
-            "isAutoStartEnabled" -> {
+            AppMethod.IS_AUTO_START_ENABLED -> {
                 val context = applicationContext
                 val enabled = context.packageManager.getComponentEnabledSetting(
                     ComponentName(context, AutoStartReceiver::class.java)
@@ -169,7 +188,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 result.success(enabled)
             }
 
-            "setAutoStartEnabled" -> {
+            AppMethod.SET_AUTO_START_ENABLED -> {
                 val enabled = call.arguments as Boolean
                 val context = applicationContext
                 val value = if (enabled) PackageManager.COMPONENT_ENABLED_STATE_ENABLED
@@ -182,7 +201,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 result.success(true)
             }
 
-            "getLogDirectory" -> {
+            AppMethod.GET_LOG_DIRECTORY -> {
                 // App-scoped external — no MANAGE_EXTERNAL_STORAGE needed.
                 val dir = File(applicationContext.getExternalFilesDir(null), "FlClash")
                 if (!dir.exists()) dir.mkdirs()
@@ -437,7 +456,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     }
 
     override fun onDetachedFromActivity() {
-        channel.invokeMethod("exit", null)
+        channel.invokeMethod(AppMethod.EXIT, null)
         activityRef = null
     }
 
