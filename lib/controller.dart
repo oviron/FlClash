@@ -1128,12 +1128,18 @@ extension CommonControllerExt on AppController {
     );
   }
 
+  /// Notify-and-continue wrapper. Default behaviour swallows exceptions
+  /// into a snackbar — fine for cosmetic UI operations. Critical paths
+  /// (VPN start, profile apply, anything where the caller MUST know if
+  /// the work failed) should pass `rethrowOnError: true` so the error
+  /// propagates after the user-facing notification.
   Future<T?> safeRun<T>(
     FutureOr<T> Function() futureFunction, {
     String? title,
     VoidCallback? onStart,
     VoidCallback? onEnd,
     bool silence = true,
+    bool rethrowOnError = false,
   }) async {
     try {
       if (onStart != null) {
@@ -1142,7 +1148,10 @@ extension CommonControllerExt on AppController {
       final res = await futureFunction();
       return res;
     } catch (e, s) {
-      commonPrint.log('$title ===> $e, $s', logLevel: LogLevel.warning);
+      commonPrint.log(
+        '$title ===> $e, $s',
+        logLevel: rethrowOnError ? LogLevel.error : LogLevel.warning,
+      );
       if (silence) {
         globalState.showNotifier(e.toString());
       } else {
@@ -1151,6 +1160,7 @@ extension CommonControllerExt on AppController {
           message: TextSpan(text: e.toString()),
         ));
       }
+      if (rethrowOnError) rethrow;
       return null;
     } finally {
       if (onEnd != null) {
