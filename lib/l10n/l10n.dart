@@ -3690,6 +3690,60 @@ class AppLocalizations {
     );
   }
 
+  String get byedpiPresetMtsAggressive {
+    return Intl.message(
+      'MTS (aggressive)',
+      name: 'byedpiPresetMtsAggressive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byedpiPresetMegafon2ni {
+    return Intl.message(
+      'MegaFon (2Ni)',
+      name: 'byedpiPresetMegafon2ni',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byedpiPresetBeelineRt {
+    return Intl.message(
+      'Beeline / Rostelecom',
+      name: 'byedpiPresetBeelineRt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byedpiPresetCascade {
+    return Intl.message(
+      'Cascade (aggressive)',
+      name: 'byedpiPresetCascade',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byedpiPresetTlsOnly {
+    return Intl.message(
+      'TLS-only',
+      name: 'byedpiPresetTlsOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byedpiPresetTtlFixed {
+    return Intl.message(
+      'TTL Fixed (MTS / MegaFon 2025+)',
+      name: 'byedpiPresetTtlFixed',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get byedpiPresetCustom {
     return Intl.message('Custom', name: 'byedpiPresetCustom', desc: '', args: []);
   }

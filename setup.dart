@@ -15,13 +15,13 @@ import 'package:yaml/yaml.dart';
 const _signerFpr = '1139C91B6525883E6783DCF04A94DA488A4C5033';
 const _signerPubKeyPath = 'scripts/oviron-signing.pub.asc';
 
-const _libmihomoVersion = '0.2.1';
+const _libmihomoVersion = '0.1.0';
 const _libmihomoSha256 =
-    '25a5117028590bc2ae62d6763e7afcf1dc8964aae9c93bd480db3264dc6ddc7e';
+    '4207b8805125305f122f93098080c8975b8729e6a1cd8459d070cc07a54ed319';
 
-const _libbyedpiVersion = '0.2.1';
+const _libbyedpiVersion = '0.1.0';
 const _libbyedpiSha256 =
-    'c37a06856bba6353f195229ac2612d45bef77b5ab40e37f3b8e2fae47e20a1ec';
+    '3308b6408f6dc944341368d53dc62b471ae1131424a749a105f25989530155c9';
 
 class _PinnedAar {
   final String label;

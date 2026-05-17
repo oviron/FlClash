@@ -40,8 +40,14 @@ const _$ByeDpiModeEnumMap = {
 
 const _$ByeDpiPresetEnumMap = {
   ByeDpiPreset.universal: 'universal',
-  ByeDpiPreset.tele2: 'tele2',
   ByeDpiPreset.mrDrone: 'mrDrone',
+  ByeDpiPreset.mtsAggressive: 'mtsAggressive',
+  ByeDpiPreset.megafon2ni: 'megafon2ni',
+  ByeDpiPreset.tele2: 'tele2',
+  ByeDpiPreset.beelineRt: 'beelineRt',
   ByeDpiPreset.antiGgc: 'antiGgc',
+  ByeDpiPreset.cascade: 'cascade',
+  ByeDpiPreset.tlsOnly: 'tlsOnly',
+  ByeDpiPreset.ttlFixed: 'ttlFixed',
   ByeDpiPreset.custom: 'custom',
 };

@@ -122,5 +122,5 @@ dependencies {
         exclude(group = "com.google.guava", module = "guava")
     }
     "bydpiImplementation"(libs.kotlinx.coroutines.android)
-    "bydpiImplementation"(files("libs/libbyedpi-android-v0.2.1.aar"))
+    "bydpiImplementation"(files("libs/libbyedpi-android-v0.1.0.aar"))
 }

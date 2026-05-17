@@ -123,12 +123,24 @@ class _PresetPicker extends ConsumerWidget {
     switch (p) {
       case ByeDpiPreset.universal:
         return appLocalizations.byedpiPresetUniversal;
-      case ByeDpiPreset.tele2:
-        return appLocalizations.byedpiPresetTele2;
       case ByeDpiPreset.mrDrone:
         return appLocalizations.byedpiPresetMrDrone;
+      case ByeDpiPreset.mtsAggressive:
+        return appLocalizations.byedpiPresetMtsAggressive;
+      case ByeDpiPreset.megafon2ni:
+        return appLocalizations.byedpiPresetMegafon2ni;
+      case ByeDpiPreset.tele2:
+        return appLocalizations.byedpiPresetTele2;
+      case ByeDpiPreset.beelineRt:
+        return appLocalizations.byedpiPresetBeelineRt;
       case ByeDpiPreset.antiGgc:
         return appLocalizations.byedpiPresetAntiGgc;
+      case ByeDpiPreset.cascade:
+        return appLocalizations.byedpiPresetCascade;
+      case ByeDpiPreset.tlsOnly:
+        return appLocalizations.byedpiPresetTlsOnly;
+      case ByeDpiPreset.ttlFixed:
+        return appLocalizations.byedpiPresetTtlFixed;
       case ByeDpiPreset.custom:
         return appLocalizations.byedpiPresetCustom;
     }
