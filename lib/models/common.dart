@@ -366,9 +366,8 @@ abstract class IpInfo with _$IpInfo {
   const factory IpInfo({required String ip, required String countryCode}) =
       _IpInfo;
 
-  // Sentinel for default-route REJECT — emitted by libmihomo-android
-  // (src/main/jni/core/probe.go::rejectedProbeBody). Not an ISO-3166 code;
-  // longer than 2 chars to rule out any collision.
+  // Sentinel for default-route REJECT — emitted by libmihomo's probe action.
+  // Not an ISO-3166 code; longer than 2 chars to rule out any collision.
   static const rejectedCountryCode = 'REJECT';
   static IpInfo rejected() =>
       const IpInfo(ip: '', countryCode: rejectedCountryCode);

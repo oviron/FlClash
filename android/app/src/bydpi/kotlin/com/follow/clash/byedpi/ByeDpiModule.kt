@@ -24,7 +24,7 @@ class ByeDpiModule(private val context: Context) : Module() {
     override fun onInstall() {
         currentRef = this
         ByeDpi.load(context.applicationInfo.nativeLibraryDir)
-        startByeDpi()
+        startByeDpiBlocking()
     }
 
     override fun onUninstall() {
@@ -40,17 +40,20 @@ class ByeDpiModule(private val context: Context) : Module() {
         currentRef = null
     }
 
-    private fun startByeDpi() {
+    private fun startByeDpiBlocking() {
         val bypass = state.read() ?: run {
             trace("startByeDpi: bypass config disabled, skipping")
             return
         }
         val config = bypass.toByeDpiConfig()
         trace("startByeDpi argv: ${config.args.joinToString(" ")}")
-        scope.launch {
+        // Block onInstall until byedpi listener is bound; mihomo's TUN starts
+        // immediately after we return and would otherwise race the listener.
+        runBlocking {
             try {
-                ByeDpi.start(config)
-                trace("byedpi running")
+                withTimeoutOrNull(START_TIMEOUT_MS) { ByeDpi.start(config) }
+                    ?: trace("byedpi start timed out after ${START_TIMEOUT_MS}ms")
+                trace("byedpi state=${ByeDpi.state.value::class.simpleName}")
             } catch (e: Throwable) {
                 trace("byedpi start failed: ${e.message}")
             }
@@ -103,6 +106,7 @@ class ByeDpiModule(private val context: Context) : Module() {
         private val TRACE_TS = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
         private val TRACE_LOCK = Any()
         private const val TRACE_MAX_BYTES = 256L * 1024L
+        private const val START_TIMEOUT_MS = 6_000L
         private const val STOP_TIMEOUT_MS = 3_000L
         private const val STOP_FORCE_TIMEOUT_MS = 1_000L
 

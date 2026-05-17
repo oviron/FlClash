@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# lint.sh — Kotlin + Dart static analysis. Native bridge (Go cgo) now lives
-# in oviron/libmihomo-android; lint there.
+# lint.sh — Kotlin + Dart static analysis.
 #
 # Usage:
 #   ./scripts/lint.sh          # both stacks

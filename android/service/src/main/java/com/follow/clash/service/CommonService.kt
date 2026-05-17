@@ -31,12 +31,13 @@ class CommonService : Service(), IBaseService,
     }
 
     override fun onDestroy() {
+        loader.cancel()
         handleDestroy()
         super.onDestroy()
     }
 
     override fun onLowMemory() {
-        Clash.forceGC()
+        if (Clash.isLoaded()) Clash.forceGC()
         super.onLowMemory()
     }
 

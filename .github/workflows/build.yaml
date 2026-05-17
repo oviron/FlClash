@@ -62,30 +62,6 @@ jobs:
           path: /usr/local/lib/android/sdk/ndk/28.0.13004108
           key: ndk-28.0.13004108-${{ runner.os }}
 
-      - name: Setup ccache for NDK compilation
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          key: ccache-${{ runner.os }}-${{ matrix.flavor }}
-          max-size: 300M
-          variant: ccache
-
-      - name: Export NDK_CCACHE
-        run: |
-          CCACHE_BIN=$(which ccache)
-          echo "NDK_CCACHE=$CCACHE_BIN" >> "$GITHUB_ENV"
-          echo "ccache binary: $CCACHE_BIN"
-          ccache --version | head -1
-
-      - name: Cache CMake builds
-        uses: actions/cache@v4
-        with:
-          path: |
-            android/core/.cxx
-          key: cmake-${{ runner.os }}-${{ matrix.flavor }}-${{ hashFiles('android/core/src/main/cpp/CMakeLists.txt', 'android/core/src/main/cpp/*.cpp', 'android/core/src/main/cpp/*.h') }}
-          restore-keys: |
-            cmake-${{ runner.os }}-${{ matrix.flavor }}-
-            cmake-${{ runner.os }}-
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:

@@ -15,6 +15,7 @@ import com.follow.clash.service.State.runLock
 import com.follow.clash.service.models.NotificationParams
 import com.follow.clash.service.models.VpnOptions
 import io.github.oviron.libmihomo.Clash
+import io.github.oviron.libmihomo.InvokeInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -31,7 +32,10 @@ class RemoteService : Service(),
         super.onCreate()
         LibraryLoader.load(this)
         // :remote owns libclash.so → direct JNI, no IPC.
+        // Guard against unloaded Clash so log calls don't amplify a failed init
+        // into a service-killing crash loop.
         Logger.installRemoteForward { level, tag, payload ->
+            if (!Clash.isLoaded()) return@installRemoteForward
             Clash.invokeAction(buildHostLogAction(level, tag, payload)) { _ -> }
         }
     }
@@ -184,7 +188,7 @@ class RemoteService : Service(),
                     }
                 }
 
-                false -> Clash.setEventListener(null as ((String?) -> Unit)?)
+                false -> Clash.setEventListener(null as InvokeInterface?)
             }
         }
 

@@ -4,7 +4,7 @@
 
 Android `mihomo` client. Open source, no ads, no telemetry.
 
-A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (last upstream activity: February 2026). This fork is **Android-only**: desktop platform code, Firebase/Crashlytics, the in-app updater, the External Controller toggle, and other upstream-specific layers were removed. The mihomo core was migrated from chen's submodule to `metacubex/mihomo v1.19.24` directly, and the client now talks to mihomo through a 100% JNI bridge (no REST controller). The bridge itself lives in a separate public repo [oviron/libmihomo-android](https://github.com/oviron/libmihomo-android) and is consumed here as a SHA-256-pinned `.aar` download.
+A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (last upstream activity: February 2026). **Android-only**, `metacubex/mihomo v1.19.24` direct via 100% JNI, no REST controller. The mihomo bridge lives in [oviron/libmihomo-android](https://github.com/oviron/libmihomo-android); the DPI-bypass core lives in [oviron/libbyedpi-android](https://github.com/oviron/libbyedpi-android). FlClash consumes both as SHA-256 + GPG-pinned `.aar` downloads — no C/C++/Go code in this repo.
 
 <p align="center">
     <img alt="mobile" src="snapshots/mobile.gif" width="45%">

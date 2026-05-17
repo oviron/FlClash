@@ -68,6 +68,7 @@ class VpnService : SystemVpnService(), IBaseService,
     }
 
     override fun onDestroy() {
+        loader.cancel()
         releaseLocks()
         handleDestroy()
         super.onDestroy()
@@ -147,7 +148,7 @@ class VpnService : SystemVpnService(), IBaseService,
 
 
     override fun onLowMemory() {
-        Clash.forceGC()
+        if (Clash.isLoaded()) Clash.forceGC()
         super.onLowMemory()
     }
 
@@ -314,7 +315,7 @@ class VpnService : SystemVpnService(), IBaseService,
         releaseLocks()
         handleDestroy()
         loader.cancel()
-        Clash.stopTun()
+        if (Clash.isLoaded()) Clash.stopTun()
         stopSelf()
     }
 
