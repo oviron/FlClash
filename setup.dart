@@ -17,7 +17,7 @@ const _signerPubKeyPath = 'scripts/oviron-signing.pub.asc';
 
 const _libmihomoVersion = '0.1.0';
 const _libmihomoSha256 =
-    '4207b8805125305f122f93098080c8975b8729e6a1cd8459d070cc07a54ed319';
+    '017f15e69130066490e7e67ffa2b805f9cd5d696fa672d73752e3188ec8b18f2';
 
 const _libbyedpiVersion = '0.1.0';
 const _libbyedpiSha256 =
