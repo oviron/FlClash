@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:fl_clash/manager/underlying_network_bridge.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/network_rules/probe.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ConnectivityManager extends StatefulWidget {
   final Function(List<ConnectivityResult> results)? onConnectivityChanged;
@@ -26,8 +26,14 @@ class ConnectivityManager extends StatefulWidget {
 
 class _ConnectivityManagerState extends State<ConnectivityManager> {
   late StreamSubscription<List<ConnectivityResult>> subscription;
-  late StreamSubscription<String> _underlyingSubscription;
   final NetworkProbe _probe = const NetworkProbe();
+
+  // Backfills underlying-network flips that connectivity_plus drops while
+  // the VPN is the default network. Kotlin UnderlyingNetworkPlugin pushes
+  // notifications here directly.
+  static const _underlyingChannel = MethodChannel(
+    'com.follow.clash/underlying_network',
+  );
 
   @override
   void initState() {
@@ -38,11 +44,11 @@ class _ConnectivityManagerState extends State<ConnectivityManager> {
       }
       await _emitSnapshot();
     });
-    // Backfills underlying-network flips that connectivity_plus drops
-    // while the VPN is the default network.
-    _underlyingSubscription =
-        UnderlyingNetworkBridge.instance.stream.listen((_) {
-      _emitSnapshot();
+    _underlyingChannel.setMethodCallHandler((call) async {
+      if (call.method == 'underlyingChanged') {
+        unawaited(_emitSnapshot());
+      }
+      return null;
     });
     // Fire once on mount so the engine has an initial snapshot to work from.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -61,7 +67,7 @@ class _ConnectivityManagerState extends State<ConnectivityManager> {
   @override
   void dispose() {
     subscription.cancel();
-    _underlyingSubscription.cancel();
+    _underlyingChannel.setMethodCallHandler(null);
     super.dispose();
   }
 
