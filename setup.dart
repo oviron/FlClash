@@ -109,9 +109,26 @@ class Build {
   }
 
   static Future<void> _fetchAar(_PinnedAar pinned) async {
-    final target = File(join(current, pinned.moduleBuildLibsDir, pinned.fileName));
-    target.parent.createSync(recursive: true);
+    final libsDir = Directory(join(current, pinned.moduleBuildLibsDir));
+    libsDir.createSync(recursive: true);
 
+    // Gradle uses fileTree("libs") { include("lib<label>-android-v*.aar") } —
+    // setup.dart is the single source of version truth. Sweep any stale .aar
+    // (and its .asc) so a downgrade or version change can't leave two .aars
+    // matching the include glob and double-linking in the APK.
+    for (final f in libsDir.listSync()) {
+      final name = f.uri.pathSegments.last;
+      if (f is File &&
+          name.startsWith('lib${pinned.label}-android-v') &&
+          (name.endsWith('.aar') || name.endsWith('.aar.asc')) &&
+          name != pinned.fileName &&
+          name != '${pinned.fileName}.asc') {
+        f.deleteSync();
+        print('removed stale ${f.path}');
+      }
+    }
+
+    final target = File(join(libsDir.path, pinned.fileName));
     final cached = target.existsSync() &&
         await _verifySha256(target, pinned.sha256);
     if (!cached) {

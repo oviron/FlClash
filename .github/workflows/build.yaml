@@ -16,9 +16,59 @@ env:
   IS_STABLE: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-') }}
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.35.7
+          cache: true
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Flutter analyze (app code only)
+        run: |
+          out=$(flutter analyze --no-pub 2>&1)
+          echo "$out"
+          filtered=$(printf '%s\n' "$out" | grep -E '^\s+(error|warning)' | grep -v 'plugins/' || true)
+          if [ -n "$filtered" ]; then
+            echo "::error::flutter analyze reported issues in app code"
+            exit 1
+          fi
+
+      - name: Flutter test
+        run: flutter test --no-pub --reporter=expanded
+
+      - name: Setup Java for detekt
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install detekt
+        run: |
+          curl -sSLo detekt.jar https://github.com/detekt/detekt/releases/download/v1.23.7/detekt-cli-1.23.7-all.jar
+          echo '#!/usr/bin/env bash' > /usr/local/bin/detekt
+          echo 'exec java -jar '"$PWD/detekt.jar"' "$@"' >> /usr/local/bin/detekt
+          sudo chmod +x /usr/local/bin/detekt
+
+      - name: Detekt
+        run: |
+          detekt \
+            --input android/app/src/main/kotlin,android/core/src/main/java,android/service/src/main/java,android/common/src/main/java \
+            --build-upon-default-config \
+            ${{ hashFiles('detekt.yml') != '' && '--config detekt.yml' || '' }}
+
   build:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
+    needs: lint
     strategy:
       fail-fast: false
       matrix:

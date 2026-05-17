@@ -26,8 +26,9 @@ kotlin {
 }
 
 // libmihomo .aar is pre-fetched by setup.dart into libs/ with SHA-256
-// + GPG verification before Gradle runs. Gradle just consumes the file.
+// + GPG verification before Gradle runs. Filename = single source of truth
+// in setup.dart; Gradle picks up whatever .aar landed.
 dependencies {
-    api(files("libs/libmihomo-android-v0.1.0.aar"))
+    api(fileTree("libs") { include("libmihomo-android-v*.aar") })
     implementation(libs.annotation.jvm)
 }
