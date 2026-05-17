@@ -39,7 +39,7 @@ class ByeDpiSettingsStore {
     // When migrating away from legacy cliArgs, surface the new universal
     // defaults so a later switch to Custom doesn't show a stale string.
     final cliArgs = (legacy || storedCli == null)
-        ? byeDpiPresetArgs[ByeDpiPreset.universal]!
+        ? ByeDpiPreset.universal.args
         : storedCli;
 
     return ByeDpiSettings(

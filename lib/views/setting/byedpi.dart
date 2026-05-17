@@ -101,7 +101,7 @@ class _PresetPicker extends ConsumerWidget {
             items: ByeDpiPreset.values
                 .map((p) => DropdownMenuItem(
                       value: p,
-                      child: Text(_presetLabel(p)),
+                      child: Text(p.label),
                     ))
                 .toList(),
             onChanged: (v) {
@@ -115,32 +115,6 @@ class _PresetPicker extends ConsumerWidget {
     );
   }
 
-  String _presetLabel(ByeDpiPreset p) {
-    switch (p) {
-      case ByeDpiPreset.universal:
-        return appLocalizations.byedpiPresetUniversal;
-      case ByeDpiPreset.mrDrone:
-        return appLocalizations.byedpiPresetMrDrone;
-      case ByeDpiPreset.mtsAggressive:
-        return appLocalizations.byedpiPresetMtsAggressive;
-      case ByeDpiPreset.megafon2ni:
-        return appLocalizations.byedpiPresetMegafon2ni;
-      case ByeDpiPreset.tele2:
-        return appLocalizations.byedpiPresetTele2;
-      case ByeDpiPreset.beelineRt:
-        return appLocalizations.byedpiPresetBeelineRt;
-      case ByeDpiPreset.antiGgc:
-        return appLocalizations.byedpiPresetAntiGgc;
-      case ByeDpiPreset.cascade:
-        return appLocalizations.byedpiPresetCascade;
-      case ByeDpiPreset.tlsOnly:
-        return appLocalizations.byedpiPresetTlsOnly;
-      case ByeDpiPreset.ttlFixed:
-        return appLocalizations.byedpiPresetTtlFixed;
-      case ByeDpiPreset.custom:
-        return appLocalizations.byedpiPresetCustom;
-    }
-  }
 }
 
 class _RestartButton extends StatefulWidget {
@@ -198,7 +172,7 @@ class _PresetArgsPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args = byeDpiPresetArgs[preset] ?? '';
+    final args = preset.args;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: SelectableText(
