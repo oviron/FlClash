@@ -24,6 +24,7 @@ import com.follow.clash.service.models.getSpeedTrafficText
 import io.github.oviron.libmihomo.Clash
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -44,7 +45,7 @@ val NotificationParams.extended: ExtendedNotificationParams
     )
 
 class NotificationModule(private val service: Service) : Module() {
-    private val scope = CoroutineScope(Dispatchers.Default)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override fun onInstall() {
         scope.launch {
