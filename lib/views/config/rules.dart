@@ -1,5 +1,5 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/features/features.dart';
+import 'package:fl_clash/views/profiles/overwrite_rule.dart';
 import 'package:fl_clash/models/clash_config.dart';
 import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/providers.dart';
