@@ -13,6 +13,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
+// CommonService is selected by RemoteService.handleStartService when
+// VpnOptions.enable is false — i.e. system-proxy / mixed-port mode
+// without the TUN tunnel. Dart side: Settings → Network → "VPN" toggle
+// (lib/views/config/network.dart). Don't delete: this is the no-TUN
+// codepath, used when users want only HTTP/SOCKS5 listener.
 class CommonService : Service(), IBaseService,
     CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
 
