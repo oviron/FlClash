@@ -11,9 +11,9 @@ Future<String> hostListPath() async {
   return join(dir.path, 'byedpi-hosts.txt');
 }
 
-Future<void> ensureDefaultPresent() async {
-  // The narrow default is the source of truth; the on-disk file is replaced
-  // every app start. UI edits are session-only and get reset on next launch.
+Future<void> installDefaultHostList() async {
+  // The bundled asset is the source of truth; the on-disk file is replaced
+  // every app start. UI edits via the editor are session-only.
   final path = await hostListPath();
   final contents = await rootBundle.loadString(_assetPath);
   await _atomicWrite(path, contents);

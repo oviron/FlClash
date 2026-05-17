@@ -125,7 +125,7 @@ class GlobalState {
     final profiles = await database.profilesDao.all().get();
     container.read(profilesProvider.notifier).setAndReorder(profiles);
     if (kByeDpiEnabled) {
-      await ensureDefaultPresent();
+      await installDefaultHostList();
     }
     await AppLocalizations.load(
       utils.getLocaleForString(config.appSettingProps.locale) ??

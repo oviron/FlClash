@@ -1,17 +1,42 @@
-# DPI-blocked hosts. Curated narrow — wide GeoSite/GeoIP would over-capture
-# Gmail/Drive/Maps on the same AS and break them. Add more via UI if needed.
+# DPI-blocked hosts. Curated narrow — catch-all suffixes like googleapis.com
+# would over-capture geo-restricted services (Gemini, Drive, Maps) and route
+# them through byedpi over the RU LTE underlying network, blocking access.
+# Specific subdomains only.
 #
 # YouTube
 youtube.com
 youtu.be
+yt.be
 youtube-nocookie.com
 googlevideo.com
 ytimg.com
 ggpht.com
+youtubei.googleapis.com
+jnn-pa.googleapis.com
+signaler-pa.youtube.com
 #
 # Discord
 discord.com
 discord.gg
 discord.media
+discord.app
+discord.co
+discord.dev
+discord.new
+discord.gift
+discord.gifts
+discord.store
+discord.design
+discord.tools
+discord.status
+discord-activities.com
+discordactivities.com
 discordapp.com
 discordapp.net
+discordapp.io
+discordcdn.com
+discordsays.com
+discordsez.com
+discordmerch.com
+discordpartygames.com
+dis.gd
