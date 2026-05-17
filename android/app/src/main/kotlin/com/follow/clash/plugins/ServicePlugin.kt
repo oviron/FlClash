@@ -78,8 +78,12 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     }
 
     private fun handleInvokeAction(call: MethodCall, result: MethodChannel.Result) {
+        val data = call.arguments<String>()
+        if (data == null) {
+            result.error("NULL_ARG", "invokeAction expects a String payload", null)
+            return
+        }
         launch {
-            val data = call.arguments<String>()!!
             Service.invokeAction(data) {
                 result.success(it)
             }
@@ -117,7 +121,11 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     }
 
     private fun handleSyncState(call: MethodCall, result: MethodChannel.Result) {
-        val data = call.arguments<String>()!!
+        val data = call.arguments<String>()
+        if (data == null) {
+            result.error("NULL_ARG", "syncState expects a String payload", null)
+            return
+        }
         State.sharedState = Gson().fromJson(data, SharedState::class.java)
         launch {
             State.syncState()

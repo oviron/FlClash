@@ -28,13 +28,14 @@ import io.github.oviron.libmihomo.Clash
 import io.github.oviron.libmihomo.TunInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.URL
 import android.net.VpnService as SystemVpnService
 
 class VpnService : SystemVpnService(), IBaseService,
-    CoroutineScope by CoroutineScope(Dispatchers.Default) {
+    CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
 
     private val self: VpnService
         get() = this

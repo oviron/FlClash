@@ -11,9 +11,10 @@ import com.follow.clash.service.modules.SuspendModule
 import io.github.oviron.libmihomo.Clash
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 class CommonService : Service(), IBaseService,
-    CoroutineScope by CoroutineScope(Dispatchers.Default) {
+    CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
 
     private val self: CommonService
         get() = this
