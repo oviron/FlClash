@@ -383,7 +383,6 @@ Future<MigrationData> _oldToNowTask(
   appSettingProps['restoreStrategy'] = appSettingProps['recoveryStrategy'];
   configMap['appSettingProps'] = appSettingProps;
   configMap['proxiesStyleProps'] = configMap['proxiesStyle'];
-  configMap['proxiesStyleProps'] = configMap['proxiesStyle'];
   List<dynamic> rawScripts = configMap['scripts'] as List<dynamic>? ?? [];
   if (rawScripts.isEmpty) {
     final scriptPropsJson = configMap['scriptProps'] as Map<String, dynamic>?;

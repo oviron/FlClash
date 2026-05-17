@@ -35,6 +35,9 @@ class Database extends _$Database {
       if (from < 3) {
         await m.createTable(networkRules);
       }
+      // v3→v4 created bypass_profiles; v4→v5 immediately dropped it (Bypass
+      // Profiles feature abandoned before any user code referenced it). The
+      // create+drop pair stays in history for devices that ran v4 briefly.
       if (from < 4) {
         await customStatement(
           'CREATE TABLE IF NOT EXISTS bypass_profiles ('
@@ -93,7 +96,7 @@ extension TableInfoExt<Tbl extends Table, Row> on TableInfo<Tbl, Row> {
     Batch batch,
     Iterable<Insertable<Row>> items, {
     required Expression<bool> Function(Tbl tbl) deleteFilter,
-  }) async {
+  }) {
     batch.insertAllOnConflictUpdate(this, items);
     batch.deleteWhere(this, deleteFilter);
   }
