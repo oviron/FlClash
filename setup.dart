@@ -132,7 +132,14 @@ class Build {
       print('fetching ${pinned.url}.asc');
       await _download('${pinned.url}.asc', asc);
     }
-    await _verifyGpg(target, asc);
+    try {
+      await _verifyGpg(target, asc);
+    } catch (_) {
+      // Stale or corrupt .asc would otherwise loop forever — drop it so the
+      // next run re-downloads. Re-throw to surface the failure to the caller.
+      if (asc.existsSync()) await asc.delete();
+      rethrow;
+    }
   }
 
   static Future<bool> _verifySha256(File f, String expected) async {
@@ -186,7 +193,9 @@ class Build {
     if (partial.existsSync()) {
       await partial.delete();
     }
-    final client = HttpClient();
+    final client = HttpClient()
+      ..connectionTimeout = const Duration(seconds: 30)
+      ..idleTimeout = const Duration(seconds: 60);
     try {
       var attempt = 0;
       var currentUri = Uri.parse(url);
