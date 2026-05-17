@@ -1170,4 +1170,9 @@ extension CommonControllerExt on AppController {
   }
 }
 
+// Imperative action dispatcher. Same migration intent as globalState (see
+// lib/state.dart): each extension block is a candidate for promotion to a
+// Riverpod Notifier so view-layer calls route through ref.read(...).notifier
+// instead of the global singleton. Start with the smallest extension blocks
+// (LoadingControllerExt, IpCheckControllerExt) when migrating incrementally.
 final appController = AppController();

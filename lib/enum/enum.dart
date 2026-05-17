@@ -236,6 +236,19 @@ enum FunctionTag {
   saveSharedFile,
 }
 
+// DashboardWidget intentionally references view-layer widget constructors
+// (NetworkSpeed, OutboundMode, etc.) as const GridItem children. The reverse
+// lookup getDashboardWidget(gridItem) and the children.contains(item.widget)
+// path in views/dashboard/dashboard.dart both depend on canonical const-
+// instance identity — moving the widget construction into a factory at the
+// usage site would break that identity unless every callable returns the
+// same const tear-off, which Dart enum value declarations cannot express.
+//
+// Layering note: this enum imports `views/dashboard/widgets/widgets.dart` at
+// the top of this file, so anything that depends on enum.dart transitively
+// depends on the dashboard view layer. That dependency is a known accepted
+// trade-off; the alternative (factory + identity rewrite) is a coupled
+// refactor with the AppController→Notifier migration above.
 enum DashboardWidget {
   networkSpeed(GridItem(crossAxisCellCount: 8, child: NetworkSpeed())),
   outboundModeV2(GridItem(crossAxisCellCount: 8, child: OutboundModeV2())),
