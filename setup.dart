@@ -3,59 +3,80 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:archive/archive.dart' as archive;
 import 'package:args/command_runner.dart';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
 
-// Pinned mihomo bridge: bumped together with libmihomo-android release.
-const _libmihomoVersion = '0.1.0';
+// Pre-fetch libraries with SHA-256 + GPG verification, then hand off to
+// Gradle. The Gradle download tasks are SHA-pinned too; this script's
+// pre-fetch is the GPG defense-in-depth layer Gradle alone cannot provide.
+
+const _signerFpr = '1139C91B6525883E6783DCF04A94DA488A4C5033';
+const _signerPubKeyPath = 'scripts/oviron-signing.pub.asc';
+
+const _libmihomoVersion = '0.2.0';
 const _libmihomoSha256 =
-    'c84c4a9a3d1cccb12bc84f58518cf0b1d9fc74da13aa2571040456b464be32be';
-const _libmihomoUrl =
-    'https://github.com/oviron/libmihomo-android/releases/download/'
-    'v$_libmihomoVersion/libmihomo-android-v$_libmihomoVersion.aar';
+    'e63e784b245372259a98404d1b9569ef9a95f21ab0ff3d1214a968a0a52c8892';
+
+const _libbyedpiVersion = '0.2.0';
+const _libbyedpiSha256 =
+    '8ca340b416b31261cf7f410a0bb6eeaaea6376c50af70fd1196456f617360b9d';
+
+class _PinnedAar {
+  final String label;
+  final String version;
+  final String sha256;
+  final String releaseRepo;
+  final String moduleBuildLibsDir;
+
+  _PinnedAar({
+    required this.label,
+    required this.version,
+    required this.sha256,
+    required this.releaseRepo,
+    required this.moduleBuildLibsDir,
+  });
+
+  String get fileName => 'lib$label-android-v$version.aar';
+  String get url =>
+      'https://github.com/$releaseRepo/releases/download/v$version/$fileName';
+}
 
 enum Arch { amd64, arm64, arm }
 
 class BuildItem {
   final Arch arch;
-  final String archName;
   final String flutterTarget;
 
-  const BuildItem({
-    required this.arch,
-    required this.archName,
-    required this.flutterTarget,
-  });
+  const BuildItem({required this.arch, required this.flutterTarget});
 }
 
 class Build {
   static const List<BuildItem> androidItems = [
-    BuildItem(
-      arch: Arch.arm,
-      archName: 'armeabi-v7a',
-      flutterTarget: 'android-arm',
-    ),
-    BuildItem(
-      arch: Arch.arm64,
-      archName: 'arm64-v8a',
-      flutterTarget: 'android-arm64',
-    ),
-    BuildItem(
-      arch: Arch.amd64,
-      archName: 'x86_64',
-      flutterTarget: 'android-x64',
-    ),
+    BuildItem(arch: Arch.arm, flutterTarget: 'android-arm'),
+    BuildItem(arch: Arch.arm64, flutterTarget: 'android-arm64'),
+    BuildItem(arch: Arch.amd64, flutterTarget: 'android-x64'),
   ];
 
-  static String get appName => 'FlClash';
-  static String get libName => 'libclash';
-  static String get outDir => join(current, libName);
   static String get distPath => join(current, 'dist');
-  static String get _cacheDir =>
-      join(current, '.dart_tool', 'libmihomo-android');
+
+  static final List<_PinnedAar> _aars = [
+    _PinnedAar(
+      label: 'mihomo',
+      version: _libmihomoVersion,
+      sha256: _libmihomoSha256,
+      releaseRepo: 'oviron/libmihomo-android',
+      moduleBuildLibsDir: 'android/core/libs',
+    ),
+    _PinnedAar(
+      label: 'byedpi',
+      version: _libbyedpiVersion,
+      sha256: _libbyedpiSha256,
+      releaseRepo: 'oviron/libbyedpi-android',
+      moduleBuildLibsDir: 'android/app/libs',
+    ),
+  ];
 
   static Future<void> exec(
     List<String> executable, {
@@ -66,7 +87,6 @@ class Build {
   }) async {
     if (name != null) print('run $name');
     print('exec: ${executable.join(' ')}');
-    if (environment != null) print('env: $environment');
     final process = await Process.start(
       executable[0],
       executable.sublist(1),
@@ -82,64 +102,37 @@ class Build {
     }
   }
 
-  /// Downloads pinned libmihomo-android .aar, verifies SHA-256, extracts
-  /// libclash.so for ALL supported ABIs into libclash/android/<abi>/.
-  /// Idempotent: keeps the cached .aar across runs as long as its hash matches.
-  /// `arch` is ignored here — we always populate all ABIs because CMake/NDK
-  /// builds libcore.so per defaultConfig ABI regardless of the flutter
-  /// `--target-platform` selection at APK assembly time.
-  static Future<void> setupLibmihomo({Arch? arch}) async {
-    final items = androidItems;
+  static Future<void> fetchAars() async {
+    for (final aar in _aars) {
+      await _fetchAar(aar);
+    }
+  }
 
-    await Directory(_cacheDir).create(recursive: true);
-    final aarFile = File(
-      join(_cacheDir, 'libmihomo-android-v$_libmihomoVersion.aar'),
-    );
+  static Future<void> _fetchAar(_PinnedAar pinned) async {
+    final target = File(join(current, pinned.moduleBuildLibsDir, pinned.fileName));
+    target.parent.createSync(recursive: true);
 
-    final cached = aarFile.existsSync() &&
-        await _verifySha256(aarFile, _libmihomoSha256);
-    if (cached) {
-      print(
-        'libmihomo-android v$_libmihomoVersion cached, SHA-256 verified',
-      );
+    final cached = target.existsSync() &&
+        await _verifySha256(target, pinned.sha256);
+    if (!cached) {
+      print('fetching ${pinned.url}');
+      await _download(pinned.url, target);
+      if (!await _verifySha256(target, pinned.sha256)) {
+        final actual = await _sha256Hex(target);
+        await target.delete();
+        throw 'lib${pinned.label} SHA-256 mismatch: '
+            'expected ${pinned.sha256}, got $actual';
+      }
     } else {
-      print('downloading $_libmihomoUrl');
-      await _download(_libmihomoUrl, aarFile);
-      if (!await _verifySha256(aarFile, _libmihomoSha256)) {
-        final actual = await _sha256Hex(aarFile);
-        await aarFile.delete();
-        throw 'libmihomo .aar SHA-256 mismatch:\n'
-            '  expected $_libmihomoSha256\n'
-            '  actual   $actual';
-      }
-      print(
-        'downloaded ${aarFile.lengthSync()} bytes, '
-        'SHA-256 verified: $_libmihomoSha256',
-      );
+      print('lib${pinned.label} v${pinned.version} cached, SHA-256 OK');
     }
 
-    final androidOutDir = Directory(join(outDir, 'android'));
-    if (androidOutDir.existsSync()) {
-      androidOutDir.deleteSync(recursive: true);
+    final asc = File('${target.path}.asc');
+    if (!asc.existsSync()) {
+      print('fetching ${pinned.url}.asc');
+      await _download('${pinned.url}.asc', asc);
     }
-    androidOutDir.createSync(recursive: true);
-
-    final aar = archive.ZipDecoder().decodeBytes(aarFile.readAsBytesSync());
-    for (final item in items) {
-      final entryName = 'jni/${item.archName}/$libName.so';
-      final entry = aar.findFile(entryName);
-      if (entry == null) {
-        throw '.aar missing entry: $entryName';
-      }
-      final outFile = File(
-        join(androidOutDir.path, item.archName, '$libName.so'),
-      );
-      outFile.parent.createSync(recursive: true);
-      outFile.writeAsBytesSync(entry.content as List<int>);
-      print(
-        'extracted $entryName -> ${outFile.path} (${entry.size} bytes)',
-      );
-    }
+    await _verifyGpg(target, asc);
   }
 
   static Future<bool> _verifySha256(File f, String expected) async {
@@ -151,15 +144,55 @@ class Build {
     return sha256.convert(await f.readAsBytes()).toString();
   }
 
+  static Future<void> _verifyGpg(File aar, File asc) async {
+    final pubKey = File(join(current, _signerPubKeyPath));
+    if (!pubKey.existsSync()) {
+      throw 'pinned signer pubkey missing: ${pubKey.path}';
+    }
+    final gpgHome = await Directory.systemTemp.createTemp('flclash-gpg-');
+    try {
+      final env = {'GNUPGHOME': gpgHome.path};
+      final import = await Process.run(
+        'gpg', ['--batch', '--quiet', '--import', pubKey.path],
+        environment: env,
+      );
+      if (import.exitCode != 0) {
+        throw 'gpg --import failed: ${import.stderr}';
+      }
+
+      final verify = await Process.run(
+        'gpg',
+        [
+          '--batch', '--status-fd', '1', '--no-tty',
+          '--verify', asc.path, aar.path,
+        ],
+        environment: env,
+      );
+      final status = '${verify.stdout}\n${verify.stderr}';
+      if (verify.exitCode != 0 ||
+          !status.contains('GOODSIG') ||
+          !status.contains(_signerFpr)) {
+        throw 'GPG verification failed for ${aar.path}:\n$status';
+      }
+      print('  GPG signature verified by $_signerFpr');
+    } finally {
+      await gpgHome.delete(recursive: true);
+    }
+  }
+
   static Future<void> _download(String url, File target) async {
     target.parent.createSync(recursive: true);
+    final partial = File('${target.path}.part');
+    if (partial.existsSync()) {
+      await partial.delete();
+    }
     final client = HttpClient();
     try {
       var attempt = 0;
-      var current = Uri.parse(url);
+      var currentUri = Uri.parse(url);
       while (true) {
         attempt++;
-        final req = await client.getUrl(current);
+        final req = await client.getUrl(currentUri);
         final resp = await req.close();
         if (resp.statusCode == 301 ||
             resp.statusCode == 302 ||
@@ -170,16 +203,23 @@ class Build {
           }
           final next = resp.headers.value('location');
           if (next == null) {
-            throw 'redirect without Location from $current';
+            throw 'redirect without Location from $currentUri';
           }
-          current = current.resolve(next);
+          currentUri = currentUri.resolve(next);
           continue;
         }
         if (resp.statusCode != 200) {
-          throw 'HTTP ${resp.statusCode} from $current';
+          throw 'HTTP ${resp.statusCode} from $currentUri';
         }
-        final sink = target.openWrite();
-        await resp.pipe(sink);
+        final sink = partial.openWrite();
+        try {
+          await resp.pipe(sink);
+        } catch (e) {
+          await sink.close();
+          if (partial.existsSync()) await partial.delete();
+          rethrow;
+        }
+        await partial.rename(target.path);
         return;
       }
     } finally {
@@ -193,17 +233,13 @@ class BuildAndroidCommand extends Command<void> {
     argParser.addOption(
       'arch',
       valueHelp: Build.androidItems.map((e) => e.arch.name).join(','),
-      help: 'Limit build to a single Android arch (default: all)',
+      help: 'Limit final APK split to one Android arch (default: build all '
+          'three).',
     );
     argParser.addOption(
       'env',
       valueHelp: 'pre,stable',
       help: 'APP_ENV value baked into env.json (default: pre)',
-    );
-    argParser.addOption(
-      'out',
-      valueHelp: 'app,core',
-      help: 'Build target: app (apk) or core (download libclash.so only)',
     );
     argParser.addOption(
       'flavor',
@@ -245,7 +281,7 @@ class BuildAndroidCommand extends Command<void> {
       final src = File(
         join(
           flutterApkDir.path,
-          'app-${item.archName}-$flavor-release.apk',
+          'app-${_archName(item.arch)}-$flavor-release.apk',
         ),
       );
       if (!src.existsSync()) {
@@ -254,7 +290,7 @@ class BuildAndroidCommand extends Command<void> {
       final dst = File(
         join(
           dist.path,
-          'FlClash-$flavor-$version-android-${item.archName}.apk',
+          'FlClash-$flavor-$version-android-${_archName(item.arch)}.apk',
         ),
       );
       await src.copy(dst.path);
@@ -262,11 +298,16 @@ class BuildAndroidCommand extends Command<void> {
     }
   }
 
+  static String _archName(Arch a) => switch (a) {
+        Arch.arm => 'armeabi-v7a',
+        Arch.arm64 => 'arm64-v8a',
+        Arch.amd64 => 'x86_64',
+      };
+
   @override
   Future<void> run() async {
     final archName = argResults?['arch'] as String?;
     final env = (argResults?['env'] as String?) ?? 'pre';
-    final out = (argResults?['out'] as String?) ?? 'app';
     final flavor = argResults?['flavor'] as String? ?? 'classic';
 
     Arch? arch;
@@ -278,10 +319,8 @@ class BuildAndroidCommand extends Command<void> {
       arch = match.first.arch;
     }
 
-    await Build.setupLibmihomo(arch: arch);
+    await Build.fetchAars();
     await _writeEnvFile(env);
-
-    if (out != 'app') return;
 
     final items = arch == null
         ? Build.androidItems

@@ -8,27 +8,11 @@ plugins {
 android {
     namespace = "com.follow.clash.core"
     compileSdk = libs.versions.compileSdk.get().toInt()
-    ndkVersion = libs.versions.ndkVersion.get()
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
         ndk {
-            // Match libmihomo-android Release artifacts: 32-bit x86 is dropped.
             abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
-        }
-    }
-
-
-    sourceSets {
-        getByName("main") {
-            jniLibs.srcDirs("src/main/jniLibs")
-        }
-    }
-
-    externalNativeBuild {
-        cmake {
-            path("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
         }
     }
 
@@ -53,25 +37,9 @@ kotlin {
     }
 }
 
-
+// libmihomo .aar is pre-fetched by setup.dart into libs/ with SHA-256
+// + GPG verification before Gradle runs. Gradle just consumes the file.
 dependencies {
+    api(files("libs/libmihomo-android-v0.2.0.aar"))
     implementation(libs.annotation.jvm)
-}
-
-// Copy libclash.so per ABI from libclash/android/ (populated by setup.dart
-// from libmihomo-android Release) into the AGP-watched jniLibs/ layout.
-// Headers are vendored under src/main/cpp/vendored/ — they no longer flow
-// through this task.
-val copyNativeLibs by tasks.register<Copy>("copyNativeLibs") {
-    doFirst {
-        delete("src/main/jniLibs")
-    }
-    from("../../libclash/android")
-    into("src/main/jniLibs")
-}
-
-afterEvaluate {
-    tasks.named("preBuild") {
-        dependsOn(copyNativeLibs)
-    }
 }

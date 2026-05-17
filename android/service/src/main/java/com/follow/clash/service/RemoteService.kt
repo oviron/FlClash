@@ -9,12 +9,12 @@ import com.follow.clash.common.ServiceDelegate
 import com.follow.clash.common.buildHostLogAction
 import com.follow.clash.common.chunkedForAidl
 import com.follow.clash.common.intent
-import com.follow.clash.core.Core
 import com.follow.clash.service.State.delegate
 import com.follow.clash.service.State.intent
 import com.follow.clash.service.State.runLock
 import com.follow.clash.service.models.NotificationParams
 import com.follow.clash.service.models.VpnOptions
+import io.github.oviron.libmihomo.Clash
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,9 +29,10 @@ class RemoteService : Service(),
 
     override fun onCreate() {
         super.onCreate()
+        LibraryLoader.load(this)
         // :remote owns libclash.so → direct JNI, no IPC.
         Logger.installRemoteForward { level, tag, payload ->
-            Core.invokeAction(buildHostLogAction(level, tag, payload)) { _ -> }
+            Clash.invokeAction(buildHostLogAction(level, tag, payload)) { _ -> }
         }
     }
 
@@ -87,7 +88,7 @@ class RemoteService : Service(),
 
     private val binder = object : IRemoteInterface.Stub() {
         override fun invokeAction(data: String, callback: ICallbackInterface) {
-            Core.invokeAction(data) {
+            Clash.invokeAction(data) {
                 launch {
                     runCatching {
                         val chunks = it?.chunkedForAidl() ?: listOf()
@@ -115,7 +116,7 @@ class RemoteService : Service(),
             callback: ICallbackInterface,
             onStarted: IVoidInterface
         ) {
-            Core.quickSetup(initParamsString, setupParamsString) {
+            Clash.quickSetup(initParamsString, setupParamsString) {
                 launch {
                     runCatching {
                         val chunks = it?.chunkedForAidl() ?: listOf()
@@ -160,11 +161,11 @@ class RemoteService : Service(),
         override fun setEventListener(eventListener: IEventInterface?) {
             GlobalState.log("RemoveEventListener ${eventListener == null}")
             when (eventListener != null) {
-                true -> Core.callSetEventListener {
+                true -> Clash.setEventListener { event ->
                     launch {
                         runCatching {
                             val id = UUID.randomUUID().toString()
-                            val chunks = it?.chunkedForAidl() ?: listOf()
+                            val chunks = event?.chunkedForAidl() ?: listOf()
                             for ((index, chunk) in chunks.withIndex()) {
                                 suspendCancellableCoroutine { cont ->
                                     eventListener.onEvent(
@@ -183,7 +184,7 @@ class RemoteService : Service(),
                     }
                 }
 
-                false -> Core.callSetEventListener(null)
+                false -> Clash.setEventListener(null as ((String?) -> Unit)?)
             }
         }
 

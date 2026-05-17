@@ -2,9 +2,9 @@ package com.follow.clash.byedpi
 
 import android.content.Context
 import com.follow.clash.common.modules.Module
+import io.github.oviron.libbyedpi.ByeDpi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -19,60 +19,67 @@ import java.time.format.DateTimeFormatter
 class ByeDpiModule(private val context: Context) : Module() {
     private val state = ByeDpiState(context)
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val mutex = Mutex()
-    private var job: Job? = null
+    private val restartMutex = Mutex()
 
     override fun onInstall() {
         currentRef = this
+        ByeDpi.load(context.applicationInfo.nativeLibraryDir)
         startByeDpi()
     }
 
     override fun onUninstall() {
-        stopByeDpi()
+        runBlocking {
+            withTimeoutOrNull(STOP_TIMEOUT_MS) { ByeDpi.stop() }
+                ?: run {
+                    trace("stop timed out, forceClose")
+                    ByeDpi.forceClose()
+                    withTimeoutOrNull(STOP_FORCE_TIMEOUT_MS) { ByeDpi.stop() }
+                }
+        }
         scope.cancel()
         currentRef = null
     }
 
     private fun startByeDpi() {
-        val config = state.read() ?: run {
-            trace("startByeDpi: config=null, skipping")
+        val bypass = state.read() ?: run {
+            trace("startByeDpi: bypass config disabled, skipping")
             return
         }
-        val args = ByeDpiArgs.build(config)
-        trace("startByeDpi argv: ${args.joinToString(" ")}")
-        job = scope.launch {
-            val rc = ByeDpiProxy.start(args)
-            trace("byedpi exited rc=$rc")
-        }
-    }
-
-    private fun stopByeDpi() {
-        ByeDpiProxy.stop()
-        val joined = runBlocking {
-            withTimeoutOrNull(STOP_JOIN_TIMEOUT_MS) { job?.join() }
-        }
-        if (joined == null) {
-            trace("stopByeDpi: join timed out — forceClose")
-            ByeDpiProxy.forceClose()
-            runBlocking {
-                withTimeoutOrNull(STOP_FORCE_TIMEOUT_MS) { job?.join() }
+        val config = bypass.toByeDpiConfig()
+        trace("startByeDpi argv: ${config.args.joinToString(" ")}")
+        scope.launch {
+            try {
+                ByeDpi.start(config)
+                trace("byedpi running")
+            } catch (e: Throwable) {
+                trace("byedpi start failed: ${e.message}")
             }
         }
-        job = null
     }
 
     fun restartFromUi(): Boolean = runBlocking {
-        if (!mutex.tryLock()) {
+        if (!restartMutex.tryLock()) {
             trace("restartFromUi: already in progress")
             return@runBlocking false
         }
         try {
-            trace("restartFromUi: stop + reload")
-            stopByeDpi()
-            startByeDpi()
-            true
+            val bypass = state.read() ?: run {
+                trace("restartFromUi: bypass config disabled, stopping")
+                withTimeoutOrNull(STOP_TIMEOUT_MS) { ByeDpi.stop() }
+                return@runBlocking true
+            }
+            val config = bypass.toByeDpiConfig()
+            trace("restartFromUi argv: ${config.args.joinToString(" ")}")
+            try {
+                ByeDpi.restart(config)
+                trace("byedpi restarted")
+                true
+            } catch (e: Throwable) {
+                trace("restart failed: ${e.message}")
+                false
+            }
         } finally {
-            mutex.unlock()
+            restartMutex.unlock()
         }
     }
 
@@ -85,7 +92,8 @@ class ByeDpiModule(private val context: Context) : Module() {
                 if (file.length() > TRACE_MAX_BYTES) file.writeText("")
                 file.appendText("$ts $line\n")
             }
-        } catch (_: Throwable) {}
+        } catch (_: Throwable) {
+        }
     }
 
     companion object {
@@ -95,7 +103,7 @@ class ByeDpiModule(private val context: Context) : Module() {
         private val TRACE_TS = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
         private val TRACE_LOCK = Any()
         private const val TRACE_MAX_BYTES = 256L * 1024L
-        private const val STOP_JOIN_TIMEOUT_MS = 3_000L
+        private const val STOP_TIMEOUT_MS = 3_000L
         private const val STOP_FORCE_TIMEOUT_MS = 1_000L
 
         @JvmStatic

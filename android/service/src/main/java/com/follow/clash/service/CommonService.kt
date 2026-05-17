@@ -4,11 +4,11 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import com.follow.clash.core.Core
 import com.follow.clash.common.modules.moduleLoader
 import com.follow.clash.service.modules.NetworkObserveModule
 import com.follow.clash.service.modules.NotificationModule
 import com.follow.clash.service.modules.SuspendModule
+import io.github.oviron.libmihomo.Clash
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -26,6 +26,7 @@ class CommonService : Service(), IBaseService,
 
     override fun onCreate() {
         super.onCreate()
+        LibraryLoader.load(this)
         handleCreate()
     }
 
@@ -35,7 +36,7 @@ class CommonService : Service(), IBaseService,
     }
 
     override fun onLowMemory() {
-        Core.forceGC()
+        Clash.forceGC()
         super.onLowMemory()
     }
 

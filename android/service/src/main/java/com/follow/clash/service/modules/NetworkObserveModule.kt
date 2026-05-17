@@ -11,7 +11,7 @@ import android.net.NetworkCapabilities.TRANSPORT_USB
 import android.net.NetworkRequest
 import android.os.Build
 import androidx.core.content.getSystemService
-import com.follow.clash.core.Core
+import io.github.oviron.libmihomo.Clash
 import java.net.Inet4Address
 import java.net.Inet6Address
 import java.net.InetAddress
@@ -103,7 +103,7 @@ class NetworkObserveModule(private val service: Service) : Module() {
             return
         }
         preDnsList = dnsList
-        Core.updateDNS(dnsList.toSet().joinToString(","))
+        Clash.updateDNS(dnsList.toSet().joinToString(","))
     }
 
     fun setUnderlyingNetworks(network: Network) {

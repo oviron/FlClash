@@ -15,19 +15,22 @@ import androidx.core.content.getSystemService
 import com.follow.clash.common.AccessControlMode
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.Logger
-import com.follow.clash.core.Core
+import com.follow.clash.common.modules.Module
+import com.follow.clash.common.modules.moduleLoader
 import com.follow.clash.service.models.VpnOptions
 import com.follow.clash.service.models.getIpv4RouteAddress
 import com.follow.clash.service.models.getIpv6RouteAddress
 import com.follow.clash.service.models.toCIDR
-import com.follow.clash.common.modules.Module
-import com.follow.clash.common.modules.moduleLoader
 import com.follow.clash.service.modules.NetworkObserveModule
 import com.follow.clash.service.modules.NotificationModule
 import com.follow.clash.service.modules.SuspendModule
+import io.github.oviron.libmihomo.Clash
+import io.github.oviron.libmihomo.TunInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.net.InetAddress
 import java.net.InetSocketAddress
+import java.net.URL
 import android.net.VpnService as SystemVpnService
 
 class VpnService : SystemVpnService(), IBaseService,
@@ -60,6 +63,7 @@ class VpnService : SystemVpnService(), IBaseService,
 
     override fun onCreate() {
         super.onCreate()
+        LibraryLoader.load(this)
         handleCreate()
     }
 
@@ -89,9 +93,33 @@ class VpnService : SystemVpnService(), IBaseService,
             return ""
         }
         if (!uidPageNameMap.containsKey(nextUid)) {
-            uidPageNameMap[nextUid] = this.packageManager?.getPackagesForUid(nextUid)?.first() ?: ""
+            uidPageNameMap[nextUid] =
+                this.packageManager?.getPackagesForUid(nextUid)?.first() ?: ""
         }
         return uidPageNameMap[nextUid] ?: ""
+    }
+
+    private fun parseInetSocketAddress(address: String): InetSocketAddress {
+        val url = URL("https://$address")
+        return InetSocketAddress(InetAddress.getByName(url.host), url.port)
+    }
+
+    private val tunBridge = object : TunInterface {
+        override fun protect(fd: Int) {
+            this@VpnService.protect(fd)
+        }
+
+        override fun resolverProcess(
+            protocol: Int,
+            source: String,
+            target: String,
+            uid: Int,
+        ): String = resolverProcess(
+            protocol,
+            parseInetSocketAddress(source),
+            parseInetSocketAddress(target),
+            uid,
+        )
     }
 
     val VpnOptions.address
@@ -119,7 +147,7 @@ class VpnService : SystemVpnService(), IBaseService,
 
 
     override fun onLowMemory() {
-        Core.forceGC()
+        Clash.forceGC()
         super.onLowMemory()
     }
 
@@ -260,11 +288,9 @@ class VpnService : SystemVpnService(), IBaseService,
             establish()?.detachFd()
                 ?: throw NullPointerException("Establish VPN rejected by system")
         }
-        Core.assertReady()
-        Core.startTun(
-            fd,
-            protect = this::protect,
-            resolverProcess = this::resolverProcess,
+        Clash.startTUN(
+            fd = fd,
+            cb = tunBridge,
             device = "FlClash",
             stack = options.stack,
             address = options.address,
@@ -288,7 +314,7 @@ class VpnService : SystemVpnService(), IBaseService,
         releaseLocks()
         handleDestroy()
         loader.cancel()
-        Core.stopTun()
+        Clash.stopTun()
         stopSelf()
     }
 

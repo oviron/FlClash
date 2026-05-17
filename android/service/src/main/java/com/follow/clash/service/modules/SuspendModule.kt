@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.PowerManager
 import androidx.core.content.getSystemService
 import com.follow.clash.common.receiveBroadcastFlow
-import com.follow.clash.core.Core
+import io.github.oviron.libmihomo.Clash
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -33,10 +33,10 @@ class SuspendModule(private val service: Service) : Module() {
 
     private fun onUpdate(isScreenOn: Boolean) {
         if (isScreenOn) {
-            Core.suspended(false)
+            Clash.suspended(false)
             return
         }
-        Core.suspended(isDeviceIdleMode)
+        Clash.suspended(isDeviceIdleMode)
     }
 
     override fun onInstall() {
