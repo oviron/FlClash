@@ -56,10 +56,8 @@ void injectByeDpi({
     (r) => r is String && r.startsWith('IN-TYPE,INNER,'),
   );
   final insertAt = innerIdx >= 0 ? innerIdx + 1 : 0;
-  // Curated DOMAIN-SUFFIX only. GEOSITE/GEOIP categories were dropped: their
-  // scope is broader than DPI-blocked hosts (catches Gmail/Drive/Maps in the
-  // same AS), and `geoip:youtube` / `geoip:discord` are absent in the default
-  // GeoX provider and break mihomo config parse with errCodeNotFound.
+  // Curated DOMAIN-SUFFIX only; broad GEOSITE/GEOIP over-captures unrelated
+  // Google/Cloudflare services on the same AS.
   final newRules = <String>[
     for (final h in cleanedHosts) 'DOMAIN-SUFFIX,$h,$target',
   ];
