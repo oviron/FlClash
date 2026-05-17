@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile
 import com.follow.clash.AutoStartReceiver
 import com.follow.clash.R
 import com.follow.clash.common.Components
@@ -136,6 +135,31 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
     private val chinaAppRegex by lazy {
         ("(" + chinaAppPrefixList.joinToString("|").replace(".", "\\.") + ").*").toRegex()
+    }
+
+    // Pre-encoded DEX class-internal-name byte prefixes for raw scanning:
+    // e.g. "com.tencent" -> "Lcom/tencent/" (ASCII). Faster than parsing DEX
+    // since we only need substring presence, not class structure.
+    private val chinaDexPrefixBytes: List<ByteArray> by lazy {
+        chinaAppPrefixList.map { ("L" + it.replace('.', '/') + "/").toByteArray(Charsets.US_ASCII) }
+    }
+
+    private fun ByteArray.containsAny(needles: List<ByteArray>): Boolean {
+        for (needle in needles) {
+            if (indexOf(needle) >= 0) return true
+        }
+        return false
+    }
+
+    private fun ByteArray.indexOf(needle: ByteArray): Int {
+        if (needle.isEmpty() || needle.size > size) return -1
+        outer@ for (i in 0..(size - needle.size)) {
+            for (j in needle.indices) {
+                if (this[i + j] != needle[j]) continue@outer
+            }
+            return i
+        }
+        return -1
     }
 
     private var isBlockNotification: Boolean = false
@@ -406,19 +430,10 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                         if (packageEntry.size > 15000000) {
                             return true
                         }
-                        val input = it.getInputStream(packageEntry).buffered()
-                        val dexFile = try {
-                            DexBackedDexFile.fromInputStream(null, input)
-                        } catch (e: Exception) {
-                            GlobalState.log("isChinaPackage dex parse failed: $e")
-                            return false
+                        val dexBytes = it.getInputStream(packageEntry).use { stream ->
+                            stream.readBytes()
                         }
-                        for (clazz in dexFile.classes) {
-                            val clazzName =
-                                clazz.type.substring(1, clazz.type.length - 1).replace("/", ".")
-                                    .replace("$", ".")
-                            if (clazzName.matches(chinaAppRegex)) return true
-                        }
+                        if (dexBytes.containsAny(chinaDexPrefixBytes)) return true
                     }
                 }
             }

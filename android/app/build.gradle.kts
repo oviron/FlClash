@@ -119,9 +119,6 @@ dependencies {
     implementation(project(":common"))
     implementation(libs.core.splashscreen)
     implementation(libs.gson)
-    implementation(libs.smali.dexlib2) {
-        exclude(group = "com.google.guava", module = "guava")
-    }
     "bydpiImplementation"(libs.kotlinx.coroutines.android)
     "bydpiImplementation"(fileTree("libs") { include("libbyedpi-android-v*.aar") })
 }
