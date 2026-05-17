@@ -137,11 +137,29 @@ data object Core {
 
     const val EXPECTED_BRIDGE_ABI: Int = 1
 
+    // Recorded once at class-init time. Surfaced through assertReady() so a
+    // failure here becomes a catchable Exception at the call site instead of
+    // an ExceptionInInitializerError (which extends Error and slips through
+    // `catch (e: Exception)` in VpnService.start).
+    @Volatile
+    private var initFailure: Throwable? = null
+
     init {
-        System.loadLibrary("core")
-        val abi = bridgeABI()
-        check(abi == EXPECTED_BRIDGE_ABI) {
-            "libclash bridge ABI mismatch: stub expects $EXPECTED_BRIDGE_ABI, .so reports $abi"
+        initFailure = try {
+            System.loadLibrary("core")
+            val abi = bridgeABI()
+            if (abi != EXPECTED_BRIDGE_ABI) {
+                IllegalStateException(
+                    "libclash bridge ABI mismatch: stub expects $EXPECTED_BRIDGE_ABI, .so reports $abi"
+                )
+            } else null
+        } catch (t: Throwable) {
+            t
         }
+    }
+
+    fun assertReady() {
+        val err = initFailure ?: return
+        throw IllegalStateException("libclash native bridge not usable: ${err.message}", err)
     }
 }

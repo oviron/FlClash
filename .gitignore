@@ -54,7 +54,6 @@ CLAUDE.md
 /android/**/build
 /android/common/**/.**/
 /android/common/local.*
-/android/core/**/includes/
 /android/core/**/cmake-build-*/
 /android/core/**/jniLibs/
 

@@ -260,6 +260,7 @@ class VpnService : SystemVpnService(), IBaseService,
             establish()?.detachFd()
                 ?: throw NullPointerException("Establish VPN rejected by system")
         }
+        Core.assertReady()
         Core.startTun(
             fd,
             protect = this::protect,

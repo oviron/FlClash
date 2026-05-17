@@ -86,23 +86,6 @@ jobs:
             cmake-${{ runner.os }}-${{ matrix.flavor }}-
             cmake-${{ runner.os }}-
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.24.0'
-          cache-dependency-path: |
-            core/go.sum
-
-      - name: Cache Go build cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/go-build
-          key: gobuild-${{ runner.os }}-${{ matrix.flavor }}-${{ hashFiles('core/go.sum', 'core/**/*.go') }}
-          restore-keys: |
-            gobuild-${{ runner.os }}-${{ matrix.flavor }}-
-            gobuild-${{ runner.os }}-
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
