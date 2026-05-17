@@ -7,7 +7,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -21,10 +20,10 @@ class ByeDpiModule(private val context: Context) : Module() {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val restartMutex = Mutex()
 
-    override fun onInstall() {
+    override suspend fun onInstallSuspend() {
         currentRef = this
         ByeDpi.load(context.applicationInfo.nativeLibraryDir)
-        startByeDpiBlocking()
+        startByeDpiSuspend()
     }
 
     override fun onUninstall() {
@@ -40,26 +39,27 @@ class ByeDpiModule(private val context: Context) : Module() {
         currentRef = null
     }
 
-    private fun startByeDpiBlocking() {
+    private suspend fun startByeDpiSuspend() {
         val bypass = state.read() ?: run {
             trace("startByeDpi: bypass config disabled, skipping")
             return
         }
         val config = bypass.toByeDpiConfig()
         trace("startByeDpi argv: ${config.args.joinToString(" ")}")
-        // Block onInstall until byedpi listener is bound; mihomo's TUN starts
-        // immediately after we return and would otherwise race the listener.
-        runBlocking {
-            try {
-                withTimeoutOrNull(START_TIMEOUT_MS) { ByeDpi.start(config) }
-                    ?: trace("byedpi start timed out after ${START_TIMEOUT_MS}ms")
-                trace("byedpi state=${ByeDpi.state.value::class.simpleName}")
-            } catch (e: Throwable) {
-                trace("byedpi start failed: ${e.message}")
-            }
+        // mihomo's TUN starts immediately after we return; block here until
+        // byedpi listener is bound so the anti-loop invariant holds.
+        try {
+            withTimeoutOrNull(START_TIMEOUT_MS) { ByeDpi.start(config) }
+                ?: trace("byedpi start timed out after ${START_TIMEOUT_MS}ms")
+            trace("byedpi state=${ByeDpi.state.value::class.simpleName}")
+        } catch (e: Throwable) {
+            trace("byedpi start failed: ${e.message}")
         }
     }
 
+    // Called from AIDL Binder thread via Class.forName / getDeclaredMethod
+    // reflection. runBlocking here is unavoidable (Binder transact is sync);
+    // restartMutex.tryLock prevents UI double-tap races.
     fun restartFromUi(): Boolean = runBlocking {
         if (!restartMutex.tryLock()) {
             trace("restartFromUi: already in progress")

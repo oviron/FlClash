@@ -18,11 +18,15 @@ interface ModuleLoader {
     fun cancel()
 }
 
-private val mutex = Mutex()
 fun CoroutineScope.moduleLoader(block: suspend ModuleLoaderScope.() -> Unit): ModuleLoader {
     val modules = mutableListOf<Module>()
     var job: Job? = null
     val loaded = AtomicBoolean(false)
+    // Per-loader (per-service) mutex. Was previously a file-level singleton,
+    // which globally serialized module installs across VpnService /
+    // CommonService / RemoteService. Anti-loop ordering inside one loader is
+    // still guaranteed by sequential .install() calls under withLock.
+    val mutex = Mutex()
 
     return object : ModuleLoader {
         override fun load() {
@@ -32,11 +36,14 @@ fun CoroutineScope.moduleLoader(block: suspend ModuleLoaderScope.() -> Unit): Mo
                     val scope = object : ModuleLoaderScope {
                         override fun <T : Module> install(module: T): T {
                             modules.add(module)
-                            module.install()
                             return module
                         }
                     }
                     scope.block()
+                    // Install in order — each module's onInstallSuspend awaited
+                    // before the next starts, preserving the byedpi-before-TUN
+                    // ordering invariant.
+                    for (module in modules) module.install()
                 }
             }
         }
