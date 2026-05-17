@@ -12,8 +12,9 @@ Future<String> hostListPath() async {
 }
 
 Future<void> ensureDefaultPresent() async {
+  // The narrow default is the source of truth; the on-disk file is replaced
+  // every app start. UI edits are session-only and get reset on next launch.
   final path = await hostListPath();
-  if (File(path).existsSync()) return;
   final contents = await rootBundle.loadString(_assetPath);
   await _atomicWrite(path, contents);
 }
