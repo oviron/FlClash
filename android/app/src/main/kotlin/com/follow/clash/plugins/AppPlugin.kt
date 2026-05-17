@@ -36,8 +36,13 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.ref.WeakReference
@@ -81,6 +86,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     private var requestNotificationCallback: (() -> Unit)? = null
 
     private val packages = mutableListOf<Package>()
+    private val packagesLock = Any()
 
     private val skipPrefixList = listOf(
         "com.google",
@@ -291,21 +297,25 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
 
     private fun getPackages(): List<Package> {
-        val packageManager = GlobalState.application.packageManager
-        if (packages.isNotEmpty()) return packages
-        packageManager?.getInstalledPackages(PackageManager.GET_META_DATA or PackageManager.GET_PERMISSIONS)
-            ?.filter {
+        synchronized(packagesLock) {
+            if (packages.isNotEmpty()) return packages.toList()
+            val packageManager = GlobalState.application.packageManager
+                ?: return emptyList()
+            packageManager.getInstalledPackages(
+                PackageManager.GET_META_DATA or PackageManager.GET_PERMISSIONS,
+            ).filter {
                 it.packageName != GlobalState.application.packageName && it.packageName != "android"
-            }?.map {
+            }.map {
                 Package(
                     packageName = it.packageName,
                     label = it.applicationInfo?.loadLabel(packageManager).toString(),
                     system = (it.applicationInfo?.flags?.and(ApplicationInfo.FLAG_SYSTEM)) != 0,
                     lastUpdateTime = it.lastUpdateTime,
-                    internet = it.requestedPermissions?.contains(Manifest.permission.INTERNET) == true
+                    internet = it.requestedPermissions?.contains(Manifest.permission.INTERNET) == true,
                 )
-            }?.let { packages.addAll(it) }
-        return packages
+            }.let { packages.addAll(it) }
+            return packages.toList()
+        }
     }
 
     private suspend fun getPackagesToJson(): String {
@@ -430,6 +440,10 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                         if (packageEntry.size > 15000000) {
                             return true
                         }
+                        // Cancellation point: a long iteration over installed packages
+                        // can outlive the FlutterEngine detach by hundreds of ms per
+                        // package; honour the dispatcher's job cancel.
+                        scope.coroutineContext[Job]?.ensureActive()
                         val dexBytes = it.getInputStream(packageEntry).use { stream ->
                             stream.readBytes()
                         }
@@ -445,7 +459,9 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         applicationContext = flutterPluginBinding.applicationContext
-        scope = CoroutineScope(Dispatchers.Default)
+        // SupervisorJob: a crashing isChinaPackage scan must not cancel sibling
+        // getPackages / getIcon jobs already in flight.
+        scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "${Components.PACKAGE_NAME}/app")
         channel.setMethodCallHandler(this)
@@ -454,6 +470,12 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
         scope.cancel()
+        // Drop the cached package list — engine may reattach to a different
+        // FlutterEngine instance with a different installed-package snapshot
+        // (or the user installed/removed apps while the engine was detached).
+        synchronized(packagesLock) {
+            packages.clear()
+        }
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
