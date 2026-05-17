@@ -291,6 +291,7 @@ class CoreController {
 
   Future<void> destroy() async {
     await _interface.destroy();
+    await coreEventManager.dispose();
   }
 
   Future<void> crash() async {
