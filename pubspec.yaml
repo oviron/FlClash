@@ -20,7 +20,7 @@ dependencies:
   dynamic_color: ^1.8.1
   emoji_regex: ^0.0.5
   ffi: ^2.1.4
-  file_picker: ^10.3.3
+  file_picker: ^11.0.2
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.4.1
@@ -40,7 +40,7 @@ dependencies:
   package_info_plus: ^9.0.0
   path: ^1.9.0
   path_provider: ^2.1.5
-  permission_handler: ^11.3.0
+  permission_handler: ^12.0.1
   re_editor: ^0.8.0
   re_highlight: ^0.0.3
   riverpod: ^3.0.0
