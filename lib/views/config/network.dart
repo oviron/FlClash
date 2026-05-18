@@ -217,12 +217,23 @@ class RouteAddressItem extends ConsumerWidget {
         (state) => state.routeMode == RouteMode.bypassPrivate,
       ),
     );
-    if (bypassPrivate) {
-      return Container();
-    }
     final routeAddress = ref.watch(
       patchClashConfigProvider.select((state) => state.tun.routeAddress),
     );
+    if (bypassPrivate) {
+      return ListItem(
+        title: Text(
+          appLocalizations.routeAddress,
+          style: TextStyle(color: Theme.of(context).disabledColor),
+        ),
+        subtitle: Text(
+          Intl.message(
+            'Not used in Bypass private mode',
+            name: 'routeAddressBypassPrivateHint',
+          ),
+        ),
+      );
+    }
     return ListItem.open(
       title: Text(appLocalizations.routeAddress),
       subtitle: Text(appLocalizations.routeAddressDesc),

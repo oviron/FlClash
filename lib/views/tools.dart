@@ -404,7 +404,9 @@ class _PrivacyItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.open(
       leading: const Icon(Icons.shield),
-      title: Text(Intl.message('Privacy & Security', name: 'privacyAndSecurity')),
+      title: Text(
+        Intl.message('Privacy & Security', name: 'privacyAndSecurity'),
+      ),
       delegate: const OpenDelegate(widget: PrivacyView()),
     );
   }
