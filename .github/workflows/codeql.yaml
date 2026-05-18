@@ -21,22 +21,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [java-kotlin, actions]
+        # java-kotlin scan needs a full gradle build (autobuild can't see
+        # source without it, and Detekt already covers Kotlin lint at the
+        # same layer). Workflows scan stays — it's the actual gap.
+        language: [actions]
 
     steps:
       - uses: actions/checkout@v4
-
-      - if: matrix.language == 'java-kotlin'
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-          build-mode: ${{ matrix.language == 'java-kotlin' && 'none' || 'none' }}
+          build-mode: none
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

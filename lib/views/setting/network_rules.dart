@@ -72,8 +72,7 @@ class _PermissionBanner extends ConsumerWidget {
     final rules = ref.watch(networkRulesStreamProvider).value ?? const [];
     final needsWifi = rules.any(
       (r) =>
-          r.enabled &&
-          r.conditions.any((c) => c is WifiNamed || c is AnyWifi),
+          r.enabled && r.conditions.any((c) => c is WifiNamed || c is AnyWifi),
     );
     if (!needsWifi) return const SizedBox.shrink();
 
