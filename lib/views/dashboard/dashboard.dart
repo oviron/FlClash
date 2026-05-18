@@ -358,24 +358,8 @@ class _AddedContainer extends StatefulWidget {
 }
 
 class _AddedContainerState extends State<_AddedContainer> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(_AddedContainer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.child != widget.child) {}
-  }
-
   Future<void> _handleAdd() async {
     widget.onAdd();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override

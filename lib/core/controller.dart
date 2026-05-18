@@ -303,9 +303,6 @@ class CoreController {
   }
 }
 
-// JNI bridge wrapper. The 30+ action methods here back the entire mihomo
-// surface; promoting to a Riverpod provider would require modelling each
-// stream-pushed event (logs, connections, traffic) as a separate provider.
-// Keep as singleton; if migration happens, do it after globalState +
-// appController so the AppController doesn't end up half-Riverpod.
+// JNI bridge wrapper; promote after globalState/appController to avoid a
+// half-Riverpod state.
 final coreController = CoreController();

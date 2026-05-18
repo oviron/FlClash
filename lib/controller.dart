@@ -17,7 +17,7 @@ import 'models/models.dart';
 import 'providers/database.dart';
 
 class AppController {
-  late final WidgetRef _ref;
+  late WidgetRef _ref;
   bool isAttach = false;
 
   static AppController? _instance;
@@ -1133,11 +1133,9 @@ extension CommonControllerExt on AppController {
     );
   }
 
-  /// Notify-and-continue wrapper. Default behaviour swallows exceptions
-  /// into a snackbar — fine for cosmetic UI operations. Critical paths
-  /// (VPN start, profile apply, anything where the caller MUST know if
-  /// the work failed) should pass `rethrowOnError: true` so the error
-  /// propagates after the user-facing notification.
+  /// Notify-and-continue wrapper. Default swallows into a snackbar.
+  /// Pass `rethrowOnError: true` on critical paths where the caller
+  /// must observe the failure.
   Future<T?> safeRun<T>(
     FutureOr<T> Function() futureFunction, {
     String? title,
@@ -1175,9 +1173,6 @@ extension CommonControllerExt on AppController {
   }
 }
 
-// Imperative action dispatcher. Same migration intent as globalState (see
-// lib/state.dart): each extension block is a candidate for promotion to a
-// Riverpod Notifier so view-layer calls route through ref.read(...).notifier
-// instead of the global singleton. Start with the smallest extension blocks
-// (LoadingControllerExt, IpCheckControllerExt) when migrating incrementally.
+// Imperative dispatcher: each extension is a candidate Notifier; migrate
+// incrementally starting from the smallest blocks.
 final appController = AppController();

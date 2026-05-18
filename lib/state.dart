@@ -345,11 +345,6 @@ class GlobalState {
   }
 }
 
-// Global imperative state singleton. Co-exists with the Riverpod provider
-// graph; mutations here bypass the reactive layer. Long-term direction is to
-// fold its surface into a Riverpod Notifier (CommandNotifier), but doing
-// that in one PR means touching 100+ call sites and risks subtle lifecycle
-// bugs around VPN start/stop. Migration is incremental: when touching a
-// call site, prefer routing through ref.read(commandProvider.notifier).doX()
-// over a direct globalState.doX() invocation.
+// Bypasses the Riverpod graph; ~100 call sites. Migrate via
+// ref.read(commandProvider.notifier).doX() when touching a site.
 final globalState = GlobalState();
