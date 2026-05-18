@@ -82,7 +82,7 @@ class Ipv6Item extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final ipv6 = ref.watch(vpnSettingProvider.select((state) => state.ipv6));
     return ListItem.switchItem(
-      title: Text(Intl.message('IPv6', name: 'ipv6')),
+      title: Text(Intl.message('IPv6 (VPN inbound)', name: 'ipv6Inbound')),
       subtitle: Text(appLocalizations.ipv6InboundDesc),
       delegate: SwitchDelegate(
         value: ipv6,

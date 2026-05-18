@@ -110,7 +110,7 @@ class Ipv6Item extends ConsumerWidget {
     );
     return ListItem.switchItem(
       leading: const Icon(Icons.water_outlined),
-      title: Text(Intl.message('IPv6', name: 'ipv6')),
+      title: Text(Intl.message('IPv6 (engine)', name: 'ipv6Engine')),
       subtitle: Text(appLocalizations.ipv6Desc),
       delegate: SwitchDelegate(
         value: ipv6,

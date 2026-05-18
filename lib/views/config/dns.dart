@@ -113,7 +113,7 @@ class IPv6Item extends ConsumerWidget {
       patchClashConfigProvider.select((state) => state.dns.ipv6),
     );
     return ListItem.switchItem(
-      title: Text(Intl.message('IPv6', name: 'ipv6')),
+      title: Text(Intl.message('IPv6 (DNS queries)', name: 'ipv6DnsQueries')),
       delegate: SwitchDelegate(
         value: ipv6,
         onChanged: (bool value) async {
@@ -598,30 +598,60 @@ class DomainItem extends ConsumerWidget {
   }
 }
 
-class DnsOptions extends StatelessWidget {
-  const DnsOptions({super.key});
+class DnsServerSection extends StatelessWidget {
+  const DnsServerSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: generateSection(
-        title: appLocalizations.options,
-        items: [
-          const StatusItem(),
-          const ListenItem(),
-          const UseHostsItem(),
-          const UseSystemHostsItem(),
-          const IPv6Item(),
-          const RespectRulesItem(),
-          const PreferH3Item(),
-          const DnsModeItem(),
-          const FakeIpRangeItem(),
-          const FakeIpFilterItem(),
-          const DefaultNameserverItem(),
-          const NameserverPolicyItem(),
-          const NameserverItem(),
-          const FallbackItem(),
-          const ProxyServerNameserverItem(),
+        title: Intl.message('Server', name: 'dnsServerSection'),
+        items: const [
+          StatusItem(),
+          ListenItem(),
+          DnsModeItem(),
+          FakeIpRangeItem(),
+          FakeIpFilterItem(),
+        ],
+      ),
+    );
+  }
+}
+
+class DnsResolversSection extends StatelessWidget {
+  const DnsResolversSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: generateSection(
+        title: Intl.message('Resolvers', name: 'dnsResolversSection'),
+        items: const [
+          DefaultNameserverItem(),
+          NameserverItem(),
+          FallbackItem(),
+          ProxyServerNameserverItem(),
+          NameserverPolicyItem(),
+        ],
+      ),
+    );
+  }
+}
+
+class DnsBehaviorSection extends StatelessWidget {
+  const DnsBehaviorSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: generateSection(
+        title: Intl.message('Behavior', name: 'dnsBehaviorSection'),
+        items: const [
+          RespectRulesItem(),
+          PreferH3Item(),
+          IPv6Item(),
+          UseHostsItem(),
+          UseSystemHostsItem(),
         ],
       ),
     );
@@ -650,7 +680,9 @@ class FallbackFilterOptions extends StatelessWidget {
 
 const dnsItems = <Widget>[
   OverrideItem(),
-  DnsOptions(),
+  DnsServerSection(),
+  DnsResolversSection(),
+  DnsBehaviorSection(),
   FallbackFilterOptions(),
 ];
 

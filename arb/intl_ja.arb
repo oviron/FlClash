@@ -1,5 +1,8 @@
 {
   "ipv6": "IPv6",
+  "appearance": "外観",
+  "engine": "エンジン",
+  "privacyAndSecurity": "プライバシーとセキュリティ",
   "confirmDeleteWebDAV": "WebDAVの設定を削除しますか？",
   "preferH3": "Prefer H3",
   "geoip": "Geo IP",

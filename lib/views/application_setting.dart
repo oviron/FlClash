@@ -1,5 +1,7 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -120,34 +122,6 @@ class AutoRunItem extends ConsumerWidget {
   }
 }
 
-class HiddenItem extends ConsumerWidget {
-  const HiddenItem({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final hidden = ref.watch(
-      appSettingProvider.select((state) => state.hidden),
-    );
-    return ListItem.switchItem(
-      title: Text(Intl.message('Hide from recents', name: 'hideFromRecents')),
-      subtitle: Text(
-        Intl.message(
-          'App icon does not appear in the recent apps list while the app is in background',
-          name: 'hideFromRecentsDesc',
-        ),
-      ),
-      delegate: SwitchDelegate(
-        value: hidden,
-        onChanged: (value) {
-          ref
-              .read(appSettingProvider.notifier)
-              .update((state) => state.copyWith(hidden: value));
-        },
-      ),
-    );
-  }
-}
-
 class AnimateTabItem extends ConsumerWidget {
   const AnimateTabItem({super.key});
 
@@ -171,6 +145,53 @@ class AnimateTabItem extends ConsumerWidget {
   }
 }
 
+class ShowProxyLabelItem extends ConsumerWidget {
+  const ShowProxyLabelItem({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final showLabel = ref.watch(
+      appSettingProvider.select((state) => state.showLabel),
+    );
+    return ListItem.switchItem(
+      title: Text(Intl.message('Show proxy labels', name: 'showProxyLabels')),
+      subtitle: Text(
+        Intl.message(
+          'Display readable names under proxy icons in Dashboard',
+          name: 'showProxyLabelsDesc',
+        ),
+      ),
+      delegate: SwitchDelegate(
+        value: showLabel,
+        onChanged: (value) {
+          ref
+              .read(appSettingProvider.notifier)
+              .update((state) => state.copyWith(showLabel: value));
+        },
+      ),
+    );
+  }
+}
+
+class ClearDataItem extends ConsumerWidget {
+  const ClearDataItem({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListItem(
+      leading: const Icon(Icons.delete_forever_outlined),
+      title: Text(context.appLocalizations.clearData),
+      onTap: () async {
+        final res = await globalState.showMessage(
+          message: TextSpan(text: context.appLocalizations.confirmClearAllData),
+        );
+        if (res != true) return;
+        await appController.handleClear();
+      },
+    );
+  }
+}
+
 class ApplicationSettingView extends StatelessWidget {
   const ApplicationSettingView({super.key});
 
@@ -181,24 +202,34 @@ class ApplicationSettingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> items = [
-      const MinimizeItem(),
-      const AutoLaunchItem(),
-      const AutoRunItem(),
-      const HiddenItem(),
-      const AnimateTabItem(),
-      const CloseConnectionsItem(),
+    final appLocalizations = context.appLocalizations;
+    final items = <Widget>[
+      ...generateSection(
+        title: Intl.message('Launch & background', name: 'launchAndBackground'),
+        items: const [
+          AutoLaunchItem(),
+          SilentLaunchItem(),
+          AutoRunItem(),
+          MinimizeItem(),
+        ],
+      ),
+      ...generateSection(
+        title: Intl.message('Connection', name: 'connection'),
+        items: const [CloseConnectionsItem()],
+      ),
+      ...generateSection(
+        title: Intl.message('User interface', name: 'userInterface'),
+        items: const [AnimateTabItem(), ShowProxyLabelItem()],
+      ),
+      ...generateSection(
+        title: Intl.message('Reset', name: 'resetSection'),
+        items: const [ClearDataItem()],
+      ),
     ];
     return BaseScaffold(
       title: appLocalizations.application,
-      body: ListView.separated(
-        itemBuilder: (_, index) {
-          final item = items[index];
-          return item;
-        },
-        separatorBuilder: (_, _) {
-          return const Divider(height: 0);
-        },
+      body: ListView.builder(
+        itemBuilder: (_, index) => items[index],
         itemCount: items.length,
       ),
     );

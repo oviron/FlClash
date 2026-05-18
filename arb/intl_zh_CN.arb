@@ -1,5 +1,8 @@
 {
   "ipv6": "IPv6",
+  "appearance": "外观",
+  "engine": "引擎",
+  "privacyAndSecurity": "隐私与安全",
   "confirmDeleteWebDAV": "删除 WebDAV 配置？",
   "preferH3": "Prefer H3",
   "geoip": "Geo IP",

@@ -1,5 +1,8 @@
 {
   "ipv6": "IPv6",
+  "appearance": "Appearance",
+  "engine": "Engine",
+  "privacyAndSecurity": "Privacy & Security",
   "confirmDeleteWebDAV": "Delete WebDAV configuration?",
   "preferH3": "Prefer H3",
   "geoip": "Geo IP",
