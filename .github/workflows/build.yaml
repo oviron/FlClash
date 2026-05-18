@@ -75,7 +75,7 @@ jobs:
       - name: Detekt
         run: |
           detekt \
-            --input android/app/src/main/kotlin,android/core/src/main/java,android/service/src/main/java,android/common/src/main/java \
+            --input android/app/src/main/kotlin,android/app/src/main/java,android/app/src/bydpi/kotlin,android/service/src/main/java,android/common/src/main/java \
             --build-upon-default-config \
             ${{ hashFiles('detekt.yml') != '' && '--config detekt.yml' || '' }}
 
