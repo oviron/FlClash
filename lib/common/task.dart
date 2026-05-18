@@ -223,8 +223,7 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   const innerBypassRule = 'IN-TYPE,INNER,DIRECT';
   final hasUserInnerRule = rules.any(
     (r) =>
-        r.startsWith('IN-TYPE,INNER,') ||
-        r.startsWith('PROCESS-NAME,mihomo,'),
+        r.startsWith('IN-TYPE,INNER,') || r.startsWith('PROCESS-NAME,mihomo,'),
   );
   if (!hasUserInnerRule) rules.insert(0, innerBypassRule);
   rawConfig['rules'] = rules;
@@ -233,7 +232,9 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     settings: data.byeDpiSettings,
     hosts: data.byeDpiHostList,
   );
-  rules = rawConfig['rules'] != null ? List<String>.from(rawConfig['rules']) : rules;
+  rules = rawConfig['rules'] != null
+      ? List<String>.from(rawConfig['rules'])
+      : rules;
   if (addedRules.isNotEmpty) {
     final parsedNewRules = addedRules
         .map((item) => ParsedRule.parseString(item.value))

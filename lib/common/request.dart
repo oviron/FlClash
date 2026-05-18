@@ -91,7 +91,9 @@ class Request {
         );
         if (raw.isNotEmpty) {
           final data = json.decode(raw) as Map<String, dynamic>;
-          if (data['status'] == 'REJECT') return Result.success(IpInfo.rejected());
+          if (data['status'] == 'REJECT') {
+            return Result.success(IpInfo.rejected());
+          }
           return Result.success(IpInfo.fromIpInfoIoJson(data));
         }
       } catch (e) {
@@ -116,22 +118,24 @@ class Request {
             options: Options(responseType: ResponseType.json),
           )
           .timeout(const Duration(seconds: 10));
-      unawaited(future
-          .then((res) {
-            if (res.statusCode == HttpStatus.ok && res.data != null) {
-              completer.complete(Result.success(source.value(res.data!)));
-              return;
-            }
-            failureCount++;
-            handleFailRes();
-          })
-          .catchError((e) {
-            failureCount++;
-            if (e is DioException && e.type == DioExceptionType.cancel) {
-              completer.complete(Result.error('cancelled'));
-            }
-            handleFailRes();
-          }));
+      unawaited(
+        future
+            .then((res) {
+              if (res.statusCode == HttpStatus.ok && res.data != null) {
+                completer.complete(Result.success(source.value(res.data!)));
+                return;
+              }
+              failureCount++;
+              handleFailRes();
+            })
+            .catchError((e) {
+              failureCount++;
+              if (e is DioException && e.type == DioExceptionType.cancel) {
+                completer.complete(Result.error('cancelled'));
+              }
+              handleFailRes();
+            }),
+      );
       return completer.future;
     });
     final res = await Future.any(futures);

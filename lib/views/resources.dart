@@ -76,10 +76,12 @@ class _ResourcesViewState extends ConsumerState<ResourcesView> {
       // mihomo skips the write when content is unchanged (update_geo.go:121),
       // so file mtime does not move and the "X ago" label stays the same.
       // The SnackBar gives explicit feedback that the check ran.
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(appLocalizations.resourcesUpToDate),
-        duration: const Duration(seconds: 2),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(appLocalizations.resourcesUpToDate),
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
     if (mounted) setState(() {});
   }
@@ -89,10 +91,7 @@ class _ResourcesViewState extends ConsumerState<ResourcesView> {
     return CommonScaffold(
       title: appLocalizations.resources,
       actions: [
-        IconButton(
-          onPressed: _updateAllGeoData,
-          icon: const Icon(Icons.sync),
-        ),
+        IconButton(onPressed: _updateAllGeoData, icon: const Icon(Icons.sync)),
       ],
       body: ListView.separated(
         itemBuilder: (_, index) {
@@ -140,10 +139,12 @@ class _GeoDataListItemState extends ConsumerState<GeoDataListItem> {
           return state.copyWith(geoXUrl: GeoXUrl.fromJson(map));
         });
       } catch (e) {
-        unawaited(globalState.showMessage(
-          title: geoItem.label,
-          message: TextSpan(text: e.toString()),
-        ));
+        unawaited(
+          globalState.showMessage(
+            title: geoItem.label,
+            message: TextSpan(text: e.toString()),
+          ),
+        );
       }
     }
   }

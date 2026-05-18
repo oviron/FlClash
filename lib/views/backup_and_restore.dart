@@ -41,10 +41,12 @@ class BackupAndRestore extends ConsumerWidget {
       title: appLocalizations.backup,
     );
     if (res != true) return;
-    unawaited(globalState.showMessage(
-      title: appLocalizations.backup,
-      message: TextSpan(text: appLocalizations.backupSuccess),
-    ));
+    unawaited(
+      globalState.showMessage(
+        title: appLocalizations.backup,
+        message: TextSpan(text: appLocalizations.backupSuccess),
+      ),
+    );
   }
 
   Future<void> _restoreOnWebDAV(
@@ -62,10 +64,12 @@ class BackupAndRestore extends ConsumerWidget {
       title: appLocalizations.restore,
     );
     if (res != true) return;
-    unawaited(globalState.showMessage(
-      title: appLocalizations.restore,
-      message: TextSpan(text: appLocalizations.restoreSuccess),
-    ));
+    unawaited(
+      globalState.showMessage(
+        title: appLocalizations.restore,
+        message: TextSpan(text: appLocalizations.restoreSuccess),
+      ),
+    );
   }
 
   Future<void> _handleRestoreOnWebDAV(
@@ -97,10 +101,12 @@ class BackupAndRestore extends ConsumerWidget {
       tag: LoadingTag.backup_restore,
     );
     if (res != true) return;
-    unawaited(globalState.showMessage(
-      title: appLocalizations.backup,
-      message: TextSpan(text: appLocalizations.backupSuccess),
-    ));
+    unawaited(
+      globalState.showMessage(
+        title: appLocalizations.backup,
+        message: TextSpan(text: appLocalizations.backupSuccess),
+      ),
+    );
   }
 
   Future<void> _restoreOnLocal(RestoreOption option) async {
@@ -117,10 +123,12 @@ class BackupAndRestore extends ConsumerWidget {
       title: appLocalizations.restore,
     );
     if (res != true) return;
-    unawaited(globalState.showMessage(
-      title: appLocalizations.restore,
-      message: TextSpan(text: appLocalizations.restoreSuccess),
-    ));
+    unawaited(
+      globalState.showMessage(
+        title: appLocalizations.restore,
+        message: TextSpan(text: appLocalizations.restoreSuccess),
+      ),
+    );
   }
 
   Future<void> _handleRestoreOnLocal(BuildContext context) async {
@@ -311,18 +319,15 @@ class BackupAndRestore extends ConsumerWidget {
               );
               return ListItem.switchItem(
                 title: Text(appLocalizations.includeDavCredsInBackup),
-                subtitle: Text(
-                  appLocalizations.includeDavCredsInBackupDesc,
-                ),
+                subtitle: Text(appLocalizations.includeDavCredsInBackupDesc),
                 delegate: SwitchDelegate(
                   value: include,
                   onChanged: (value) async {
                     ref
                         .read(appSettingProvider.notifier)
                         .update(
-                          (state) => state.copyWith(
-                            includeDavCredsInBackup: value,
-                          ),
+                          (state) =>
+                              state.copyWith(includeDavCredsInBackup: value),
                         );
                   },
                 ),

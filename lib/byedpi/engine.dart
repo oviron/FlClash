@@ -76,9 +76,15 @@ void _ensureByeDpiSniffer(Map<String, dynamic> rawConfig) {
   final sniffRaw = sniffer['sniff'];
   final sniff = sniffRaw is Map<String, dynamic>
       ? sniffRaw
-      : (sniffRaw is Map ? Map<String, dynamic>.from(sniffRaw) : <String, dynamic>{});
-  sniff['TLS'] ??= {'ports': [443]};
-  sniff['HTTP'] ??= {'ports': [80]};
+      : (sniffRaw is Map
+            ? Map<String, dynamic>.from(sniffRaw)
+            : <String, dynamic>{});
+  sniff['TLS'] ??= {
+    'ports': [443],
+  };
+  sniff['HTTP'] ??= {
+    'ports': [80],
+  };
   sniffer['sniff'] = sniff;
   rawConfig['sniffer'] = sniffer;
 }

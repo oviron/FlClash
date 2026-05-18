@@ -166,8 +166,12 @@ class Utils {
     if (patch1 != patch2) {
       return patch1.compareTo(patch2);
     }
-    final int build1 = version1.contains('+') ? int.parse(version1.split('+')[1]) : 0;
-    final int build2 = version2.contains('+') ? int.parse(version2.split('+')[1]) : 0;
+    final int build1 = version1.contains('+')
+        ? int.parse(version1.split('+')[1])
+        : 0;
+    final int build2 = version2.contains('+')
+        ? int.parse(version2.split('+')[1])
+        : 0;
     return build1.compareTo(build2);
   }
 

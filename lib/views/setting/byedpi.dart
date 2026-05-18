@@ -49,7 +49,10 @@ class ByeDpiView extends ConsumerWidget {
                   ),
                   if (settings.mode == ByeDpiMode.auto) ...[
                     SwitchListTile(
-                      contentPadding: const EdgeInsets.only(left: 32, right: 16),
+                      contentPadding: const EdgeInsets.only(
+                        left: 32,
+                        right: 16,
+                      ),
                       title: Text(appLocalizations.byedpiFallback),
                       value: settings.fallbackEnabled,
                       onChanged: (v) => ref
@@ -99,10 +102,7 @@ class _PresetPicker extends ConsumerWidget {
             isExpanded: true,
             value: preset,
             items: ByeDpiPreset.values
-                .map((p) => DropdownMenuItem(
-                      value: p,
-                      child: Text(p.label),
-                    ))
+                .map((p) => DropdownMenuItem(value: p, child: Text(p.label)))
                 .toList(),
             onChanged: (v) {
               if (v != null) {
@@ -114,7 +114,6 @@ class _PresetPicker extends ConsumerWidget {
       ),
     );
   }
-
 }
 
 class _RestartButton extends StatefulWidget {
@@ -157,9 +156,11 @@ class _RestartButtonState extends State<_RestartButton> {
     setState(() => _busy = false);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(ok
-            ? appLocalizations.byedpiRestartOk
-            : appLocalizations.byedpiRestartFail),
+        content: Text(
+          ok
+              ? appLocalizations.byedpiRestartOk
+              : appLocalizations.byedpiRestartFail,
+        ),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -177,10 +178,7 @@ class _PresetArgsPreview extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: SelectableText(
         args,
-        style: const TextStyle(
-          fontFamily: 'JetBrainsMono',
-          fontSize: 12,
-        ),
+        style: const TextStyle(fontFamily: 'JetBrainsMono', fontSize: 12),
       ),
     );
   }
@@ -209,9 +207,11 @@ class _FallbackGroupTile extends ConsumerWidget {
 
     final effective = names.contains(selected) ? selected : names.first;
     if (effective != selected) {
-      Future.microtask(() => ref
-          .read(byeDpiSettingsProvider.notifier)
-          .setFallbackGroup(effective));
+      Future.microtask(
+        () => ref
+            .read(byeDpiSettingsProvider.notifier)
+            .setFallbackGroup(effective),
+      );
     }
 
     return Padding(
@@ -230,9 +230,7 @@ class _FallbackGroupTile extends ConsumerWidget {
                 .toList(),
             onChanged: (v) {
               if (v != null) {
-                ref
-                    .read(byeDpiSettingsProvider.notifier)
-                    .setFallbackGroup(v);
+                ref.read(byeDpiSettingsProvider.notifier).setFallbackGroup(v);
               }
             },
           ),
@@ -361,4 +359,3 @@ class _PortFieldState extends ConsumerState<_PortField> {
     );
   }
 }
-

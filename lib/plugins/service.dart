@@ -97,7 +97,9 @@ class Service {
   }
 
   Future<bool> restartByeDpi() async {
-    return await methodChannel.invokeMethod<bool>(ServiceMethod.restartByeDpi) ??
+    return await methodChannel.invokeMethod<bool>(
+          ServiceMethod.restartByeDpi,
+        ) ??
         false;
   }
 

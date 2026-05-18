@@ -36,19 +36,18 @@ enum ByeDpiPreset {
   final String args;
 
   String get label => switch (this) {
-        ByeDpiPreset.universal => appLocalizations.byedpiPresetUniversal,
-        ByeDpiPreset.mrDrone => appLocalizations.byedpiPresetMrDrone,
-        ByeDpiPreset.mtsAggressive =>
-          appLocalizations.byedpiPresetMtsAggressive,
-        ByeDpiPreset.megafon2ni => appLocalizations.byedpiPresetMegafon2ni,
-        ByeDpiPreset.tele2 => appLocalizations.byedpiPresetTele2,
-        ByeDpiPreset.beelineRt => appLocalizations.byedpiPresetBeelineRt,
-        ByeDpiPreset.antiGgc => appLocalizations.byedpiPresetAntiGgc,
-        ByeDpiPreset.cascade => appLocalizations.byedpiPresetCascade,
-        ByeDpiPreset.tlsOnly => appLocalizations.byedpiPresetTlsOnly,
-        ByeDpiPreset.ttlFixed => appLocalizations.byedpiPresetTtlFixed,
-        ByeDpiPreset.custom => appLocalizations.byedpiPresetCustom,
-      };
+    ByeDpiPreset.universal => appLocalizations.byedpiPresetUniversal,
+    ByeDpiPreset.mrDrone => appLocalizations.byedpiPresetMrDrone,
+    ByeDpiPreset.mtsAggressive => appLocalizations.byedpiPresetMtsAggressive,
+    ByeDpiPreset.megafon2ni => appLocalizations.byedpiPresetMegafon2ni,
+    ByeDpiPreset.tele2 => appLocalizations.byedpiPresetTele2,
+    ByeDpiPreset.beelineRt => appLocalizations.byedpiPresetBeelineRt,
+    ByeDpiPreset.antiGgc => appLocalizations.byedpiPresetAntiGgc,
+    ByeDpiPreset.cascade => appLocalizations.byedpiPresetCascade,
+    ByeDpiPreset.tlsOnly => appLocalizations.byedpiPresetTlsOnly,
+    ByeDpiPreset.ttlFixed => appLocalizations.byedpiPresetTtlFixed,
+    ByeDpiPreset.custom => appLocalizations.byedpiPresetCustom,
+  };
 }
 
 String effectiveByeDpiCliArgs(ByeDpiSettings s) =>

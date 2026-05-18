@@ -89,7 +89,8 @@ Future<MigrationData> _oldToNowTask(
     rules.add(Rule.fromJson(rawRule));
     links.add(ProfileRuleLink(ruleId: id));
   }
-  final List<dynamic> rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
+  final List<dynamic> rawProfiles =
+      configMap['profiles'] as List<dynamic>? ?? [];
   final List<Profile> profiles = [];
   for (final rawProfile in rawProfiles) {
     final rawId = rawProfile['id'] as String?;
@@ -260,9 +261,7 @@ Future<MigrationData> _restoreTask(RootIsolateToken token) async {
           as Map<String, Object?>?;
   final version = restoreConfigMap?['version'] ?? 0;
   if (version == 0 && restoreConfigMap != null) {
-    return _oldToNowTask(
-      VM3(restoreConfigMap, restoreDirPath, homeDirPath),
-    );
+    return _oldToNowTask(VM3(restoreConfigMap, restoreDirPath, homeDirPath));
   }
   MigrationData migrationData = MigrationData(configMap: restoreConfigMap);
   final backupDatabaseFile = File(join(restoreDirPath, backupDatabaseName));

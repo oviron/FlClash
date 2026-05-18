@@ -111,7 +111,9 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                                 : ipInfo.ip,
                             style: ipInfo.isRejected
                                 ? context.textTheme.bodyMedium
-                                      ?.copyWith(color: context.colorScheme.error)
+                                      ?.copyWith(
+                                        color: context.colorScheme.error,
+                                      )
                                       .adjustSize(1)
                                 : context.textTheme.bodyMedium?.toLight
                                       .adjustSize(1),

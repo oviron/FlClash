@@ -60,16 +60,17 @@ class App {
   }
 
   Future<bool> openFile(String path) async {
-    return await methodChannel
-            .invokeMethod<bool>(AppMethod.openFile, {'path': path}) ??
+    return await methodChannel.invokeMethod<bool>(AppMethod.openFile, {
+          'path': path,
+        }) ??
         false;
   }
 
   Future<ImageProvider?> getPackageIcon(String packageName) async {
-    final path = await methodChannel
-        .invokeMethod<String>(AppMethod.getPackageIcon, {
-      'packageName': packageName,
-    });
+    final path = await methodChannel.invokeMethod<String>(
+      AppMethod.getPackageIcon,
+      {'packageName': packageName},
+    );
     if (path == null) {
       return null;
     }
@@ -90,10 +91,10 @@ class App {
   }
 
   Future<bool?> updateExcludeFromRecents(bool value) async {
-    return await methodChannel
-        .invokeMethod<bool>(AppMethod.updateExcludeFromRecents, {
-      'value': value,
-    });
+    return await methodChannel.invokeMethod<bool>(
+      AppMethod.updateExcludeFromRecents,
+      {'value': value},
+    );
   }
 
   Future<bool?> isAutoStartEnabled() {

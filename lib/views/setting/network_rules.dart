@@ -11,10 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class NetworkRulesView extends ConsumerWidget {
   const NetworkRulesView({super.key});
 
-  Future<void> _openCreateDialog(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
+  Future<void> _openCreateDialog(BuildContext context, WidgetRef ref) async {
     final created = await EditRuleDialog.show(context: context);
     if (created == null) return;
     await ref.read(networkRulesRepoProvider.notifier).add(created);
@@ -35,14 +32,11 @@ class NetworkRulesView extends ConsumerWidget {
               const Divider(height: 0),
               Expanded(
                 child: rulesAsync.when(
-                  loading: () => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (e, _) => Center(child: Text('$e')),
-                  data: (rules) => _RulesList(
-                    rules: rules,
-                    masterEnabled: settings.enabled,
-                  ),
+                  data: (rules) =>
+                      _RulesList(rules: rules, masterEnabled: settings.enabled),
                 ),
               ),
             ],
@@ -90,10 +84,7 @@ class _RulesList extends ConsumerWidget {
     WidgetRef ref,
     NetworkRule rule,
   ) async {
-    final updated = await EditRuleDialog.show(
-      context: context,
-      initial: rule,
-    );
+    final updated = await EditRuleDialog.show(context: context, initial: rule);
     if (updated == null) return;
     await ref.read(networkRulesRepoProvider.notifier).update(updated);
   }
@@ -129,11 +120,7 @@ class _RulesList extends ConsumerWidget {
         .update(rule.copyWith(enabled: !rule.enabled));
   }
 
-  Future<void> _onReorder(
-    WidgetRef ref,
-    int oldIndex,
-    int newIndex,
-  ) async {
+  Future<void> _onReorder(WidgetRef ref, int oldIndex, int newIndex) async {
     final ids = rules.map((r) => r.id).toList();
     final adjusted = newIndex > oldIndex ? newIndex - 1 : newIndex;
     final moved = ids.removeAt(oldIndex);

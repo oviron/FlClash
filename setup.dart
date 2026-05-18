@@ -129,8 +129,8 @@ class Build {
     }
 
     final target = File(join(libsDir.path, pinned.fileName));
-    final cached = target.existsSync() &&
-        await _verifySha256(target, pinned.sha256);
+    final cached =
+        target.existsSync() && await _verifySha256(target, pinned.sha256);
     if (!cached) {
       print('fetching ${pinned.url}');
       await _download(pinned.url, target);
@@ -176,22 +176,25 @@ class Build {
     final gpgHome = await Directory.systemTemp.createTemp('flclash-gpg-');
     try {
       final env = {'GNUPGHOME': gpgHome.path};
-      final import = await Process.run(
-        'gpg', ['--batch', '--quiet', '--import', pubKey.path],
-        environment: env,
-      );
+      final import = await Process.run('gpg', [
+        '--batch',
+        '--quiet',
+        '--import',
+        pubKey.path,
+      ], environment: env);
       if (import.exitCode != 0) {
         throw 'gpg --import failed: ${import.stderr}';
       }
 
-      final verify = await Process.run(
-        'gpg',
-        [
-          '--batch', '--status-fd', '1', '--no-tty',
-          '--verify', asc.path, aar.path,
-        ],
-        environment: env,
-      );
+      final verify = await Process.run('gpg', [
+        '--batch',
+        '--status-fd',
+        '1',
+        '--no-tty',
+        '--verify',
+        asc.path,
+        aar.path,
+      ], environment: env);
       final status = '${verify.stdout}\n${verify.stderr}';
       if (verify.exitCode != 0 ||
           !status.contains('GOODSIG') ||
@@ -259,7 +262,8 @@ class BuildAndroidCommand extends Command<void> {
     argParser.addOption(
       'arch',
       valueHelp: Build.androidItems.map((e) => e.arch.name).join(','),
-      help: 'Limit final APK split to one Android arch (default: build all '
+      help:
+          'Limit final APK split to one Android arch (default: build all '
           'three).',
     );
     argParser.addOption(
@@ -325,10 +329,10 @@ class BuildAndroidCommand extends Command<void> {
   }
 
   static String _archName(Arch a) => switch (a) {
-        Arch.arm => 'armeabi-v7a',
-        Arch.arm64 => 'arm64-v8a',
-        Arch.amd64 => 'x86_64',
-      };
+    Arch.arm => 'armeabi-v7a',
+    Arch.arm64 => 'arm64-v8a',
+    Arch.amd64 => 'x86_64',
+  };
 
   @override
   Future<void> run() async {
@@ -353,17 +357,19 @@ class BuildAndroidCommand extends Command<void> {
         : Build.androidItems.where((e) => e.arch == arch).toList();
     final flutterTargets = items.map((e) => e.flutterTarget).join(',');
 
-    await Build.exec(
-      [
-        'flutter', 'build', 'apk', '--release',
-        '--split-per-abi',
-        '--flavor', flavor,
-        '--target-platform', flutterTargets,
-        '--dart-define-from-file=env.json',
-        '--dart-define=BYDPI=${flavor == 'bydpi'}',
-      ],
-      name: 'flutter build apk ($flavor)',
-    );
+    await Build.exec([
+      'flutter',
+      'build',
+      'apk',
+      '--release',
+      '--split-per-abi',
+      '--flavor',
+      flavor,
+      '--target-platform',
+      flutterTargets,
+      '--dart-define-from-file=env.json',
+      '--dart-define=BYDPI=${flavor == 'bydpi'}',
+    ], name: 'flutter build apk ($flavor)');
 
     await _copyApks(items, flavor);
   }

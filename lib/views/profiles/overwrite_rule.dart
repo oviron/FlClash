@@ -114,12 +114,9 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
     return [
       ...RuleTarget.values
           .where(
-            (item) =>
-                item != RuleTarget.MATCH || action == RuleAction.MATCH,
+            (item) => item != RuleTarget.MATCH || action == RuleAction.MATCH,
           )
-          .map(
-            (item) => DropdownMenuEntry(value: item.name, label: item.name),
-          ),
+          .map((item) => DropdownMenuEntry(value: item.name, label: item.name)),
     ];
   }
 
@@ -209,15 +206,13 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
                           ) ??
                           _ruleAction;
                       _targetItems = _buildTargetItems(_ruleAction);
-                      final currentTarget =
-                          _ruleTargetController.text.toUpperCase();
+                      final currentTarget = _ruleTargetController.text
+                          .toUpperCase();
                       final hasCurrent = _targetItems.any(
-                        (i) => i.value.toUpperCase() ==
-                            currentTarget,
+                        (i) => i.value.toUpperCase() == currentTarget,
                       );
                       if (!hasCurrent && _targetItems.isNotEmpty) {
-                        _ruleTargetController.text =
-                            _targetItems.first.value;
+                        _ruleTargetController.text = _targetItems.first.value;
                       }
                       setState(() {});
                     },

@@ -117,10 +117,7 @@ class CoreLib extends CoreHandlerInterface {
       if (groupsSet.remove(name)) all.add(name);
     }
     all.addAll(groupsSet);
-    return ProxiesData(
-      proxies: Map<String, dynamic>.from(proxies),
-      all: all,
-    );
+    return ProxiesData(proxies: Map<String, dynamic>.from(proxies), all: all);
   }
 
   @override
@@ -160,9 +157,7 @@ class CoreLib extends CoreHandlerInterface {
         'timeout': 5000,
       }),
     );
-    return json.encode(
-      Delay(name: proxyName, value: delay ?? -1, url: url),
-    );
+    return json.encode(Delay(name: proxyName, value: delay ?? -1, url: url));
   }
 
   @override

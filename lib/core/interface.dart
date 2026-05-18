@@ -279,11 +279,7 @@ abstract class CoreHandlerInterface with CoreInterface {
   }) {
     _invoke(
       method: ActionMethod.forwardHostLog,
-      data: json.encode({
-        'level': level.index,
-        'tag': tag,
-        'payload': payload,
-      }),
+      data: json.encode({'level': level.index, 'tag': tag, 'payload': payload}),
     );
   }
 
@@ -308,9 +304,7 @@ abstract class CoreHandlerInterface with CoreInterface {
 
   @override
   Future<String> getExternalProviders() async {
-    return await _invoke<String>(
-          method: ActionMethod.queryExternalProviders,
-        ) ??
+    return await _invoke<String>(method: ActionMethod.queryExternalProviders) ??
         '[]';
   }
 

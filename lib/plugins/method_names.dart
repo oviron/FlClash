@@ -20,7 +20,8 @@ abstract final class AppMethod {
   static const moveTaskToBack = 'moveTaskToBack';
   static const getPackages = 'getPackages';
   static const getChinaPackageNames = 'getChinaPackageNames';
-  static const requestNotificationsPermission = 'requestNotificationsPermission';
+  static const requestNotificationsPermission =
+      'requestNotificationsPermission';
   static const openFile = 'openFile';
   static const getPackageIcon = 'getPackageIcon';
   static const tip = 'tip';

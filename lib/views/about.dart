@@ -42,9 +42,7 @@ class AboutView extends StatelessWidget {
       items: [
         ListItem(
           title: const Text('byedpi'),
-          subtitle: const Text(
-            'by hufrea, MIT, commit ba532298 (2026-03-26)',
-          ),
+          subtitle: const Text('by hufrea, MIT, commit ba532298 (2026-03-26)'),
           trailing: const Icon(Icons.launch),
           onTap: () {
             globalState.openUrl('https://github.com/hufrea/byedpi');

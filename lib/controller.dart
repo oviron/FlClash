@@ -131,7 +131,6 @@ extension InitControllerExt on AppController {
       await applyProfile(force: true);
     }
   }
-
 }
 
 extension StateControllerExt on AppController {
@@ -281,8 +280,8 @@ extension ProfilesControllerExt on AppController {
         );
       }
 
-      final isShortLink = (uri.host.split('.').length <= 2 &&
-              uri.pathSegments.length <= 2) ||
+      final isShortLink =
+          (uri.host.split('.').length <= 2 && uri.pathSegments.length <= 2) ||
           url.length < 30;
 
       if (uri.host.contains('githubusercontent.com') &&
@@ -319,7 +318,10 @@ extension ProfilesControllerExt on AppController {
     }
     toProfiles();
     final profile = await loadingRun(tag: LoadingTag.profiles, () async {
-      return await Profile.normal(url: url, label: _getLabelFromURL(url)).update();
+      return await Profile.normal(
+        url: url,
+        label: _getLabelFromURL(url),
+      ).update();
     }, title: appLocalizations.addProfile);
     if (profile != null) {
       putProfile(profile);
@@ -1104,8 +1106,8 @@ extension CommonControllerExt on AppController {
   Future<void> updateTraffic() async {
     final traffic = await coreController.getTraffic();
     _ref.read(trafficsProvider.notifier).addTraffic(traffic);
-    _ref.read(totalTrafficProvider.notifier).value =
-        await coreController.getTotalTraffic();
+    _ref.read(totalTrafficProvider.notifier).value = await coreController
+        .getTotalTraffic();
   }
 
   Future<T?> loadingRun<T>(
@@ -1158,10 +1160,12 @@ extension CommonControllerExt on AppController {
       if (silence) {
         globalState.showNotifier(e.toString());
       } else {
-        unawaited(globalState.showMessage(
-          title: title ?? appLocalizations.tip,
-          message: TextSpan(text: e.toString()),
-        ));
+        unawaited(
+          globalState.showMessage(
+            title: title ?? appLocalizations.tip,
+            message: TextSpan(text: e.toString()),
+          ),
+        );
       }
       if (rethrowOnError) rethrow;
       return null;

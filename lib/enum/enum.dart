@@ -39,8 +39,9 @@ enum GroupType {
 enum GroupName { GLOBAL, Proxy, Auto, Fallback }
 
 extension GroupTypeExtension on GroupType {
-  static final List<String> valueList =
-      GroupType.values.map((e) => e.toString().split('.').last).toList(growable: false);
+  static final List<String> valueList = GroupType.values
+      .map((e) => e.toString().split('.').last)
+      .toList(growable: false);
 
   bool get isComputedSelected {
     return [GroupType.URLTest, GroupType.Fallback].contains(this);

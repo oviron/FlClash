@@ -149,9 +149,7 @@ class _ProfilesViewState extends State<ProfilesView> {
                                         .value =
                                     profileId;
                                 if (wasRunning && profileId != previousId) {
-                                  globalState
-                                      .navigatorKey
-                                      .currentContext
+                                  globalState.navigatorKey.currentContext
                                       ?.showSnackBar(
                                         appLocalizations.restartVpnToApply,
                                       );

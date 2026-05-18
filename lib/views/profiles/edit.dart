@@ -90,12 +90,14 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     } else if (!hasUpdate) {
       appController.putProfile(profile);
     } else {
-      unawaited(appController.safeRun(() async {
-        await Future.delayed(commonDuration);
-        if (hasUpdate) {
-          await appController.updateProfile(profile);
-        }
-      }));
+      unawaited(
+        appController.safeRun(() async {
+          await Future.delayed(commonDuration);
+          if (hasUpdate) {
+            await appController.updateProfile(profile);
+          }
+        }),
+      );
     }
     if (mounted) {
       Navigator.of(context).pop();
@@ -160,10 +162,12 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       return message;
     }, silence: false);
     if (message?.isNotEmpty == true) {
-      unawaited(globalState.showMessage(
-        title: appLocalizations.tip,
-        message: TextSpan(text: message),
-      ));
+      unawaited(
+        globalState.showMessage(
+          title: appLocalizations.tip,
+          message: TextSpan(text: message),
+        ),
+      );
       return;
     }
     if (context.mounted) {

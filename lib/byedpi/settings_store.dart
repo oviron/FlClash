@@ -23,18 +23,19 @@ class ByeDpiSettingsStore {
   ByeDpiSettings read() {
     final storedCli = _prefs.getString('byedpi.cliArgs');
     final storedPreset = _prefs.getString('byedpi.preset');
-    final legacy = storedPreset == null &&
+    final legacy =
+        storedPreset == null &&
         storedCli != null &&
         _legacyCliArgs.contains(storedCli);
 
     final preset = legacy
         ? ByeDpiPreset.universal
         : (storedPreset != null
-            ? ByeDpiPreset.values.firstWhere(
-                (p) => p.name == storedPreset,
-                orElse: () => ByeDpiPreset.universal,
-              )
-            : ByeDpiPreset.universal);
+              ? ByeDpiPreset.values.firstWhere(
+                  (p) => p.name == storedPreset,
+                  orElse: () => ByeDpiPreset.universal,
+                )
+              : ByeDpiPreset.universal);
 
     // When migrating away from legacy cliArgs, surface the new universal
     // defaults so a later switch to Custom doesn't show a stale string.
