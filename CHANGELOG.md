@@ -26,9 +26,21 @@
 
 - Drop in-tree mihomo bridge
 
-- Add bydpi flavor with embedded libbyedpi-android
+- Migrate ByeDPI to oviron/libbyedpi-android v0.1.0
 
 - Rework logging architecture
+
+## v0.10.0
+
+- Add bydpi product flavor with in-tree ByeDPI
+
+- ByeDPI: manual/auto mode + host-list whitelist
+
+- Wire ByeDpiModule into VpnService via reflective load
+
+- Add :byedpi Gradle module with libbyedpi.so
+
+- Auto-create GitHub Release on tag
 
 ## v0.9.1
 
