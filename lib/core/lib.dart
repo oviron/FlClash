@@ -112,6 +112,10 @@ class CoreLib extends CoreHandlerInterface {
         groupsSet.add(name as String);
       }
     });
+    // Group order MUST follow the YAML declaration. mihomo's getProxies
+    // marshals a Go map, which json.Marshal sorts alphabetically — using
+    // its key order here surfaces that sort to the UI. Keep YAML order
+    // load-bearing; do not change.
     final all = <String>[];
     for (final name in orderFromYaml) {
       if (groupsSet.remove(name)) all.add(name);

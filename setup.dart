@@ -15,9 +15,9 @@ import 'package:yaml/yaml.dart';
 const _signerFpr = '1139C91B6525883E6783DCF04A94DA488A4C5033';
 const _signerPubKeyPath = 'scripts/oviron-signing.pub.asc';
 
-const _libmihomoVersion = '0.1.0';
+const _libmihomoVersion = '0.1.1';
 const _libmihomoSha256 =
-    '017f15e69130066490e7e67ffa2b805f9cd5d696fa672d73752e3188ec8b18f2';
+    '2188b205c734b660fe19fb3d799ed7d72e1aa047b1d2a379a2f90793840ae47d';
 
 const _libbyedpiVersion = '0.1.0';
 const _libbyedpiSha256 =
