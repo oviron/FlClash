@@ -444,6 +444,7 @@
   "permissionNotNow": "Не сейчас",
   "permissionRequiredHint": "Требуется разрешение",
   "openSettings": "Открыть настройки",
+  "networkRulesPermissionBanner": "Сетевым правилам нужно разрешение для определения Wi-Fi-сетей",
   "networkRulesTitle": "Правила по сети",
   "networkRulesEnable": "Включить правила по сети",
   "networkRulesEmpty": "Добавьте первое правило",

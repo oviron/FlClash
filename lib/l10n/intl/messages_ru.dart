@@ -621,6 +621,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Включить правила по сети",
     ),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("Включить"),
+    "networkRulesPermissionBanner": MessageLookupByLibrary.simpleMessage(
+      "Сетевым правилам нужно разрешение для определения Wi-Fi-сетей",
+    ),
     "networkRulesTitle": MessageLookupByLibrary.simpleMessage(
       "Правила по сети",
     ),

@@ -1,5 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
+import 'package:fl_clash/network_rules/permission_gate.dart';
+import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/network_rules.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';
 import 'package:fl_clash/views/setting/widgets/edit_rule_dialog.dart';
@@ -30,6 +32,7 @@ class NetworkRulesView extends ConsumerWidget {
             children: [
               _MasterToggleCard(enabled: settings.enabled),
               const Divider(height: 0),
+              const _PermissionBanner(),
               Expanded(
                 child: rulesAsync.when(
                   loading: () =>
@@ -49,6 +52,51 @@ class NetworkRulesView extends ConsumerWidget {
               icon: const Icon(Icons.add),
               label: Text(appLocalizations.networkRulesAdd),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PermissionBanner extends ConsumerWidget {
+  const _PermissionBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final granted =
+        ref.watch(locationPermissionProvider) ==
+        LocationPermissionState.granted;
+    if (granted) return const SizedBox.shrink();
+
+    final rules = ref.watch(networkRulesStreamProvider).value ?? const [];
+    final needsWifi = rules.any(
+      (r) =>
+          r.enabled &&
+          r.conditions.any((c) => c is WifiNamed || c is AnyWifi),
+    );
+    if (!needsWifi) return const SizedBox.shrink();
+
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      color: scheme.errorContainer,
+      padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+      child: Row(
+        children: [
+          Icon(Icons.warning_amber, color: scheme.onErrorContainer),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              appLocalizations.networkRulesPermissionBanner,
+              style: TextStyle(color: scheme.onErrorContainer),
+            ),
+          ),
+          TextButton(
+            onPressed: () => ensureLocationPermissionForSsid(context, ref),
+            style: TextButton.styleFrom(
+              foregroundColor: scheme.onErrorContainer,
+            ),
+            child: Text(appLocalizations.permissionAllow),
           ),
         ],
       ),

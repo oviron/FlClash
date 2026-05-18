@@ -3434,6 +3434,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Network rules need Wi-Fi permission to match SSIDs`
+  String get networkRulesPermissionBanner {
+    return Intl.message(
+      'Network rules need Wi-Fi permission to match SSIDs',
+      name: 'networkRulesPermissionBanner',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Network rules`
   String get networkRulesTitle {
     return Intl.message(

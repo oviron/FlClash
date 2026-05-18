@@ -423,6 +423,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesEmpty": MessageLookupByLibrary.simpleMessage("添加第一条规则"),
     "networkRulesEnable": MessageLookupByLibrary.simpleMessage("启用网络规则"),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("启用"),
+    "networkRulesPermissionBanner": MessageLookupByLibrary.simpleMessage(
+      "网络规则需要 Wi-Fi 权限以匹配 SSID",
+    ),
     "networkRulesTitle": MessageLookupByLibrary.simpleMessage("网络规则"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("网络速度"),
     "networkType": MessageLookupByLibrary.simpleMessage("网络类型"),

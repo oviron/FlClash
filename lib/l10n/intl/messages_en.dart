@@ -592,6 +592,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enable network rules",
     ),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("Enable"),
+    "networkRulesPermissionBanner": MessageLookupByLibrary.simpleMessage(
+      "Network rules need Wi-Fi permission to match SSIDs",
+    ),
     "networkRulesTitle": MessageLookupByLibrary.simpleMessage("Network rules"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "networkType": MessageLookupByLibrary.simpleMessage("Network type"),

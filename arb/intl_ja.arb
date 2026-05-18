@@ -444,6 +444,7 @@
   "permissionNotNow": "今はしない",
   "permissionRequiredHint": "権限が必要です",
   "openSettings": "設定を開く",
+  "networkRulesPermissionBanner": "SSIDを照合するため、ネットワークルールにはWi-Fi権限が必要です",
   "networkRulesTitle": "ネットワークルール",
   "networkRulesEnable": "ネットワークルールを有効にする",
   "networkRulesEmpty": "最初のルールを追加",

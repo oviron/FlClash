@@ -435,6 +435,7 @@
   "permissionNotNow": "Not now",
   "permissionRequiredHint": "Permission required",
   "openSettings": "Open settings",
+  "networkRulesPermissionBanner": "Network rules need Wi-Fi permission to match SSIDs",
   "networkRulesTitle": "Network rules",
   "networkRulesEnable": "Enable network rules",
   "networkRulesEmpty": "Add your first rule",

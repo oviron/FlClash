@@ -475,6 +475,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "ネットワークルールを有効にする",
     ),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("有効にする"),
+    "networkRulesPermissionBanner": MessageLookupByLibrary.simpleMessage(
+      "SSIDを照合するため、ネットワークルールにはWi-Fi権限が必要です",
+    ),
     "networkRulesTitle": MessageLookupByLibrary.simpleMessage("ネットワークルール"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("ネットワーク速度"),
     "networkType": MessageLookupByLibrary.simpleMessage("ネットワーク種別"),

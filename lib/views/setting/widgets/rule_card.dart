@@ -173,11 +173,7 @@ class _ConditionChip extends StatelessWidget {
           size: 18,
           color: showWarning ? scheme.error : null,
         ),
-        label: Text(
-          showWarning
-              ? '${c.ssid} (${appLocalizations.permissionRequiredHint})'
-              : c.ssid,
-        ),
+        label: Text(c.ssid),
         visualDensity: VisualDensity.compact,
       );
     }

@@ -444,6 +444,7 @@
   "permissionNotNow": "暂不允许",
   "permissionRequiredHint": "需要权限",
   "openSettings": "打开设置",
+  "networkRulesPermissionBanner": "网络规则需要 Wi-Fi 权限以匹配 SSID",
   "networkRulesTitle": "网络规则",
   "networkRulesEnable": "启用网络规则",
   "networkRulesEmpty": "添加第一条规则",
