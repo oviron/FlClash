@@ -150,6 +150,17 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         chinaAppPrefixList.map { ("L" + it.replace('.', '/') + "/").toByteArray(Charsets.US_ASCII) }
     }
 
+    // Wraps the DEX read so the cancellation throw escapes the bare
+    // catch(_: Exception) in isChinaPackage. CancellationException is a
+    // Throwable but not an Exception subclass, so the catch is bypassed.
+    private fun readDexBytesRespectingCancellation(
+        zip: ZipFile,
+        entry: java.util.zip.ZipEntry,
+    ): ByteArray {
+        scope.coroutineContext[Job]?.ensureActive()
+        return zip.getInputStream(entry).use { it.readBytes() }
+    }
+
     private fun ByteArray.containsAny(needles: List<ByteArray>): Boolean {
         for (needle in needles) {
             if (indexOf(needle) >= 0) return true
@@ -440,13 +451,14 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                         if (packageEntry.size > 15000000) {
                             return true
                         }
-                        // Cancellation point: a long iteration over installed packages
-                        // can outlive the FlutterEngine detach by hundreds of ms per
-                        // package; honour the dispatcher's job cancel.
-                        scope.coroutineContext[Job]?.ensureActive()
-                        val dexBytes = it.getInputStream(packageEntry).use { stream ->
-                            stream.readBytes()
-                        }
+                        // Cancellation point: a long iteration over installed
+                        // packages outlives FlutterEngine detach by hundreds
+                        // of ms per package. Done BEFORE the try-catch so
+                        // CancellationException propagates instead of being
+                        // swallowed by the bare `catch (_: Exception)` below.
+                        val dexBytes = readDexBytesRespectingCancellation(
+                            it, packageEntry
+                        )
                         if (dexBytes.containsAny(chinaDexPrefixBytes)) return true
                     }
                 }

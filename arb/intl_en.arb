@@ -486,5 +486,20 @@
   "includeDavCredsInBackupDesc": "Off by default. Turn on only if you trust the storage where the backup will live.",
   "onlyStatisticsProxy": "Only statistics proxy",
   "onlyStatisticsProxyDesc": "When turned on, only statistics proxy traffic",
-  "resourcesUpToDate": "Resources up to date"
+  "resourcesUpToDate": "Resources up to date",
+  "backupAndRecovery": "Backup and recovery",
+  "backupAndRecoveryDesc": "Sync data via WebDAV or file",
+  "recovery": "Recovery",
+  "recoveryProfiles": "Recover profiles only",
+  "recoveryAll": "Recover all data",
+  "recoverySuccess": "Recovery succeeded",
+  "remoteRecoveryDesc": "Recover data from WebDAV",
+  "localRecoveryDesc": "Recover data from file",
+  "zoom": "Zoom",
+  "byedpiPresetMtsAggressive": "MTS (aggressive)",
+  "byedpiPresetMegafon2ni": "MegaFon (2Ni)",
+  "byedpiPresetBeelineRt": "Beeline / Rostelecom",
+  "byedpiPresetCascade": "Cascade (aggressive multi-offset)",
+  "byedpiPresetTlsOnly": "TLS-only (no auto-mode)",
+  "byedpiPresetTtlFixed": "TTL Fixed (MTS / MegaFon 2025+)"
 }
