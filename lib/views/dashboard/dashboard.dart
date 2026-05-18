@@ -29,8 +29,13 @@ GridItem _buildDashboardItem(DashboardWidget kind) => GridItem(
   },
 );
 
-DashboardWidget _dashboardWidgetFromItem(GridItem item) =>
-    (item.key! as ValueKey<DashboardWidget>).value;
+DashboardWidget _dashboardWidgetFromItem(GridItem item) {
+  assert(
+    item.key is ValueKey<DashboardWidget>,
+    'GridItem in dashboard grid must carry ValueKey<DashboardWidget>',
+  );
+  return (item.key! as ValueKey<DashboardWidget>).value;
+}
 
 typedef _IsEditWidgetBuilder = Widget Function(bool isEdit);
 

@@ -867,6 +867,8 @@ extension SystemControllerExt on AppController {
 
   void initLink() {
     linkManager.initAppLinksListen((url) async {
+      final accent =
+          globalState.navigatorKey.currentContext?.colorScheme.primary;
       final res = await globalState.showMessage(
         title: '${appLocalizations.add}${appLocalizations.profile}',
         message: TextSpan(
@@ -875,11 +877,9 @@ extension SystemControllerExt on AppController {
             TextSpan(
               text: ' $url ',
               style: TextStyle(
-                color:
-                    globalState.navigatorKey.currentContext?.colorScheme.primary,
+                color: accent,
                 decoration: TextDecoration.underline,
-                decorationColor:
-                    globalState.navigatorKey.currentContext?.colorScheme.primary,
+                decorationColor: accent,
               ),
             ),
             TextSpan(
