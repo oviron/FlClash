@@ -6,6 +6,9 @@ on:
       - main
     tags:
       - 'v*'
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 concurrency:
@@ -13,11 +16,77 @@ concurrency:
   cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/v') }}
 
 env:
-  IS_STABLE: ${{ !contains(github.ref, '-') }}
+  IS_STABLE: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-') }}
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.35.7
+          cache: true
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Dart format check
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Flutter analyze (fatal infos, app code only)
+        run: |
+          out=$(flutter analyze --no-pub --fatal-infos 2>&1)
+          echo "$out"
+          filtered=$(printf '%s\n' "$out" | grep -E '^\s+(info|warning|error)' | grep -v 'plugins/' || true)
+          if [ -n "$filtered" ]; then
+            echo "::error::flutter analyze reported issues in app code"
+            exit 1
+          fi
+
+      - name: Flutter test
+        run: flutter test --no-pub --reporter=expanded
+
+      - name: Setup Java for detekt
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install detekt
+        run: |
+          curl -sSLo detekt.jar https://github.com/detekt/detekt/releases/download/v1.23.7/detekt-cli-1.23.7-all.jar
+          echo '#!/usr/bin/env bash' > /usr/local/bin/detekt
+          echo 'exec java -jar '"$PWD/detekt.jar"' "$@"' >> /usr/local/bin/detekt
+          sudo chmod +x /usr/local/bin/detekt
+
+      - name: Detekt
+        run: |
+          detekt \
+            --input android/app/src/main/kotlin,android/app/src/main/java,android/app/src/bydpi/kotlin,android/service/src/main/java,android/common/src/main/java \
+            --build-upon-default-config \
+            ${{ hashFiles('detekt.yml') != '' && '--config detekt.yml' || '' }}
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    needs: lint
     strategy:
       fail-fast: false
       matrix:
@@ -61,9 +130,16 @@ jobs:
         with:
           path: /usr/local/lib/android/sdk/ndk/28.0.13004108
           key: ndk-28.0.13004108-${{ runner.os }}
+          restore-keys: |
+            ndk-28.0.13004108-
+
+      - name: Install Android NDK
+        if: steps.ndk-cache.outputs.cache-hit != 'true'
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "ndk;28.0.13004108"
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.23.0
         with:
           channel: stable
           flutter-version: 3.35.7
@@ -75,7 +151,7 @@ jobs:
           flutter pub get
 
       - name: Setup
-        run: dart setup.dart ${{ matrix.platform }} ${{ matrix.arch && format('--arch {0}', matrix.arch) }} --flavor ${{ matrix.flavor }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }}
+        run: dart setup.dart ${{ matrix.platform }} --flavor ${{ matrix.flavor }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }}
 
       - name: Verify 16-KB page-size alignment for native libs
         if: startsWith(matrix.platform,'android')
@@ -99,7 +175,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-artifact@v4
         with:
-          name: artifact-${{ matrix.platform }}-${{ matrix.flavor }}${{ matrix.arch && format('-{0}', matrix.arch) }}
+          name: artifact-${{ matrix.platform }}-${{ matrix.flavor }}
           path: ./dist
           overwrite: true
 
@@ -107,6 +183,7 @@ jobs:
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
@@ -148,7 +225,7 @@ jobs:
           ls -la release-apks/
 
       - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.6.2
         with:
           tag_name: ${{ steps.detect.outputs.tag }}
           name: ${{ steps.detect.outputs.tag }}

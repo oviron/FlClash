@@ -122,6 +122,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自動更新"),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage("自動更新間隔（分）"),
     "backup": MessageLookupByLibrary.simpleMessage("バックアップ"),
+    "backupAndRecovery": MessageLookupByLibrary.simpleMessage("バックアップと復元"),
+    "backupAndRecoveryDesc": MessageLookupByLibrary.simpleMessage(
+      "WebDAV またはファイル経由でデータを同期",
+    ),
     "backupAndRestore": MessageLookupByLibrary.simpleMessage("バックアップと復元"),
     "backupAndRestoreDesc": MessageLookupByLibrary.simpleMessage(
       "WebDAVまたはファイルを介してデータを同期する",
@@ -132,16 +136,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "bind": MessageLookupByLibrary.simpleMessage("バインド"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("ブラックリストモード"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--disorder 1 --auto=t,r,s --tlsrec 1+s"),
-    "byedpiPreset": MessageLookupByLibrary.simpleMessage("ストラテジー プリセット"),
-    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage("汎用 (推奨)"),
-    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage("Tele2 / Tinkoff Mobile"),
-    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage("MrDrone (アグレッシブ)"),
-    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage("Anti-GGC バッファリング"),
-    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
-    "byedpiRestart": MessageLookupByLibrary.simpleMessage("ByeDPIを再起動"),
-    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPIを再起動しました"),
-    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage("再起動失敗 (VPN未起動?)"),
+    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
+      "--disorder 1 --auto=t,r,s --tlsrec 1+s",
+    ),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "ローカル SOCKS5 プロキシ経由でDPIをバイパス",
     ),
@@ -150,15 +147,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "byedpi 失敗時にプロキシグループへフォールバック",
     ),
     "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage("フォールバックプロキシ"),
-    "byedpiHostList": MessageLookupByLibrary.simpleMessage("ホストリスト"),
-    "byedpiHostListEdit": MessageLookupByLibrary.simpleMessage("編集"),
-    "byedpiHostListReset": MessageLookupByLibrary.simpleMessage("デフォルトに戻す"),
-    "byedpiHostListResetConfirm": MessageLookupByLibrary.simpleMessage(
-      "ホストリストを内蔵のデフォルトにリセットしますか？",
-    ),
-    "byedpiHostListSaved": MessageLookupByLibrary.simpleMessage(
-      "ホストリストを保存しました",
-    ),
     "byedpiMode": MessageLookupByLibrary.simpleMessage("モード"),
     "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("自動"),
     "byedpiModeManual": MessageLookupByLibrary.simpleMessage("手動"),
@@ -166,6 +154,41 @@ class MessageLookup extends MessageLookupByLibrary {
       "現在のプロファイルにプロキシグループがありません",
     ),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("リッスンポート"),
+    "byedpiPreset": MessageLookupByLibrary.simpleMessage("ストラテジー プリセット"),
+    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage(
+      "Anti-GGC バッファリング",
+    ),
+    "byedpiPresetBeelineRt": MessageLookupByLibrary.simpleMessage(
+      "Beeline / Rostelecom",
+    ),
+    "byedpiPresetCascade": MessageLookupByLibrary.simpleMessage(
+      "Cascade (アグレッシブ multi-offset)",
+    ),
+    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
+    "byedpiPresetMegafon2ni": MessageLookupByLibrary.simpleMessage(
+      "MegaFon (2Ni)",
+    ),
+    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage(
+      "MrDrone (アグレッシブ)",
+    ),
+    "byedpiPresetMtsAggressive": MessageLookupByLibrary.simpleMessage(
+      "MTS (アグレッシブ)",
+    ),
+    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage(
+      "Tele2 / Tinkoff Mobile",
+    ),
+    "byedpiPresetTlsOnly": MessageLookupByLibrary.simpleMessage(
+      "TLSのみ (auto-mode 無し)",
+    ),
+    "byedpiPresetTtlFixed": MessageLookupByLibrary.simpleMessage(
+      "TTL固定 (MTS / MegaFon 2025+)",
+    ),
+    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage("汎用 (推奨)"),
+    "byedpiRestart": MessageLookupByLibrary.simpleMessage("ByeDPIを再起動"),
+    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
+      "再起動失敗 (VPN未起動?)",
+    ),
+    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPIを再起動しました"),
     "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("バイパスドメイン"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage("システムプロキシ有効時のみ適用"),
@@ -350,6 +373,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "loading": MessageLookupByLibrary.simpleMessage("読み込み中..."),
     "local": MessageLookupByLibrary.simpleMessage("ローカル"),
     "localBackupDesc": MessageLookupByLibrary.simpleMessage("ローカルにデータをバックアップ"),
+    "localRecoveryDesc": MessageLookupByLibrary.simpleMessage("ファイルからデータを復元"),
     "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
       "Wi-Fiネットワーク名を取得するため、Androidは位置情報の権限を必要とします。SSIDの読み取りにのみ使用し、座標は保存しません。",
     ),
@@ -451,6 +475,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "ネットワークルールを有効にする",
     ),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("有効にする"),
+    "networkRulesPermissionBanner": MessageLookupByLibrary.simpleMessage(
+      "SSIDを照合するため、ネットワークルールにはWi-Fi権限が必要です",
+    ),
     "networkRulesTitle": MessageLookupByLibrary.simpleMessage("ネットワークルール"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("ネットワーク速度"),
     "networkType": MessageLookupByLibrary.simpleMessage("ネットワーク種別"),
@@ -549,6 +576,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "qrcode": MessageLookupByLibrary.simpleMessage("QRコード"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage("QRコードをスキャンしてプロファイルを取得"),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("レインボー"),
+    "recovery": MessageLookupByLibrary.simpleMessage("復元"),
+    "recoveryAll": MessageLookupByLibrary.simpleMessage("すべてのデータを復元"),
+    "recoveryProfiles": MessageLookupByLibrary.simpleMessage("プロファイルのみ復元"),
+    "recoverySuccess": MessageLookupByLibrary.simpleMessage("復元に成功しました"),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redirポート"),
     "redo": MessageLookupByLibrary.simpleMessage("やり直す"),
     "regExp": MessageLookupByLibrary.simpleMessage("正規表現"),
@@ -558,6 +589,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "WebDAVにデータをバックアップ",
     ),
     "remoteDestination": MessageLookupByLibrary.simpleMessage("リモート宛先"),
+    "remoteRecoveryDesc": MessageLookupByLibrary.simpleMessage(
+      "WebDAV からデータを復元",
+    ),
     "remove": MessageLookupByLibrary.simpleMessage("削除"),
     "request": MessageLookupByLibrary.simpleMessage("リクエスト"),
     "requests": MessageLookupByLibrary.simpleMessage("リクエスト"),
@@ -710,5 +744,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "years": MessageLookupByLibrary.simpleMessage("年"),
     "yearsAgo": m15,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
+    "zoom": MessageLookupByLibrary.simpleMessage("ズーム"),
   };
 }

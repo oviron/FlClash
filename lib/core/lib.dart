@@ -112,15 +112,16 @@ class CoreLib extends CoreHandlerInterface {
         groupsSet.add(name as String);
       }
     });
+    // Group order MUST follow the YAML declaration. mihomo's getProxies
+    // marshals a Go map, which json.Marshal sorts alphabetically — using
+    // its key order here surfaces that sort to the UI. Keep YAML order
+    // load-bearing; do not change.
     final all = <String>[];
     for (final name in orderFromYaml) {
       if (groupsSet.remove(name)) all.add(name);
     }
     all.addAll(groupsSet);
-    return ProxiesData(
-      proxies: Map<String, dynamic>.from(proxies),
-      all: all,
-    );
+    return ProxiesData(proxies: Map<String, dynamic>.from(proxies), all: all);
   }
 
   @override
@@ -160,9 +161,7 @@ class CoreLib extends CoreHandlerInterface {
         'timeout': 5000,
       }),
     );
-    return json.encode(
-      Delay(name: proxyName, value: delay ?? -1, url: url),
-    );
+    return json.encode(Delay(name: proxyName, value: delay ?? -1, url: url));
   }
 
   @override

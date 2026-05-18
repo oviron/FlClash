@@ -17,8 +17,7 @@ import 'models/models.dart';
 import 'providers/database.dart';
 
 class AppController {
-  late final BuildContext _context;
-  late final WidgetRef _ref;
+  late WidgetRef _ref;
   bool isAttach = false;
 
   static AppController? _instance;
@@ -30,8 +29,7 @@ class AppController {
     return _instance!;
   }
 
-  Future<void> attach(BuildContext context, WidgetRef ref) async {
-    _context = context;
+  Future<void> attach(WidgetRef ref) async {
     _ref = ref;
     await _init();
     isAttach = true;
@@ -78,13 +76,17 @@ extension InitControllerExt on AppController {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(_context).pop<bool>(false);
+                  Navigator.of(
+                    globalState.navigatorKey.currentContext!,
+                  ).pop<bool>(false);
                 },
                 child: Text(appLocalizations.exit),
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(_context).pop<bool>(true);
+                  Navigator.of(
+                    globalState.navigatorKey.currentContext!,
+                  ).pop<bool>(true);
                 },
                 child: Text(appLocalizations.agree),
               ),
@@ -129,7 +131,6 @@ extension InitControllerExt on AppController {
       await applyProfile(force: true);
     }
   }
-
 }
 
 extension StateControllerExt on AppController {
@@ -279,8 +280,8 @@ extension ProfilesControllerExt on AppController {
         );
       }
 
-      final isShortLink = (uri.host.split('.').length <= 2 &&
-              uri.pathSegments.length <= 2) ||
+      final isShortLink =
+          (uri.host.split('.').length <= 2 && uri.pathSegments.length <= 2) ||
           url.length < 30;
 
       if (uri.host.contains('githubusercontent.com') &&
@@ -317,7 +318,10 @@ extension ProfilesControllerExt on AppController {
     }
     toProfiles();
     final profile = await loadingRun(tag: LoadingTag.profiles, () async {
-      return await Profile.normal(url: url, label: _getLabelFromURL(url)).update();
+      return await Profile.normal(
+        url: url,
+        label: _getLabelFromURL(url),
+      ).update();
     }, title: appLocalizations.addProfile);
     if (profile != null) {
       putProfile(profile);
@@ -337,7 +341,7 @@ extension ProfilesControllerExt on AppController {
     if (bytes == null) {
       return;
     }
-    if (!_context.mounted) return;
+    if (globalState.navigatorKey.currentContext?.mounted != true) return;
     globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
     toProfiles();
     final profile = await loadingRun(tag: LoadingTag.profiles, () async {
@@ -771,8 +775,9 @@ extension CoreControllerExt on AppController {
     final String message = result[0];
     if (message.isNotEmpty) {
       _ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
-      if (_context.mounted) {
-        _context.showNotifier(message);
+      final ctx = globalState.navigatorKey.currentContext;
+      if (ctx?.mounted == true) {
+        ctx!.showNotifier(message);
       }
       return;
     }
@@ -864,6 +869,8 @@ extension SystemControllerExt on AppController {
 
   void initLink() {
     linkManager.initAppLinksListen((url) async {
+      final accent =
+          globalState.navigatorKey.currentContext?.colorScheme.primary;
       final res = await globalState.showMessage(
         title: '${appLocalizations.add}${appLocalizations.profile}',
         message: TextSpan(
@@ -872,9 +879,9 @@ extension SystemControllerExt on AppController {
             TextSpan(
               text: ' $url ',
               style: TextStyle(
-                color: _context.colorScheme.primary,
+                color: accent,
                 decoration: TextDecoration.underline,
-                decorationColor: _context.colorScheme.primary,
+                decorationColor: accent,
               ),
             ),
             TextSpan(
@@ -1099,8 +1106,8 @@ extension CommonControllerExt on AppController {
   Future<void> updateTraffic() async {
     final traffic = await coreController.getTraffic();
     _ref.read(trafficsProvider.notifier).addTraffic(traffic);
-    _ref.read(totalTrafficProvider.notifier).value =
-        await coreController.getTotalTraffic();
+    _ref.read(totalTrafficProvider.notifier).value = await coreController
+        .getTotalTraffic();
   }
 
   Future<T?> loadingRun<T>(
@@ -1128,12 +1135,16 @@ extension CommonControllerExt on AppController {
     );
   }
 
+  /// Notify-and-continue wrapper. Default swallows into a snackbar.
+  /// Pass `rethrowOnError: true` on critical paths where the caller
+  /// must observe the failure.
   Future<T?> safeRun<T>(
     FutureOr<T> Function() futureFunction, {
     String? title,
     VoidCallback? onStart,
     VoidCallback? onEnd,
     bool silence = true,
+    bool rethrowOnError = false,
   }) async {
     try {
       if (onStart != null) {
@@ -1142,15 +1153,21 @@ extension CommonControllerExt on AppController {
       final res = await futureFunction();
       return res;
     } catch (e, s) {
-      commonPrint.log('$title ===> $e, $s', logLevel: LogLevel.warning);
+      commonPrint.log(
+        '$title ===> $e, $s',
+        logLevel: rethrowOnError ? LogLevel.error : LogLevel.warning,
+      );
       if (silence) {
         globalState.showNotifier(e.toString());
       } else {
-        unawaited(globalState.showMessage(
-          title: title ?? appLocalizations.tip,
-          message: TextSpan(text: e.toString()),
-        ));
+        unawaited(
+          globalState.showMessage(
+            title: title ?? appLocalizations.tip,
+            message: TextSpan(text: e.toString()),
+          ),
+        );
       }
+      if (rethrowOnError) rethrow;
       return null;
     } finally {
       if (onEnd != null) {
@@ -1160,4 +1177,6 @@ extension CommonControllerExt on AppController {
   }
 }
 
+// Imperative dispatcher: each extension is a candidate Notifier; migrate
+// incrementally starting from the smallest blocks.
 final appController = AppController();

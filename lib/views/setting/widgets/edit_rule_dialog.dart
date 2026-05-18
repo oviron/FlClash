@@ -83,8 +83,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
   }
 
   Future<void> _pickWifiNamed() async {
-    final granted =
-        await ensureLocationPermissionForSsid(context, ref);
+    final granted = await ensureLocationPermissionForSsid(context, ref);
     if (!granted) return;
     if (!mounted) return;
     final picked = await showDialog<String>(
@@ -128,8 +127,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
   @override
   Widget build(BuildContext context) {
     final permissionState = ref.watch(locationPermissionProvider);
-    final hasPermission =
-        permissionState == LocationPermissionState.granted;
+    final hasPermission = permissionState == LocationPermissionState.granted;
     final scheme = Theme.of(context).colorScheme;
 
     return AlertDialog(
@@ -182,9 +180,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
                   RadioListTile<_ConditionKind>(
                     value: _ConditionKind.anyWifi,
                     contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      appLocalizations.networkRulesConditionAnyWifi,
-                    ),
+                    title: Text(appLocalizations.networkRulesConditionAnyWifi),
                   ),
                   RadioListTile<_ConditionKind>(
                     value: _ConditionKind.anyCellular,
@@ -204,9 +200,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
                     selected: _action == NetworkAction.turnOn,
                     selectedColor: scheme.primaryContainer,
                     label: Center(
-                      child: Text(
-                        appLocalizations.networkRulesActionTurnOn,
-                      ),
+                      child: Text(appLocalizations.networkRulesActionTurnOn),
                     ),
                     onSelected: (_) =>
                         setState(() => _action = NetworkAction.turnOn),
@@ -218,9 +212,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
                     selected: _action == NetworkAction.turnOff,
                     selectedColor: scheme.errorContainer,
                     label: Center(
-                      child: Text(
-                        appLocalizations.networkRulesActionTurnOff,
-                      ),
+                      child: Text(appLocalizations.networkRulesActionTurnOff),
                     ),
                     onSelected: (_) =>
                         setState(() => _action = NetworkAction.turnOff),
@@ -319,9 +311,7 @@ class _WifiPickerDialogState extends State<_WifiPickerDialog> {
           children: [
             TextField(
               controller: _controller,
-              decoration: const InputDecoration(
-                labelText: 'SSID',
-              ),
+              decoration: const InputDecoration(labelText: 'SSID'),
               onSubmitted: (value) {
                 Navigator.of(context).pop(value.trim());
               },
@@ -354,8 +344,7 @@ class _WifiPickerDialogState extends State<_WifiPickerDialog> {
           child: Text(appLocalizations.cancel),
         ),
         FilledButton(
-          onPressed: () =>
-              Navigator.of(context).pop(_controller.text.trim()),
+          onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
           child: Text(appLocalizations.save),
         ),
       ],

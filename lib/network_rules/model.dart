@@ -18,9 +18,7 @@ class NetworkSnapshot {
 
   const NetworkSnapshot.wifi({this.ssid}) : type = NetworkType.wifi;
 
-  const NetworkSnapshot.cellular()
-    : type = NetworkType.cellular,
-      ssid = null;
+  const NetworkSnapshot.cellular() : type = NetworkType.cellular, ssid = null;
 
   const NetworkSnapshot.none() : type = NetworkType.none, ssid = null;
 
@@ -54,9 +52,7 @@ sealed class NetworkCondition {
       case 'any_cellular':
         return const AnyCellular();
       default:
-        throw FormatException(
-          'Unknown NetworkCondition kind: $kind in $json',
-        );
+        throw FormatException('Unknown NetworkCondition kind: $kind in $json');
     }
   }
 }
@@ -96,15 +92,13 @@ class AnyWifi extends NetworkCondition {
   const AnyWifi();
 
   @override
-  bool matches(NetworkSnapshot snapshot) =>
-      snapshot.type == NetworkType.wifi;
+  bool matches(NetworkSnapshot snapshot) => snapshot.type == NetworkType.wifi;
 
   @override
   Map<String, dynamic> toJson() => const {'kind': 'any_wifi'};
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is AnyWifi;
+  bool operator ==(Object other) => identical(this, other) || other is AnyWifi;
 
   @override
   int get hashCode => 'any_wifi'.hashCode;
@@ -145,9 +139,7 @@ class NetworkConditionListCodec {
     if (raw.isEmpty) return const [];
     final decoded = jsonDecode(raw);
     if (decoded is! List) {
-      throw FormatException(
-        'Expected JSON array of conditions, got: $raw',
-      );
+      throw FormatException('Expected JSON array of conditions, got: $raw');
     }
     // Skip unknown entries individually: a single bad record (e.g. future
     // version's condition kind) used to bubble out of watchAll and wipe
@@ -157,9 +149,7 @@ class NetworkConditionListCodec {
       try {
         result.add(NetworkCondition.fromJson(entry as Map<String, dynamic>));
       } catch (e) {
-        commonPrint.log(
-          'network-rules: skipping unknown condition $entry: $e',
-        );
+        commonPrint.log('network-rules: skipping unknown condition $entry: $e');
       }
     }
     return List.unmodifiable(result);

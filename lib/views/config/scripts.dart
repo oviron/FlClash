@@ -125,11 +125,13 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
           .read(scriptsProvider.notifier)
           .isExits(newScript.label);
       if (isExits) {
-        unawaited(globalState.showMessage(
-          message: TextSpan(
-            text: appLocalizations.existsTip(appLocalizations.name),
+        unawaited(
+          globalState.showMessage(
+            message: TextSpan(
+              text: appLocalizations.existsTip(appLocalizations.name),
+            ),
           ),
-        ));
+        );
         return;
       }
     }
@@ -167,22 +169,30 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
     if (!mounted) {
       return;
     }
-    unawaited(BaseNavigator.push(
-      context,
-      EditorPage(
-        titleEditable: true,
-        title: title,
-        supportRemoteDownload: true,
-        onSave: (context, title, content) {
-          _handleEditorSave(context, title, content, script: script);
-        },
-        onPop: (context, title, content) {
-          return _handleEditorPop(context, title, content, raw, script: script);
-        },
-        languages: const [Language.javaScript],
-        content: raw,
+    unawaited(
+      BaseNavigator.push(
+        context,
+        EditorPage(
+          titleEditable: true,
+          title: title,
+          supportRemoteDownload: true,
+          onSave: (context, title, content) {
+            _handleEditorSave(context, title, content, script: script);
+          },
+          onPop: (context, title, content) {
+            return _handleEditorPop(
+              context,
+              title,
+              content,
+              raw,
+              script: script,
+            );
+          },
+          languages: const [Language.javaScript],
+          content: raw,
+        ),
       ),
-    ));
+    );
   }
 
   @override

@@ -61,9 +61,7 @@ void main() {
       // Update: rename and toggle disabled on the home rule.
       final homeRow = initial[1];
       await dao.upsert(
-        homeRow
-            .copyWith(name: 'home wifi', enabled: false)
-            .toCompanion(),
+        homeRow.copyWith(name: 'home wifi', enabled: false).toCompanion(),
       );
 
       final afterUpdate = await dao.watchAll().first;

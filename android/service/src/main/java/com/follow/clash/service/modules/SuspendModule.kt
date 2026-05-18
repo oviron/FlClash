@@ -9,6 +9,7 @@ import com.follow.clash.common.receiveBroadcastFlow
 import io.github.oviron.libmihomo.Clash
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 
 
 class SuspendModule(private val service: Service) : Module() {
-    private val scope = CoroutineScope(Dispatchers.Default)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private fun isScreenOn(): Boolean {
         val pm = service.getSystemService<PowerManager>()

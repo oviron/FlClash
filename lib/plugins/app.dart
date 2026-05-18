@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/plugins/method_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -15,7 +16,7 @@ class App {
     methodChannel = const MethodChannel('$packageName/app');
     methodChannel.setMethodCallHandler((call) async {
       switch (call.method) {
-        case 'exit':
+        case AppMethod.exit:
           if (onExit != null) {
             await onExit!();
           }
@@ -31,12 +32,12 @@ class App {
   }
 
   Future<bool?> moveTaskToBack() async {
-    return await methodChannel.invokeMethod<bool>('moveTaskToBack');
+    return await methodChannel.invokeMethod<bool>(AppMethod.moveTaskToBack);
   }
 
   Future<List<Package>> getPackages() async {
     final packagesString = await methodChannel.invokeMethod<String>(
-      'getPackages',
+      AppMethod.getPackages,
     );
     final List<dynamic> packagesRaw =
         (await packagesString?.commonToJSON<List<dynamic>>()) ?? [];
@@ -45,7 +46,7 @@ class App {
 
   Future<List<String>> getChinaPackageNames() async {
     final packageNamesString = await methodChannel.invokeMethod<String>(
-      'getChinaPackageNames',
+      AppMethod.getChinaPackageNames,
     );
     final List<dynamic> packageNamesRaw =
         await packageNamesString?.commonToJSON<List<dynamic>>() ?? [];
@@ -54,19 +55,22 @@ class App {
 
   Future<bool?> requestNotificationsPermission() async {
     return await methodChannel.invokeMethod<bool>(
-      'requestNotificationsPermission',
+      AppMethod.requestNotificationsPermission,
     );
   }
 
   Future<bool> openFile(String path) async {
-    return await methodChannel.invokeMethod<bool>('openFile', {'path': path}) ??
+    return await methodChannel.invokeMethod<bool>(AppMethod.openFile, {
+          'path': path,
+        }) ??
         false;
   }
 
   Future<ImageProvider?> getPackageIcon(String packageName) async {
-    final path = await methodChannel.invokeMethod<String>('getPackageIcon', {
-      'packageName': packageName,
-    });
+    final path = await methodChannel.invokeMethod<String>(
+      AppMethod.getPackageIcon,
+      {'packageName': packageName},
+    );
     if (path == null) {
       return null;
     }
@@ -74,34 +78,38 @@ class App {
   }
 
   Future<bool?> tip(String? message) async {
-    return await methodChannel.invokeMethod<bool>('tip', {
+    return await methodChannel.invokeMethod<bool>(AppMethod.tip, {
       'message': '$message',
     });
   }
 
   Future<bool?> initShortcuts() async {
     return await methodChannel.invokeMethod<bool>(
-      'initShortcuts',
+      AppMethod.initShortcuts,
       appLocalizations.toggle,
     );
   }
 
   Future<bool?> updateExcludeFromRecents(bool value) async {
-    return await methodChannel.invokeMethod<bool>('updateExcludeFromRecents', {
-      'value': value,
-    });
+    return await methodChannel.invokeMethod<bool>(
+      AppMethod.updateExcludeFromRecents,
+      {'value': value},
+    );
   }
 
   Future<bool?> isAutoStartEnabled() {
-    return methodChannel.invokeMethod<bool>('isAutoStartEnabled');
+    return methodChannel.invokeMethod<bool>(AppMethod.isAutoStartEnabled);
   }
 
   Future<bool?> setAutoStartEnabled(bool enabled) {
-    return methodChannel.invokeMethod<bool>('setAutoStartEnabled', enabled);
+    return methodChannel.invokeMethod<bool>(
+      AppMethod.setAutoStartEnabled,
+      enabled,
+    );
   }
 
   Future<String?> getLogDirectory() async {
-    return await methodChannel.invokeMethod<String>('getLogDirectory');
+    return await methodChannel.invokeMethod<String>(AppMethod.getLogDirectory);
   }
 }
 

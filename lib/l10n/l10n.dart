@@ -3434,6 +3434,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Network rules need Wi-Fi permission to match SSIDs`
+  String get networkRulesPermissionBanner {
+    return Intl.message(
+      'Network rules need Wi-Fi permission to match SSIDs',
+      name: 'networkRulesPermissionBanner',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Network rules`
   String get networkRulesTitle {
     return Intl.message(
@@ -3654,6 +3664,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Universal (recommended)`
   String get byedpiPresetUniversal {
     return Intl.message(
       'Universal (recommended)',
@@ -3663,6 +3674,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Tele2 / Tinkoff Mobile`
   String get byedpiPresetTele2 {
     return Intl.message(
       'Tele2 / Tinkoff Mobile',
@@ -3672,6 +3684,7 @@ class AppLocalizations {
     );
   }
 
+  /// `MrDrone (aggressive)`
   String get byedpiPresetMrDrone {
     return Intl.message(
       'MrDrone (aggressive)',
@@ -3681,6 +3694,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Anti-GGC buffering`
   String get byedpiPresetAntiGgc {
     return Intl.message(
       'Anti-GGC buffering',
@@ -3690,74 +3704,44 @@ class AppLocalizations {
     );
   }
 
-  String get byedpiPresetMtsAggressive {
-    return Intl.message(
-      'MTS (aggressive)',
-      name: 'byedpiPresetMtsAggressive',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get byedpiPresetMegafon2ni {
-    return Intl.message(
-      'MegaFon (2Ni)',
-      name: 'byedpiPresetMegafon2ni',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get byedpiPresetBeelineRt {
-    return Intl.message(
-      'Beeline / Rostelecom',
-      name: 'byedpiPresetBeelineRt',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get byedpiPresetCascade {
-    return Intl.message(
-      'Cascade (aggressive)',
-      name: 'byedpiPresetCascade',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get byedpiPresetTlsOnly {
-    return Intl.message(
-      'TLS-only',
-      name: 'byedpiPresetTlsOnly',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get byedpiPresetTtlFixed {
-    return Intl.message(
-      'TTL Fixed (MTS / MegaFon 2025+)',
-      name: 'byedpiPresetTtlFixed',
-      desc: '',
-      args: [],
-    );
-  }
-
+  /// `Custom`
   String get byedpiPresetCustom {
-    return Intl.message('Custom', name: 'byedpiPresetCustom', desc: '', args: []);
+    return Intl.message(
+      'Custom',
+      name: 'byedpiPresetCustom',
+      desc: '',
+      args: [],
+    );
   }
 
+  /// `Restart ByeDPI`
   String get byedpiRestart {
-    return Intl.message('Restart ByeDPI', name: 'byedpiRestart', desc: '', args: []);
+    return Intl.message(
+      'Restart ByeDPI',
+      name: 'byedpiRestart',
+      desc: '',
+      args: [],
+    );
   }
 
+  /// `ByeDPI restarted`
   String get byedpiRestartOk {
-    return Intl.message('ByeDPI restarted', name: 'byedpiRestartOk', desc: '', args: []);
+    return Intl.message(
+      'ByeDPI restarted',
+      name: 'byedpiRestartOk',
+      desc: '',
+      args: [],
+    );
   }
 
+  /// `Restart failed (VPN not running?)`
   String get byedpiRestartFail {
-    return Intl.message('Restart failed (VPN not running?)', name: 'byedpiRestartFail', desc: '', args: []);
+    return Intl.message(
+      'Restart failed (VPN not running?)',
+      name: 'byedpiRestartFail',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Mode`
@@ -3795,51 +3779,6 @@ class AppLocalizations {
     return Intl.message(
       'Fallback proxy',
       name: 'byedpiFallbackProxy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Host list`
-  String get byedpiHostList {
-    return Intl.message(
-      'Host list',
-      name: 'byedpiHostList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Edit`
-  String get byedpiHostListEdit {
-    return Intl.message('Edit', name: 'byedpiHostListEdit', desc: '', args: []);
-  }
-
-  /// `Reset to defaults`
-  String get byedpiHostListReset {
-    return Intl.message(
-      'Reset to defaults',
-      name: 'byedpiHostListReset',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset the host list to the bundled default?`
-  String get byedpiHostListResetConfirm {
-    return Intl.message(
-      'Reset the host list to the bundled default?',
-      name: 'byedpiHostListResetConfirm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Host list saved`
-  String get byedpiHostListSaved {
-    return Intl.message(
-      'Host list saved',
-      name: 'byedpiHostListSaved',
       desc: '',
       args: [],
     );
@@ -3945,6 +3884,146 @@ class AppLocalizations {
     return Intl.message(
       'Resources up to date',
       name: 'resourcesUpToDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup and recovery`
+  String get backupAndRecovery {
+    return Intl.message(
+      'Backup and recovery',
+      name: 'backupAndRecovery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sync data via WebDAV or file`
+  String get backupAndRecoveryDesc {
+    return Intl.message(
+      'Sync data via WebDAV or file',
+      name: 'backupAndRecoveryDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery`
+  String get recovery {
+    return Intl.message('Recovery', name: 'recovery', desc: '', args: []);
+  }
+
+  /// `Recover profiles only`
+  String get recoveryProfiles {
+    return Intl.message(
+      'Recover profiles only',
+      name: 'recoveryProfiles',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover all data`
+  String get recoveryAll {
+    return Intl.message(
+      'Recover all data',
+      name: 'recoveryAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recovery succeeded`
+  String get recoverySuccess {
+    return Intl.message(
+      'Recovery succeeded',
+      name: 'recoverySuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover data from WebDAV`
+  String get remoteRecoveryDesc {
+    return Intl.message(
+      'Recover data from WebDAV',
+      name: 'remoteRecoveryDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recover data from file`
+  String get localRecoveryDesc {
+    return Intl.message(
+      'Recover data from file',
+      name: 'localRecoveryDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom`
+  String get zoom {
+    return Intl.message('Zoom', name: 'zoom', desc: '', args: []);
+  }
+
+  /// `MTS (aggressive)`
+  String get byedpiPresetMtsAggressive {
+    return Intl.message(
+      'MTS (aggressive)',
+      name: 'byedpiPresetMtsAggressive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MegaFon (2Ni)`
+  String get byedpiPresetMegafon2ni {
+    return Intl.message(
+      'MegaFon (2Ni)',
+      name: 'byedpiPresetMegafon2ni',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Beeline / Rostelecom`
+  String get byedpiPresetBeelineRt {
+    return Intl.message(
+      'Beeline / Rostelecom',
+      name: 'byedpiPresetBeelineRt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cascade (aggressive multi-offset)`
+  String get byedpiPresetCascade {
+    return Intl.message(
+      'Cascade (aggressive multi-offset)',
+      name: 'byedpiPresetCascade',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TLS-only (no auto-mode)`
+  String get byedpiPresetTlsOnly {
+    return Intl.message(
+      'TLS-only (no auto-mode)',
+      name: 'byedpiPresetTlsOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TTL Fixed (MTS / MegaFon 2025+)`
+  String get byedpiPresetTtlFixed {
+    return Intl.message(
+      'TTL Fixed (MTS / MegaFon 2025+)',
+      name: 'byedpiPresetTtlFixed',
       desc: '',
       args: [],
     );

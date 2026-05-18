@@ -26,11 +26,17 @@ import kotlin.coroutines.resume
 
 private const val ICON_TTL_DAYS = 1L
 
+// Flutter's shared_preferences plugin namespaces all keys with the
+// "flutter." prefix in the FlutterSharedPreferences XML. The Dart-side
+// key is "sharedState" — see lib/common/preferences.dart.
+private const val SHARED_PREFS_NAME = "FlutterSharedPreferences"
+private const val SHARED_STATE_PREFS_KEY = "flutter.sharedState"
+
 val Application.sharedState: SharedState
     get() {
         try {
-            val sp = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE)
-            val res = sp.getString("flutter.sharedState", "")
+            val sp = getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE)
+            val res = sp.getString(SHARED_STATE_PREFS_KEY, "")
             return Gson().fromJson(res, SharedState::class.java)
         } catch (_: Exception) {
             return SharedState()

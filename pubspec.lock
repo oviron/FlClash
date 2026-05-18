@@ -193,14 +193,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.4"
-  ci:
-    dependency: transitive
-    description:
-      name: ci
-      sha256: "145d095ce05cddac4d797a158bc4cf3b6016d1fe63d8c3d2fbd7212590adca13"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
   cli_config:
     dependency: transitive
     description:
@@ -289,22 +281,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.7"
-  custom_lint:
-    dependency: transitive
-    description:
-      name: custom_lint
-      sha256: "78085fbe842de7c5bef92de811ca81536968dbcbbcdac5c316711add2d15e796"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.8.0"
-  custom_lint_builder:
-    dependency: transitive
-    description:
-      name: custom_lint_builder
-      sha256: cc5532d5733d4eccfccaaec6070a1926e9f21e613d93ad0927fad020b95c9e52
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.8.0"
   custom_lint_core:
     dependency: transitive
     description:
@@ -453,10 +429,10 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: f2d9f173c2c14635cc0e9b14c143c49ef30b4934e8d1d274d6206fcb0086a06f
+      sha256: f13a03000d942e476bc1ff0a736d2e9de711d2f89a95cd4c1d88f861c3348387
       url: "https://pub.dev"
     source: hosted
-    version: "10.3.3"
+    version: "11.0.2"
   file_selector_linux:
     dependency: transitive
     description:
@@ -621,14 +597,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
-  hotreloader:
-    dependency: transitive
-    description:
-      name: hotreloader
-      sha256: bc167a1163807b03bada490bfe2df25b0d744df359227880220a5cbd04e5734b
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.3.0"
   http:
     dependency: transitive
     description:
@@ -985,18 +953,18 @@ packages:
     dependency: "direct main"
     description:
       name: permission_handler
-      sha256: "59adad729136f01ea9e35a48f5d1395e25cba6cea552249ddbe9cf950f5d7849"
+      sha256: bc917da36261b00137bbc8896bf1482169cd76f866282368948f032c8c1caae1
       url: "https://pub.dev"
     source: hosted
-    version: "11.4.0"
+    version: "12.0.1"
   permission_handler_android:
     dependency: transitive
     description:
       name: permission_handler_android
-      sha256: d3971dcdd76182a0c198c096b5db2f0884b0d4196723d21a866fc4cdea057ebc
+      sha256: "1e3bc410ca1bf84662104b100eb126e066cb55791b7451307f9708d4007350e6"
       url: "https://pub.dev"
     source: hosted
-    version: "12.1.0"
+    version: "13.0.1"
   permission_handler_apple:
     dependency: transitive
     description:
@@ -1138,14 +1106,6 @@ packages:
     description:
       name: riverpod_generator
       sha256: "49894543a42cf7a9954fc4e7366b6d3cb2e6ec0fa07775f660afcdd92d097702"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.3"
-  riverpod_lint:
-    dependency: "direct dev"
-    description:
-      name: riverpod_lint
-      sha256: "7ef9c43469e9b5ac4e4c3b24d7c30642e47ce1b12cd7dcdd643534db0a72ed13"
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"

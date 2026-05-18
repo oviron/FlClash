@@ -1,3 +1,57 @@
+## v0.12.0
+
+- Audit sweep: 59 findings + 4 carry-overs
+
+- Add NEARBY_WIFI_DEVICES for Android 13+
+
+- Fix YAML proxy-group order on tab bar
+
+- One-banner permission CTA on network rules
+
+- Tighten CI: PR triggers, format, fatal-infos, coverage, gitleaks, CodeQL
+
+- Bump file_picker 10→11, permission_handler 11→12
+
+- Backfill ja/zh_CN/ru l10n parity
+
+- Pin libmihomo v0.1.1
+
+## v0.11.1
+
+- Force narrow byedpi host list on every app start
+
+## v0.11.0
+
+- Pure consumer pattern: native moves to libmihomo + libbyedpi
+
+- Drop in-tree mihomo bridge
+
+- Migrate ByeDPI to oviron/libbyedpi-android v0.1.0
+
+- Rework logging architecture
+
+## v0.10.0
+
+- Add bydpi product flavor with in-tree ByeDPI
+
+- ByeDPI: manual/auto mode + host-list whitelist
+
+- Wire ByeDpiModule into VpnService via reflective load
+
+- Add :byedpi Gradle module with libbyedpi.so
+
+- Auto-create GitHub Release on tag
+
+## v0.9.1
+
+- Network rules: backfill VPN-default underlying-network gap
+
+- Enforce 3-line comment cap across lib/ and android/
+
+- Rewrite README as fork
+
+- DNS: universal defaults for new profile
+
 ## v0.8.92
 
 - Add sqlite store

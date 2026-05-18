@@ -2,8 +2,6 @@
 
 import 'package:fl_clash/common/color.dart';
 import 'package:fl_clash/common/system.dart';
-import 'package:fl_clash/views/dashboard/widgets/widgets.dart';
-import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -41,8 +39,9 @@ enum GroupType {
 enum GroupName { GLOBAL, Proxy, Auto, Fallback }
 
 extension GroupTypeExtension on GroupType {
-  static List<String> get valueList =>
-      GroupType.values.map((e) => e.toString().split('.').last).toList();
+  static final List<String> valueList = GroupType.values
+      .map((e) => e.toString().split('.').last)
+      .toList(growable: false);
 
   bool get isComputedSelected {
     return [GroupType.URLTest, GroupType.Fallback].contains(this);
@@ -237,30 +236,22 @@ enum FunctionTag {
 }
 
 enum DashboardWidget {
-  networkSpeed(GridItem(crossAxisCellCount: 8, child: NetworkSpeed())),
-  outboundModeV2(GridItem(crossAxisCellCount: 8, child: OutboundModeV2())),
-  outboundMode(GridItem(crossAxisCellCount: 4, child: OutboundMode())),
-  trafficUsage(GridItem(crossAxisCellCount: 4, child: TrafficUsage())),
-  networkDetection(GridItem(crossAxisCellCount: 4, child: NetworkDetection())),
-  vpnButton(
-    GridItem(crossAxisCellCount: 4, child: VpnButton()),
-    platforms: [SupportPlatform.Android],
-  ),
-  intranetIp(GridItem(crossAxisCellCount: 4, child: IntranetIP())),
-  memoryInfo(GridItem(crossAxisCellCount: 4, child: MemoryInfo()));
+  networkSpeed(crossAxisCellCount: 8),
+  outboundModeV2(crossAxisCellCount: 8),
+  outboundMode(crossAxisCellCount: 4),
+  trafficUsage(crossAxisCellCount: 4),
+  networkDetection(crossAxisCellCount: 4),
+  vpnButton(crossAxisCellCount: 4, platforms: [SupportPlatform.Android]),
+  intranetIp(crossAxisCellCount: 4),
+  memoryInfo(crossAxisCellCount: 4);
 
-  final GridItem widget;
+  final int crossAxisCellCount;
   final List<SupportPlatform> platforms;
 
-  const DashboardWidget(this.widget, {this.platforms = SupportPlatform.values});
-
-  static DashboardWidget getDashboardWidget(GridItem gridItem) {
-    const dashboardWidgets = DashboardWidget.values;
-    final index = dashboardWidgets.indexWhere(
-      (item) => item.widget == gridItem,
-    );
-    return dashboardWidgets[index];
-  }
+  const DashboardWidget({
+    required this.crossAxisCellCount,
+    this.platforms = SupportPlatform.values,
+  });
 }
 
 enum GeodataLoader { standard, memconservative }

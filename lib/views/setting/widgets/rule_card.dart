@@ -52,8 +52,7 @@ class RuleCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final permissionState = ref.watch(locationPermissionProvider);
-    final hasPermission =
-        permissionState == LocationPermissionState.granted;
+    final hasPermission = permissionState == LocationPermissionState.granted;
     final scheme = Theme.of(context).colorScheme;
 
     final chips = <Widget>[
@@ -160,10 +159,7 @@ class _ConditionChip extends StatelessWidget {
   final NetworkCondition condition;
   final bool hasPermission;
 
-  const _ConditionChip({
-    required this.condition,
-    required this.hasPermission,
-  });
+  const _ConditionChip({required this.condition, required this.hasPermission});
 
   @override
   Widget build(BuildContext context) {
@@ -177,11 +173,7 @@ class _ConditionChip extends StatelessWidget {
           size: 18,
           color: showWarning ? scheme.error : null,
         ),
-        label: Text(
-          showWarning
-              ? '${c.ssid} (${appLocalizations.permissionRequiredHint})'
-              : c.ssid,
-        ),
+        label: Text(c.ssid),
         visualDensity: VisualDensity.compact,
       );
     }

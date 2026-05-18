@@ -5,10 +5,7 @@ void main() {
   group('evaluate', () {
     test('empty rules returns null', () {
       expect(
-        evaluate(
-          rules: const [],
-          snapshot: const NetworkSnapshot.cellular(),
-        ),
+        evaluate(rules: const [], snapshot: const NetworkSnapshot.cellular()),
         isNull,
       );
     });
@@ -22,47 +19,50 @@ void main() {
         ),
       ];
       expect(
-        evaluate(
-          rules: rules,
-          snapshot: const NetworkSnapshot.cellular(),
-        ),
+        evaluate(rules: rules, snapshot: const NetworkSnapshot.cellular()),
         NetworkAction.turnOn,
       );
     });
 
-    test('WifiNamed matches wifi snapshot with same ssid (case insensitive)', () {
-      final rules = [
-        const NetworkRule(
-          conditions: [WifiNamed('Home')],
-          action: NetworkAction.turnOff,
-          priority: 0,
-        ),
-      ];
-      expect(
-        evaluate(
-          rules: rules,
-          snapshot: const NetworkSnapshot.wifi(ssid: 'home'),
-        ),
-        NetworkAction.turnOff,
-      );
-    });
+    test(
+      'WifiNamed matches wifi snapshot with same ssid (case insensitive)',
+      () {
+        final rules = [
+          const NetworkRule(
+            conditions: [WifiNamed('Home')],
+            action: NetworkAction.turnOff,
+            priority: 0,
+          ),
+        ];
+        expect(
+          evaluate(
+            rules: rules,
+            snapshot: const NetworkSnapshot.wifi(ssid: 'home'),
+          ),
+          NetworkAction.turnOff,
+        );
+      },
+    );
 
-    test('WifiNamed does not match wifi with different ssid (returns null)', () {
-      final rules = [
-        const NetworkRule(
-          conditions: [WifiNamed('HomeWifi')],
-          action: NetworkAction.turnOff,
-          priority: 0,
-        ),
-      ];
-      expect(
-        evaluate(
-          rules: rules,
-          snapshot: const NetworkSnapshot.wifi(ssid: 'CafeWifi'),
-        ),
-        isNull,
-      );
-    });
+    test(
+      'WifiNamed does not match wifi with different ssid (returns null)',
+      () {
+        final rules = [
+          const NetworkRule(
+            conditions: [WifiNamed('HomeWifi')],
+            action: NetworkAction.turnOff,
+            priority: 0,
+          ),
+        ];
+        expect(
+          evaluate(
+            rules: rules,
+            snapshot: const NetworkSnapshot.wifi(ssid: 'CafeWifi'),
+          ),
+          isNull,
+        );
+      },
+    );
 
     test('WifiNamed does not match when ssid is null', () {
       // Simulates wifi connection without ACCESS_FINE_LOCATION permission.
@@ -74,10 +74,7 @@ void main() {
         ),
       ];
       expect(
-        evaluate(
-          rules: rules,
-          snapshot: const NetworkSnapshot.wifi(),
-        ),
+        evaluate(rules: rules, snapshot: const NetworkSnapshot.wifi()),
         isNull,
       );
     });
@@ -92,10 +89,7 @@ void main() {
         ),
       ];
       expect(
-        evaluate(
-          rules: rules,
-          snapshot: const NetworkSnapshot.cellular(),
-        ),
+        evaluate(rules: rules, snapshot: const NetworkSnapshot.cellular()),
         isNull,
       );
     });
@@ -119,10 +113,7 @@ void main() {
         ),
       ];
       expect(
-        evaluate(
-          rules: rules,
-          snapshot: const NetworkSnapshot.cellular(),
-        ),
+        evaluate(rules: rules, snapshot: const NetworkSnapshot.cellular()),
         NetworkAction.turnOn,
       );
     });

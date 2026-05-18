@@ -469,20 +469,20 @@ class SuperGridState extends State<SuperGrid> with TickerProviderStateMixin {
       ),
     );
     final draggableChild = LongPressDraggable(
-            childWhenDragging: childWhenDragging,
-            data: index,
-            feedback: feedback,
-            onDragStarted: () {
-              _handleDragStarted(index);
-            },
-            onDragUpdate: (details) {
-              _handleDragUpdate(details);
-            },
-            onDragEnd: (details) {
-              _handleDragEnd(details);
-            },
-            child: shakeTarget,
-          );
+      childWhenDragging: childWhenDragging,
+      data: index,
+      feedback: feedback,
+      onDragStarted: () {
+        _handleDragStarted(index);
+      },
+      onDragUpdate: (details) {
+        _handleDragUpdate(details);
+      },
+      onDragEnd: (details) {
+        _handleDragEnd(details);
+      },
+      child: shakeTarget,
+    );
     return draggableChild;
   }
 

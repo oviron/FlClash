@@ -11,7 +11,31 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'widgets/widgets.dart' as dash;
 import 'widgets/start_button.dart';
+
+GridItem _buildDashboardItem(DashboardWidget kind) => GridItem(
+  key: ValueKey(kind),
+  crossAxisCellCount: kind.crossAxisCellCount,
+  child: switch (kind) {
+    DashboardWidget.networkSpeed => const dash.NetworkSpeed(),
+    DashboardWidget.outboundModeV2 => const dash.OutboundModeV2(),
+    DashboardWidget.outboundMode => const dash.OutboundMode(),
+    DashboardWidget.trafficUsage => const dash.TrafficUsage(),
+    DashboardWidget.networkDetection => const dash.NetworkDetection(),
+    DashboardWidget.vpnButton => const dash.VpnButton(),
+    DashboardWidget.intranetIp => const dash.IntranetIP(),
+    DashboardWidget.memoryInfo => const dash.MemoryInfo(),
+  },
+);
+
+DashboardWidget _dashboardWidgetFromItem(GridItem item) {
+  assert(
+    item.key is ValueKey<DashboardWidget>,
+    'GridItem in dashboard grid must carry ValueKey<DashboardWidget>',
+  );
+  return (item.key! as ValueKey<DashboardWidget>).value;
+}
 
 typedef _IsEditWidgetBuilder = Widget Function(bool isEdit);
 
@@ -85,7 +109,10 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                           },
                         ),
                         onPressed: _handleConnection,
-                        icon: const Icon(Icons.check, fontWeight: FontWeight.w900),
+                        icon: const Icon(
+                          Icons.check,
+                          fontWeight: FontWeight.w900,
+                        ),
                       )
                     : FilledButton.icon(
                         key: ValueKey(coreStatus),
@@ -215,7 +242,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     if (mounted) {
       await currentState.isTransformCompleter;
       final dashboardWidgets = currentState.children
-          .map((item) => DashboardWidget.getDashboardWidget(item))
+          .map(_dashboardWidgetFromItem)
           .toList();
       ref
           .read(appSettingProvider.notifier)
@@ -230,21 +257,21 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     final dashboardState = ref.watch(dashboardStateProvider);
     final columns = max(4 * ((dashboardState.contentWidth / 280).ceil()), 8);
     final spacing = 14.mAp;
-    final children = [
-      ...dashboardState.dashboardWidgets
-          .where(
-            (item) => item.platforms.contains(SupportPlatform.currentPlatform),
-          )
-          .map((item) => item.widget),
-    ];
+    final activeKinds = dashboardState.dashboardWidgets
+        .where(
+          (kind) => kind.platforms.contains(SupportPlatform.currentPlatform),
+        )
+        .toList();
+    final children = activeKinds.map(_buildDashboardItem).toList();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final activeSet = activeKinds.toSet();
       _addedWidgetsNotifier.value = DashboardWidget.values
           .where(
-            (item) =>
-                !children.contains(item.widget) &&
-                item.platforms.contains(SupportPlatform.currentPlatform),
+            (kind) =>
+                !activeSet.contains(kind) &&
+                kind.platforms.contains(SupportPlatform.currentPlatform),
           )
-          .map((item) => item.widget)
+          .map(_buildDashboardItem)
           .toList();
     });
     return _buildIsEdit(
@@ -264,15 +291,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                         crossAxisCount: columns,
                         crossAxisSpacing: spacing,
                         mainAxisSpacing: spacing,
-                        children: [
-                          ...dashboardState.dashboardWidgets
-                              .where(
-                                (item) => item.platforms.contains(
-                                  SupportPlatform.currentPlatform,
-                                ),
-                              )
-                              .map((item) => item.widget),
-                        ],
+                        children: children,
                         onUpdate: () {
                           _handleSave();
                         },
@@ -342,24 +361,8 @@ class _AddedContainer extends StatefulWidget {
 }
 
 class _AddedContainerState extends State<_AddedContainer> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(_AddedContainer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.child != widget.child) {}
-  }
-
   Future<void> _handleAdd() async {
     widget.onAdd();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override

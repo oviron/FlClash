@@ -1,10 +1,8 @@
-import 'package:fl_clash/byedpi/host_list.dart';
 import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/byedpi.dart';
-import 'package:fl_clash/views/setting/widgets/byedpi_host_list_editor.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,7 +49,10 @@ class ByeDpiView extends ConsumerWidget {
                   ),
                   if (settings.mode == ByeDpiMode.auto) ...[
                     SwitchListTile(
-                      contentPadding: const EdgeInsets.only(left: 32, right: 16),
+                      contentPadding: const EdgeInsets.only(
+                        left: 32,
+                        right: 16,
+                      ),
                       title: Text(appLocalizations.byedpiFallback),
                       value: settings.fallbackEnabled,
                       onChanged: (v) => ref
@@ -76,8 +77,6 @@ class ByeDpiView extends ConsumerWidget {
               _PresetArgsPreview(preset: settings.preset),
             const _RestartButton(),
             _PortField(port: settings.port),
-            const Divider(height: 0),
-            _HostListTile(),
           ],
         ],
       ),
@@ -103,10 +102,7 @@ class _PresetPicker extends ConsumerWidget {
             isExpanded: true,
             value: preset,
             items: ByeDpiPreset.values
-                .map((p) => DropdownMenuItem(
-                      value: p,
-                      child: Text(_presetLabel(p)),
-                    ))
+                .map((p) => DropdownMenuItem(value: p, child: Text(p.label)))
                 .toList(),
             onChanged: (v) {
               if (v != null) {
@@ -117,33 +113,6 @@ class _PresetPicker extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  String _presetLabel(ByeDpiPreset p) {
-    switch (p) {
-      case ByeDpiPreset.universal:
-        return appLocalizations.byedpiPresetUniversal;
-      case ByeDpiPreset.mrDrone:
-        return appLocalizations.byedpiPresetMrDrone;
-      case ByeDpiPreset.mtsAggressive:
-        return appLocalizations.byedpiPresetMtsAggressive;
-      case ByeDpiPreset.megafon2ni:
-        return appLocalizations.byedpiPresetMegafon2ni;
-      case ByeDpiPreset.tele2:
-        return appLocalizations.byedpiPresetTele2;
-      case ByeDpiPreset.beelineRt:
-        return appLocalizations.byedpiPresetBeelineRt;
-      case ByeDpiPreset.antiGgc:
-        return appLocalizations.byedpiPresetAntiGgc;
-      case ByeDpiPreset.cascade:
-        return appLocalizations.byedpiPresetCascade;
-      case ByeDpiPreset.tlsOnly:
-        return appLocalizations.byedpiPresetTlsOnly;
-      case ByeDpiPreset.ttlFixed:
-        return appLocalizations.byedpiPresetTtlFixed;
-      case ByeDpiPreset.custom:
-        return appLocalizations.byedpiPresetCustom;
-    }
   }
 }
 
@@ -187,9 +156,11 @@ class _RestartButtonState extends State<_RestartButton> {
     setState(() => _busy = false);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(ok
-            ? appLocalizations.byedpiRestartOk
-            : appLocalizations.byedpiRestartFail),
+        content: Text(
+          ok
+              ? appLocalizations.byedpiRestartOk
+              : appLocalizations.byedpiRestartFail,
+        ),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -202,15 +173,12 @@ class _PresetArgsPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args = byeDpiPresetArgs[preset] ?? '';
+    final args = preset.args;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: SelectableText(
         args,
-        style: const TextStyle(
-          fontFamily: 'JetBrainsMono',
-          fontSize: 12,
-        ),
+        style: const TextStyle(fontFamily: 'JetBrainsMono', fontSize: 12),
       ),
     );
   }
@@ -239,9 +207,11 @@ class _FallbackGroupTile extends ConsumerWidget {
 
     final effective = names.contains(selected) ? selected : names.first;
     if (effective != selected) {
-      Future.microtask(() => ref
-          .read(byeDpiSettingsProvider.notifier)
-          .setFallbackGroup(effective));
+      Future.microtask(
+        () => ref
+            .read(byeDpiSettingsProvider.notifier)
+            .setFallbackGroup(effective),
+      );
     }
 
     return Padding(
@@ -260,9 +230,7 @@ class _FallbackGroupTile extends ConsumerWidget {
                 .toList(),
             onChanged: (v) {
               if (v != null) {
-                ref
-                    .read(byeDpiSettingsProvider.notifier)
-                    .setFallbackGroup(v);
+                ref.read(byeDpiSettingsProvider.notifier).setFallbackGroup(v);
               }
             },
           ),
@@ -391,36 +359,3 @@ class _PortFieldState extends ConsumerState<_PortField> {
     );
   }
 }
-
-class _HostListTile extends StatefulWidget {
-  @override
-  State<_HostListTile> createState() => _HostListTileState();
-}
-
-class _HostListTileState extends State<_HostListTile> {
-  int _count = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    countHosts().then((n) {
-      if (mounted) setState(() => _count = n);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.list_alt_outlined),
-      title: Text(appLocalizations.byedpiHostList),
-      subtitle: Text('$_count hosts'),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => const ByeDpiHostListEditor(),
-        ),
-      ),
-    );
-  }
-}
-

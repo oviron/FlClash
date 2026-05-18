@@ -50,21 +50,18 @@ class NetworkObserveModule(private val service: Service) : Module() {
         override fun onLosing(network: Network, maxMsToLive: Int) {
             networkInfos[network]?.losingMs = System.currentTimeMillis() + maxMsToLive
             onUpdateNetwork()
-            setUnderlyingNetworks(network)
             super.onLosing(network, maxMsToLive)
         }
 
         override fun onLost(network: Network) {
             networkInfos.remove(network)
             onUpdateNetwork()
-            setUnderlyingNetworks(network)
             super.onLost(network)
         }
 
         override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
             networkInfos[network]?.dnsList = linkProperties.dnsServers
             onUpdateNetwork()
-            setUnderlyingNetworks(network)
             super.onLinkPropertiesChanged(network, linkProperties)
         }
     }
@@ -104,12 +101,6 @@ class NetworkObserveModule(private val service: Service) : Module() {
         }
         preDnsList = dnsList
         Clash.updateDNS(dnsList.toSet().joinToString(","))
-    }
-
-    fun setUnderlyingNetworks(network: Network) {
-//        if (service is VpnService && Build.VERSION.SDK_INT in 22..28) {
-//            service.setUnderlyingNetworks(arrayOf(network))
-//        }
     }
 
     override fun onUninstall() {

@@ -112,15 +112,13 @@ flutter {
 
 
 // libbyedpi .aar is pre-fetched by setup.dart into libs/ with SHA-256
-// + GPG verification before Gradle runs. Gradle just consumes the file.
+// + GPG verification before Gradle runs. Filename = single source of truth
+// in setup.dart; Gradle picks up whatever .aar landed.
 dependencies {
     implementation(project(":service"))
     implementation(project(":common"))
     implementation(libs.core.splashscreen)
     implementation(libs.gson)
-    implementation(libs.smali.dexlib2) {
-        exclude(group = "com.google.guava", module = "guava")
-    }
     "bydpiImplementation"(libs.kotlinx.coroutines.android)
-    "bydpiImplementation"(files("libs/libbyedpi-android-v0.1.0.aar"))
+    "bydpiImplementation"(fileTree("libs") { include("libbyedpi-android-v*.aar") })
 }

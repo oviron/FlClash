@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+// dart:ffi only here to type-check flutter_js's `rawResult` which is a native
+// Pointer on some platforms; needed by handleEvaluate's switch below.
 import 'dart:ffi' as ffi;
 
 import 'package:animations/animations.dart';
@@ -38,7 +40,6 @@ class GlobalState {
   bool isPre = true;
   late final String coreSHA256;
   late final PackageInfo packageInfo;
-  Function? updateCurrentDelayDebounce;
   late Measure measure;
   late CommonTheme theme;
   late Color accentColor;
@@ -325,19 +326,25 @@ class GlobalState {
     }
     final configJs = json.encode(config);
     final runtime = getJavascriptRuntime();
-    final res = await runtime.evaluateAsync('''
-      $scriptContent
-      main($configJs)
-    ''');
-    if (res.isError) {
-      throw res.stringResult;
+    try {
+      final res = await runtime.evaluateAsync('''
+        $scriptContent
+        main($configJs)
+      ''');
+      if (res.isError) {
+        throw res.stringResult;
+      }
+      final value = switch (res.rawResult is ffi.Pointer) {
+        true => runtime.convertValue<Map<String, dynamic>>(res),
+        false => Map<String, dynamic>.from(res.rawResult),
+      };
+      return value ?? config;
+    } finally {
+      runtime.dispose();
     }
-    final value = switch (res.rawResult is ffi.Pointer) {
-      true => runtime.convertValue<Map<String, dynamic>>(res),
-      false => Map<String, dynamic>.from(res.rawResult),
-    };
-    return value ?? config;
   }
 }
 
+// Bypasses the Riverpod graph; ~100 call sites. Migrate via
+// ref.read(commandProvider.notifier).doX() when touching a site.
 final globalState = GlobalState();

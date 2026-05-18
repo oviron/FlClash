@@ -38,6 +38,16 @@ dart setup.dart android
 
 Requires Flutter, Android SDK + NDK 28. The build script downloads a SHA-256-pinned `libmihomo-android-<version>.aar` from GitHub Releases, extracts `libclash.so` per ABI, and produces split APKs for `arm`, `arm64`, and `x86_64` in `dist/`.
 
+## Development
+
+Pre-commit hook runs `dart format --set-exit-if-changed` and `flutter analyze --fatal-infos` on staged Dart files. Install once after cloning:
+
+```bash
+ln -s ../../scripts/pre-commit.sh .git/hooks/pre-commit
+```
+
+CI enforces the same checks plus `flutter test`, `detekt` on Kotlin sources, `gitleaks` secret scan, and CodeQL on every push and PR to `main`.
+
 ## License
 
 GPL-3.0, inherited from [chen08209/FlClash](https://github.com/chen08209/FlClash). See [LICENSE](LICENSE).

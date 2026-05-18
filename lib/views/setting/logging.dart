@@ -109,9 +109,7 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
             leading: const Icon(Icons.folder_outlined),
             title: Text(appLocalizations.loggingFilePathLabel),
             subtitle: SelectableText(
-              _logDirectory == null
-                  ? '…'
-                  : '$_logDirectory/debug.log',
+              _logDirectory == null ? '…' : '$_logDirectory/debug.log',
               style: context.textTheme.bodySmall,
             ),
           ),
@@ -153,14 +151,14 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
   }
 
   Widget _section(String label) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-        child: Text(
-          label,
-          style: context.textTheme.titleSmall?.copyWith(
-            color: context.colorScheme.primary,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+    child: Text(
+      label,
+      style: context.textTheme.titleSmall?.copyWith(
+        color: context.colorScheme.primary,
+      ),
+    ),
+  );
 
   Widget _levelTile({
     required IconData icon,

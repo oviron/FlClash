@@ -71,10 +71,7 @@ class _StartButtonState extends ConsumerState<StartButton>
   double _measureTextWidth(String text, BuildContext context) {
     return globalState.measure
         .computeTextSize(
-          Text(
-            text,
-            style: context.textTheme.titleMedium?.toSoftBold,
-          ),
+          Text(text, style: context.textTheme.titleMedium?.toSoftBold),
         )
         .width;
   }
@@ -91,7 +88,10 @@ class _StartButtonState extends ConsumerState<StartButton>
       data: Theme.of(context).copyWith(
         floatingActionButtonTheme: Theme.of(context).floatingActionButtonTheme
             .copyWith(
-              sizeConstraints: const BoxConstraints(minWidth: 56, maxWidth: 200),
+              sizeConstraints: const BoxConstraints(
+                minWidth: 56,
+                maxWidth: 200,
+              ),
             ),
       ),
       child: AnimatedBuilder(

@@ -4,6 +4,7 @@ import 'dart:isolate';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/plugins/method_names.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -30,14 +31,14 @@ class Service {
     methodChannel = const MethodChannel('$packageName/service');
     methodChannel.setMethodCallHandler((call) async {
       switch (call.method) {
-        case 'event':
+        case ServiceMethod.event:
           final data = call.arguments as String? ?? '';
           final result = ActionResult.fromJson(json.decode(data));
           for (final listener in _listeners) {
             listener.onServiceEvent(CoreEvent.fromJson(result.data));
           }
           break;
-        case 'crash':
+        case ServiceMethod.crash:
           final message = call.arguments as String? ?? '';
           for (final listener in _listeners) {
             listener.onServiceCrash(message);
@@ -51,7 +52,7 @@ class Service {
 
   Future<ActionResult?> invokeAction(Action action) async {
     final data = await methodChannel.invokeMethod<String>(
-      'invokeAction',
+      ServiceMethod.invokeAction,
       json.encode(action),
     );
     if (data == null) {
@@ -62,31 +63,33 @@ class Service {
   }
 
   Future<bool> start() async {
-    return await methodChannel.invokeMethod<bool>('start') ?? false;
+    return await methodChannel.invokeMethod<bool>(ServiceMethod.start) ?? false;
   }
 
   Future<bool> stop() async {
-    return await methodChannel.invokeMethod<bool>('stop') ?? false;
+    return await methodChannel.invokeMethod<bool>(ServiceMethod.stop) ?? false;
   }
 
   Future<String> init() async {
-    return await methodChannel.invokeMethod<String>('init') ?? '';
+    return await methodChannel.invokeMethod<String>(ServiceMethod.init) ?? '';
   }
 
   Future<String> syncState(SharedState state) async {
     return await methodChannel.invokeMethod<String>(
-          'syncState',
+          ServiceMethod.syncState,
           json.encode(state),
         ) ??
         '';
   }
 
   Future<bool> shutdown() async {
-    return await methodChannel.invokeMethod<bool>('shutdown') ?? true;
+    return await methodChannel.invokeMethod<bool>(ServiceMethod.shutdown) ??
+        true;
   }
 
   Future<DateTime?> getRunTime() async {
-    final ms = await methodChannel.invokeMethod<int>('getRunTime') ?? 0;
+    final ms =
+        await methodChannel.invokeMethod<int>(ServiceMethod.getRunTime) ?? 0;
     if (ms == 0) {
       return null;
     }
@@ -94,7 +97,10 @@ class Service {
   }
 
   Future<bool> restartByeDpi() async {
-    return await methodChannel.invokeMethod<bool>('restartByeDpi') ?? false;
+    return await methodChannel.invokeMethod<bool>(
+          ServiceMethod.restartByeDpi,
+        ) ??
+        false;
   }
 
   bool get hasListeners {

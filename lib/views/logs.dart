@@ -73,10 +73,12 @@ class _LogsViewState extends ConsumerState<LogsView> {
       return await appController.exportLogs();
     }, title: appLocalizations.exportLogs);
     if (res != true) return;
-    unawaited(globalState.showMessage(
-      title: appLocalizations.tip,
-      message: TextSpan(text: appLocalizations.exportSuccess),
-    ));
+    unawaited(
+      globalState.showMessage(
+        title: appLocalizations.tip,
+        message: TextSpan(text: appLocalizations.exportSuccess),
+      ),
+    );
   }
 
   void updateLogsThrottler() {

@@ -408,7 +408,8 @@ class _AccessViewState extends ConsumerState<AccessView> {
     final effectiveAcl = isProfileMode
         ? accessControl
         : (ref.watch(effectiveAccessControlProvider).value ?? guiAcl);
-    final isProfileLocked = !isProfileMode &&
+    final isProfileLocked =
+        !isProfileMode &&
         !guiAcl.enable &&
         effectiveAcl.enable &&
         effectiveAcl != guiAcl;

@@ -1,7 +1,12 @@
-// Foreground-only: no ACCESS_BACKGROUND_LOCATION because the engine only
-// reacts while the session is active. `restricted` folds into
-// permanentlyDenied (policy-blocked, re-asking can't lift it).
+// Wi-Fi SSID permission. On Android 13+ this is NEARBY_WIFI_DEVICES (not
+// auto-revoked by App Hibernation, works in background). Below that, falls
+// back to ACCESS_FINE_LOCATION (the only API path before Android 13).
+// `restricted` folds into permanentlyDenied (policy-blocked, re-asking
+// can't lift it).
 
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -28,6 +33,16 @@ LocationPermissionState _mapStatus(PermissionStatus status) {
   }
 }
 
+Future<Permission> _activePermission() async {
+  if (Platform.isAndroid) {
+    final info = await DeviceInfoPlugin().androidInfo;
+    if (info.version.sdkInt >= 33) {
+      return Permission.nearbyWifiDevices;
+    }
+  }
+  return Permission.locationWhenInUse;
+}
+
 @Riverpod(keepAlive: true)
 class LocationPermission extends _$LocationPermission {
   @override
@@ -42,13 +57,15 @@ class LocationPermission extends _$LocationPermission {
   /// returning from system Settings (the user may have toggled the toggle
   /// without going through our flow) or once on app startup if the UI cares.
   Future<void> refresh() async {
-    final status = await Permission.locationWhenInUse.status;
+    final perm = await _activePermission();
+    final status = await perm.status;
     state = _mapStatus(status);
   }
 
   /// Trigger the system permission dialog and return the new state.
   Future<LocationPermissionState> request() async {
-    final status = await Permission.locationWhenInUse.request();
+    final perm = await _activePermission();
+    final status = await perm.request();
     final mapped = _mapStatus(status);
     state = mapped;
     return mapped;

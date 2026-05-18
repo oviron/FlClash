@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/core.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/manager/manager.dart';
 import 'package:fl_clash/plugins/app.dart';
@@ -45,11 +45,14 @@ class ApplicationState extends ConsumerState<Application> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final currentContext = globalState.navigatorKey.currentContext;
-      if (currentContext != null) {
-        await appController.attach(currentContext, ref);
-      } else {
-        exit(0);
+      try {
+        await appController.attach(ref);
+      } catch (e, s) {
+        commonPrint.log(
+          'AppController.attach failed: $e\n$s',
+          logLevel: LogLevel.error,
+        );
+        return;
       }
       _autoUpdateProfilesTask();
       appController.initLink();

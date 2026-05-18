@@ -28,13 +28,14 @@ import io.github.oviron.libmihomo.Clash
 import io.github.oviron.libmihomo.TunInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.URL
 import android.net.VpnService as SystemVpnService
 
 class VpnService : SystemVpnService(), IBaseService,
-    CoroutineScope by CoroutineScope(Dispatchers.Default) {
+    CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
 
     private val self: VpnService
         get() = this
@@ -245,7 +246,12 @@ class VpnService : SystemVpnService(), IBaseService,
                 addDnsServer(DNS6)
             }
             setMtu(9000)
-            val byeDpiActive = packageName.contains(".bydpi")
+            // bydpi-flavor only — the embedded byedpi proxy listens on 127.0.0.1
+            // and would loop through mihomo if FlClash's own UID stayed in tun.
+            // Tracks the bydpi product flavor's applicationIdSuffix in
+            // android/app/build.gradle.kts. Update both if it ever changes.
+            val byeDpiActive = packageName.endsWith(".bydpi") ||
+                packageName.contains(".bydpi.")
             options.accessControlProps.let { accessControl ->
                 if (accessControl.enable) {
                     when (accessControl.mode) {

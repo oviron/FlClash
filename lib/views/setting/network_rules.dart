@@ -1,5 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
+import 'package:fl_clash/network_rules/permission_gate.dart';
+import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/network_rules.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';
 import 'package:fl_clash/views/setting/widgets/edit_rule_dialog.dart';
@@ -11,10 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class NetworkRulesView extends ConsumerWidget {
   const NetworkRulesView({super.key});
 
-  Future<void> _openCreateDialog(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
+  Future<void> _openCreateDialog(BuildContext context, WidgetRef ref) async {
     final created = await EditRuleDialog.show(context: context);
     if (created == null) return;
     await ref.read(networkRulesRepoProvider.notifier).add(created);
@@ -33,16 +32,14 @@ class NetworkRulesView extends ConsumerWidget {
             children: [
               _MasterToggleCard(enabled: settings.enabled),
               const Divider(height: 0),
+              const _PermissionBanner(),
               Expanded(
                 child: rulesAsync.when(
-                  loading: () => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
                   error: (e, _) => Center(child: Text('$e')),
-                  data: (rules) => _RulesList(
-                    rules: rules,
-                    masterEnabled: settings.enabled,
-                  ),
+                  data: (rules) =>
+                      _RulesList(rules: rules, masterEnabled: settings.enabled),
                 ),
               ),
             ],
@@ -55,6 +52,50 @@ class NetworkRulesView extends ConsumerWidget {
               icon: const Icon(Icons.add),
               label: Text(appLocalizations.networkRulesAdd),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PermissionBanner extends ConsumerWidget {
+  const _PermissionBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final granted =
+        ref.watch(locationPermissionProvider) ==
+        LocationPermissionState.granted;
+    if (granted) return const SizedBox.shrink();
+
+    final rules = ref.watch(networkRulesStreamProvider).value ?? const [];
+    final needsWifi = rules.any(
+      (r) =>
+          r.enabled && r.conditions.any((c) => c is WifiNamed || c is AnyWifi),
+    );
+    if (!needsWifi) return const SizedBox.shrink();
+
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      color: scheme.errorContainer,
+      padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+      child: Row(
+        children: [
+          Icon(Icons.warning_amber, color: scheme.onErrorContainer),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              appLocalizations.networkRulesPermissionBanner,
+              style: TextStyle(color: scheme.onErrorContainer),
+            ),
+          ),
+          TextButton(
+            onPressed: () => ensureLocationPermissionForSsid(context, ref),
+            style: TextButton.styleFrom(
+              foregroundColor: scheme.onErrorContainer,
+            ),
+            child: Text(appLocalizations.permissionAllow),
           ),
         ],
       ),
@@ -90,10 +131,7 @@ class _RulesList extends ConsumerWidget {
     WidgetRef ref,
     NetworkRule rule,
   ) async {
-    final updated = await EditRuleDialog.show(
-      context: context,
-      initial: rule,
-    );
+    final updated = await EditRuleDialog.show(context: context, initial: rule);
     if (updated == null) return;
     await ref.read(networkRulesRepoProvider.notifier).update(updated);
   }
@@ -129,11 +167,7 @@ class _RulesList extends ConsumerWidget {
         .update(rule.copyWith(enabled: !rule.enabled));
   }
 
-  Future<void> _onReorder(
-    WidgetRef ref,
-    int oldIndex,
-    int newIndex,
-  ) async {
+  Future<void> _onReorder(WidgetRef ref, int oldIndex, int newIndex) async {
     final ids = rules.map((r) => r.id).toList();
     final adjusted = newIndex > oldIndex ? newIndex - 1 : newIndex;
     final moved = ids.removeAt(oldIndex);

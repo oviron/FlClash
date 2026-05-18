@@ -14,9 +14,10 @@ abstract mixin class CoreEventListener {
 
 class CoreEventManager {
   final _controller = StreamController<CoreEvent>();
+  late final StreamSubscription<CoreEvent> _subscription;
 
   CoreEventManager._() {
-    _controller.stream.listen((event) {
+    _subscription = _controller.stream.listen((event) {
       for (final CoreEventListener listener in _listeners) {
         switch (event.type) {
           case CoreEventType.log:
@@ -60,6 +61,12 @@ class CoreEventManager {
 
   void removeListener(CoreEventListener listener) {
     _listeners.remove(listener);
+  }
+
+  Future<void> dispose() async {
+    await _subscription.cancel();
+    _listeners.clear();
+    await _controller.close();
   }
 }
 

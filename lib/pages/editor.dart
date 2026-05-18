@@ -288,7 +288,8 @@ class _EditorPageState extends ConsumerState<EditorPage> {
                   ],
                 );
               },
-          shortcutsActivatorsBuilder: const DefaultCodeShortcutsActivatorsBuilder(),
+          shortcutsActivatorsBuilder:
+              const DefaultCodeShortcutsActivatorsBuilder(),
           controller: _controller,
           style: CodeEditorStyle(
             fontSize: context.textTheme.bodyLarge?.fontSize?.ap,
@@ -405,7 +406,11 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [bar, const SizedBox(height: 4), _buildFindInput(context, value)],
+        children: [
+          bar,
+          const SizedBox(height: 4),
+          _buildFindInput(context, value),
+        ],
       );
     }
     return bar;

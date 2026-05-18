@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile
 import com.follow.clash.AutoStartReceiver
 import com.follow.clash.R
 import com.follow.clash.common.Components
@@ -37,12 +36,34 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.zip.ZipFile
+
+// Method-name constants — mirrored on the Dart side in
+// lib/plugins/method_names.dart. Renames here MUST land in the same PR
+// as the Dart-side rename, or the bridge silently breaks.
+private object AppMethod {
+    const val EXIT = "exit"
+    const val MOVE_TASK_TO_BACK = "moveTaskToBack"
+    const val UPDATE_EXCLUDE_FROM_RECENTS = "updateExcludeFromRecents"
+    const val INIT_SHORTCUTS = "initShortcuts"
+    const val GET_PACKAGES = "getPackages"
+    const val GET_CHINA_PACKAGE_NAMES = "getChinaPackageNames"
+    const val GET_PACKAGE_ICON = "getPackageIcon"
+    const val TIP = "tip"
+    const val IS_AUTO_START_ENABLED = "isAutoStartEnabled"
+    const val SET_AUTO_START_ENABLED = "setAutoStartEnabled"
+    const val GET_LOG_DIRECTORY = "getLogDirectory"
+    const val REQUEST_NOTIFICATIONS_PERMISSION = "requestNotificationsPermission"
+    const val OPEN_FILE = "openFile"
+}
 
 class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
     private lateinit var applicationContext: Context
@@ -63,6 +84,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     private var requestNotificationCallback: (() -> Unit)? = null
 
     private val packages = mutableListOf<Package>()
+    private val packagesLock = Any()
 
     private val skipPrefixList = listOf(
         "com.google",
@@ -119,49 +141,85 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         ("(" + chinaAppPrefixList.joinToString("|").replace(".", "\\.") + ").*").toRegex()
     }
 
+    // Pre-encoded DEX class-internal-name byte prefixes for raw scanning:
+    // e.g. "com.tencent" -> "Lcom/tencent/" (ASCII). Faster than parsing DEX
+    // since we only need substring presence, not class structure.
+    private val chinaDexPrefixBytes: List<ByteArray> by lazy {
+        chinaAppPrefixList.map { ("L" + it.replace('.', '/') + "/").toByteArray(Charsets.US_ASCII) }
+    }
+
+    // Wraps the DEX read so the cancellation throw escapes the bare
+    // catch(_: Exception) in isChinaPackage. CancellationException is a
+    // Throwable but not an Exception subclass, so the catch is bypassed.
+    private fun readDexBytesRespectingCancellation(
+        zip: ZipFile,
+        entry: java.util.zip.ZipEntry,
+    ): ByteArray {
+        scope.coroutineContext[Job]?.ensureActive()
+        return zip.getInputStream(entry).use { it.readBytes() }
+    }
+
+    private fun ByteArray.containsAny(needles: List<ByteArray>): Boolean {
+        for (needle in needles) {
+            if (indexOf(needle) >= 0) return true
+        }
+        return false
+    }
+
+    private fun ByteArray.indexOf(needle: ByteArray): Int {
+        if (needle.isEmpty() || needle.size > size) return -1
+        outer@ for (i in 0..(size - needle.size)) {
+            for (j in needle.indices) {
+                if (this[i + j] != needle[j]) continue@outer
+            }
+            return i
+        }
+        return -1
+    }
+
     private var isBlockNotification: Boolean = false
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
-            "moveTaskToBack" -> {
+            AppMethod.MOVE_TASK_TO_BACK -> {
                 activityRef?.get()?.moveTaskToBack(true)
                 result.success(true)
             }
 
-            "updateExcludeFromRecents" -> {
+            AppMethod.UPDATE_EXCLUDE_FROM_RECENTS -> {
                 val value = call.argument<Boolean>("value")
                 updateExcludeFromRecents(value)
                 result.success(true)
             }
 
-            "initShortcuts" -> {
+            AppMethod.INIT_SHORTCUTS -> {
                 initShortcuts(call.arguments as String)
                 result.success(true)
             }
 
-            "getPackages" -> {
+            AppMethod.GET_PACKAGES -> {
                 scope.launch {
                     result.success(getPackagesToJson())
                 }
             }
 
-            "getChinaPackageNames" -> {
+            AppMethod.GET_CHINA_PACKAGE_NAMES -> {
                 scope.launch {
                     result.success(getChinaPackageNames())
                 }
             }
 
-            "getPackageIcon" -> {
+            AppMethod.GET_PACKAGE_ICON -> {
                 handleGetPackageIcon(call, result)
             }
 
-            "tip" -> {
+            AppMethod.TIP -> {
                 val message = call.argument<String>("message")
                 tip(message)
                 result.success(true)
             }
 
-            "isAutoStartEnabled" -> {
+            AppMethod.IS_AUTO_START_ENABLED -> {
                 val context = applicationContext
                 val enabled = context.packageManager.getComponentEnabledSetting(
                     ComponentName(context, AutoStartReceiver::class.java)
@@ -169,7 +227,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 result.success(enabled)
             }
 
-            "setAutoStartEnabled" -> {
+            AppMethod.SET_AUTO_START_ENABLED -> {
                 val enabled = call.arguments as Boolean
                 val context = applicationContext
                 val value = if (enabled) PackageManager.COMPONENT_ENABLED_STATE_ENABLED
@@ -182,7 +240,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 result.success(true)
             }
 
-            "getLogDirectory" -> {
+            AppMethod.GET_LOG_DIRECTORY -> {
                 // App-scoped external — no MANAGE_EXTERNAL_STORAGE needed.
                 val dir = File(applicationContext.getExternalFilesDir(null), "FlClash")
                 if (!dir.exists()) dir.mkdirs()
@@ -248,21 +306,25 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
 
     private fun getPackages(): List<Package> {
-        val packageManager = GlobalState.application.packageManager
-        if (packages.isNotEmpty()) return packages
-        packageManager?.getInstalledPackages(PackageManager.GET_META_DATA or PackageManager.GET_PERMISSIONS)
-            ?.filter {
+        synchronized(packagesLock) {
+            if (packages.isNotEmpty()) return packages.toList()
+            val packageManager = GlobalState.application.packageManager
+                ?: return emptyList()
+            packageManager.getInstalledPackages(
+                PackageManager.GET_META_DATA or PackageManager.GET_PERMISSIONS,
+            ).filter {
                 it.packageName != GlobalState.application.packageName && it.packageName != "android"
-            }?.map {
+            }.map {
                 Package(
                     packageName = it.packageName,
                     label = it.applicationInfo?.loadLabel(packageManager).toString(),
                     system = (it.applicationInfo?.flags?.and(ApplicationInfo.FLAG_SYSTEM)) != 0,
                     lastUpdateTime = it.lastUpdateTime,
-                    internet = it.requestedPermissions?.contains(Manifest.permission.INTERNET) == true
+                    internet = it.requestedPermissions?.contains(Manifest.permission.INTERNET) == true,
                 )
-            }?.let { packages.addAll(it) }
-        return packages
+            }.let { packages.addAll(it) }
+            return packages.toList()
+        }
     }
 
     private suspend fun getPackagesToJson(): String {
@@ -387,19 +449,15 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                         if (packageEntry.size > 15000000) {
                             return true
                         }
-                        val input = it.getInputStream(packageEntry).buffered()
-                        val dexFile = try {
-                            DexBackedDexFile.fromInputStream(null, input)
-                        } catch (e: Exception) {
-                            GlobalState.log("isChinaPackage dex parse failed: $e")
-                            return false
-                        }
-                        for (clazz in dexFile.classes) {
-                            val clazzName =
-                                clazz.type.substring(1, clazz.type.length - 1).replace("/", ".")
-                                    .replace("$", ".")
-                            if (clazzName.matches(chinaAppRegex)) return true
-                        }
+                        // Cancellation point: a long iteration over installed
+                        // packages outlives FlutterEngine detach by hundreds
+                        // of ms per package. Done BEFORE the try-catch so
+                        // CancellationException propagates instead of being
+                        // swallowed by the bare `catch (_: Exception)` below.
+                        val dexBytes = readDexBytesRespectingCancellation(
+                            it, packageEntry
+                        )
+                        if (dexBytes.containsAny(chinaDexPrefixBytes)) return true
                     }
                 }
             }
@@ -411,7 +469,9 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         applicationContext = flutterPluginBinding.applicationContext
-        scope = CoroutineScope(Dispatchers.Default)
+        // SupervisorJob: a crashing isChinaPackage scan must not cancel sibling
+        // getPackages / getIcon jobs already in flight.
+        scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "${Components.PACKAGE_NAME}/app")
         channel.setMethodCallHandler(this)
@@ -420,6 +480,12 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
         scope.cancel()
+        // Drop the cached package list — engine may reattach to a different
+        // FlutterEngine instance with a different installed-package snapshot
+        // (or the user installed/removed apps while the engine was detached).
+        synchronized(packagesLock) {
+            packages.clear()
+        }
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
@@ -437,7 +503,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     }
 
     override fun onDetachedFromActivity() {
-        channel.invokeMethod("exit", null)
+        channel.invokeMethod(AppMethod.EXIT, null)
         activityRef = null
     }
 

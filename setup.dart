@@ -15,9 +15,9 @@ import 'package:yaml/yaml.dart';
 const _signerFpr = '1139C91B6525883E6783DCF04A94DA488A4C5033';
 const _signerPubKeyPath = 'scripts/oviron-signing.pub.asc';
 
-const _libmihomoVersion = '0.1.0';
+const _libmihomoVersion = '0.1.1';
 const _libmihomoSha256 =
-    '017f15e69130066490e7e67ffa2b805f9cd5d696fa672d73752e3188ec8b18f2';
+    '2188b205c734b660fe19fb3d799ed7d72e1aa047b1d2a379a2f90793840ae47d';
 
 const _libbyedpiVersion = '0.1.0';
 const _libbyedpiSha256 =
@@ -109,11 +109,28 @@ class Build {
   }
 
   static Future<void> _fetchAar(_PinnedAar pinned) async {
-    final target = File(join(current, pinned.moduleBuildLibsDir, pinned.fileName));
-    target.parent.createSync(recursive: true);
+    final libsDir = Directory(join(current, pinned.moduleBuildLibsDir));
+    libsDir.createSync(recursive: true);
 
-    final cached = target.existsSync() &&
-        await _verifySha256(target, pinned.sha256);
+    // Gradle uses fileTree("libs") { include("lib<label>-android-v*.aar") } —
+    // setup.dart is the single source of version truth. Sweep any stale .aar
+    // (and its .asc) so a downgrade or version change can't leave two .aars
+    // matching the include glob and double-linking in the APK.
+    for (final f in libsDir.listSync()) {
+      final name = f.uri.pathSegments.last;
+      if (f is File &&
+          name.startsWith('lib${pinned.label}-android-v') &&
+          (name.endsWith('.aar') || name.endsWith('.aar.asc')) &&
+          name != pinned.fileName &&
+          name != '${pinned.fileName}.asc') {
+        f.deleteSync();
+        print('removed stale ${f.path}');
+      }
+    }
+
+    final target = File(join(libsDir.path, pinned.fileName));
+    final cached =
+        target.existsSync() && await _verifySha256(target, pinned.sha256);
     if (!cached) {
       print('fetching ${pinned.url}');
       await _download(pinned.url, target);
@@ -132,7 +149,14 @@ class Build {
       print('fetching ${pinned.url}.asc');
       await _download('${pinned.url}.asc', asc);
     }
-    await _verifyGpg(target, asc);
+    try {
+      await _verifyGpg(target, asc);
+    } catch (_) {
+      // Stale or corrupt .asc would otherwise loop forever — drop it so the
+      // next run re-downloads. Re-throw to surface the failure to the caller.
+      if (asc.existsSync()) await asc.delete();
+      rethrow;
+    }
   }
 
   static Future<bool> _verifySha256(File f, String expected) async {
@@ -152,22 +176,25 @@ class Build {
     final gpgHome = await Directory.systemTemp.createTemp('flclash-gpg-');
     try {
       final env = {'GNUPGHOME': gpgHome.path};
-      final import = await Process.run(
-        'gpg', ['--batch', '--quiet', '--import', pubKey.path],
-        environment: env,
-      );
+      final import = await Process.run('gpg', [
+        '--batch',
+        '--quiet',
+        '--import',
+        pubKey.path,
+      ], environment: env);
       if (import.exitCode != 0) {
         throw 'gpg --import failed: ${import.stderr}';
       }
 
-      final verify = await Process.run(
-        'gpg',
-        [
-          '--batch', '--status-fd', '1', '--no-tty',
-          '--verify', asc.path, aar.path,
-        ],
-        environment: env,
-      );
+      final verify = await Process.run('gpg', [
+        '--batch',
+        '--status-fd',
+        '1',
+        '--no-tty',
+        '--verify',
+        asc.path,
+        aar.path,
+      ], environment: env);
       final status = '${verify.stdout}\n${verify.stderr}';
       if (verify.exitCode != 0 ||
           !status.contains('GOODSIG') ||
@@ -186,7 +213,9 @@ class Build {
     if (partial.existsSync()) {
       await partial.delete();
     }
-    final client = HttpClient();
+    final client = HttpClient()
+      ..connectionTimeout = const Duration(seconds: 30)
+      ..idleTimeout = const Duration(seconds: 60);
     try {
       var attempt = 0;
       var currentUri = Uri.parse(url);
@@ -233,7 +262,8 @@ class BuildAndroidCommand extends Command<void> {
     argParser.addOption(
       'arch',
       valueHelp: Build.androidItems.map((e) => e.arch.name).join(','),
-      help: 'Limit final APK split to one Android arch (default: build all '
+      help:
+          'Limit final APK split to one Android arch (default: build all '
           'three).',
     );
     argParser.addOption(
@@ -299,10 +329,10 @@ class BuildAndroidCommand extends Command<void> {
   }
 
   static String _archName(Arch a) => switch (a) {
-        Arch.arm => 'armeabi-v7a',
-        Arch.arm64 => 'arm64-v8a',
-        Arch.amd64 => 'x86_64',
-      };
+    Arch.arm => 'armeabi-v7a',
+    Arch.arm64 => 'arm64-v8a',
+    Arch.amd64 => 'x86_64',
+  };
 
   @override
   Future<void> run() async {
@@ -327,17 +357,19 @@ class BuildAndroidCommand extends Command<void> {
         : Build.androidItems.where((e) => e.arch == arch).toList();
     final flutterTargets = items.map((e) => e.flutterTarget).join(',');
 
-    await Build.exec(
-      [
-        'flutter', 'build', 'apk', '--release',
-        '--split-per-abi',
-        '--flavor', flavor,
-        '--target-platform', flutterTargets,
-        '--dart-define-from-file=env.json',
-        '--dart-define=BYDPI=${flavor == 'bydpi'}',
-      ],
-      name: 'flutter build apk ($flavor)',
-    );
+    await Build.exec([
+      'flutter',
+      'build',
+      'apk',
+      '--release',
+      '--split-per-abi',
+      '--flavor',
+      flavor,
+      '--target-platform',
+      flutterTargets,
+      '--dart-define-from-file=env.json',
+      '--dart-define=BYDPI=${flavor == 'bydpi'}',
+    ], name: 'flutter build apk ($flavor)');
 
     await _copyApks(items, flavor);
   }

@@ -37,19 +37,11 @@ class CoreController {
       await homeDir.create(recursive: true);
     }
     const geoFileNameList = [MMDB, GEOIP, GEOSITE, ASN];
-    try {
-      for (final geoFileName in geoFileNameList) {
-        final geoFile = File(join(homePath, geoFileName));
-        final isExists = await geoFile.exists();
-        if (isExists) {
-          continue;
-        }
-        final data = await rootBundle.load('assets/data/$geoFileName');
-        final List<int> bytes = data.buffer.asUint8List();
-        await geoFile.writeAsBytes(bytes, flush: true);
-      }
-    } catch (e) {
-      exit(0);
+    for (final geoFileName in geoFileNameList) {
+      final geoFile = File(join(homePath, geoFileName));
+      if (await geoFile.exists()) continue;
+      final data = await rootBundle.load('assets/data/$geoFileName');
+      await geoFile.writeAsBytes(data.buffer.asUint8List(), flush: true);
     }
   }
 
@@ -299,6 +291,7 @@ class CoreController {
 
   Future<void> destroy() async {
     await _interface.destroy();
+    await coreEventManager.dispose();
   }
 
   Future<void> crash() async {
@@ -310,4 +303,6 @@ class CoreController {
   }
 }
 
+// JNI bridge wrapper; promote after globalState/appController to avoid a
+// half-Riverpod state.
 final coreController = CoreController();

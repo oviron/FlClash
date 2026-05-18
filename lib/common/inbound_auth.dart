@@ -32,8 +32,8 @@ Future<String> _ensureInboundPassword() async {
 Future<void> ensureInboundAuth(Map<String, dynamic> config) async {
   final hasInbound =
       ((config['mixed-port'] as num?)?.toInt() ?? 0) > 0 ||
-          ((config['port'] as num?)?.toInt() ?? 0) > 0 ||
-          ((config['socks-port'] as num?)?.toInt() ?? 0) > 0;
+      ((config['port'] as num?)?.toInt() ?? 0) > 0 ||
+      ((config['socks-port'] as num?)?.toInt() ?? 0) > 0;
   if (!hasInbound) return;
 
   final existing = config['authentication'];

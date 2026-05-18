@@ -1,0 +1,14 @@
+# Pre-existing false positives inherited from upstream history (chen08209 +
+# pluralplay). All in macos/Podfile.lock and services/helper/target/release/*
+# — Rust build artifacts whose compiled binaries randomly match the
+# generic-api-key regex. The directories themselves are gone from HEAD;
+# fingerprints stay here so historical scans remain clean.
+6e8455f90d90e69fc482cc4066158ebb130594bf:macos/Podfile.lock:generic-api-key:57
+709238af429ed3dd71a8bd6d3ba30abbc64187ed:services/helper/target/release/build/helper-00bdc89c197e729c/output:generic-api-key:1
+709238af429ed3dd71a8bd6d3ba30abbc64187ed:services/helper/target/release/deps/helper.d:generic-api-key:10
+ef448dc0564dcf26c60ca3e8f67901eb11dbde40:services/helper/target/release/build/helper-00bdc89c197e729c/output:generic-api-key:1
+ef448dc0564dcf26c60ca3e8f67901eb11dbde40:services/helper/target/release/deps/helper.d:generic-api-key:10
+8da522aee57f8479b31653715991e6c7fe8d0b8d:services/helper/target/release/deps/helper.d:generic-api-key:10
+8da522aee57f8479b31653715991e6c7fe8d0b8d:services/helper/target/release/build/helper-00bdc89c197e729c/output:generic-api-key:1
+f55570b41747724e56f7e1830c3b4e75ea127a94:services/helper/target/release/build/helper-00bdc89c197e729c/output:generic-api-key:1
+f55570b41747724e56f7e1830c3b4e75ea127a94:services/helper/target/release/deps/helper.d:generic-api-key:10

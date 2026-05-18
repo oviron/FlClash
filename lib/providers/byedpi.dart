@@ -16,12 +16,14 @@ Future<void> writeByeDpiRuntime(ByeDpiSettings s) async {
   final hostsFile = await hostListPath();
   final target = File(join(dir, 'byedpi-runtime.json'));
   final tmp = File(join(dir, 'byedpi-runtime.json.tmp'));
-  await tmp.writeAsString(jsonEncode({
-    'enabled': s.enabled,
-    'port': s.port,
-    'cliArgs': effectiveByeDpiCliArgs(s),
-    'hostsFile': hostsFile,
-  }));
+  await tmp.writeAsString(
+    jsonEncode({
+      'enabled': s.enabled,
+      'port': s.port,
+      'cliArgs': effectiveByeDpiCliArgs(s),
+      'hostsFile': hostsFile,
+    }),
+  );
   await tmp.rename(target.path);
 }
 
