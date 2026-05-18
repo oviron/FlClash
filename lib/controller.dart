@@ -17,7 +17,6 @@ import 'models/models.dart';
 import 'providers/database.dart';
 
 class AppController {
-  late final BuildContext _context;
   late final WidgetRef _ref;
   bool isAttach = false;
 
@@ -30,8 +29,7 @@ class AppController {
     return _instance!;
   }
 
-  Future<void> attach(BuildContext context, WidgetRef ref) async {
-    _context = context;
+  Future<void> attach(WidgetRef ref) async {
     _ref = ref;
     await _init();
     isAttach = true;
@@ -78,13 +76,17 @@ extension InitControllerExt on AppController {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(_context).pop<bool>(false);
+                  Navigator.of(
+                    globalState.navigatorKey.currentContext!,
+                  ).pop<bool>(false);
                 },
                 child: Text(appLocalizations.exit),
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(_context).pop<bool>(true);
+                  Navigator.of(
+                    globalState.navigatorKey.currentContext!,
+                  ).pop<bool>(true);
                 },
                 child: Text(appLocalizations.agree),
               ),
@@ -337,7 +339,7 @@ extension ProfilesControllerExt on AppController {
     if (bytes == null) {
       return;
     }
-    if (!_context.mounted) return;
+    if (globalState.navigatorKey.currentContext?.mounted != true) return;
     globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
     toProfiles();
     final profile = await loadingRun(tag: LoadingTag.profiles, () async {
@@ -771,8 +773,9 @@ extension CoreControllerExt on AppController {
     final String message = result[0];
     if (message.isNotEmpty) {
       _ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
-      if (_context.mounted) {
-        _context.showNotifier(message);
+      final ctx = globalState.navigatorKey.currentContext;
+      if (ctx?.mounted == true) {
+        ctx!.showNotifier(message);
       }
       return;
     }
@@ -872,9 +875,11 @@ extension SystemControllerExt on AppController {
             TextSpan(
               text: ' $url ',
               style: TextStyle(
-                color: _context.colorScheme.primary,
+                color:
+                    globalState.navigatorKey.currentContext?.colorScheme.primary,
                 decoration: TextDecoration.underline,
-                decorationColor: _context.colorScheme.primary,
+                decorationColor:
+                    globalState.navigatorKey.currentContext?.colorScheme.primary,
               ),
             ),
             TextSpan(
