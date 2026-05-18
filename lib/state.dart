@@ -40,7 +40,6 @@ class GlobalState {
   bool isPre = true;
   late final String coreSHA256;
   late final PackageInfo packageInfo;
-  Function? updateCurrentDelayDebounce;
   late Measure measure;
   late CommonTheme theme;
   late Color accentColor;
