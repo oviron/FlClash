@@ -153,6 +153,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Auto update interval (minutes)",
     ),
     "backup": MessageLookupByLibrary.simpleMessage("Backup"),
+    "backupAndRecovery": MessageLookupByLibrary.simpleMessage(
+      "Backup and recovery",
+    ),
+    "backupAndRecoveryDesc": MessageLookupByLibrary.simpleMessage(
+      "Sync data via WebDAV or file",
+    ),
     "backupAndRestore": MessageLookupByLibrary.simpleMessage(
       "Backup and Restore",
     ),
@@ -167,22 +173,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "bind": MessageLookupByLibrary.simpleMessage("Bind"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("Blacklist mode"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLI args"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--disorder 1 --auto=t,r,s --tlsrec 1+s"),
-    "byedpiPreset": MessageLookupByLibrary.simpleMessage("Strategy preset"),
-    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage("Universal (recommended)"),
-    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage("MrDrone (Tele2 / Tinkoff Mobile, validated)"),
-    "byedpiPresetMtsAggressive": MessageLookupByLibrary.simpleMessage("MTS (aggressive)"),
-    "byedpiPresetMegafon2ni": MessageLookupByLibrary.simpleMessage("MegaFon (2Ni)"),
-    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage("Tele2 / Tinkoff Mobile"),
-    "byedpiPresetBeelineRt": MessageLookupByLibrary.simpleMessage("Beeline / Rostelecom"),
-    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage("Anti-GGC YouTube buffering"),
-    "byedpiPresetCascade": MessageLookupByLibrary.simpleMessage("Cascade (aggressive multi-offset)"),
-    "byedpiPresetTlsOnly": MessageLookupByLibrary.simpleMessage("TLS-only (no auto-mode)"),
-    "byedpiPresetTtlFixed": MessageLookupByLibrary.simpleMessage("TTL Fixed (MTS / MegaFon 2025+)"),
-    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Custom"),
-    "byedpiRestart": MessageLookupByLibrary.simpleMessage("Restart ByeDPI"),
-    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPI restarted"),
-    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage("Restart failed (VPN not running?)"),
+    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
+      "--disorder 1 --auto=t,r,s --tlsrec 1+s",
+    ),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "DPI bypass via local SOCKS5 proxy",
     ),
@@ -200,6 +193,43 @@ class MessageLookup extends MessageLookupByLibrary {
       "No proxy groups in current profile",
     ),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("Listening port"),
+    "byedpiPreset": MessageLookupByLibrary.simpleMessage("Strategy preset"),
+    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage(
+      "Anti-GGC buffering",
+    ),
+    "byedpiPresetBeelineRt": MessageLookupByLibrary.simpleMessage(
+      "Beeline / Rostelecom",
+    ),
+    "byedpiPresetCascade": MessageLookupByLibrary.simpleMessage(
+      "Cascade (aggressive multi-offset)",
+    ),
+    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "byedpiPresetMegafon2ni": MessageLookupByLibrary.simpleMessage(
+      "MegaFon (2Ni)",
+    ),
+    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage(
+      "MrDrone (aggressive)",
+    ),
+    "byedpiPresetMtsAggressive": MessageLookupByLibrary.simpleMessage(
+      "MTS (aggressive)",
+    ),
+    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage(
+      "Tele2 / Tinkoff Mobile",
+    ),
+    "byedpiPresetTlsOnly": MessageLookupByLibrary.simpleMessage(
+      "TLS-only (no auto-mode)",
+    ),
+    "byedpiPresetTtlFixed": MessageLookupByLibrary.simpleMessage(
+      "TTL Fixed (MTS / MegaFon 2025+)",
+    ),
+    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage(
+      "Universal (recommended)",
+    ),
+    "byedpiRestart": MessageLookupByLibrary.simpleMessage("Restart ByeDPI"),
+    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
+      "Restart failed (VPN not running?)",
+    ),
+    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPI restarted"),
     "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Bypass domain"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
@@ -427,6 +457,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "local": MessageLookupByLibrary.simpleMessage("Local"),
     "localBackupDesc": MessageLookupByLibrary.simpleMessage(
       "Backup local data to local",
+    ),
+    "localRecoveryDesc": MessageLookupByLibrary.simpleMessage(
+      "Recover data from file",
     ),
     "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
       "To detect the name of your Wi-Fi network, Android requires location permission. We use it only to read the SSID and do not store any coordinates.",
@@ -673,6 +706,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "Scan QR code to obtain profile",
     ),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Rainbow"),
+    "recovery": MessageLookupByLibrary.simpleMessage("Recovery"),
+    "recoveryAll": MessageLookupByLibrary.simpleMessage("Recover all data"),
+    "recoveryProfiles": MessageLookupByLibrary.simpleMessage(
+      "Recover profiles only",
+    ),
+    "recoverySuccess": MessageLookupByLibrary.simpleMessage(
+      "Recovery succeeded",
+    ),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir Port"),
     "redo": MessageLookupByLibrary.simpleMessage("redo"),
     "regExp": MessageLookupByLibrary.simpleMessage("RegExp"),
@@ -683,6 +724,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "remoteDestination": MessageLookupByLibrary.simpleMessage(
       "Remote destination",
+    ),
+    "remoteRecoveryDesc": MessageLookupByLibrary.simpleMessage(
+      "Recover data from WebDAV",
     ),
     "remove": MessageLookupByLibrary.simpleMessage("Remove"),
     "request": MessageLookupByLibrary.simpleMessage("Request"),
@@ -870,5 +914,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "years": MessageLookupByLibrary.simpleMessage("Years"),
     "yearsAgo": m15,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
+    "zoom": MessageLookupByLibrary.simpleMessage("Zoom"),
   };
 }

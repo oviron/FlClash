@@ -154,6 +154,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Интервал автообновления (минуты)",
     ),
     "backup": MessageLookupByLibrary.simpleMessage("Резервное копирование"),
+    "backupAndRecovery": MessageLookupByLibrary.simpleMessage(
+      "Резервное копирование и восстановление",
+    ),
+    "backupAndRecoveryDesc": MessageLookupByLibrary.simpleMessage(
+      "Синхронизация данных через WebDAV или файл",
+    ),
     "backupAndRestore": MessageLookupByLibrary.simpleMessage(
       "Резервное копирование и восстановление",
     ),
@@ -172,22 +178,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Режим черного списка",
     ),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("Аргументы ByeDPI"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage("--disorder 1 --auto=t,r,s --tlsrec 1+s"),
-    "byedpiPreset": MessageLookupByLibrary.simpleMessage("Пресет стратегии"),
-    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage("Универсальный (рекомендуется)"),
-    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage("MrDrone (Tele2 / Tinkoff Mobile, проверен)"),
-    "byedpiPresetMtsAggressive": MessageLookupByLibrary.simpleMessage("МТС (агрессивный)"),
-    "byedpiPresetMegafon2ni": MessageLookupByLibrary.simpleMessage("Мегафон (2Ni)"),
-    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage("Tele2 / Tinkoff Mobile"),
-    "byedpiPresetBeelineRt": MessageLookupByLibrary.simpleMessage("Билайн / Ростелеком"),
-    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage("Anti-GGC буферизация YouTube"),
-    "byedpiPresetCascade": MessageLookupByLibrary.simpleMessage("Cascade (агрессивный мультисдвиг)"),
-    "byedpiPresetTlsOnly": MessageLookupByLibrary.simpleMessage("Только TLS (без auto-mode)"),
-    "byedpiPresetTtlFixed": MessageLookupByLibrary.simpleMessage("TTL Fixed (МТС / Мегафон 2025+)"),
-    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Свой"),
-    "byedpiRestart": MessageLookupByLibrary.simpleMessage("Перезапустить ByeDPI"),
-    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPI перезапущен"),
-    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage("Не удалось (VPN не запущен?)"),
+    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
+      "--disorder 1 --auto=t,r,s --tlsrec 1+s",
+    ),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "Обход DPI через локальный SOCKS5-прокси",
     ),
@@ -205,6 +198,47 @@ class MessageLookup extends MessageLookupByLibrary {
       "В текущем профиле нет прокси-групп",
     ),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("Порт прослушивания"),
+    "byedpiPreset": MessageLookupByLibrary.simpleMessage("Пресет стратегии"),
+    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage(
+      "Anti-GGC буферизация",
+    ),
+    "byedpiPresetBeelineRt": MessageLookupByLibrary.simpleMessage(
+      "Билайн / Ростелеком",
+    ),
+    "byedpiPresetCascade": MessageLookupByLibrary.simpleMessage(
+      "Каскад (агрессивный multi-offset)",
+    ),
+    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Свой"),
+    "byedpiPresetMegafon2ni": MessageLookupByLibrary.simpleMessage(
+      "МегаФон (2Ni)",
+    ),
+    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage(
+      "MrDrone (агрессивный)",
+    ),
+    "byedpiPresetMtsAggressive": MessageLookupByLibrary.simpleMessage(
+      "МТС (агрессивный)",
+    ),
+    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage(
+      "Tele2 / Tinkoff Mobile",
+    ),
+    "byedpiPresetTlsOnly": MessageLookupByLibrary.simpleMessage(
+      "Только TLS (без auto-mode)",
+    ),
+    "byedpiPresetTtlFixed": MessageLookupByLibrary.simpleMessage(
+      "Фикс TTL (МТС / МегаФон 2025+)",
+    ),
+    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage(
+      "Универсальный (рекомендуется)",
+    ),
+    "byedpiRestart": MessageLookupByLibrary.simpleMessage(
+      "Перезапустить ByeDPI",
+    ),
+    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
+      "Не удалось (VPN не запущен?)",
+    ),
+    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage(
+      "ByeDPI перезапущен",
+    ),
     "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Обход домена"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
@@ -446,6 +480,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "local": MessageLookupByLibrary.simpleMessage("Локальный"),
     "localBackupDesc": MessageLookupByLibrary.simpleMessage(
       "Резервное копирование локальных данных на локальный диск",
+    ),
+    "localRecoveryDesc": MessageLookupByLibrary.simpleMessage(
+      "Восстановление данных из файла",
     ),
     "locationPermissionExplanation": MessageLookupByLibrary.simpleMessage(
       "Чтобы определять имя Wi-Fi сети, Android требует разрешение на местоположение. Мы используем его только для чтения имени точки и не сохраняем координаты.",
@@ -710,6 +747,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "Сканируйте QR-код для получения профиля",
     ),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Радужные"),
+    "recovery": MessageLookupByLibrary.simpleMessage("Восстановление"),
+    "recoveryAll": MessageLookupByLibrary.simpleMessage(
+      "Восстановить все данные",
+    ),
+    "recoveryProfiles": MessageLookupByLibrary.simpleMessage(
+      "Только восстановление профилей",
+    ),
+    "recoverySuccess": MessageLookupByLibrary.simpleMessage(
+      "Восстановление успешно",
+    ),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir-порт"),
     "redo": MessageLookupByLibrary.simpleMessage("Повторить"),
     "regExp": MessageLookupByLibrary.simpleMessage("Регулярное выражение"),
@@ -720,6 +767,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "remoteDestination": MessageLookupByLibrary.simpleMessage(
       "Удалённое назначение",
+    ),
+    "remoteRecoveryDesc": MessageLookupByLibrary.simpleMessage(
+      "Восстановление данных с WebDAV",
     ),
     "remove": MessageLookupByLibrary.simpleMessage("Удалить"),
     "request": MessageLookupByLibrary.simpleMessage("Запрос"),
@@ -927,5 +977,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "years": MessageLookupByLibrary.simpleMessage("Лет"),
     "yearsAgo": m15,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
+    "zoom": MessageLookupByLibrary.simpleMessage("Масштаб"),
   };
 }
