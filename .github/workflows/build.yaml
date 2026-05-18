@@ -6,6 +6,9 @@ on:
       - main
     tags:
       - 'v*'
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 concurrency:
@@ -32,18 +35,29 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Flutter analyze (app code only)
+      - name: Dart format check
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Flutter analyze (fatal infos, app code only)
         run: |
-          out=$(flutter analyze --no-pub 2>&1)
+          out=$(flutter analyze --no-pub --fatal-infos 2>&1)
           echo "$out"
-          filtered=$(printf '%s\n' "$out" | grep -E '^\s+(error|warning)' | grep -v 'plugins/' || true)
+          filtered=$(printf '%s\n' "$out" | grep -E '^\s+(info|warning|error)' | grep -v 'plugins/' || true)
           if [ -n "$filtered" ]; then
             echo "::error::flutter analyze reported issues in app code"
             exit 1
           fi
 
-      - name: Flutter test
-        run: flutter test --no-pub --reporter=expanded
+      - name: Flutter test (with coverage)
+        run: flutter test --no-pub --coverage --reporter=expanded
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-lcov
+          path: coverage/lcov.info
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Setup Java for detekt
         uses: actions/setup-java@v4
@@ -64,6 +78,18 @@ jobs:
             --input android/app/src/main/kotlin,android/core/src/main/java,android/service/src/main/java,android/common/src/main/java \
             --build-upon-default-config \
             ${{ hashFiles('detekt.yml') != '' && '--config detekt.yml' || '' }}
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     runs-on: ${{ matrix.os }}
