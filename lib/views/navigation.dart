@@ -1,7 +1,15 @@
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
-import 'package:fl_clash/views/views.dart';
 import 'package:flutter/material.dart';
+
+import 'connection/connections.dart';
+import 'connection/requests.dart';
+import 'dashboard/dashboard.dart';
+import 'logs.dart';
+import 'profiles/profiles.dart';
+import 'proxies/proxies.dart';
+import 'resources.dart';
+import 'tools.dart';
 
 class Navigation {
   static Navigation? _instance;
