@@ -24,7 +24,7 @@ class Database extends _$Database {
   Database([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -52,6 +52,12 @@ class Database extends _$Database {
       }
       if (from < 5) {
         await customStatement('DROP TABLE IF EXISTS bypass_profiles');
+      }
+      // v6: collapse legacy NetworkAction.keep (index 2) into turnOn (index 0).
+      if (from < 6) {
+        await customStatement(
+          'UPDATE network_rules SET action = 0 WHERE action = 2',
+        );
       }
     },
   );

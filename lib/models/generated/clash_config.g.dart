@@ -349,7 +349,6 @@ _ClashConfig _$ClashConfigFromJson(Map<String, dynamic> json) => _ClashConfig(
   keepAliveInterval:
       (json['keep-alive-interval'] as num?)?.toInt() ??
       defaultKeepAliveInterval,
-  unifiedDelay: json['unified-delay'] as bool? ?? true,
   tcpConcurrent: json['tcp-concurrent'] as bool? ?? true,
   tun: json['tun'] == null
       ? defaultTun
@@ -371,7 +370,6 @@ _ClashConfig _$ClashConfigFromJson(Map<String, dynamic> json) => _ClashConfig(
   rule:
       (json['rule'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
-  globalUa: json['global-ua'] as String?,
   hosts:
       (json['hosts'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
@@ -392,7 +390,6 @@ Map<String, dynamic> _$ClashConfigToJson(_ClashConfig instance) =>
       'ipv6': instance.ipv6,
       'find-process-mode': _$FindProcessModeEnumMap[instance.findProcessMode]!,
       'keep-alive-interval': instance.keepAliveInterval,
-      'unified-delay': instance.unifiedDelay,
       'tcp-concurrent': instance.tcpConcurrent,
       'tun': instance.tun,
       'dns': instance.dns,
@@ -400,7 +397,6 @@ Map<String, dynamic> _$ClashConfigToJson(_ClashConfig instance) =>
       'geodata-loader': _$GeodataLoaderEnumMap[instance.geodataLoader]!,
       'proxy-groups': instance.proxyGroups,
       'rule': instance.rule,
-      'global-ua': instance.globalUa,
       'hosts': instance.hosts,
     };
 

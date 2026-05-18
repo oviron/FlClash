@@ -129,8 +129,13 @@ class HiddenItem extends ConsumerWidget {
       appSettingProvider.select((state) => state.hidden),
     );
     return ListItem.switchItem(
-      title: Text(appLocalizations.exclude),
-      subtitle: Text(appLocalizations.excludeDesc),
+      title: Text(Intl.message('Hide from recents', name: 'hideFromRecents')),
+      subtitle: Text(
+        Intl.message(
+          'App icon does not appear in the recent apps list while the app is in background',
+          name: 'hideFromRecentsDesc',
+        ),
+      ),
       delegate: SwitchDelegate(
         value: hidden,
         onChanged: (value) {

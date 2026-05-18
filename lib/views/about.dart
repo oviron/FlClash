@@ -7,6 +7,7 @@ import 'package:fl_clash/widgets/list.dart';
 import 'package:fl_clash/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class AboutView extends StatelessWidget {
   const AboutView({super.key});
@@ -38,11 +39,13 @@ class AboutView extends StatelessWidget {
     if (!kByeDpiEnabled) return [];
     return generateSection(
       separated: false,
-      title: 'Third-party notices',
+      title: Intl.message('Third-party notices', name: 'thirdPartyNotices'),
       items: [
         ListItem(
           title: const Text('byedpi'),
-          subtitle: const Text('by hufrea, MIT, commit ba532298 (2026-03-26)'),
+          subtitle: Text(
+            Intl.message('by hufrea (MIT)', name: 'byedpiAttribution'),
+          ),
           trailing: const Icon(Icons.launch),
           onTap: () {
             globalState.openUrl('https://github.com/hufrea/byedpi');

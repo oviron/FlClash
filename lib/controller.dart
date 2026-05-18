@@ -150,9 +150,7 @@ extension StateControllerExt on AppController {
     return _ref.read(groupsProvider);
   }
 
-  String get ua => _ref.read(patchClashConfigProvider).globalUa.takeFirstValid([
-    globalState.packageInfo.ua,
-  ]);
+  String get ua => globalState.packageInfo.ua;
 
   Mode get mode => _ref.read(patchClashConfigProvider).mode;
 

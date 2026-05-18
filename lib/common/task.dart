@@ -105,7 +105,6 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   rawConfig['interface-name'] = '';
   rawConfig['external-ui-url'] = '';
   rawConfig['tcp-concurrent'] = realPatchConfig.tcpConcurrent;
-  rawConfig['unified-delay'] = realPatchConfig.unifiedDelay;
   rawConfig['ipv6'] = realPatchConfig.ipv6;
   rawConfig['log-level'] = realPatchConfig.logLevel.name;
   rawConfig['port'] = 0;
@@ -178,7 +177,7 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   }
   rawConfig['profile']['store-selected'] = false;
   rawConfig['geox-url'] = realPatchConfig.geoXUrl.toJson();
-  rawConfig['global-ua'] = realPatchConfig.globalUa ?? defaultUA;
+  rawConfig['global-ua'] ??= defaultUA;
   if (rawConfig['hosts'] == null) {
     rawConfig['hosts'] = {};
   }

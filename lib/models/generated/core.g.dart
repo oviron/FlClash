@@ -30,7 +30,6 @@ _UpdateParams _$UpdateParamsFromJson(Map<String, dynamic> json) =>
       logLevel: $enumDecode(_$LogLevelEnumMap, json['log-level']),
       ipv6: json['ipv6'] as bool,
       tcpConcurrent: json['tcp-concurrent'] as bool,
-      unifiedDelay: json['unified-delay'] as bool,
     );
 
 Map<String, dynamic> _$UpdateParamsToJson(_UpdateParams instance) =>
@@ -43,7 +42,6 @@ Map<String, dynamic> _$UpdateParamsToJson(_UpdateParams instance) =>
       'log-level': _$LogLevelEnumMap[instance.logLevel]!,
       'ipv6': instance.ipv6,
       'tcp-concurrent': instance.tcpConcurrent,
-      'unified-delay': instance.unifiedDelay,
     };
 
 const _$FindProcessModeEnumMap = {

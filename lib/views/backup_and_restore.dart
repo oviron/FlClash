@@ -364,7 +364,12 @@ class _RestoreOptionsDialogState extends State<RestoreOptionsDialog> {
             onTap: () {
               _handleOnTab(RestoreOption.onlyProfiles);
             },
-            title: Text(appLocalizations.restoreOnlyConfig),
+            title: Text(
+              Intl.message(
+                'Restore profiles only',
+                name: 'restoreOnlyProfiles',
+              ),
+            ),
           ),
           ListItem(
             onTap: () {
@@ -412,7 +417,18 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
     Navigator.pop(context);
   }
 
-  void _delete() {
+  Future<void> _delete() async {
+    final confirmed = await globalState.showMessage(
+      title: appLocalizations.delete,
+      message: TextSpan(
+        text: Intl.message(
+          'Delete WebDAV configuration?',
+          name: 'confirmDeleteWebDAV',
+        ),
+      ),
+    );
+    if (confirmed != true) return;
+    if (!mounted) return;
     ref.read(davSettingProvider.notifier).value = null;
     Navigator.pop(context);
   }
@@ -442,8 +458,7 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
           children: [
             TextFormField(
               controller: _uriController,
-              maxLines: 5,
-              minLines: 1,
+              maxLines: 1,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.link),
                 border: const OutlineInputBorder(),

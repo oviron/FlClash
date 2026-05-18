@@ -1842,7 +1842,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
   /// JSON-encoded `List<NetworkCondition>`.
   final String conditions;
 
-  /// Stored as `NetworkAction.index` (0=turnOn, 1=turnOff, 2=keep).
+  /// Stored as `NetworkAction.index` (0=turnOn, 1=turnOff).
   final int action;
   final int priority;
   final bool enabled;

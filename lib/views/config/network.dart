@@ -15,7 +15,7 @@ class VPNItem extends ConsumerWidget {
       vpnSettingProvider.select((state) => state.enable),
     );
     return ListItem.switchItem(
-      title: const Text('VPN'),
+      title: Text(Intl.message('VPN', name: 'vpn')),
       subtitle: Text(appLocalizations.vpnEnableDesc),
       delegate: SwitchDelegate(
         value: enable,
@@ -82,7 +82,7 @@ class Ipv6Item extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final ipv6 = ref.watch(vpnSettingProvider.select((state) => state.ipv6));
     return ListItem.switchItem(
-      title: const Text('IPv6'),
+      title: Text(Intl.message('IPv6', name: 'ipv6')),
       subtitle: Text(appLocalizations.ipv6InboundDesc),
       delegate: SwitchDelegate(
         value: ipv6,
@@ -249,7 +249,7 @@ class RouteAddressItem extends ConsumerWidget {
 final networkItems = [
   const VPNItem(),
   ...generateSection(
-    title: 'VPN',
+    title: Intl.message('VPN', name: 'vpn'),
     items: [
       const VpnSystemProxyItem(),
       const BypassDomainItem(),

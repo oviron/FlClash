@@ -4,6 +4,7 @@ import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class OverrideItem extends ConsumerWidget {
   const OverrideItem({super.key});
@@ -89,7 +90,7 @@ class PreferH3Item extends ConsumerWidget {
       patchClashConfigProvider.select((state) => state.dns.preferH3),
     );
     return ListItem.switchItem(
-      title: const Text('PreferH3'),
+      title: Text(Intl.message('Prefer H3', name: 'preferH3')),
       subtitle: Text(appLocalizations.preferH3Desc),
       delegate: SwitchDelegate(
         value: preferH3,
@@ -112,7 +113,7 @@ class IPv6Item extends ConsumerWidget {
       patchClashConfigProvider.select((state) => state.dns.ipv6),
     );
     return ListItem.switchItem(
-      title: const Text('IPv6'),
+      title: Text(Intl.message('IPv6', name: 'ipv6')),
       delegate: SwitchDelegate(
         value: ipv6,
         onChanged: (bool value) async {
@@ -447,7 +448,7 @@ class GeoipItem extends ConsumerWidget {
       ),
     );
     return ListItem.switchItem(
-      title: const Text('Geoip'),
+      title: Text(Intl.message('Geo IP', name: 'geoip')),
       delegate: SwitchDelegate(
         value: geoip,
         onChanged: (bool value) async {
@@ -509,12 +510,13 @@ class GeositeItem extends ConsumerWidget {
         (state) => state.dns.fallbackFilter.geosite,
       ),
     );
+    final geositeLabel = Intl.message('Geo Site', name: 'geosite');
     return ListItem.open(
-      title: const Text('Geosite'),
+      title: Text(geositeLabel),
       delegate: OpenDelegate(
         blur: false,
         widget: ListInputPage(
-          title: 'Geosite',
+          title: geositeLabel,
           items: geosite,
           titleBuilder: (item) => Text(item),
         ),

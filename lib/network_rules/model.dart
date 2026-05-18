@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:fl_clash/common/common.dart';
 
-enum NetworkAction { turnOn, turnOff, keep }
+enum NetworkAction { turnOn, turnOff }
 
 enum NetworkType { wifi, cellular, none }
 

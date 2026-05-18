@@ -458,7 +458,6 @@ abstract class ClashConfig with _$ClashConfig {
     @Default(defaultKeepAliveInterval)
     @JsonKey(name: 'keep-alive-interval')
     int keepAliveInterval,
-    @Default(true) @JsonKey(name: 'unified-delay') bool unifiedDelay,
     @Default(true) @JsonKey(name: 'tcp-concurrent') bool tcpConcurrent,
     @Default(defaultTun) @JsonKey(fromJson: Tun.safeFormJson) Tun tun,
     @Default(defaultDns) @JsonKey(fromJson: Dns.safeDnsFromJson) Dns dns,
@@ -470,7 +469,6 @@ abstract class ClashConfig with _$ClashConfig {
     GeodataLoader geodataLoader,
     @Default([]) @JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,
     @Default([]) List<String> rule,
-    @JsonKey(name: 'global-ua') String? globalUa,
     @Default({}) Map<String, String> hosts,
   }) = _ClashConfig;
 
