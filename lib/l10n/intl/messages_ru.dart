@@ -61,6 +61,41 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("О программе"),
+    "aclSaveDroppedUninstalled": MessageLookupByLibrary.simpleMessage(
+      "Удалено N не-установленных приложений из списка",
+    ),
+    "byedpiAttribution": MessageLookupByLibrary.simpleMessage(
+      "разработка hufrea (MIT)",
+    ),
+    "comingSoon": MessageLookupByLibrary.simpleMessage("Скоро"),
+    "coreDesc": MessageLookupByLibrary.simpleMessage(
+      "Порты, IPv6, hosts, find-process, geodata loader, test URL",
+    ),
+    "crashReporting": MessageLookupByLibrary.simpleMessage("Отчёты о сбоях"),
+    "developerModeDesc": MessageLookupByLibrary.simpleMessage(
+      "Добавляет экран разработчика с диагностическими действиями.",
+    ),
+    "dnsBehaviorSection": MessageLookupByLibrary.simpleMessage("Поведение"),
+    "dnsResolversSection": MessageLookupByLibrary.simpleMessage("Резолверы"),
+    "dnsServerSection": MessageLookupByLibrary.simpleMessage("Сервер"),
+    "ipv6DnsQueries": MessageLookupByLibrary.simpleMessage(
+      "IPv6 (DNS-запросы)",
+    ),
+    "ipv6Engine": MessageLookupByLibrary.simpleMessage("IPv6 (движок)"),
+    "ipv6Inbound": MessageLookupByLibrary.simpleMessage("IPv6 (VPN inbound)"),
+    "launchAndBackground": MessageLookupByLibrary.simpleMessage("Запуск и фон"),
+    "resetSection": MessageLookupByLibrary.simpleMessage("Сброс"),
+    "routeAddressBypassPrivateHint": MessageLookupByLibrary.simpleMessage(
+      "Не используется в режиме Bypass private",
+    ),
+    "routingRules": MessageLookupByLibrary.simpleMessage(
+      "Правила маршрутизации",
+    ),
+    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage(
+      "Сторонние компоненты",
+    ),
+    "userInterface": MessageLookupByLibrary.simpleMessage("Интерфейс"),
+    "vpnSettings": MessageLookupByLibrary.simpleMessage("Настройки VPN"),
     "accessControl": MessageLookupByLibrary.simpleMessage("Контроль доступа"),
     "accessControlAllowDesc": MessageLookupByLibrary.simpleMessage(
       "Разрешить только выбранным приложениям доступ к VPN",

@@ -76,29 +76,6 @@ class AutoLaunchItem extends ConsumerWidget {
   }
 }
 
-class SilentLaunchItem extends ConsumerWidget {
-  const SilentLaunchItem({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final silentLaunch = ref.watch(
-      appSettingProvider.select((state) => state.silentLaunch),
-    );
-    return ListItem.switchItem(
-      title: Text(appLocalizations.silentLaunch),
-      subtitle: Text(appLocalizations.silentLaunchDesc),
-      delegate: SwitchDelegate(
-        value: silentLaunch,
-        onChanged: (bool value) {
-          ref
-              .read(appSettingProvider.notifier)
-              .update((state) => state.copyWith(silentLaunch: value));
-        },
-      ),
-    );
-  }
-}
-
 class AutoRunItem extends ConsumerWidget {
   const AutoRunItem({super.key});
 
@@ -145,34 +122,6 @@ class AnimateTabItem extends ConsumerWidget {
   }
 }
 
-class ShowProxyLabelItem extends ConsumerWidget {
-  const ShowProxyLabelItem({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final showLabel = ref.watch(
-      appSettingProvider.select((state) => state.showLabel),
-    );
-    return ListItem.switchItem(
-      title: Text(Intl.message('Show proxy labels', name: 'showProxyLabels')),
-      subtitle: Text(
-        Intl.message(
-          'Display readable names under proxy icons in Dashboard',
-          name: 'showProxyLabelsDesc',
-        ),
-      ),
-      delegate: SwitchDelegate(
-        value: showLabel,
-        onChanged: (value) {
-          ref
-              .read(appSettingProvider.notifier)
-              .update((state) => state.copyWith(showLabel: value));
-        },
-      ),
-    );
-  }
-}
-
 class ClearDataItem extends ConsumerWidget {
   const ClearDataItem({super.key});
 
@@ -206,12 +155,7 @@ class ApplicationSettingView extends StatelessWidget {
     final items = <Widget>[
       ...generateSection(
         title: Intl.message('Launch & background', name: 'launchAndBackground'),
-        items: const [
-          AutoLaunchItem(),
-          SilentLaunchItem(),
-          AutoRunItem(),
-          MinimizeItem(),
-        ],
+        items: const [AutoLaunchItem(), AutoRunItem(), MinimizeItem()],
       ),
       ...generateSection(
         title: Intl.message('Connection', name: 'connection'),
@@ -219,7 +163,7 @@ class ApplicationSettingView extends StatelessWidget {
       ),
       ...generateSection(
         title: Intl.message('User interface', name: 'userInterface'),
-        items: const [AnimateTabItem(), ShowProxyLabelItem()],
+        items: const [AnimateTabItem()],
       ),
       ...generateSection(
         title: Intl.message('Reset', name: 'resetSection'),

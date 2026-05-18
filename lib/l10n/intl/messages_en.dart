@@ -62,6 +62,41 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("About"),
+    "aclSaveDroppedUninstalled": MessageLookupByLibrary.simpleMessage(
+      "Removed N uninstalled app(s) from list",
+    ),
+    "byedpiAttribution": MessageLookupByLibrary.simpleMessage(
+      "by hufrea (MIT)",
+    ),
+    "comingSoon": MessageLookupByLibrary.simpleMessage("Coming soon"),
+    "coreDesc": MessageLookupByLibrary.simpleMessage(
+      "Ports, IPv6, hosts, find-process, geodata loader, test URL",
+    ),
+    "crashReporting": MessageLookupByLibrary.simpleMessage("Crash reporting"),
+    "developerModeDesc": MessageLookupByLibrary.simpleMessage(
+      "Adds a Developer screen with diagnostic actions.",
+    ),
+    "dnsBehaviorSection": MessageLookupByLibrary.simpleMessage("Behavior"),
+    "dnsResolversSection": MessageLookupByLibrary.simpleMessage("Resolvers"),
+    "dnsServerSection": MessageLookupByLibrary.simpleMessage("Server"),
+    "ipv6DnsQueries": MessageLookupByLibrary.simpleMessage(
+      "IPv6 (DNS queries)",
+    ),
+    "ipv6Engine": MessageLookupByLibrary.simpleMessage("IPv6 (engine)"),
+    "ipv6Inbound": MessageLookupByLibrary.simpleMessage("IPv6 (VPN inbound)"),
+    "launchAndBackground": MessageLookupByLibrary.simpleMessage(
+      "Launch & background",
+    ),
+    "resetSection": MessageLookupByLibrary.simpleMessage("Reset"),
+    "routeAddressBypassPrivateHint": MessageLookupByLibrary.simpleMessage(
+      "Not used in Bypass private mode",
+    ),
+    "routingRules": MessageLookupByLibrary.simpleMessage("Routing rules"),
+    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage(
+      "Third-party notices",
+    ),
+    "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
+    "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN settings"),
     "accessControl": MessageLookupByLibrary.simpleMessage("AccessControl"),
     "accessControlAllowDesc": MessageLookupByLibrary.simpleMessage(
       "Only allow selected app to enter VPN",

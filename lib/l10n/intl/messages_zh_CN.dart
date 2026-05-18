@@ -55,6 +55,35 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("关于"),
+    "aclSaveDroppedUninstalled": MessageLookupByLibrary.simpleMessage(
+      "已从列表中移除 N 个未安装的应用",
+    ),
+    "byedpiAttribution": MessageLookupByLibrary.simpleMessage(
+      "由 hufrea 开发 (MIT)",
+    ),
+    "comingSoon": MessageLookupByLibrary.simpleMessage("即将推出"),
+    "coreDesc": MessageLookupByLibrary.simpleMessage(
+      "端口、IPv6、hosts、find-process、geodata loader、test URL",
+    ),
+    "crashReporting": MessageLookupByLibrary.simpleMessage("崩溃报告"),
+    "developerModeDesc": MessageLookupByLibrary.simpleMessage(
+      "添加包含诊断操作的开发者屏幕。",
+    ),
+    "dnsBehaviorSection": MessageLookupByLibrary.simpleMessage("行为"),
+    "dnsResolversSection": MessageLookupByLibrary.simpleMessage("解析器"),
+    "dnsServerSection": MessageLookupByLibrary.simpleMessage("服务器"),
+    "ipv6DnsQueries": MessageLookupByLibrary.simpleMessage("IPv6 (DNS 查询)"),
+    "ipv6Engine": MessageLookupByLibrary.simpleMessage("IPv6 (引擎)"),
+    "ipv6Inbound": MessageLookupByLibrary.simpleMessage("IPv6 (VPN 入站)"),
+    "launchAndBackground": MessageLookupByLibrary.simpleMessage("启动与后台"),
+    "resetSection": MessageLookupByLibrary.simpleMessage("重置"),
+    "routeAddressBypassPrivateHint": MessageLookupByLibrary.simpleMessage(
+      "Bypass private 模式下不使用",
+    ),
+    "routingRules": MessageLookupByLibrary.simpleMessage("路由规则"),
+    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage("第三方说明"),
+    "userInterface": MessageLookupByLibrary.simpleMessage("用户界面"),
+    "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN 设置"),
     "accessControl": MessageLookupByLibrary.simpleMessage("访问控制"),
     "accessControlAllowDesc": MessageLookupByLibrary.simpleMessage(
       "只允许选中应用进入VPN",

@@ -241,15 +241,15 @@ class _VpnSettingsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appLocalizations = context.appLocalizations;
+    final vpnSettingsTitle = Intl.message('VPN settings', name: 'vpnSettings');
     return ListItem.open(
       leading: const Icon(Icons.vpn_key),
-      title: Text(appLocalizations.network),
-      subtitle: Text(appLocalizations.networkDesc),
+      title: Text(vpnSettingsTitle),
+      subtitle: Text(context.appLocalizations.networkDesc),
       delegate: OpenDelegate(
         blur: false,
         widget: BaseScaffold(
-          title: appLocalizations.network,
+          title: vpnSettingsTitle,
           body: const NetworkListView(),
         ),
       ),
@@ -263,9 +263,14 @@ class _CoreItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListItem.open(
-      leading: const Icon(Icons.edit),
+      leading: const Icon(Icons.tune),
       title: Text(context.appLocalizations.core),
-      subtitle: Text(context.appLocalizations.basicConfigDesc),
+      subtitle: Text(
+        Intl.message(
+          'Ports, IPv6, hosts, find-process, geodata loader, test URL',
+          name: 'coreDesc',
+        ),
+      ),
       delegate: const OpenDelegate(widget: ConfigView()),
     );
   }
@@ -317,11 +322,10 @@ class _RoutingRulesItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appLocalizations = context.appLocalizations;
     return ListItem.open(
       leading: const Icon(Icons.library_books),
-      title: Text(appLocalizations.addedRules),
-      subtitle: Text(appLocalizations.controlGlobalAddedRules),
+      title: Text(Intl.message('Routing rules', name: 'routingRules')),
+      subtitle: Text(context.appLocalizations.controlGlobalAddedRules),
       delegate: const OpenDelegate(widget: AddedRulesView(), blur: false),
     );
   }

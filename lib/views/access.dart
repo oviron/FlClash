@@ -217,13 +217,11 @@ class _AccessViewState extends ConsumerState<AccessView> {
     final droppedCount =
         accessControl.currentList.length - real.currentList.length;
     if (droppedCount > 0 && mounted) {
-      context.showNotifier(
-        Intl.message(
-          'Removed {n} uninstalled app(s) from list',
-          name: 'aclSaveDroppedUninstalled',
-          args: [droppedCount],
-        ),
+      final template = Intl.message(
+        'Removed N uninstalled app(s) from list',
+        name: 'aclSaveDroppedUninstalled',
       );
+      context.showNotifier(template.replaceFirst('N', droppedCount.toString()));
     }
     await _persist(real);
   }

@@ -55,6 +55,33 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("について"),
+    "aclSaveDroppedUninstalled": MessageLookupByLibrary.simpleMessage(
+      "リストから N 個の未インストールアプリを削除しました",
+    ),
+    "byedpiAttribution": MessageLookupByLibrary.simpleMessage("hufrea 作 (MIT)"),
+    "comingSoon": MessageLookupByLibrary.simpleMessage("近日公開"),
+    "coreDesc": MessageLookupByLibrary.simpleMessage(
+      "ポート、IPv6、hosts、find-process、geodata loader、test URL",
+    ),
+    "crashReporting": MessageLookupByLibrary.simpleMessage("クラッシュレポート"),
+    "developerModeDesc": MessageLookupByLibrary.simpleMessage(
+      "診断アクション付きの開発者画面を追加します。",
+    ),
+    "dnsBehaviorSection": MessageLookupByLibrary.simpleMessage("動作"),
+    "dnsResolversSection": MessageLookupByLibrary.simpleMessage("リゾルバ"),
+    "dnsServerSection": MessageLookupByLibrary.simpleMessage("サーバー"),
+    "ipv6DnsQueries": MessageLookupByLibrary.simpleMessage("IPv6 (DNSクエリ)"),
+    "ipv6Engine": MessageLookupByLibrary.simpleMessage("IPv6 (エンジン)"),
+    "ipv6Inbound": MessageLookupByLibrary.simpleMessage("IPv6 (VPNインバウンド)"),
+    "launchAndBackground": MessageLookupByLibrary.simpleMessage("起動とバックグラウンド"),
+    "resetSection": MessageLookupByLibrary.simpleMessage("リセット"),
+    "routeAddressBypassPrivateHint": MessageLookupByLibrary.simpleMessage(
+      "Bypass privateモードでは使用されません",
+    ),
+    "routingRules": MessageLookupByLibrary.simpleMessage("ルーティングルール"),
+    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage("サードパーティの通知"),
+    "userInterface": MessageLookupByLibrary.simpleMessage("ユーザーインターフェース"),
+    "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN設定"),
     "accessControl": MessageLookupByLibrary.simpleMessage("アクセス制御"),
     "accessControlAllowDesc": MessageLookupByLibrary.simpleMessage(
       "選択したアプリのみVPNを許可",

@@ -1,6 +1,6 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,9 +66,13 @@ class _DisclaimerActionItem extends StatelessWidget {
       leading: const Icon(Icons.gavel_outlined),
       title: Text(context.appLocalizations.disclaimer),
       onTap: () async {
-        // Show disclaimer dialog. Declining no longer exits the app —
-        // the original behaviour belongs to first-launch only.
-        await appController.showDisclaimer();
+        // Read-only re-display. First-launch Accept/Exit flow lives in
+        // controller.showDisclaimer; here a single OK button is enough.
+        await globalState.showMessage(
+          title: appLocalizations.disclaimer,
+          message: TextSpan(text: appLocalizations.disclaimerDesc),
+          cancelable: false,
+        );
       },
     );
   }
