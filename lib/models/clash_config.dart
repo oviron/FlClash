@@ -207,10 +207,20 @@ extension TunExt on Tun {
 abstract class FallbackFilter with _$FallbackFilter {
   const factory FallbackFilter({
     @Default(true) bool geoip,
-    @Default('CN') @JsonKey(name: 'geoip-code') String geoipCode,
-    @Default(['gfw']) List<String> geosite,
-    @Default(['240.0.0.0/4']) List<String> ipcidr,
-    @Default(['+.google.com', '+.facebook.com', '+.youtube.com'])
+    @Default('RU') @JsonKey(name: 'geoip-code') String geoipCode,
+    @Default(<String>[]) List<String> geosite,
+    @Default(['0.0.0.0/32', '127.0.0.1/32', '240.0.0.0/4'])
+    List<String> ipcidr,
+    @Default([
+      '+.openai.com',
+      '+.anthropic.com',
+      '+.x.com',
+      '+.twitter.com',
+      '+.instagram.com',
+      '+.facebook.com',
+      '+.meta.com',
+      '+.linkedin.com',
+    ])
     List<String> domain,
   }) = _FallbackFilter;
 

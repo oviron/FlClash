@@ -165,16 +165,25 @@ _FallbackFilter _$FallbackFilterFromJson(
   Map<String, dynamic> json,
 ) => _FallbackFilter(
   geoip: json['geoip'] as bool? ?? true,
-  geoipCode: json['geoip-code'] as String? ?? 'CN',
+  geoipCode: json['geoip-code'] as String? ?? 'RU',
   geosite:
       (json['geosite'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['gfw'],
+      const <String>[],
   ipcidr:
       (json['ipcidr'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['240.0.0.0/4'],
+      const ['0.0.0.0/32', '127.0.0.1/32', '240.0.0.0/4'],
   domain:
       (json['domain'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['+.google.com', '+.facebook.com', '+.youtube.com'],
+      const [
+        '+.openai.com',
+        '+.anthropic.com',
+        '+.x.com',
+        '+.twitter.com',
+        '+.instagram.com',
+        '+.facebook.com',
+        '+.meta.com',
+        '+.linkedin.com',
+      ],
 );
 
 Map<String, dynamic> _$FallbackFilterToJson(_FallbackFilter instance) =>

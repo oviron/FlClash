@@ -115,8 +115,8 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   rawConfig['socks-port'] = realPatchConfig.socksPort;
   rawConfig['redir-port'] = realPatchConfig.redirPort;
   rawConfig['tproxy-port'] = realPatchConfig.tproxyPort;
-  // YAML-set find-process-mode wins; default to 'off' on Android (non-root cannot read /proc/net/tcp).
-  rawConfig['find-process-mode'] ??= 'off';
+  // YAML-set find-process-mode wins; fall back to UI value (default 'strict' per mihomo upstream).
+  rawConfig['find-process-mode'] ??= realPatchConfig.findProcessMode.name;
   rawConfig['allow-lan'] = realPatchConfig.allowLan;
   rawConfig['mode'] = realPatchConfig.mode.name;
   if (rawConfig['tun'] == null) {

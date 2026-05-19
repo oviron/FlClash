@@ -316,13 +316,27 @@ final networkItems = [
       const RouteAddressItem(),
     ],
   ),
-  ExpansionTile(
-    title: Text(Intl.message('Advanced', name: 'advanced')),
-    childrenPadding: EdgeInsets.zero,
-    tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-    children: const [BypassDomainItem()],
-  ),
+  const _AdvancedNetworkSection(),
 ];
+
+class _AdvancedNetworkSection extends ConsumerWidget {
+  const _AdvancedNetworkSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final systemProxy = ref.watch(
+      vpnSettingProvider.select((state) => state.systemProxy),
+    );
+    // Bypass domain works only in HTTP/SOCKS system-proxy mode (not TUN).
+    if (!systemProxy) return const SizedBox.shrink();
+    return ExpansionTile(
+      title: Text(Intl.message('Advanced', name: 'advanced')),
+      childrenPadding: EdgeInsets.zero,
+      tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+      children: const [BypassDomainItem()],
+    );
+  }
+}
 
 class NetworkListView extends StatelessWidget {
   const NetworkListView({super.key});

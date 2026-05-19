@@ -123,6 +123,38 @@ class AllowLanItem extends ConsumerWidget {
   }
 }
 
+class FindProcessItem extends ConsumerWidget {
+  const FindProcessItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final findProcess = ref.watch(
+      patchClashConfigProvider.select(
+        (state) => state.findProcessMode == FindProcessMode.always,
+      ),
+    );
+    return ListItem.switchItem(
+      leading: const Icon(Icons.polymer_outlined),
+      title: Text(appLocalizations.findProcessMode),
+      subtitle: Text(appLocalizations.findProcessModeDesc),
+      delegate: SwitchDelegate(
+        value: findProcess,
+        onChanged: (bool value) async {
+          ref
+              .read(patchClashConfigProvider.notifier)
+              .update(
+                (state) => state.copyWith(
+                  findProcessMode: value
+                      ? FindProcessMode.always
+                      : FindProcessMode.off,
+                ),
+              );
+        },
+      ),
+    );
+  }
+}
+
 class TcpConcurrentItem extends ConsumerWidget {
   const TcpConcurrentItem({super.key});
 
@@ -190,6 +222,8 @@ final generalItems = <Widget>[
     childrenPadding: EdgeInsets.zero,
     tilePadding: const EdgeInsets.symmetric(horizontal: 16),
     children: <Widget>[
+      const FindProcessItem(),
+      const Divider(height: 0),
       const AllowLanItem(),
       const Divider(height: 0),
       const GeodataLoaderItem(),
