@@ -97,9 +97,7 @@ class UnifiedIpv6Item extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final inbound = ref.watch(
-      vpnSettingProvider.select((state) => state.ipv6),
-    );
+    final inbound = ref.watch(vpnSettingProvider.select((state) => state.ipv6));
     final engine = ref.watch(
       patchClashConfigProvider.select((state) => state.ipv6),
     );
@@ -135,7 +133,6 @@ class UnifiedIpv6Item extends ConsumerWidget {
     );
   }
 }
-
 
 class TunStackItem extends ConsumerWidget {
   const TunStackItem({super.key});

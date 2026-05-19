@@ -209,8 +209,7 @@ abstract class FallbackFilter with _$FallbackFilter {
     @Default(true) bool geoip,
     @Default('RU') @JsonKey(name: 'geoip-code') String geoipCode,
     @Default(<String>[]) List<String> geosite,
-    @Default(['0.0.0.0/32', '127.0.0.1/32', '240.0.0.0/4'])
-    List<String> ipcidr,
+    @Default(['0.0.0.0/32', '127.0.0.1/32', '240.0.0.0/4']) List<String> ipcidr,
     @Default([
       '+.openai.com',
       '+.anthropic.com',

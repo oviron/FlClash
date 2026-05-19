@@ -674,7 +674,10 @@ class _DnsAdvancedSection extends StatelessWidget {
         const Divider(height: 0),
         ExpansionTile(
           title: Text(
-            Intl.message('China / Fallback (legacy)', name: 'dnsFallbackLegacy'),
+            Intl.message(
+              'China / Fallback (legacy)',
+              name: 'dnsFallbackLegacy',
+            ),
           ),
           tilePadding: const EdgeInsets.symmetric(horizontal: 16),
           childrenPadding: EdgeInsets.zero,
