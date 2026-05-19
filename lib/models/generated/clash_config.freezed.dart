@@ -803,7 +803,7 @@ return $default(_that.enable,_that.overrideDest,_that.sniffing,_that.forceDomain
 @JsonSerializable()
 
 class _Sniffer implements Sniffer {
-  const _Sniffer({this.enable = false, @JsonKey(name: 'override-destination') this.overrideDest = true, final  List<String> sniffing = const [], @JsonKey(name: 'force-domain') final  List<String> forceDomain = const [], @JsonKey(name: 'skip-src-address') final  List<String> skipSrcAddress = const [], @JsonKey(name: 'skip-dst-address') final  List<String> skipDstAddress = const [], @JsonKey(name: 'skip-domain') final  List<String> skipDomain = const [], @JsonKey(name: 'port-whitelist') final  List<String> port = const [], @JsonKey(name: 'force-dns-mapping') this.forceDnsMapping = true, @JsonKey(name: 'parse-pure-ip') this.parsePureIp = true, final  Map<String, SnifferConfig> sniff = const {}}): _sniffing = sniffing,_forceDomain = forceDomain,_skipSrcAddress = skipSrcAddress,_skipDstAddress = skipDstAddress,_skipDomain = skipDomain,_port = port,_sniff = sniff;
+  const _Sniffer({this.enable = true, @JsonKey(name: 'override-destination') this.overrideDest = true, final  List<String> sniffing = const [], @JsonKey(name: 'force-domain') final  List<String> forceDomain = const [], @JsonKey(name: 'skip-src-address') final  List<String> skipSrcAddress = const [], @JsonKey(name: 'skip-dst-address') final  List<String> skipDstAddress = const [], @JsonKey(name: 'skip-domain') final  List<String> skipDomain = const [], @JsonKey(name: 'port-whitelist') final  List<String> port = const [], @JsonKey(name: 'force-dns-mapping') this.forceDnsMapping = true, @JsonKey(name: 'parse-pure-ip') this.parsePureIp = true, final  Map<String, SnifferConfig> sniff = defaultSniff}): _sniffing = sniffing,_forceDomain = forceDomain,_skipSrcAddress = skipSrcAddress,_skipDstAddress = skipDstAddress,_skipDomain = skipDomain,_port = port,_sniff = sniff;
   factory _Sniffer.fromJson(Map<String, dynamic> json) => _$SnifferFromJson(json);
 
 @override@JsonKey() final  bool enable;
@@ -1405,7 +1405,7 @@ return $default(_that.enable,_that.device,_that.autoRoute,_that.stack,_that.dnsH
 @JsonSerializable()
 
 class _Tun implements Tun {
-  const _Tun({this.enable = false, this.device = appName, @JsonKey(name: 'auto-route') this.autoRoute = false, this.stack = TunStack.mixed, @JsonKey(name: 'dns-hijack') final  List<String> dnsHijack = const ['any:53'], @JsonKey(name: 'route-address') final  List<String> routeAddress = const []}): _dnsHijack = dnsHijack,_routeAddress = routeAddress;
+  const _Tun({this.enable = false, this.device = appName, @JsonKey(name: 'auto-route') this.autoRoute = true, this.stack = TunStack.mixed, @JsonKey(name: 'dns-hijack') final  List<String> dnsHijack = const ['any:53'], @JsonKey(name: 'route-address') final  List<String> routeAddress = const []}): _dnsHijack = dnsHijack,_routeAddress = routeAddress;
   factory _Tun.fromJson(Map<String, dynamic> json) => _$TunFromJson(json);
 
 @override@JsonKey() final  bool enable;
@@ -1496,7 +1496,13 @@ as List<String>,
 /// @nodoc
 mixin _$Dns {
 
- bool get enable; String get listen;@JsonKey(name: 'prefer-h3') bool get preferH3;@JsonKey(name: 'use-hosts') bool get useHosts;@JsonKey(name: 'use-system-hosts') bool get useSystemHosts;@JsonKey(name: 'respect-rules') bool get respectRules; bool get ipv6;@JsonKey(name: 'default-nameserver') List<String> get defaultNameserver;@JsonKey(name: 'enhanced-mode') DnsMode get enhancedMode;@JsonKey(name: 'fake-ip-range') String get fakeIpRange;@JsonKey(name: 'fake-ip-filter') List<String> get fakeIpFilter;@JsonKey(name: 'nameserver-policy') Map<String, String> get nameserverPolicy; List<String> get nameserver;@JsonKey(name: 'proxy-server-nameserver') List<String> get proxyServerNameserver;
+ bool get enable; String get listen;@JsonKey(name: 'prefer-h3') bool get preferH3;@JsonKey(name: 'use-hosts') bool get useHosts;@JsonKey(name: 'use-system-hosts') bool get useSystemHosts;@JsonKey(name: 'respect-rules') bool get respectRules; bool get ipv6;// Bootstrap layer — resolves DoH/DoT hostnames before the proxy is up.
+// Must be plain IPs (no scheme): DoT/DoH here is either redundant (same
+// bare IP) or fails cert validation on IP SAN.
+@JsonKey(name: 'default-nameserver') List<String> get defaultNameserver;@JsonKey(name: 'enhanced-mode') DnsMode get enhancedMode;@JsonKey(name: 'fake-ip-range') String get fakeIpRange;// Hosts that must resolve to real IPs (not fake-IP) — Android
+// captive-portal probes, Google Update CDN, NTP. Without these the
+// OS marks the network as "no internet" within ~3s.
+@JsonKey(name: 'fake-ip-filter') List<String> get fakeIpFilter;@JsonKey(name: 'nameserver-policy') Map<String, String> get nameserverPolicy; List<String> get nameserver;@JsonKey(name: 'proxy-server-nameserver') List<String> get proxyServerNameserver;
 /// Create a copy of Dns
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1703,7 +1709,7 @@ return $default(_that.enable,_that.listen,_that.preferH3,_that.useHosts,_that.us
 @JsonSerializable()
 
 class _Dns implements Dns {
-  const _Dns({this.enable = true, this.listen = '0.0.0.0:1053', @JsonKey(name: 'prefer-h3') this.preferH3 = false, @JsonKey(name: 'use-hosts') this.useHosts = true, @JsonKey(name: 'use-system-hosts') this.useSystemHosts = true, @JsonKey(name: 'respect-rules') this.respectRules = true, this.ipv6 = false, @JsonKey(name: 'default-nameserver') final  List<String> defaultNameserver = const ['tls://8.8.8.8:853', 'tls://1.1.1.1:853'], @JsonKey(name: 'enhanced-mode') this.enhancedMode = DnsMode.fakeIp, @JsonKey(name: 'fake-ip-range') this.fakeIpRange = '198.18.0.1/16', @JsonKey(name: 'fake-ip-filter') final  List<String> fakeIpFilter = const ['*.lan', '*.local', '*.arpa', 'connectivitycheck.gstatic.com', 'clients3.google.com'], @JsonKey(name: 'nameserver-policy') final  Map<String, String> nameserverPolicy = const {}, final  List<String> nameserver = const ['https://dns.google/dns-query', 'https://cloudflare-dns.com/dns-query'], @JsonKey(name: 'proxy-server-nameserver') final  List<String> proxyServerNameserver = const ['tls://8.8.8.8:853', 'tls://1.1.1.1:853']}): _defaultNameserver = defaultNameserver,_fakeIpFilter = fakeIpFilter,_nameserverPolicy = nameserverPolicy,_nameserver = nameserver,_proxyServerNameserver = proxyServerNameserver;
+  const _Dns({this.enable = true, this.listen = '0.0.0.0:1053', @JsonKey(name: 'prefer-h3') this.preferH3 = false, @JsonKey(name: 'use-hosts') this.useHosts = true, @JsonKey(name: 'use-system-hosts') this.useSystemHosts = true, @JsonKey(name: 'respect-rules') this.respectRules = true, this.ipv6 = false, @JsonKey(name: 'default-nameserver') final  List<String> defaultNameserver = const ['1.1.1.1', '8.8.8.8', '9.9.9.9'], @JsonKey(name: 'enhanced-mode') this.enhancedMode = DnsMode.fakeIp, @JsonKey(name: 'fake-ip-range') this.fakeIpRange = '198.18.0.1/16', @JsonKey(name: 'fake-ip-filter') final  List<String> fakeIpFilter = const ['*.lan', '*.local', '*.arpa', 'connectivitycheck.gstatic.com', 'connectivitycheck.android.com', 'www.google.com', '+.gvt1.com', '+.gvt2.com', 'time.android.com'], @JsonKey(name: 'nameserver-policy') final  Map<String, String> nameserverPolicy = const {}, final  List<String> nameserver = const ['https://dns.google/dns-query', 'https://cloudflare-dns.com/dns-query'], @JsonKey(name: 'proxy-server-nameserver') final  List<String> proxyServerNameserver = const ['tls://8.8.8.8:853', 'tls://1.1.1.1:853']}): _defaultNameserver = defaultNameserver,_fakeIpFilter = fakeIpFilter,_nameserverPolicy = nameserverPolicy,_nameserver = nameserver,_proxyServerNameserver = proxyServerNameserver;
   factory _Dns.fromJson(Map<String, dynamic> json) => _$DnsFromJson(json);
 
 @override@JsonKey() final  bool enable;
@@ -1713,7 +1719,13 @@ class _Dns implements Dns {
 @override@JsonKey(name: 'use-system-hosts') final  bool useSystemHosts;
 @override@JsonKey(name: 'respect-rules') final  bool respectRules;
 @override@JsonKey() final  bool ipv6;
+// Bootstrap layer — resolves DoH/DoT hostnames before the proxy is up.
+// Must be plain IPs (no scheme): DoT/DoH here is either redundant (same
+// bare IP) or fails cert validation on IP SAN.
  final  List<String> _defaultNameserver;
+// Bootstrap layer — resolves DoH/DoT hostnames before the proxy is up.
+// Must be plain IPs (no scheme): DoT/DoH here is either redundant (same
+// bare IP) or fails cert validation on IP SAN.
 @override@JsonKey(name: 'default-nameserver') List<String> get defaultNameserver {
   if (_defaultNameserver is EqualUnmodifiableListView) return _defaultNameserver;
   // ignore: implicit_dynamic_type
@@ -1722,7 +1734,13 @@ class _Dns implements Dns {
 
 @override@JsonKey(name: 'enhanced-mode') final  DnsMode enhancedMode;
 @override@JsonKey(name: 'fake-ip-range') final  String fakeIpRange;
+// Hosts that must resolve to real IPs (not fake-IP) — Android
+// captive-portal probes, Google Update CDN, NTP. Without these the
+// OS marks the network as "no internet" within ~3s.
  final  List<String> _fakeIpFilter;
+// Hosts that must resolve to real IPs (not fake-IP) — Android
+// captive-portal probes, Google Update CDN, NTP. Without these the
+// OS marks the network as "no internet" within ~3s.
 @override@JsonKey(name: 'fake-ip-filter') List<String> get fakeIpFilter {
   if (_fakeIpFilter is EqualUnmodifiableListView) return _fakeIpFilter;
   // ignore: implicit_dynamic_type

@@ -60,7 +60,7 @@ Map<String, dynamic> _$RuleProviderToJson(_RuleProvider instance) =>
     <String, dynamic>{'name': instance.name};
 
 _Sniffer _$SnifferFromJson(Map<String, dynamic> json) => _Sniffer(
-  enable: json['enable'] as bool? ?? false,
+  enable: json['enable'] as bool? ?? true,
   overrideDest: json['override-destination'] as bool? ?? true,
   sniffing:
       (json['sniffing'] as List<dynamic>?)?.map((e) => e as String).toList() ??
@@ -97,7 +97,7 @@ _Sniffer _$SnifferFromJson(Map<String, dynamic> json) => _Sniffer(
         (k, e) =>
             MapEntry(k, SnifferConfig.fromJson(e as Map<String, dynamic>)),
       ) ??
-      const {},
+      defaultSniff,
 );
 
 Map<String, dynamic> _$SnifferToJson(_Sniffer instance) => <String, dynamic>{
@@ -131,7 +131,7 @@ Map<String, dynamic> _$SnifferConfigToJson(_SnifferConfig instance) =>
 _Tun _$TunFromJson(Map<String, dynamic> json) => _Tun(
   enable: json['enable'] as bool? ?? false,
   device: json['device'] as String? ?? appName,
-  autoRoute: json['auto-route'] as bool? ?? false,
+  autoRoute: json['auto-route'] as bool? ?? true,
   stack:
       $enumDecodeNullable(_$TunStackEnumMap, json['stack']) ?? TunStack.mixed,
   dnsHijack:
@@ -173,7 +173,7 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
       (json['default-nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['tls://8.8.8.8:853', 'tls://1.1.1.1:853'],
+      const ['1.1.1.1', '8.8.8.8', '9.9.9.9'],
   enhancedMode:
       $enumDecodeNullable(_$DnsModeEnumMap, json['enhanced-mode']) ??
       DnsMode.fakeIp,
@@ -187,7 +187,11 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
         '*.local',
         '*.arpa',
         'connectivitycheck.gstatic.com',
-        'clients3.google.com',
+        'connectivitycheck.android.com',
+        'www.google.com',
+        '+.gvt1.com',
+        '+.gvt2.com',
+        'time.android.com',
       ],
   nameserverPolicy:
       (json['nameserver-policy'] as Map<String, dynamic>?)?.map(

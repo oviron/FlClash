@@ -224,7 +224,7 @@ return $default(_that.locale,_that.dashboardWidgets,_that.autoRun,_that.inAppLog
 @JsonSerializable()
 
 class _AppSettingProps implements AppSettingProps {
-  const _AppSettingProps({this.locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson) final  List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets, this.autoRun = false, @JsonKey(name: 'openLogs') this.inAppLogsEnabled = false, this.logcatLevel = LogLevel.debug, this.fileLogLevel = LogLevel.info, this.fileLogEnabled = false, this.closeConnections = true, this.testUrl = defaultTestUrl, this.isAnimateToPage = true, this.disclaimerAccepted = false, this.minimizeOnExit = true, this.hidden = false, this.developerMode = false, this.restoreStrategy = RestoreStrategy.compatible, this.includeDavCredsInBackup = false}): _dashboardWidgets = dashboardWidgets;
+  const _AppSettingProps({this.locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson) final  List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets, this.autoRun = false, @JsonKey(name: 'openLogs') this.inAppLogsEnabled = false, this.logcatLevel = LogLevel.info, this.fileLogLevel = LogLevel.info, this.fileLogEnabled = false, this.closeConnections = true, this.testUrl = defaultTestUrl, this.isAnimateToPage = true, this.disclaimerAccepted = false, this.minimizeOnExit = true, this.hidden = false, this.developerMode = false, this.restoreStrategy = RestoreStrategy.compatible, this.includeDavCredsInBackup = false}): _dashboardWidgets = dashboardWidgets;
   factory _AppSettingProps.fromJson(Map<String, dynamic> json) => _$AppSettingPropsFromJson(json);
 
 @override final  String? locale;

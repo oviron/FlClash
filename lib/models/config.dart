@@ -9,11 +9,6 @@ part 'generated/config.freezed.dart';
 part 'generated/config.g.dart';
 
 const defaultBypassDomain = [
-  '*zhihu.com',
-  '*zhimg.com',
-  '*jd.com',
-  '100ime-iat-api.xfyun.cn',
-  '*360buyimg.com',
   'localhost',
   '*.local',
   '127.*',
@@ -26,6 +21,14 @@ const defaultBypassDomain = [
   '172.30.*',
   '172.31.*',
   '192.168.*',
+  // Android NetworkMonitor captive-portal probes. AOSP 7+ uses
+  // CAPTIVE_PORTAL_HTTP_URL=connectivitycheck.gstatic.com and
+  // CAPTIVE_PORTAL_HTTPS_URL=www.google.com; older ROMs fall back to
+  // connectivitycheck.android.com. Without these in bypass, the OS may
+  // mark the network as "no internet" while VPN is active.
+  'connectivitycheck.gstatic.com',
+  'connectivitycheck.android.com',
+  'www.google.com',
 ];
 
 const defaultAppSettingProps = AppSettingProps();
@@ -67,7 +70,7 @@ abstract class AppSettingProps with _$AppSettingProps {
     List<DashboardWidget> dashboardWidgets,
     @Default(false) bool autoRun,
     @JsonKey(name: 'openLogs') @Default(false) bool inAppLogsEnabled,
-    @Default(LogLevel.debug) LogLevel logcatLevel,
+    @Default(LogLevel.info) LogLevel logcatLevel,
     @Default(LogLevel.info) LogLevel fileLogLevel,
     @Default(false) bool fileLogEnabled,
     @Default(true) bool closeConnections,
