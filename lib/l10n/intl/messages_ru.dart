@@ -2,62 +2,42 @@
 // This is a library that provides messages for a ru locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
-
 // Ignore issues from commonly used lints in this file.
 // ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
 // ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
 // ignore_for_file:unnecessary_string_interpolations, unnecessary_string_escapes
-
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
 final messages = new MessageLookup();
-
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ru';
-
   static String m0(count) =>
       "${Intl.plural(count, one: '${count} день назад', few: '${count} дня назад', many: '${count} дней назад', other: '${count} дня назад')}";
-
   static String m1(label) =>
       "Вы уверены, что хотите удалить выбранные ${label}?";
-
   static String m2(label) => "Вы уверены, что хотите удалить текущий ${label}?";
-
   static String m3(label) => "Детали {}";
-
   static String m4(label) => "${label} не может быть пустым";
-
   static String m5(label) => "Текущий ${label} уже существует";
-
   static String m6(upstream) => "Форк ${upstream}";
-
   static String m7(count) =>
       "${Intl.plural(count, one: '${count} час назад', few: '${count} часа назад', many: '${count} часов назад', other: '${count} часа назад')}";
-
   static String m8(count) =>
       "${Intl.plural(count, one: '${count} минута назад', few: '${count} минуты назад', many: '${count} минут назад', other: '${count} минуты назад')}";
-
   static String m9(count) =>
       "${Intl.plural(count, one: '${count} месяц назад', few: '${count} месяца назад', many: '${count} месяцев назад', other: '${count} месяца назад')}";
-
   static String m10(label) => "${label} пока отсутствуют";
-
   static String m11(label) => "${label} должно быть числом";
-
   static String m12(label) => "${label} должен быть числом от 1024 до 49151";
-
   static String m13(count) => "Выбрано ${count} элементов";
-
   static String m14(label) => "${label} должен быть URL";
-
   static String m15(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
-
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("О программе"),
@@ -358,9 +338,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "diagnostics": MessageLookupByLibrary.simpleMessage("Диагностика"),
     "dnsCoreSection": MessageLookupByLibrary.simpleMessage("Ядро"),
     "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
-    "dnsFallbackLegacy": MessageLookupByLibrary.simpleMessage(
-      "Китай / Fallback (устар.)",
-    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("Серверы"),
     "desc": MessageLookupByLibrary.simpleMessage(
       "Многоплатформенный прокси-клиент на основе ClashMeta, простой и удобный в использовании, с открытым исходным кодом и без рекламы.",
@@ -396,7 +373,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Вы хотите пропустить",
     ),
-    "domain": MessageLookupByLibrary.simpleMessage("Домен"),
     "download": MessageLookupByLibrary.simpleMessage("Скачивание"),
     "edit": MessageLookupByLibrary.simpleMessage("Редактировать"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage(
@@ -417,13 +393,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "externalLink": MessageLookupByLibrary.simpleMessage("Внешняя ссылка"),
     "fakeipFilter": MessageLookupByLibrary.simpleMessage("Фильтр Fakeip"),
     "fakeipRange": MessageLookupByLibrary.simpleMessage("Диапазон Fakeip"),
-    "fallback": MessageLookupByLibrary.simpleMessage("Резервный"),
-    "fallbackDesc": MessageLookupByLibrary.simpleMessage(
-      "Обычно используется оффшорный DNS",
-    ),
-    "fallbackFilter": MessageLookupByLibrary.simpleMessage(
-      "Фильтр резервного DNS",
-    ),
     "fidelityScheme": MessageLookupByLibrary.simpleMessage("Точная передача"),
     "file": MessageLookupByLibrary.simpleMessage("Файл"),
     "fileDesc": MessageLookupByLibrary.simpleMessage("Прямая загрузка профиля"),
@@ -454,7 +423,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "geodataLoaderDesc": MessageLookupByLibrary.simpleMessage(
       "Включение будет использовать загрузчик геоданных с низким потреблением памяти",
     ),
-    "geoipCode": MessageLookupByLibrary.simpleMessage("Код Geoip"),
     "global": MessageLookupByLibrary.simpleMessage("Глобальный"),
     "go": MessageLookupByLibrary.simpleMessage("Перейти"),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage(
@@ -508,16 +476,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidBackupFile": MessageLookupByLibrary.simpleMessage(
       "Неверный файл резервной копии",
     ),
-    "ipcidr": MessageLookupByLibrary.simpleMessage("IPCIDR"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage(
       "При включении будет возможно получать IPv6 трафик",
     ),
     "ipv6InboundDesc": MessageLookupByLibrary.simpleMessage(
       "Разрешить входящий IPv6",
     ),
-    "ipv6ModeCustom": MessageLookupByLibrary.simpleMessage("Раздельно"),
-    "ipv6ModeOff": MessageLookupByLibrary.simpleMessage("Выкл"),
-    "ipv6ModeSyncOn": MessageLookupByLibrary.simpleMessage("Синхр. ВКЛ"),
     "ja": MessageLookupByLibrary.simpleMessage("Японский"),
     "justNow": MessageLookupByLibrary.simpleMessage("Только что"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage(
@@ -971,7 +935,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "themeMode": MessageLookupByLibrary.simpleMessage("Режим темы"),
     "tight": MessageLookupByLibrary.simpleMessage("Плотный"),
     "time": MessageLookupByLibrary.simpleMessage("Время"),
-    "tip": MessageLookupByLibrary.simpleMessage("подсказка"),
+    "tip": MessageLookupByLibrary.simpleMessage("Подсказка"),
     "toggle": MessageLookupByLibrary.simpleMessage("Переключить"),
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("Тональный акцент"),
     "tools": MessageLookupByLibrary.simpleMessage("Инструменты"),

@@ -2,56 +2,36 @@
 // This is a library that provides messages for a ja locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
-
 // Ignore issues from commonly used lints in this file.
 // ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
 // ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
 // ignore_for_file:unnecessary_string_interpolations, unnecessary_string_escapes
-
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
 final messages = new MessageLookup();
-
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja';
-
   static String m0(count) => "${count}日前";
-
   static String m1(label) => "選択された${label}を削除してもよろしいですか？";
-
   static String m2(label) => "現在の${label}を削除してもよろしいですか？";
-
   static String m3(label) => "${label}詳細";
-
   static String m4(label) => "${label}は空欄にできません";
-
   static String m5(label) => "現在の${label}は既に存在しています";
-
   static String m6(upstream) => "Fork of ${upstream}";
-
   static String m7(count) => "${count}時間前";
-
   static String m8(count) => "${count}分前";
-
   static String m9(count) => "${count}ヶ月前";
-
   static String m10(label) => "まだ${label}はありません";
-
   static String m11(label) => "${label}は数字でなければなりません";
-
   static String m12(label) => "${label} は 1024 から 49151 の間でなければなりません";
-
   static String m13(count) => "${count} 項目が選択されています";
-
   static String m14(label) => "${label}はURLである必要があります";
-
   static String m15(count) => "${count}年前";
-
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("について"),
@@ -290,9 +270,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "diagnostics": MessageLookupByLibrary.simpleMessage("診断"),
     "dnsCoreSection": MessageLookupByLibrary.simpleMessage("コア"),
     "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
-    "dnsFallbackLegacy": MessageLookupByLibrary.simpleMessage(
-      "中国 / フォールバック (レガシー)",
-    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("サーバー"),
     "desc": MessageLookupByLibrary.simpleMessage(
       "ClashMetaベースのマルチプラットフォームプロキシクライアント。シンプルで使いやすく、オープンソースで広告なし。",
@@ -319,7 +296,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNSハイジャッキング"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNSモード"),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage("通過させますか？"),
-    "domain": MessageLookupByLibrary.simpleMessage("ドメイン"),
     "download": MessageLookupByLibrary.simpleMessage("ダウンロード"),
     "edit": MessageLookupByLibrary.simpleMessage("編集"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage("グローバルルールを編集"),
@@ -338,9 +314,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "externalLink": MessageLookupByLibrary.simpleMessage("外部リンク"),
     "fakeipFilter": MessageLookupByLibrary.simpleMessage("Fakeipフィルター"),
     "fakeipRange": MessageLookupByLibrary.simpleMessage("Fakeip範囲"),
-    "fallback": MessageLookupByLibrary.simpleMessage("フォールバック"),
-    "fallbackDesc": MessageLookupByLibrary.simpleMessage("通常はオフショアDNSを使用"),
-    "fallbackFilter": MessageLookupByLibrary.simpleMessage("フォールバックフィルター"),
     "fidelityScheme": MessageLookupByLibrary.simpleMessage("ハイファイデリティー"),
     "file": MessageLookupByLibrary.simpleMessage("ファイル"),
     "fileDesc": MessageLookupByLibrary.simpleMessage("プロファイルを直接アップロード"),
@@ -367,7 +340,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "geodataLoaderDesc": MessageLookupByLibrary.simpleMessage(
       "有効化するとGeo低メモリローダーを使用",
     ),
-    "geoipCode": MessageLookupByLibrary.simpleMessage("GeoIPコード"),
     "global": MessageLookupByLibrary.simpleMessage("グローバル"),
     "go": MessageLookupByLibrary.simpleMessage("移動"),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage("スクリプト設定に移動"),
@@ -405,12 +377,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "interval": MessageLookupByLibrary.simpleMessage("インターバル"),
     "intranetIP": MessageLookupByLibrary.simpleMessage("イントラネットIP"),
     "invalidBackupFile": MessageLookupByLibrary.simpleMessage("無効なバックアップファイル"),
-    "ipcidr": MessageLookupByLibrary.simpleMessage("IPCIDR"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage("有効化するとIPv6トラフィックを受信可能"),
     "ipv6InboundDesc": MessageLookupByLibrary.simpleMessage("IPv6インバウンドを許可"),
-    "ipv6ModeCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
-    "ipv6ModeOff": MessageLookupByLibrary.simpleMessage("オフ"),
-    "ipv6ModeSyncOn": MessageLookupByLibrary.simpleMessage("同期 ON"),
     "ja": MessageLookupByLibrary.simpleMessage("日本語"),
     "justNow": MessageLookupByLibrary.simpleMessage("たった今"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage(

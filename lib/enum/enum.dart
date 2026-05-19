@@ -87,8 +87,6 @@ enum ProxiesSortType { none, delay, name }
 
 enum TunStack { gvisor, system, mixed }
 
-enum Ipv6Mode { off, syncOn, custom }
-
 enum AccessControlMode { acceptSelected, rejectSelected }
 
 enum AccessSortType { none, name, time }

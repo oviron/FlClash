@@ -204,30 +204,6 @@ extension TunExt on Tun {
 }
 
 @freezed
-abstract class FallbackFilter with _$FallbackFilter {
-  const factory FallbackFilter({
-    @Default(true) bool geoip,
-    @Default('RU') @JsonKey(name: 'geoip-code') String geoipCode,
-    @Default(<String>[]) List<String> geosite,
-    @Default(['0.0.0.0/32', '127.0.0.1/32', '240.0.0.0/4']) List<String> ipcidr,
-    @Default([
-      '+.openai.com',
-      '+.anthropic.com',
-      '+.x.com',
-      '+.twitter.com',
-      '+.instagram.com',
-      '+.facebook.com',
-      '+.meta.com',
-      '+.linkedin.com',
-    ])
-    List<String> domain,
-  }) = _FallbackFilter;
-
-  factory FallbackFilter.fromJson(Map<String, Object?> json) =>
-      _$FallbackFilterFromJson(json);
-}
-
-@freezed
 abstract class Dns with _$Dns {
   const factory Dns({
     @Default(true) bool enable,
@@ -237,7 +213,7 @@ abstract class Dns with _$Dns {
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    @Default(['9.9.9.9', '149.112.112.112'])
+    @Default(['tls://8.8.8.8:853', 'tls://1.1.1.1:853'])
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
     @Default(DnsMode.fakeIp)
@@ -263,13 +239,9 @@ abstract class Dns with _$Dns {
       'https://cloudflare-dns.com/dns-query',
     ])
     List<String> nameserver,
-    @Default(['tls://8.8.4.4', 'tls://1.1.1.1']) List<String> fallback,
     @Default(['tls://8.8.8.8:853', 'tls://1.1.1.1:853'])
     @JsonKey(name: 'proxy-server-nameserver')
     List<String> proxyServerNameserver,
-    @Default(FallbackFilter())
-    @JsonKey(name: 'fallback-filter')
-    FallbackFilter fallbackFilter,
   }) = _Dns;
 
   factory Dns.fromJson(Map<String, Object?> json) => _$DnsFromJson(json);

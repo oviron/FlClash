@@ -26,6 +26,7 @@ export 'open_container.dart';
 export 'palette.dart';
 export 'pop_scope.dart';
 export 'popup.dart';
+export 'reset_action_button.dart';
 export 'scaffold.dart';
 export 'scroll.dart';
 export 'setting.dart';
