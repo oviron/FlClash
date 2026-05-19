@@ -81,11 +81,7 @@ extension LogLevelExt on LogLevel {
   }
 }
 
-enum TransportProtocol { udp, tcp }
-
 enum TrafficUnit { B, KB, MB, GB, TB }
-
-enum Network { tcp, udp }
 
 enum ProxiesSortType { none, delay, name }
 
@@ -203,8 +199,6 @@ enum ActionMethod {
   setLogFilePath,
   forwardHostLog,
 }
-
-enum AuthorizeCode { none, success, error }
 
 enum FunctionTag {
   updateConfig,
@@ -327,15 +321,11 @@ extension RuleActionExt on RuleAction {
   ].contains(this);
 }
 
-enum OverrideRuleType { override, added }
-
 enum OverwriteType { standard, script }
 
 enum RuleTarget { DIRECT, REJECT, MATCH }
 
 enum RestoreStrategy { compatible, override }
-
-enum CacheTag { logs, rules, requests, proxiesList }
 
 enum Language { yaml, javaScript, json }
 
