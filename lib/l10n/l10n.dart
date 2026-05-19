@@ -1534,46 +1534,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Fallback`
-  String get fallback {
-    return Intl.message('Fallback', name: 'fallback', desc: '', args: []);
-  }
-
-  /// `Generally use offshore DNS`
-  String get fallbackDesc {
-    return Intl.message(
-      'Generally use offshore DNS',
-      name: 'fallbackDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Fallback filter`
-  String get fallbackFilter {
-    return Intl.message(
-      'Fallback filter',
-      name: 'fallbackFilter',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Geoip code`
-  String get geoipCode {
-    return Intl.message('Geoip code', name: 'geoipCode', desc: '', args: []);
-  }
-
-  /// `Ipcidr`
-  String get ipcidr {
-    return Intl.message('Ipcidr', name: 'ipcidr', desc: '', args: []);
-  }
-
-  /// `Domain`
-  String get domain {
-    return Intl.message('Domain', name: 'domain', desc: '', args: []);
-  }
-
   /// `Reset`
   String get reset {
     return Intl.message('Reset', name: 'reset', desc: '', args: []);

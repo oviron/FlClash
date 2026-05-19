@@ -2,63 +2,43 @@
 // This is a library that provides messages for a en locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
-
 // Ignore issues from commonly used lints in this file.
 // ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
 // ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
 // ignore_for_file:unnecessary_string_interpolations, unnecessary_string_escapes
-
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
 final messages = new MessageLookup();
-
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
-
   static String m0(count) =>
       "${Intl.plural(count, one: '1 day ago', other: '${count} days ago')}";
-
   static String m1(label) =>
       "Are you sure you want to delete the selected ${label}?";
-
   static String m2(label) =>
       "Are you sure you want to delete the current ${label}?";
-
   static String m3(label) => "${label} details";
-
   static String m4(label) => "${label} cannot be empty";
-
   static String m5(label) => "Current ${label} already exists";
-
   static String m6(upstream) => "Fork of ${upstream}";
-
   static String m7(count) =>
       "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
-
   static String m8(count) =>
       "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
-
   static String m9(count) =>
       "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
-
   static String m10(label) => "No ${label} yet";
-
   static String m11(label) => "${label} must be a number";
-
   static String m12(label) => "${label} must be between 1024 and 49151";
-
   static String m13(count) => "${count} items have been selected";
-
   static String m14(label) => "${label} must be a url";
-
   static String m15(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
-
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("About"),
@@ -382,7 +362,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Do you want to pass",
     ),
-    "domain": MessageLookupByLibrary.simpleMessage("Domain"),
     "download": MessageLookupByLibrary.simpleMessage("Download"),
     "edit": MessageLookupByLibrary.simpleMessage("Edit"),
     "editGlobalRules": MessageLookupByLibrary.simpleMessage(
@@ -403,11 +382,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "externalLink": MessageLookupByLibrary.simpleMessage("External link"),
     "fakeipFilter": MessageLookupByLibrary.simpleMessage("Fakeip filter"),
     "fakeipRange": MessageLookupByLibrary.simpleMessage("Fakeip range"),
-    "fallback": MessageLookupByLibrary.simpleMessage("Fallback"),
-    "fallbackDesc": MessageLookupByLibrary.simpleMessage(
-      "Generally use offshore DNS",
-    ),
-    "fallbackFilter": MessageLookupByLibrary.simpleMessage("Fallback filter"),
     "fidelityScheme": MessageLookupByLibrary.simpleMessage("Fidelity"),
     "file": MessageLookupByLibrary.simpleMessage("File"),
     "fileDesc": MessageLookupByLibrary.simpleMessage("Directly upload profile"),
@@ -436,7 +410,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "geodataLoaderDesc": MessageLookupByLibrary.simpleMessage(
       "Enabling will use the Geo low memory loader",
     ),
-    "geoipCode": MessageLookupByLibrary.simpleMessage("Geoip code"),
     "global": MessageLookupByLibrary.simpleMessage("Global"),
     "go": MessageLookupByLibrary.simpleMessage("Go"),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage(
@@ -486,7 +459,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidBackupFile": MessageLookupByLibrary.simpleMessage(
       "Invalid backup file",
     ),
-    "ipcidr": MessageLookupByLibrary.simpleMessage("Ipcidr"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage(
       "When turned on it will be able to receive IPv6 traffic",
     ),
