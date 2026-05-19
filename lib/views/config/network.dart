@@ -105,12 +105,13 @@ class UnifiedIpv6Item extends ConsumerWidget {
       patchClashConfigProvider.select((state) => state.dns.ipv6),
     );
     final mode = _resolveMode(inbound, engine, dns);
+    final ipv6Label = Intl.message('IPv6', name: 'ipv6');
     return ListItem.options(
       leading: const Icon(Icons.public),
-      title: const Text('IPv6'),
+      title: Text(ipv6Label),
       subtitle: Text(_label(mode)),
       delegate: OptionsDelegate<Ipv6Mode>(
-        title: 'IPv6',
+        title: ipv6Label,
         options: Ipv6Mode.values,
         textBuilder: _label,
         value: mode,
@@ -164,6 +165,16 @@ class TunStackItem extends ConsumerWidget {
   }
 }
 
+String _bypassDomainCountLabel(int count) {
+  return Intl.plural(
+    count,
+    one: '$count default domain active',
+    other: '$count default domains active',
+    name: '_bypassDomainCountLabel',
+    args: [count],
+  );
+}
+
 class BypassDomainItem extends ConsumerWidget {
   const BypassDomainItem({super.key});
 
@@ -174,9 +185,7 @@ class BypassDomainItem extends ConsumerWidget {
     );
     return ListItem.open(
       title: Text(appLocalizations.bypassDomain),
-      subtitle: Text(
-        '${bypassDomain.length} ${Intl.message('default domains active', name: 'defaultDomainsActive')}',
-      ),
+      subtitle: Text(_bypassDomainCountLabel(bypassDomain.length)),
       delegate: OpenDelegate(
         widget: ListInputPage(
           title: appLocalizations.bypassDomain,

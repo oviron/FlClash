@@ -354,9 +354,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "delete": MessageLookupByLibrary.simpleMessage("Удалить"),
     "deleteMultipTip": m1,
     "deleteTip": m2,
-    "defaultDomainsActive": MessageLookupByLibrary.simpleMessage(
-      "доменов в списке",
-    ),
     "detailsSection": MessageLookupByLibrary.simpleMessage("Подробности"),
     "diagnostics": MessageLookupByLibrary.simpleMessage("Диагностика"),
     "dnsCoreSection": MessageLookupByLibrary.simpleMessage("Ядро"),

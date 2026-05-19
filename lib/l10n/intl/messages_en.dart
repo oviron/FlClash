@@ -335,9 +335,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "defaultNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "For resolving DNS server",
     ),
-    "defaultDomainsActive": MessageLookupByLibrary.simpleMessage(
-      "default domains active",
-    ),
     "defaultText": MessageLookupByLibrary.simpleMessage("Default"),
     "delay": MessageLookupByLibrary.simpleMessage("Delay"),
     "delayTest": MessageLookupByLibrary.simpleMessage("Delay Test"),
