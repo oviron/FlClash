@@ -69,8 +69,8 @@ class _DisclaimerActionItem extends StatelessWidget {
         // Read-only re-display. First-launch Accept/Exit flow lives in
         // controller.showDisclaimer; here a single OK button is enough.
         await globalState.showMessage(
-          title: appLocalizations.disclaimer,
-          message: TextSpan(text: appLocalizations.disclaimerDesc),
+          title: context.appLocalizations.disclaimer,
+          message: TextSpan(text: context.appLocalizations.disclaimerDesc),
           cancelable: false,
         );
       },

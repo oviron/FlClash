@@ -55,6 +55,21 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("について"),
+    "appearance": MessageLookupByLibrary.simpleMessage("外観"),
+    "confirmDeleteWebDAV": MessageLookupByLibrary.simpleMessage(
+      "WebDAVの設定を削除しますか？",
+    ),
+    "engine": MessageLookupByLibrary.simpleMessage("エンジン"),
+    "hideFromRecents": MessageLookupByLibrary.simpleMessage(
+      "Hide from recents",
+    ),
+    "hideFromRecentsDesc": MessageLookupByLibrary.simpleMessage(
+      "App icon does not appear in the recent apps list while the app is in background",
+    ),
+    "privacyAndSecurity": MessageLookupByLibrary.simpleMessage("プライバシーとセキュリティ"),
+    "restoreOnlyProfiles": MessageLookupByLibrary.simpleMessage(
+      "プロファイルのみを復元する",
+    ),
     "aclSaveDroppedUninstalled": MessageLookupByLibrary.simpleMessage(
       "リストから N 個の未インストールアプリを削除しました",
     ),
