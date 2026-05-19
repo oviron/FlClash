@@ -30,7 +30,6 @@ export 'scaffold.dart';
 export 'scroll.dart';
 export 'setting.dart';
 export 'sheet.dart';
-export 'side_sheet.dart';
 export 'subscription_info_view.dart';
 export 'super_grid.dart';
 export 'tab.dart';

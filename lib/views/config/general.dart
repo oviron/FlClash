@@ -83,7 +83,6 @@ class HostsItem extends ConsumerWidget {
       title: Text(hostsLabel),
       subtitle: Text(appLocalizations.hostsDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: MapInputPage(
           title: hostsLabel,
           map: hosts,

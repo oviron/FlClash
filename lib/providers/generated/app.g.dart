@@ -724,46 +724,6 @@ final class ViewModeProvider
 
 String _$viewModeHash() => r'6822e9dc28c813afe1ed743feea464f0d33c805c';
 
-@ProviderFor(isMobileView)
-const isMobileViewProvider = IsMobileViewProvider._();
-
-final class IsMobileViewProvider extends $FunctionalProvider<bool, bool, bool>
-    with $Provider<bool> {
-  const IsMobileViewProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'isMobileViewProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$isMobileViewHash();
-
-  @$internal
-  @override
-  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  bool create(Ref ref) {
-    return isMobileView(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(bool value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<bool>(value),
-    );
-  }
-}
-
-String _$isMobileViewHash() => r'1d75bccb4f50ae206bf43b68df869a5d95e5ea5f';
-
 @ProviderFor(viewHeight)
 const viewHeightProvider = ViewHeightProvider._();
 

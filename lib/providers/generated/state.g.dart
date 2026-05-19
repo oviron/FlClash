@@ -919,7 +919,7 @@ final class MoreToolsSelectorStateProvider
 }
 
 String _$moreToolsSelectorStateHash() =>
-    r'6329d92652135e2af009dddeac590b4369d2fa04';
+    r'9bf5618f99dd23a2da8c190e95100c0c4e4a4c5c';
 
 @ProviderFor(isCurrentPage)
 const isCurrentPageProvider = IsCurrentPageFamily._();

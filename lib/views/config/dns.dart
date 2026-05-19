@@ -222,7 +222,6 @@ class FakeIpFilterItem extends ConsumerWidget {
     return ListItem.open(
       title: Text(appLocalizations.fakeipFilter),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.fakeipFilter,
           items: fakeIpFilter,
@@ -252,7 +251,6 @@ class DefaultNameserverItem extends ConsumerWidget {
       title: Text(appLocalizations.defaultNameserver),
       subtitle: Text(appLocalizations.defaultNameserverDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.defaultNameserver,
           items: defaultNameserver,
@@ -283,7 +281,6 @@ class NameserverItem extends ConsumerWidget {
       title: Text(appLocalizations.nameserver),
       subtitle: Text(appLocalizations.nameserverDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.nameserver,
           items: nameserver,
@@ -357,7 +354,6 @@ class NameserverPolicyItem extends ConsumerWidget {
       title: Text(appLocalizations.nameserverPolicy),
       subtitle: Text(appLocalizations.nameserverPolicyDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: MapInputPage(
           title: appLocalizations.nameserverPolicy,
           map: nameserverPolicy,
@@ -388,7 +384,6 @@ class ProxyServerNameserverItem extends ConsumerWidget {
       title: Text(appLocalizations.proxyNameserver),
       subtitle: Text(appLocalizations.proxyNameserverDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.proxyNameserver,
           items: proxyServerNameserver,
@@ -419,7 +414,6 @@ class FallbackItem extends ConsumerWidget {
       title: Text(appLocalizations.fallback),
       subtitle: Text(appLocalizations.fallbackDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.fallback,
           items: fallback,
@@ -514,7 +508,6 @@ class GeositeItem extends ConsumerWidget {
     return ListItem.open(
       title: Text(geositeLabel),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: geositeLabel,
           items: geosite,
@@ -547,7 +540,6 @@ class IpcidrItem extends ConsumerWidget {
     return ListItem.open(
       title: Text(appLocalizations.ipcidr),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.ipcidr,
           items: ipcidr,
@@ -579,7 +571,6 @@ class DomainItem extends ConsumerWidget {
     return ListItem.open(
       title: Text(appLocalizations.domain),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.domain,
           items: domain,

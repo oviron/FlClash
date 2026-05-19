@@ -138,10 +138,6 @@ extension StateControllerExt on AppController {
     return _ref.read(configProvider);
   }
 
-  bool get isMobile {
-    return _ref.read(isMobileViewProvider);
-  }
-
   bool get isStart {
     return _ref.read(isStartProvider);
   }
@@ -814,9 +810,7 @@ extension CoreControllerExt on AppController {
 
 extension SystemControllerExt on AppController {
   Future<List<Package>> getPackages() async {
-    if (_ref.read(isMobileViewProvider)) {
-      await Future.delayed(commonDuration);
-    }
+    await Future.delayed(commonDuration);
     if (_ref.read(packagesProvider).isEmpty) {
       _ref.read(packagesProvider.notifier).value =
           await app?.getPackages() ?? [];

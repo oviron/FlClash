@@ -247,7 +247,6 @@ class _VpnSettingsItem extends StatelessWidget {
       title: Text(vpnSettingsTitle),
       subtitle: Text(context.appLocalizations.networkDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: BaseScaffold(
           title: vpnSettingsTitle,
           body: const NetworkListView(),
@@ -287,7 +286,6 @@ class _DnsItem extends ConsumerWidget {
       title: const Text('DNS'),
       subtitle: Text(appLocalizations.dnsDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: BaseScaffold(
           title: 'DNS',
           actions: [
@@ -326,7 +324,7 @@ class _RoutingRulesItem extends StatelessWidget {
       leading: const Icon(Icons.library_books),
       title: Text(Intl.message('Routing rules', name: 'routingRules')),
       subtitle: Text(context.appLocalizations.controlGlobalAddedRules),
-      delegate: const OpenDelegate(widget: AddedRulesView(), blur: false),
+      delegate: const OpenDelegate(widget: AddedRulesView()),
     );
   }
 }
@@ -341,7 +339,7 @@ class _ScriptsItem extends StatelessWidget {
       leading: const Icon(Icons.rocket, fontWeight: FontWeight.w900),
       title: Text(appLocalizations.script),
       subtitle: Text(appLocalizations.overrideScript),
-      delegate: const OpenDelegate(widget: ScriptsView(), blur: false),
+      delegate: const OpenDelegate(widget: ScriptsView()),
     );
   }
 }

@@ -66,16 +66,9 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
   }
 
   Widget _buildMoreButton() {
-    return Consumer(
-      builder: (_, ref, _) {
-        final isMobileView = ref.watch(isMobileViewProvider);
-        return IconButton(
-          onPressed: _showMoreMenu,
-          icon: isMobileView
-              ? const Icon(Icons.expand_more)
-              : const Icon(Icons.chevron_right),
-        );
-      },
+    return IconButton(
+      onPressed: _showMoreMenu,
+      icon: const Icon(Icons.expand_more),
     );
   }
 

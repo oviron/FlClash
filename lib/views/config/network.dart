@@ -138,7 +138,6 @@ class BypassDomainItem extends ConsumerWidget {
       title: Text(appLocalizations.bypassDomain),
       subtitle: Text(appLocalizations.bypassDomainDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.bypassDomain,
           items: bypassDomain,
@@ -238,8 +237,6 @@ class RouteAddressItem extends ConsumerWidget {
       title: Text(appLocalizations.routeAddress),
       subtitle: Text(appLocalizations.routeAddressDesc),
       delegate: OpenDelegate(
-        blur: false,
-        maxWidth: 360,
         widget: ListInputPage(
           title: appLocalizations.routeAddress,
           items: routeAddress,

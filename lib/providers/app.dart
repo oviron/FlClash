@@ -142,11 +142,6 @@ ViewMode viewMode(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-bool isMobileView(Ref ref) {
-  return ref.watch(viewModeProvider) == ViewMode.mobile;
-}
-
-@Riverpod(keepAlive: true)
 double viewHeight(Ref ref) {
   return ref.watch(viewSizeProvider).height;
 }

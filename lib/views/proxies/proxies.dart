@@ -38,8 +38,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
         targetBuilder: (open) {
           return IconButton(
             onPressed: () {
-              final isMobile = ref.read(isMobileViewProvider);
-              open(offset: Offset(0, isMobile ? 0 : 20));
+              open(offset: Offset.zero);
             },
             icon: const Icon(Icons.more_vert),
           );
