@@ -94,6 +94,8 @@
   "accessControlDesc": "配置应用访问代理",
   "application": "应用程序",
   "applicationDesc": "修改应用程序相关设置",
+  "diagnostics": "诊断",
+  "generalSettings": "通用设置",
   "edit": "编辑",
   "confirm": "确定",
   "update": "更新",
