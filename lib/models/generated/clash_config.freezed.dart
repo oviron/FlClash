@@ -934,7 +934,7 @@ as Map<String, SnifferConfig>,
 /// @nodoc
 mixin _$SnifferConfig {
 
-@JsonKey(fromJson: _formJsonPorts) List<String> get ports;@JsonKey(name: 'override-destination') bool? get overrideDest;
+@JsonKey(fromJson: _formJsonPorts) List<String> get ports;@JsonKey(name: 'override-destination', includeIfNull: false) bool? get overrideDest;
 /// Create a copy of SnifferConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -967,7 +967,7 @@ abstract mixin class $SnifferConfigCopyWith<$Res>  {
   factory $SnifferConfigCopyWith(SnifferConfig value, $Res Function(SnifferConfig) _then) = _$SnifferConfigCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(fromJson: _formJsonPorts) List<String> ports,@JsonKey(name: 'override-destination') bool? overrideDest
+@JsonKey(fromJson: _formJsonPorts) List<String> ports,@JsonKey(name: 'override-destination', includeIfNull: false) bool? overrideDest
 });
 
 
@@ -1073,7 +1073,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _formJsonPorts)  List<String> ports, @JsonKey(name: 'override-destination')  bool? overrideDest)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _formJsonPorts)  List<String> ports, @JsonKey(name: 'override-destination', includeIfNull: false)  bool? overrideDest)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SnifferConfig() when $default != null:
 return $default(_that.ports,_that.overrideDest);case _:
@@ -1094,7 +1094,7 @@ return $default(_that.ports,_that.overrideDest);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _formJsonPorts)  List<String> ports, @JsonKey(name: 'override-destination')  bool? overrideDest)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(fromJson: _formJsonPorts)  List<String> ports, @JsonKey(name: 'override-destination', includeIfNull: false)  bool? overrideDest)  $default,) {final _that = this;
 switch (_that) {
 case _SnifferConfig():
 return $default(_that.ports,_that.overrideDest);case _:
@@ -1114,7 +1114,7 @@ return $default(_that.ports,_that.overrideDest);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: _formJsonPorts)  List<String> ports, @JsonKey(name: 'override-destination')  bool? overrideDest)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(fromJson: _formJsonPorts)  List<String> ports, @JsonKey(name: 'override-destination', includeIfNull: false)  bool? overrideDest)?  $default,) {final _that = this;
 switch (_that) {
 case _SnifferConfig() when $default != null:
 return $default(_that.ports,_that.overrideDest);case _:
@@ -1129,7 +1129,7 @@ return $default(_that.ports,_that.overrideDest);case _:
 @JsonSerializable()
 
 class _SnifferConfig implements SnifferConfig {
-  const _SnifferConfig({@JsonKey(fromJson: _formJsonPorts) final  List<String> ports = const [], @JsonKey(name: 'override-destination') this.overrideDest}): _ports = ports;
+  const _SnifferConfig({@JsonKey(fromJson: _formJsonPorts) final  List<String> ports = const [], @JsonKey(name: 'override-destination', includeIfNull: false) this.overrideDest}): _ports = ports;
   factory _SnifferConfig.fromJson(Map<String, dynamic> json) => _$SnifferConfigFromJson(json);
 
  final  List<String> _ports;
@@ -1139,7 +1139,7 @@ class _SnifferConfig implements SnifferConfig {
   return EqualUnmodifiableListView(_ports);
 }
 
-@override@JsonKey(name: 'override-destination') final  bool? overrideDest;
+@override@JsonKey(name: 'override-destination', includeIfNull: false) final  bool? overrideDest;
 
 /// Create a copy of SnifferConfig
 /// with the given fields replaced by the non-null parameter values.
@@ -1174,7 +1174,7 @@ abstract mixin class _$SnifferConfigCopyWith<$Res> implements $SnifferConfigCopy
   factory _$SnifferConfigCopyWith(_SnifferConfig value, $Res Function(_SnifferConfig) _then) = __$SnifferConfigCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(fromJson: _formJsonPorts) List<String> ports,@JsonKey(name: 'override-destination') bool? overrideDest
+@JsonKey(fromJson: _formJsonPorts) List<String> ports,@JsonKey(name: 'override-destination', includeIfNull: false) bool? overrideDest
 });
 
 
@@ -1206,7 +1206,9 @@ as bool?,
 /// @nodoc
 mixin _$Tun {
 
- bool get enable; String get device;@JsonKey(name: 'auto-route') bool get autoRoute; TunStack get stack;@JsonKey(name: 'dns-hijack') List<String> get dnsHijack;@JsonKey(name: 'route-address') List<String> get routeAddress;
+ bool get enable; String get device;// Runtime always recomputes this via TunExt.getRealTun (empty routeAddress
+// -> true). Default true here keeps exported YAML and UI state coherent.
+@JsonKey(name: 'auto-route') bool get autoRoute; TunStack get stack;@JsonKey(name: 'dns-hijack') List<String> get dnsHijack;@JsonKey(name: 'route-address') List<String> get routeAddress;
 /// Create a copy of Tun
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1410,6 +1412,8 @@ class _Tun implements Tun {
 
 @override@JsonKey() final  bool enable;
 @override@JsonKey() final  String device;
+// Runtime always recomputes this via TunExt.getRealTun (empty routeAddress
+// -> true). Default true here keeps exported YAML and UI state coherent.
 @override@JsonKey(name: 'auto-route') final  bool autoRoute;
 @override@JsonKey() final  TunStack stack;
  final  List<String> _dnsHijack;

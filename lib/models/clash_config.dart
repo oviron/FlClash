@@ -168,7 +168,8 @@ List<String> _formJsonPorts(List<dynamic>? ports) {
 abstract class SnifferConfig with _$SnifferConfig {
   const factory SnifferConfig({
     @Default([]) @JsonKey(fromJson: _formJsonPorts) List<String> ports,
-    @JsonKey(name: 'override-destination') bool? overrideDest,
+    @JsonKey(name: 'override-destination', includeIfNull: false)
+    bool? overrideDest,
   }) = _SnifferConfig;
 
   factory SnifferConfig.fromJson(Map<String, Object?> json) =>
@@ -180,6 +181,8 @@ abstract class Tun with _$Tun {
   const factory Tun({
     @Default(false) bool enable,
     @Default(appName) String device,
+    // Runtime always recomputes this via TunExt.getRealTun (empty routeAddress
+    // -> true). Default true here keeps exported YAML and UI state coherent.
     @JsonKey(name: 'auto-route') @Default(true) bool autoRoute,
     @Default(TunStack.mixed) TunStack stack,
     @JsonKey(name: 'dns-hijack') @Default(['any:53']) List<String> dnsHijack,

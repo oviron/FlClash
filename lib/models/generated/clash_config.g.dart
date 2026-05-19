@@ -125,7 +125,7 @@ _SnifferConfig _$SnifferConfigFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$SnifferConfigToJson(_SnifferConfig instance) =>
     <String, dynamic>{
       'ports': instance.ports,
-      'override-destination': instance.overrideDest,
+      'override-destination': ?instance.overrideDest,
     };
 
 _Tun _$TunFromJson(Map<String, dynamic> json) => _Tun(
