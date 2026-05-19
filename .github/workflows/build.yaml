@@ -102,6 +102,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
+    # Pull requests get lint+secrets only (under 5 min). Full APK matrix runs
+    # on push to main and on version tags, where it gates the release.
+    if: github.event_name != 'pull_request'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     needs: lint
