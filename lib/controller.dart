@@ -902,12 +902,6 @@ extension SystemControllerExt on AppController {
         .update((state) => state.copyWith(systemProxy: !state.systemProxy));
   }
 
-  void updateAutoLaunch() {
-    _ref
-        .read(appSettingProvider.notifier)
-        .update((state) => state.copyWith(autoLaunch: !state.autoLaunch));
-  }
-
   Future<void> updateLocalIp() async {
     _ref.read(localIpProvider.notifier).value = null;
     await Future.delayed(commonDuration);

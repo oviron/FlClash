@@ -64,10 +64,10 @@ class _DisclaimerActionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem(
       leading: const Icon(Icons.gavel_outlined),
-      title: Text(context.appLocalizations.disclaimer),
+      title: Text(
+        Intl.message('Legal & disclaimer', name: 'legalAndDisclaimer'),
+      ),
       onTap: () async {
-        // Read-only re-display. First-launch Accept/Exit flow lives in
-        // controller.showDisclaimer; here a single OK button is enough.
         await globalState.showMessage(
           title: context.appLocalizations.disclaimer,
           message: TextSpan(text: context.appLocalizations.disclaimerDesc),

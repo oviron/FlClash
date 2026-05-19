@@ -104,28 +104,6 @@ class PreferH3Item extends ConsumerWidget {
   }
 }
 
-class IPv6Item extends ConsumerWidget {
-  const IPv6Item({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final ipv6 = ref.watch(
-      patchClashConfigProvider.select((state) => state.dns.ipv6),
-    );
-    return ListItem.switchItem(
-      title: Text(Intl.message('IPv6 (DNS queries)', name: 'ipv6DnsQueries')),
-      delegate: SwitchDelegate(
-        value: ipv6,
-        onChanged: (bool value) async {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.dns(ipv6: value));
-        },
-      ),
-    );
-  }
-}
-
 class RespectRulesItem extends ConsumerWidget {
   const RespectRulesItem({super.key});
 
@@ -589,38 +567,55 @@ class DomainItem extends ConsumerWidget {
   }
 }
 
-class DnsServerSection extends StatelessWidget {
-  const DnsServerSection({super.key});
+class AppendSystemDNSItem extends ConsumerWidget {
+  const AppendSystemDNSItem({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: generateSection(
-        title: Intl.message('Server', name: 'dnsServerSection'),
-        items: const [
-          StatusItem(),
-          ListenItem(),
-          DnsModeItem(),
-          FakeIpRangeItem(),
-          FakeIpFilterItem(),
-        ],
+  Widget build(BuildContext context, ref) {
+    final appendSystemDNS = ref.watch(
+      networkSettingProvider.select((state) => state.appendSystemDns),
+    );
+    return ListItem.switchItem(
+      leading: const Icon(Icons.dns_outlined),
+      title: Text(appLocalizations.appendSystemDns),
+      subtitle: Text(appLocalizations.appendSystemDnsTip),
+      delegate: SwitchDelegate(
+        value: appendSystemDNS,
+        onChanged: (bool value) async {
+          ref
+              .read(networkSettingProvider.notifier)
+              .update((state) => state.copyWith(appendSystemDns: value));
+        },
       ),
     );
   }
 }
 
-class DnsResolversSection extends StatelessWidget {
-  const DnsResolversSection({super.key});
+class _DnsCoreSection extends StatelessWidget {
+  const _DnsCoreSection();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: generateSection(
-        title: Intl.message('Resolvers', name: 'dnsResolversSection'),
+        title: Intl.message('Core', name: 'dnsCoreSection'),
+        items: const [StatusItem(), DnsModeItem()],
+      ),
+    );
+  }
+}
+
+class _DnsServersSection extends StatelessWidget {
+  const _DnsServersSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: generateSection(
+        title: Intl.message('Servers', name: 'dnsServersSection'),
         items: const [
           DefaultNameserverItem(),
           NameserverItem(),
-          FallbackItem(),
           ProxyServerNameserverItem(),
           NameserverPolicyItem(),
         ],
@@ -629,52 +624,86 @@ class DnsResolversSection extends StatelessWidget {
   }
 }
 
-class DnsBehaviorSection extends StatelessWidget {
-  const DnsBehaviorSection({super.key});
+class _DnsFakeIpSection extends StatelessWidget {
+  const _DnsFakeIpSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: generateSection(
+        title: Intl.message('Fake-IP', name: 'dnsFakeIpSection'),
+        items: const [FakeIpFilterItem()],
+      ),
+    );
+  }
+}
+
+class _DnsBehaviorSection extends StatelessWidget {
+  const _DnsBehaviorSection();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: generateSection(
         title: Intl.message('Behavior', name: 'dnsBehaviorSection'),
-        items: const [
-          RespectRulesItem(),
-          PreferH3Item(),
-          IPv6Item(),
-          UseHostsItem(),
-          UseSystemHostsItem(),
-        ],
+        items: const [RespectRulesItem(), AppendSystemDNSItem()],
       ),
     );
   }
 }
 
-class FallbackFilterOptions extends StatelessWidget {
-  const FallbackFilterOptions({super.key});
+class _DnsAdvancedSection extends StatelessWidget {
+  const _DnsAdvancedSection();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: generateSection(
-        title: appLocalizations.fallbackFilter,
-        items: [
-          const GeoipItem(),
-          const GeoipCodeItem(),
-          const GeositeItem(),
-          const IpcidrItem(),
-          const DomainItem(),
-        ],
-      ),
+    return ExpansionTile(
+      title: Text(Intl.message('Advanced', name: 'advanced')),
+      tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+      childrenPadding: EdgeInsets.zero,
+      children: [
+        const PreferH3Item(),
+        const Divider(height: 0),
+        const UseHostsItem(),
+        const Divider(height: 0),
+        const UseSystemHostsItem(),
+        const Divider(height: 0),
+        const FakeIpRangeItem(),
+        const Divider(height: 0),
+        const ListenItem(),
+        const Divider(height: 0),
+        ExpansionTile(
+          title: Text(
+            Intl.message('China / Fallback (legacy)', name: 'dnsFallbackLegacy'),
+          ),
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+          childrenPadding: EdgeInsets.zero,
+          children: const [
+            FallbackItem(),
+            Divider(height: 0),
+            GeoipItem(),
+            Divider(height: 0),
+            GeoipCodeItem(),
+            Divider(height: 0),
+            GeositeItem(),
+            Divider(height: 0),
+            IpcidrItem(),
+            Divider(height: 0),
+            DomainItem(),
+          ],
+        ),
+      ],
     );
   }
 }
 
 const dnsItems = <Widget>[
   OverrideItem(),
-  DnsServerSection(),
-  DnsResolversSection(),
-  DnsBehaviorSection(),
-  FallbackFilterOptions(),
+  _DnsCoreSection(),
+  _DnsServersSection(),
+  _DnsFakeIpSection(),
+  _DnsBehaviorSection(),
+  _DnsAdvancedSection(),
 ];
 
 class DnsListView extends ConsumerWidget {

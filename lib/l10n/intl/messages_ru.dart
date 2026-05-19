@@ -134,6 +134,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "account": MessageLookupByLibrary.simpleMessage("Аккаунт"),
     "action": MessageLookupByLibrary.simpleMessage("Действие"),
+    "advanced": MessageLookupByLibrary.simpleMessage("Дополнительно"),
     "action_mode": MessageLookupByLibrary.simpleMessage("Переключить режим"),
     "action_proxy": MessageLookupByLibrary.simpleMessage("Системный прокси"),
     "action_start": MessageLookupByLibrary.simpleMessage("Старт/Стоп"),
@@ -353,6 +354,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "delete": MessageLookupByLibrary.simpleMessage("Удалить"),
     "deleteMultipTip": m1,
     "deleteTip": m2,
+    "defaultDomainsActive": MessageLookupByLibrary.simpleMessage(
+      "доменов в списке",
+    ),
+    "detailsSection": MessageLookupByLibrary.simpleMessage("Подробности"),
+    "diagnostics": MessageLookupByLibrary.simpleMessage("Диагностика"),
+    "dnsCoreSection": MessageLookupByLibrary.simpleMessage("Ядро"),
+    "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
+    "dnsFallbackLegacy": MessageLookupByLibrary.simpleMessage(
+      "Китай / Fallback (устар.)",
+    ),
+    "dnsServersSection": MessageLookupByLibrary.simpleMessage("Серверы"),
     "desc": MessageLookupByLibrary.simpleMessage(
       "Многоплатформенный прокси-клиент на основе ClashMeta, простой и удобный в использовании, с открытым исходным кодом и без рекламы.",
     ),
@@ -371,7 +383,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
       "Режим разработчика активирован.",
     ),
-    "diagnostics": MessageLookupByLibrary.simpleMessage("Диагностика"),
     "direct": MessageLookupByLibrary.simpleMessage("Прямой"),
     "disclaimer": MessageLookupByLibrary.simpleMessage(
       "Отказ от ответственности",
@@ -436,6 +447,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("Фруктовый микс"),
     "general": MessageLookupByLibrary.simpleMessage("Общие"),
     "generalSettings": MessageLookupByLibrary.simpleMessage("Общие настройки"),
+    "geoDatabases": MessageLookupByLibrary.simpleMessage("Гео-базы"),
+    "geoDatabasesDesc": MessageLookupByLibrary.simpleMessage(
+      "Обновление GeoIP, GeoSite, MMDB, ASN",
+    ),
     "geodataLoader": MessageLookupByLibrary.simpleMessage(
       "Режим низкого потребления памяти для геоданных",
     ),
@@ -503,6 +518,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "ipv6InboundDesc": MessageLookupByLibrary.simpleMessage(
       "Разрешить входящий IPv6",
     ),
+    "ipv6ModeCustom": MessageLookupByLibrary.simpleMessage("Раздельно"),
+    "ipv6ModeOff": MessageLookupByLibrary.simpleMessage("Выкл"),
+    "ipv6ModeSyncOn": MessageLookupByLibrary.simpleMessage("Синхр. ВКЛ"),
     "ja": MessageLookupByLibrary.simpleMessage("Японский"),
     "justNow": MessageLookupByLibrary.simpleMessage("Только что"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage(
@@ -511,6 +529,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "key": MessageLookupByLibrary.simpleMessage("Ключ"),
     "language": MessageLookupByLibrary.simpleMessage("Язык"),
     "layout": MessageLookupByLibrary.simpleMessage("Макет"),
+    "legalAndDisclaimer": MessageLookupByLibrary.simpleMessage(
+      "Правовая информация",
+    ),
     "light": MessageLookupByLibrary.simpleMessage("Светлый"),
     "list": MessageLookupByLibrary.simpleMessage("Список"),
     "listen": MessageLookupByLibrary.simpleMessage("Слушать"),

@@ -75,26 +75,67 @@ class VpnSystemProxyItem extends ConsumerWidget {
   }
 }
 
-class Ipv6Item extends ConsumerWidget {
-  const Ipv6Item({super.key});
+class UnifiedIpv6Item extends ConsumerWidget {
+  const UnifiedIpv6Item({super.key});
+
+  Ipv6Mode _resolveMode(bool inbound, bool engine, bool dns) {
+    if (!inbound && !engine && !dns) return Ipv6Mode.off;
+    if (inbound && engine && dns) return Ipv6Mode.syncOn;
+    return Ipv6Mode.custom;
+  }
+
+  String _label(Ipv6Mode mode) {
+    switch (mode) {
+      case Ipv6Mode.off:
+        return Intl.message('Off', name: 'ipv6ModeOff');
+      case Ipv6Mode.syncOn:
+        return Intl.message('Sync ON', name: 'ipv6ModeSyncOn');
+      case Ipv6Mode.custom:
+        return Intl.message('Custom', name: 'ipv6ModeCustom');
+    }
+  }
 
   @override
-  Widget build(BuildContext context, ref) {
-    final ipv6 = ref.watch(vpnSettingProvider.select((state) => state.ipv6));
-    return ListItem.switchItem(
-      title: Text(Intl.message('IPv6 (VPN inbound)', name: 'ipv6Inbound')),
-      subtitle: Text(appLocalizations.ipv6InboundDesc),
-      delegate: SwitchDelegate(
-        value: ipv6,
-        onChanged: (bool value) async {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final inbound = ref.watch(
+      vpnSettingProvider.select((state) => state.ipv6),
+    );
+    final engine = ref.watch(
+      patchClashConfigProvider.select((state) => state.ipv6),
+    );
+    final dns = ref.watch(
+      patchClashConfigProvider.select((state) => state.dns.ipv6),
+    );
+    final mode = _resolveMode(inbound, engine, dns);
+    return ListItem.options(
+      leading: const Icon(Icons.public),
+      title: const Text('IPv6'),
+      subtitle: Text(_label(mode)),
+      delegate: OptionsDelegate<Ipv6Mode>(
+        title: 'IPv6',
+        options: Ipv6Mode.values,
+        textBuilder: _label,
+        value: mode,
+        onChanged: (value) {
+          if (value == null || value == Ipv6Mode.custom) return;
+          final next = value == Ipv6Mode.syncOn;
           ref
               .read(vpnSettingProvider.notifier)
-              .update((state) => state.copyWith(ipv6: value));
+              .update((state) => state.copyWith(ipv6: next));
+          ref
+              .read(patchClashConfigProvider.notifier)
+              .update(
+                (state) => state.copyWith(
+                  ipv6: next,
+                  dns: state.dns.copyWith(ipv6: next),
+                ),
+              );
         },
       ),
     );
   }
 }
+
 
 class TunStackItem extends ConsumerWidget {
   const TunStackItem({super.key});
@@ -136,7 +177,9 @@ class BypassDomainItem extends ConsumerWidget {
     );
     return ListItem.open(
       title: Text(appLocalizations.bypassDomain),
-      subtitle: Text(appLocalizations.bypassDomainDesc),
+      subtitle: Text(
+        '${bypassDomain.length} ${Intl.message('default domains active', name: 'defaultDomainsActive')}',
+      ),
       delegate: OpenDelegate(
         widget: ListInputPage(
           title: appLocalizations.bypassDomain,
@@ -259,11 +302,10 @@ final networkItems = [
   ...generateSection(
     title: Intl.message('VPN', name: 'vpn'),
     items: [
-      const VpnSystemProxyItem(),
-      const BypassDomainItem(),
-      const AllowBypassItem(),
-      const Ipv6Item(),
+      const UnifiedIpv6Item(),
       const DNSHijackingItem(),
+      const AllowBypassItem(),
+      const VpnSystemProxyItem(),
     ],
   ),
   ...generateSection(
@@ -273,6 +315,12 @@ final networkItems = [
       const RouteModeItem(),
       const RouteAddressItem(),
     ],
+  ),
+  ExpansionTile(
+    title: Text(Intl.message('Advanced', name: 'advanced')),
+    childrenPadding: EdgeInsets.zero,
+    tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+    children: const [BypassDomainItem()],
   ),
 ];
 

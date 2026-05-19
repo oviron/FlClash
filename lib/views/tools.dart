@@ -13,6 +13,7 @@ import 'package:fl_clash/views/config/network.dart';
 import 'package:fl_clash/views/config/rules.dart';
 import 'package:fl_clash/views/config/scripts.dart';
 import 'package:fl_clash/views/privacy.dart';
+import 'package:fl_clash/views/resources.dart';
 import 'package:fl_clash/views/setting/byedpi.dart';
 import 'package:fl_clash/views/setting/logging.dart';
 import 'package:fl_clash/views/setting/network_rules.dart';
@@ -81,6 +82,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
       items: const [
         _CoreItem(),
         _DnsItem(),
+        _GeoDatabasesItem(),
         _RoutingRulesItem(),
         _ScriptsItem(),
       ],
@@ -322,6 +324,25 @@ class _ScriptsItem extends StatelessWidget {
       title: Text(appLocalizations.script),
       subtitle: Text(appLocalizations.overrideScript),
       delegate: const OpenDelegate(widget: ScriptsView()),
+    );
+  }
+}
+
+class _GeoDatabasesItem extends StatelessWidget {
+  const _GeoDatabasesItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem.open(
+      leading: const Icon(Icons.public_outlined),
+      title: Text(Intl.message('Geo databases', name: 'geoDatabases')),
+      subtitle: Text(
+        Intl.message(
+          'GeoIP, GeoSite, MMDB, ASN updaters',
+          name: 'geoDatabasesDesc',
+        ),
+      ),
+      delegate: const OpenDelegate(widget: ResourcesView()),
     );
   }
 }

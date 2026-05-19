@@ -228,7 +228,7 @@ abstract class Dns with _$Dns {
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    @Default(['tls://8.8.8.8:853', 'tls://1.1.1.1:853'])
+    @Default(['9.9.9.9', '149.112.112.112'])
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
     @Default(DnsMode.fakeIp)
@@ -237,7 +237,13 @@ abstract class Dns with _$Dns {
     @Default('198.18.0.1/16')
     @JsonKey(name: 'fake-ip-range')
     String fakeIpRange,
-    @Default(['*.lan', '*.local', '*.arpa'])
+    @Default([
+      '*.lan',
+      '*.local',
+      '*.arpa',
+      'connectivitycheck.gstatic.com',
+      'clients3.google.com',
+    ])
     @JsonKey(name: 'fake-ip-filter')
     List<String> fakeIpFilter,
     @Default({})

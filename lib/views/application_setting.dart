@@ -53,29 +53,6 @@ class MinimizeItem extends ConsumerWidget {
   }
 }
 
-class AutoLaunchItem extends ConsumerWidget {
-  const AutoLaunchItem({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final autoLaunch = ref.watch(
-      appSettingProvider.select((state) => state.autoLaunch),
-    );
-    return ListItem.switchItem(
-      title: Text(appLocalizations.autoLaunch),
-      subtitle: Text(appLocalizations.autoLaunchDesc),
-      delegate: SwitchDelegate(
-        value: autoLaunch,
-        onChanged: (bool value) {
-          ref
-              .read(appSettingProvider.notifier)
-              .update((state) => state.copyWith(autoLaunch: value));
-        },
-      ),
-    );
-  }
-}
-
 class AutoRunItem extends ConsumerWidget {
   const AutoRunItem({super.key});
 
@@ -154,7 +131,7 @@ class ApplicationSettingView extends StatelessWidget {
     final items = <Widget>[
       ...generateSection(
         title: Intl.message('Launch & background', name: 'launchAndBackground'),
-        items: const [AutoLaunchItem(), AutoRunItem(), MinimizeItem()],
+        items: const [AutoRunItem(), MinimizeItem()],
       ),
       ...generateSection(
         title: Intl.message('Connection', name: 'connection'),

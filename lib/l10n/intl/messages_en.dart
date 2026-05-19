@@ -135,6 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "account": MessageLookupByLibrary.simpleMessage("Account"),
     "action": MessageLookupByLibrary.simpleMessage("Action"),
+    "advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
     "action_mode": MessageLookupByLibrary.simpleMessage("Switch mode"),
     "action_proxy": MessageLookupByLibrary.simpleMessage("System proxy"),
     "action_start": MessageLookupByLibrary.simpleMessage("Start/Stop"),
@@ -334,12 +335,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "defaultNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "For resolving DNS server",
     ),
+    "defaultDomainsActive": MessageLookupByLibrary.simpleMessage(
+      "default domains active",
+    ),
     "defaultText": MessageLookupByLibrary.simpleMessage("Default"),
     "delay": MessageLookupByLibrary.simpleMessage("Delay"),
     "delayTest": MessageLookupByLibrary.simpleMessage("Delay Test"),
     "delete": MessageLookupByLibrary.simpleMessage("Delete"),
     "deleteMultipTip": m1,
     "deleteTip": m2,
+    "dnsCoreSection": MessageLookupByLibrary.simpleMessage("Core"),
+    "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
+    "dnsFallbackLegacy": MessageLookupByLibrary.simpleMessage(
+      "China / Fallback (legacy)",
+    ),
+    "dnsServersSection": MessageLookupByLibrary.simpleMessage("Servers"),
     "desc": MessageLookupByLibrary.simpleMessage(
       "A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.",
     ),
@@ -419,6 +429,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("FruitSalad"),
     "general": MessageLookupByLibrary.simpleMessage("General"),
     "generalSettings": MessageLookupByLibrary.simpleMessage("General settings"),
+    "geoDatabases": MessageLookupByLibrary.simpleMessage("Geo databases"),
+    "geoDatabasesDesc": MessageLookupByLibrary.simpleMessage(
+      "GeoIP, GeoSite, MMDB, ASN updaters",
+    ),
     "geodataLoader": MessageLookupByLibrary.simpleMessage(
       "Geo Low Memory Mode",
     ),
@@ -482,6 +496,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "ipv6InboundDesc": MessageLookupByLibrary.simpleMessage(
       "Allow IPv6 inbound",
     ),
+    "ipv6ModeCustom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "ipv6ModeOff": MessageLookupByLibrary.simpleMessage("Off"),
+    "ipv6ModeSyncOn": MessageLookupByLibrary.simpleMessage("Sync ON"),
     "ja": MessageLookupByLibrary.simpleMessage("Japanese"),
     "justNow": MessageLookupByLibrary.simpleMessage("Just now"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage(
@@ -490,6 +507,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "key": MessageLookupByLibrary.simpleMessage("Key"),
     "language": MessageLookupByLibrary.simpleMessage("Language"),
     "layout": MessageLookupByLibrary.simpleMessage("Layout"),
+    "legalAndDisclaimer": MessageLookupByLibrary.simpleMessage(
+      "Legal & disclaimer",
+    ),
+    "detailsSection": MessageLookupByLibrary.simpleMessage("Details"),
     "light": MessageLookupByLibrary.simpleMessage("Light"),
     "list": MessageLookupByLibrary.simpleMessage("List"),
     "listen": MessageLookupByLibrary.simpleMessage("Listen"),
