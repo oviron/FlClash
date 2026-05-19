@@ -123,7 +123,6 @@ abstract class NavigationState with _$NavigationState {
   const factory NavigationState({
     required PageLabel pageLabel,
     required List<NavigationItem> navigationItems,
-    required ViewMode viewMode,
     required String? locale,
     required int currentIndex,
   }) = _NavigationState;

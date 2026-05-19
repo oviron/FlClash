@@ -590,58 +590,6 @@ abstract class _$ViewSize extends $Notifier<Size> {
   }
 }
 
-@ProviderFor(SideWidth)
-const sideWidthProvider = SideWidthProvider._();
-
-final class SideWidthProvider extends $NotifierProvider<SideWidth, double> {
-  const SideWidthProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'sideWidthProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$sideWidthHash();
-
-  @$internal
-  @override
-  SideWidth create() => SideWidth();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(double value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<double>(value),
-    );
-  }
-}
-
-String _$sideWidthHash() => r'2f849d52dab271831bad68b07c1f90b5c18c0cc4';
-
-abstract class _$SideWidth extends $Notifier<double> {
-  double build();
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<double, double>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<double, double>,
-              double,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
-  }
-}
-
 @ProviderFor(viewWidth)
 const viewWidthProvider = ViewWidthProvider._();
 
@@ -682,47 +630,6 @@ final class ViewWidthProvider
 }
 
 String _$viewWidthHash() => r'5ee8f1bdebe44760f7333f88127108f5ffd70214';
-
-@ProviderFor(viewMode)
-const viewModeProvider = ViewModeProvider._();
-
-final class ViewModeProvider
-    extends $FunctionalProvider<ViewMode, ViewMode, ViewMode>
-    with $Provider<ViewMode> {
-  const ViewModeProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'viewModeProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$viewModeHash();
-
-  @$internal
-  @override
-  $ProviderElement<ViewMode> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  ViewMode create(Ref ref) {
-    return viewMode(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ViewMode value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<ViewMode>(value),
-    );
-  }
-}
-
-String _$viewModeHash() => r'6822e9dc28c813afe1ed743feea464f0d33c805c';
 
 @ProviderFor(viewHeight)
 const viewHeightProvider = ViewHeightProvider._();

@@ -3816,7 +3816,7 @@ $IpInfoCopyWith<$Res>? get ipInfo {
 /// @nodoc
 mixin _$NavigationState {
 
- PageLabel get pageLabel; List<NavigationItem> get navigationItems; ViewMode get viewMode; String? get locale; int get currentIndex;
+ PageLabel get pageLabel; List<NavigationItem> get navigationItems; String? get locale; int get currentIndex;
 /// Create a copy of NavigationState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -3827,16 +3827,16 @@ $NavigationStateCopyWith<NavigationState> get copyWith => _$NavigationStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigationState&&(identical(other.pageLabel, pageLabel) || other.pageLabel == pageLabel)&&const DeepCollectionEquality().equals(other.navigationItems, navigationItems)&&(identical(other.viewMode, viewMode) || other.viewMode == viewMode)&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigationState&&(identical(other.pageLabel, pageLabel) || other.pageLabel == pageLabel)&&const DeepCollectionEquality().equals(other.navigationItems, navigationItems)&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pageLabel,const DeepCollectionEquality().hash(navigationItems),viewMode,locale,currentIndex);
+int get hashCode => Object.hash(runtimeType,pageLabel,const DeepCollectionEquality().hash(navigationItems),locale,currentIndex);
 
 @override
 String toString() {
-  return 'NavigationState(pageLabel: $pageLabel, navigationItems: $navigationItems, viewMode: $viewMode, locale: $locale, currentIndex: $currentIndex)';
+  return 'NavigationState(pageLabel: $pageLabel, navigationItems: $navigationItems, locale: $locale, currentIndex: $currentIndex)';
 }
 
 
@@ -3847,7 +3847,7 @@ abstract mixin class $NavigationStateCopyWith<$Res>  {
   factory $NavigationStateCopyWith(NavigationState value, $Res Function(NavigationState) _then) = _$NavigationStateCopyWithImpl;
 @useResult
 $Res call({
- PageLabel pageLabel, List<NavigationItem> navigationItems, ViewMode viewMode, String? locale, int currentIndex
+ PageLabel pageLabel, List<NavigationItem> navigationItems, String? locale, int currentIndex
 });
 
 
@@ -3864,12 +3864,11 @@ class _$NavigationStateCopyWithImpl<$Res>
 
 /// Create a copy of NavigationState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? pageLabel = null,Object? navigationItems = null,Object? viewMode = null,Object? locale = freezed,Object? currentIndex = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? pageLabel = null,Object? navigationItems = null,Object? locale = freezed,Object? currentIndex = null,}) {
   return _then(_self.copyWith(
 pageLabel: null == pageLabel ? _self.pageLabel : pageLabel // ignore: cast_nullable_to_non_nullable
 as PageLabel,navigationItems: null == navigationItems ? _self.navigationItems : navigationItems // ignore: cast_nullable_to_non_nullable
-as List<NavigationItem>,viewMode: null == viewMode ? _self.viewMode : viewMode // ignore: cast_nullable_to_non_nullable
-as ViewMode,locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
+as List<NavigationItem>,locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,currentIndex: null == currentIndex ? _self.currentIndex : currentIndex // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -3956,10 +3955,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PageLabel pageLabel,  List<NavigationItem> navigationItems,  ViewMode viewMode,  String? locale,  int currentIndex)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PageLabel pageLabel,  List<NavigationItem> navigationItems,  String? locale,  int currentIndex)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NavigationState() when $default != null:
-return $default(_that.pageLabel,_that.navigationItems,_that.viewMode,_that.locale,_that.currentIndex);case _:
+return $default(_that.pageLabel,_that.navigationItems,_that.locale,_that.currentIndex);case _:
   return orElse();
 
 }
@@ -3977,10 +3976,10 @@ return $default(_that.pageLabel,_that.navigationItems,_that.viewMode,_that.local
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PageLabel pageLabel,  List<NavigationItem> navigationItems,  ViewMode viewMode,  String? locale,  int currentIndex)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PageLabel pageLabel,  List<NavigationItem> navigationItems,  String? locale,  int currentIndex)  $default,) {final _that = this;
 switch (_that) {
 case _NavigationState():
-return $default(_that.pageLabel,_that.navigationItems,_that.viewMode,_that.locale,_that.currentIndex);case _:
+return $default(_that.pageLabel,_that.navigationItems,_that.locale,_that.currentIndex);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -3997,10 +3996,10 @@ return $default(_that.pageLabel,_that.navigationItems,_that.viewMode,_that.local
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PageLabel pageLabel,  List<NavigationItem> navigationItems,  ViewMode viewMode,  String? locale,  int currentIndex)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PageLabel pageLabel,  List<NavigationItem> navigationItems,  String? locale,  int currentIndex)?  $default,) {final _that = this;
 switch (_that) {
 case _NavigationState() when $default != null:
-return $default(_that.pageLabel,_that.navigationItems,_that.viewMode,_that.locale,_that.currentIndex);case _:
+return $default(_that.pageLabel,_that.navigationItems,_that.locale,_that.currentIndex);case _:
   return null;
 
 }
@@ -4012,7 +4011,7 @@ return $default(_that.pageLabel,_that.navigationItems,_that.viewMode,_that.local
 
 
 class _NavigationState implements NavigationState {
-  const _NavigationState({required this.pageLabel, required final  List<NavigationItem> navigationItems, required this.viewMode, required this.locale, required this.currentIndex}): _navigationItems = navigationItems;
+  const _NavigationState({required this.pageLabel, required final  List<NavigationItem> navigationItems, required this.locale, required this.currentIndex}): _navigationItems = navigationItems;
   
 
 @override final  PageLabel pageLabel;
@@ -4023,7 +4022,6 @@ class _NavigationState implements NavigationState {
   return EqualUnmodifiableListView(_navigationItems);
 }
 
-@override final  ViewMode viewMode;
 @override final  String? locale;
 @override final  int currentIndex;
 
@@ -4037,16 +4035,16 @@ _$NavigationStateCopyWith<_NavigationState> get copyWith => __$NavigationStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NavigationState&&(identical(other.pageLabel, pageLabel) || other.pageLabel == pageLabel)&&const DeepCollectionEquality().equals(other._navigationItems, _navigationItems)&&(identical(other.viewMode, viewMode) || other.viewMode == viewMode)&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NavigationState&&(identical(other.pageLabel, pageLabel) || other.pageLabel == pageLabel)&&const DeepCollectionEquality().equals(other._navigationItems, _navigationItems)&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pageLabel,const DeepCollectionEquality().hash(_navigationItems),viewMode,locale,currentIndex);
+int get hashCode => Object.hash(runtimeType,pageLabel,const DeepCollectionEquality().hash(_navigationItems),locale,currentIndex);
 
 @override
 String toString() {
-  return 'NavigationState(pageLabel: $pageLabel, navigationItems: $navigationItems, viewMode: $viewMode, locale: $locale, currentIndex: $currentIndex)';
+  return 'NavigationState(pageLabel: $pageLabel, navigationItems: $navigationItems, locale: $locale, currentIndex: $currentIndex)';
 }
 
 
@@ -4057,7 +4055,7 @@ abstract mixin class _$NavigationStateCopyWith<$Res> implements $NavigationState
   factory _$NavigationStateCopyWith(_NavigationState value, $Res Function(_NavigationState) _then) = __$NavigationStateCopyWithImpl;
 @override @useResult
 $Res call({
- PageLabel pageLabel, List<NavigationItem> navigationItems, ViewMode viewMode, String? locale, int currentIndex
+ PageLabel pageLabel, List<NavigationItem> navigationItems, String? locale, int currentIndex
 });
 
 
@@ -4074,12 +4072,11 @@ class __$NavigationStateCopyWithImpl<$Res>
 
 /// Create a copy of NavigationState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? pageLabel = null,Object? navigationItems = null,Object? viewMode = null,Object? locale = freezed,Object? currentIndex = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? pageLabel = null,Object? navigationItems = null,Object? locale = freezed,Object? currentIndex = null,}) {
   return _then(_NavigationState(
 pageLabel: null == pageLabel ? _self.pageLabel : pageLabel // ignore: cast_nullable_to_non_nullable
 as PageLabel,navigationItems: null == navigationItems ? _self._navigationItems : navigationItems // ignore: cast_nullable_to_non_nullable
-as List<NavigationItem>,viewMode: null == viewMode ? _self.viewMode : viewMode // ignore: cast_nullable_to_non_nullable
-as ViewMode,locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
+as List<NavigationItem>,locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,currentIndex: null == currentIndex ? _self.currentIndex : currentIndex // ignore: cast_nullable_to_non_nullable
 as int,
   ));

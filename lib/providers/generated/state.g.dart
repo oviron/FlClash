@@ -146,7 +146,7 @@ final class CurrentNavigationItemsStateProvider
 }
 
 String _$currentNavigationItemsStateHash() =>
-    r'06fbdc194f4527b945695fe3b72b16e0585fa440';
+    r'76b1dca8b7b1c893c386db336b2895e0e3f72737';
 
 @ProviderFor(updateParams)
 const updateParamsProvider = UpdateParamsProvider._();
@@ -311,7 +311,7 @@ final class NavigationStateProvider
   }
 }
 
-String _$navigationStateHash() => r'657dc47ecc35ba0807b58cb37e7f1baa14f6c2f9';
+String _$navigationStateHash() => r'daec5465fb745f669d56c52c25369c57766fbab3';
 
 @ProviderFor(contentWidth)
 const contentWidthProvider = ContentWidthProvider._();
@@ -352,7 +352,7 @@ final class ContentWidthProvider
   }
 }
 
-String _$contentWidthHash() => r'4710fee8f91b08dc88520798fb6b1d4f61f090e6';
+String _$contentWidthHash() => r'626641d3863c3fe686fcbcd6519c9ca505962a0b';
 
 @ProviderFor(dashboardState)
 const dashboardStateProvider = DashboardStateProvider._();
@@ -919,104 +919,7 @@ final class MoreToolsSelectorStateProvider
 }
 
 String _$moreToolsSelectorStateHash() =>
-    r'9bf5618f99dd23a2da8c190e95100c0c4e4a4c5c';
-
-@ProviderFor(isCurrentPage)
-const isCurrentPageProvider = IsCurrentPageFamily._();
-
-final class IsCurrentPageProvider extends $FunctionalProvider<bool, bool, bool>
-    with $Provider<bool> {
-  const IsCurrentPageProvider._({
-    required IsCurrentPageFamily super.from,
-    required (
-      PageLabel, {
-      bool Function(PageLabel pageLabel, ViewMode viewMode)? handler,
-    })
-    super.argument,
-  }) : super(
-         retry: null,
-         name: r'isCurrentPageProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
-
-  @override
-  String debugGetCreateSourceHash() => _$isCurrentPageHash();
-
-  @override
-  String toString() {
-    return r'isCurrentPageProvider'
-        ''
-        '$argument';
-  }
-
-  @$internal
-  @override
-  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  bool create(Ref ref) {
-    final argument =
-        this.argument
-            as (
-              PageLabel, {
-              bool Function(PageLabel pageLabel, ViewMode viewMode)? handler,
-            });
-    return isCurrentPage(ref, argument.$1, handler: argument.handler);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(bool value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<bool>(value),
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is IsCurrentPageProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
-}
-
-String _$isCurrentPageHash() => r'7c300770aef90da23109d9fcfc3bf26140d8cd08';
-
-final class IsCurrentPageFamily extends $Family
-    with
-        $FunctionalFamilyOverride<
-          bool,
-          (
-            PageLabel, {
-            bool Function(PageLabel pageLabel, ViewMode viewMode)? handler,
-          })
-        > {
-  const IsCurrentPageFamily._()
-    : super(
-        retry: null,
-        name: r'isCurrentPageProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  IsCurrentPageProvider call(
-    PageLabel pageLabel, {
-    bool Function(PageLabel pageLabel, ViewMode viewMode)? handler,
-  }) => IsCurrentPageProvider._(
-    argument: (pageLabel, handler: handler),
-    from: this,
-  );
-
-  @override
-  String toString() => r'isCurrentPageProvider';
-}
+    r'54d712288031d95941076346139b9e769cc73152';
 
 @ProviderFor(realTestUrl)
 const realTestUrlProvider = RealTestUrlFamily._();

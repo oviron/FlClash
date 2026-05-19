@@ -18,8 +18,8 @@ abstract class NavigationItem with _$NavigationItem {
     required WidgetBuilder builder,
     @Default(true) bool keep,
     String? path,
-    @Default([NavigationItemMode.mobile, NavigationItemMode.desktop])
-    List<NavigationItemMode> modes,
+    @Default(true) bool visible,
+    @Default(false) bool isMore,
   }) = _NavigationItem;
 }
 

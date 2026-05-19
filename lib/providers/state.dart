@@ -65,15 +65,10 @@ NavigationItemsState navigationItemsState(Ref ref) {
 
 @riverpod
 NavigationItemsState currentNavigationItemsState(Ref ref) {
-  final viewWidth = ref.watch(viewWidthProvider);
   final navigationItemsState = ref.watch(navigationItemsStateProvider);
-  final navigationItemMode = switch (viewWidth <= maxMobileWidth) {
-    true => NavigationItemMode.mobile,
-    false => NavigationItemMode.desktop,
-  };
   return NavigationItemsState(
     value: navigationItemsState.value
-        .where((element) => element.modes.contains(navigationItemMode))
+        .where((element) => element.visible && !element.isMore)
         .toList(),
   );
 }
@@ -131,7 +126,6 @@ VpnState vpnState(Ref ref) {
 NavigationState navigationState(Ref ref) {
   final pageLabel = ref.watch(currentPageLabelProvider);
   final navigationItems = ref.watch(currentNavigationItemsStateProvider).value;
-  final viewMode = ref.watch(viewModeProvider);
   final locale = ref.watch(appSettingProvider).locale;
   final index = navigationItems.lastIndexWhere(
     (element) => element.label == pageLabel,
@@ -140,7 +134,6 @@ NavigationState navigationState(Ref ref) {
   return NavigationState(
     pageLabel: pageLabel,
     navigationItems: navigationItems,
-    viewMode: viewMode,
     locale: locale,
     currentIndex: currentIndex,
   );
@@ -148,9 +141,7 @@ NavigationState navigationState(Ref ref) {
 
 @riverpod
 double contentWidth(Ref ref) {
-  final viewWidth = ref.watch(viewWidthProvider);
-  final sideWidth = ref.watch(sideWidthProvider);
-  return viewWidth - sideWidth;
+  return ref.watch(viewWidthProvider);
 }
 
 @riverpod
@@ -318,32 +309,13 @@ PackageListSelectorState packageListSelectorState(Ref ref) {
 MoreToolsSelectorState moreToolsSelectorState(Ref ref) {
   final navigationItems = ref.watch(
     navigationItemsStateProvider.select((state) {
-      return state.value.where((element) {
-        final isMore = element.modes.contains(NavigationItemMode.more);
-        final isDesktop = element.modes.contains(NavigationItemMode.desktop);
-        return isMore && !isDesktop;
-      }).toList();
+      return state.value
+          .where((element) => element.visible && element.isMore)
+          .toList();
     }),
   );
 
   return MoreToolsSelectorState(navigationItems: navigationItems);
-}
-
-@riverpod
-bool isCurrentPage(
-  Ref ref,
-  PageLabel pageLabel, {
-  bool Function(PageLabel pageLabel, ViewMode viewMode)? handler,
-}) {
-  final currentPageLabel = ref.watch(currentPageLabelProvider);
-  if (pageLabel == currentPageLabel) {
-    return true;
-  }
-  if (handler != null) {
-    final viewMode = ref.watch(viewModeProvider);
-    return handler(currentPageLabel, viewMode);
-  }
-  return false;
 }
 
 @riverpod

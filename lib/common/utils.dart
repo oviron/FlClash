@@ -212,12 +212,6 @@ class Utils {
         .toList();
   }
 
-  ViewMode getViewMode(double viewWidth) {
-    if (viewWidth <= maxMobileWidth) return ViewMode.mobile;
-    if (viewWidth <= maxLaptopWidth) return ViewMode.laptop;
-    return ViewMode.desktop;
-  }
-
   int getProxiesColumns(double viewWidth, ProxiesLayout proxiesLayout) {
     final columns = max((viewWidth / 250).ceil(), 2);
     return switch (proxiesLayout) {
