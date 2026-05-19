@@ -151,7 +151,6 @@ class ApplicationSettingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appLocalizations = context.appLocalizations;
     final items = <Widget>[
       ...generateSection(
         title: Intl.message('Launch & background', name: 'launchAndBackground'),
@@ -171,7 +170,7 @@ class ApplicationSettingView extends StatelessWidget {
       ),
     ];
     return BaseScaffold(
-      title: appLocalizations.application,
+      title: Intl.message('General settings', name: 'generalSettings'),
       body: ListView.builder(
         itemBuilder: (_, index) => items[index],
         itemCount: items.length,

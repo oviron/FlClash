@@ -94,6 +94,8 @@
   "accessControlDesc": "Configure application access proxy",
   "application": "Application",
   "applicationDesc": "Modify application related settings",
+  "diagnostics": "Diagnostics",
+  "generalSettings": "General settings",
   "edit": "Edit",
   "confirm": "Confirm",
   "update": "Update",

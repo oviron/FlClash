@@ -371,6 +371,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
       "Режим разработчика активирован.",
     ),
+    "diagnostics": MessageLookupByLibrary.simpleMessage("Диагностика"),
     "direct": MessageLookupByLibrary.simpleMessage("Прямой"),
     "disclaimer": MessageLookupByLibrary.simpleMessage(
       "Отказ от ответственности",
@@ -434,6 +435,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "forkOf": m6,
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("Фруктовый микс"),
     "general": MessageLookupByLibrary.simpleMessage("Общие"),
+    "generalSettings": MessageLookupByLibrary.simpleMessage("Общие настройки"),
     "geodataLoader": MessageLookupByLibrary.simpleMessage(
       "Режим низкого потребления памяти для геоданных",
     ),

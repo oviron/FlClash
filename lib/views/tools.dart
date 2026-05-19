@@ -94,30 +94,6 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     );
   }
 
-  List<Widget> _privacySection() {
-    return generateSection(
-      title: Intl.message('Privacy & Security', name: 'privacyAndSecurity'),
-      items: const [_PrivacyItem()],
-    );
-  }
-
-  List<Widget> _backupSection() {
-    return generateSection(
-      title: context.appLocalizations.backupAndRestore,
-      items: const [_BackupItem()],
-    );
-  }
-
-  List<Widget> _aboutSection(bool enableDeveloperMode) {
-    return generateSection(
-      title: context.appLocalizations.about,
-      items: [
-        if (enableDeveloperMode) const _DeveloperItem(),
-        const _InfoItem(),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final vm2 = ref.watch(
@@ -126,27 +102,33 @@ class _ToolViewState extends ConsumerState<ToolsView> {
       ),
     );
     final items = [
+      ..._appearanceSection(),
+      ..._connectionSection(),
+      ..._engineSection(),
+      ..._applicationSection(),
+      const _PrivacyItem(),
+      const Divider(height: 0),
+      const _BackupItem(),
+      const Divider(height: 0),
+      if (vm2.b) const _DeveloperItem(),
+      if (vm2.b) const Divider(height: 0),
+      const _InfoItem(),
       Consumer(
         builder: (_, ref, _) {
           final state = ref.watch(moreToolsSelectorStateProvider);
           if (state.navigationItems.isEmpty) {
-            return Container();
+            return const SizedBox.shrink();
           }
           return Column(
             children: [
-              ListHeader(title: context.appLocalizations.more),
+              ListHeader(
+                title: Intl.message('Diagnostics', name: 'diagnostics'),
+              ),
               _buildNavigationMenu(state.navigationItems),
             ],
           );
         },
       ),
-      ..._appearanceSection(),
-      ..._connectionSection(),
-      ..._engineSection(),
-      ..._applicationSection(),
-      ..._privacySection(),
-      ..._backupSection(),
-      ..._aboutSection(vm2.b),
     ];
     return CommonScaffold(
       title: context.appLocalizations.tools,
@@ -365,7 +347,7 @@ class _SettingItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.open(
       leading: const Icon(Icons.settings),
-      title: Text(context.appLocalizations.application),
+      title: Text(Intl.message('General settings', name: 'generalSettings')),
       subtitle: Text(context.appLocalizations.applicationDesc),
       delegate: const OpenDelegate(widget: ApplicationSettingView()),
     );

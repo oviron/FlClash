@@ -94,6 +94,8 @@
   "accessControlDesc": "アプリケーションのプロキシアクセスを設定",
   "application": "アプリケーション",
   "applicationDesc": "アプリ関連設定を変更",
+  "diagnostics": "診断",
+  "generalSettings": "一般設定",
   "edit": "編集",
   "confirm": "確認",
   "update": "更新",
