@@ -1,7 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
-import 'package:fl_clash/state.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/views/about.dart';
 import 'package:fl_clash/views/access.dart';
@@ -233,6 +232,26 @@ class _VpnSettingsItem extends StatelessWidget {
       delegate: OpenDelegate(
         widget: BaseScaffold(
           title: vpnSettingsTitle,
+          actions: [
+            Consumer(
+              builder: (_, ref, _) => ResetActionButton(
+                onConfirm: () async {
+                  ref
+                      .read(vpnSettingProvider.notifier)
+                      .update(
+                        (state) =>
+                            const VpnProps().copyWith(enable: state.enable),
+                      );
+                  ref
+                      .read(networkSettingProvider.notifier)
+                      .update((_) => const NetworkProps());
+                  ref
+                      .read(patchClashConfigProvider.notifier)
+                      .update((state) => state.copyWith(tun: defaultTun));
+                },
+              ),
+            ),
+          ],
           body: const NetworkListView(),
         ),
       ),
@@ -259,37 +278,27 @@ class _CoreItem extends StatelessWidget {
   }
 }
 
-class _DnsItem extends ConsumerWidget {
+class _DnsItem extends StatelessWidget {
   const _DnsItem();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final appLocalizations = context.appLocalizations;
+  Widget build(BuildContext context) {
     return ListItem.open(
       leading: const Icon(Icons.dns),
       title: const Text('DNS'),
-      subtitle: Text(appLocalizations.dnsDesc),
+      subtitle: Text(context.appLocalizations.dnsDesc),
       delegate: OpenDelegate(
         widget: BaseScaffold(
           title: 'DNS',
           actions: [
             Consumer(
-              builder: (_, ref, _) {
-                return IconButton(
-                  onPressed: () async {
-                    final res = await globalState.showMessage(
-                      title: appLocalizations.reset,
-                      message: TextSpan(text: appLocalizations.resetTip),
-                    );
-                    if (res != true) return;
-                    ref
-                        .read(patchClashConfigProvider.notifier)
-                        .update((state) => state.copyWith(dns: defaultDns));
-                  },
-                  tooltip: appLocalizations.reset,
-                  icon: const Icon(Icons.replay),
-                );
-              },
+              builder: (_, ref, _) => ResetActionButton(
+                onConfirm: () async {
+                  ref
+                      .read(patchClashConfigProvider.notifier)
+                      .update((state) => state.copyWith(dns: defaultDns));
+                },
+              ),
             ),
           ],
           body: const DnsListView(),

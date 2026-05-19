@@ -161,31 +161,6 @@ const _$TunStackEnumMap = {
   TunStack.mixed: 'mixed',
 };
 
-_FallbackFilter _$FallbackFilterFromJson(
-  Map<String, dynamic> json,
-) => _FallbackFilter(
-  geoip: json['geoip'] as bool? ?? true,
-  geoipCode: json['geoip-code'] as String? ?? 'CN',
-  geosite:
-      (json['geosite'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['gfw'],
-  ipcidr:
-      (json['ipcidr'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['240.0.0.0/4'],
-  domain:
-      (json['domain'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['+.google.com', '+.facebook.com', '+.youtube.com'],
-);
-
-Map<String, dynamic> _$FallbackFilterToJson(_FallbackFilter instance) =>
-    <String, dynamic>{
-      'geoip': instance.geoip,
-      'geoip-code': instance.geoipCode,
-      'geosite': instance.geosite,
-      'ipcidr': instance.ipcidr,
-      'domain': instance.domain,
-    };
-
 _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
   enable: json['enable'] as bool? ?? true,
   listen: json['listen'] as String? ?? '0.0.0.0:1053',
@@ -227,19 +202,11 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
         'https://dns.google/dns-query',
         'https://cloudflare-dns.com/dns-query',
       ],
-  fallback:
-      (json['fallback'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['tls://8.8.4.4', 'tls://1.1.1.1'],
   proxyServerNameserver:
       (json['proxy-server-nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
       const ['tls://8.8.8.8:853', 'tls://1.1.1.1:853'],
-  fallbackFilter: json['fallback-filter'] == null
-      ? const FallbackFilter()
-      : FallbackFilter.fromJson(
-          json['fallback-filter'] as Map<String, dynamic>,
-        ),
 );
 
 Map<String, dynamic> _$DnsToJson(_Dns instance) => <String, dynamic>{
@@ -256,9 +223,7 @@ Map<String, dynamic> _$DnsToJson(_Dns instance) => <String, dynamic>{
   'fake-ip-filter': instance.fakeIpFilter,
   'nameserver-policy': instance.nameserverPolicy,
   'nameserver': instance.nameserver,
-  'fallback': instance.fallback,
   'proxy-server-nameserver': instance.proxyServerNameserver,
-  'fallback-filter': instance.fallbackFilter,
 };
 
 const _$DnsModeEnumMap = {

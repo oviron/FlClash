@@ -1,8 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/models/clash_config.dart';
 import 'package:fl_clash/providers/config.dart';
-import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -382,193 +380,6 @@ class ProxyServerNameserverItem extends ConsumerWidget {
   }
 }
 
-class FallbackItem extends ConsumerWidget {
-  const FallbackItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final fallback = ref.watch(
-      patchClashConfigProvider.select((state) => state.dns.fallback),
-    );
-    return ListItem.open(
-      title: Text(appLocalizations.fallback),
-      subtitle: Text(appLocalizations.fallbackDesc),
-      delegate: OpenDelegate(
-        widget: ListInputPage(
-          title: appLocalizations.fallback,
-          items: fallback,
-          titleBuilder: (item) => Text(item),
-        ),
-        onChanged: (items) {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update(
-                (state) => state.copyWith.dns(fallback: List.from(items)),
-              );
-        },
-      ),
-    );
-  }
-}
-
-class GeoipItem extends ConsumerWidget {
-  const GeoipItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final geoip = ref.watch(
-      patchClashConfigProvider.select(
-        (state) => state.dns.fallbackFilter.geoip,
-      ),
-    );
-    return ListItem.switchItem(
-      title: Text(Intl.message('Geo IP', name: 'geoip')),
-      delegate: SwitchDelegate(
-        value: geoip,
-        onChanged: (bool value) async {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update(
-                (state) => state.copyWith.dns.fallbackFilter(geoip: value),
-              );
-        },
-      ),
-    );
-  }
-}
-
-class GeoipCodeItem extends ConsumerWidget {
-  const GeoipCodeItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final geoipCode = ref.watch(
-      patchClashConfigProvider.select(
-        (state) => state.dns.fallbackFilter.geoipCode,
-      ),
-    );
-    return ListItem.input(
-      title: Text(appLocalizations.geoipCode),
-      subtitle: Text(geoipCode),
-      delegate: InputDelegate(
-        title: appLocalizations.geoipCode,
-        value: geoipCode,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return appLocalizations.emptyTip(appLocalizations.geoipCode);
-          }
-          return null;
-        },
-        onChanged: (String? value) {
-          if (value == null) {
-            return;
-          }
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update(
-                (state) => state.copyWith.dns.fallbackFilter(geoipCode: value),
-              );
-        },
-      ),
-    );
-  }
-}
-
-class GeositeItem extends ConsumerWidget {
-  const GeositeItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final geosite = ref.watch(
-      patchClashConfigProvider.select(
-        (state) => state.dns.fallbackFilter.geosite,
-      ),
-    );
-    final geositeLabel = Intl.message('Geo Site', name: 'geosite');
-    return ListItem.open(
-      title: Text(geositeLabel),
-      delegate: OpenDelegate(
-        widget: ListInputPage(
-          title: geositeLabel,
-          items: geosite,
-          titleBuilder: (item) => Text(item),
-        ),
-        onChanged: (items) {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update(
-                (state) => state.copyWith.dns.fallbackFilter(
-                  geosite: List.from(items),
-                ),
-              );
-        },
-      ),
-    );
-  }
-}
-
-class IpcidrItem extends ConsumerWidget {
-  const IpcidrItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final ipcidr = ref.watch(
-      patchClashConfigProvider.select(
-        (state) => state.dns.fallbackFilter.ipcidr,
-      ),
-    );
-    return ListItem.open(
-      title: Text(appLocalizations.ipcidr),
-      delegate: OpenDelegate(
-        widget: ListInputPage(
-          title: appLocalizations.ipcidr,
-          items: ipcidr,
-          titleBuilder: (item) => Text(item),
-        ),
-        onChanged: (items) {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update(
-                (state) =>
-                    state.copyWith.dns.fallbackFilter(ipcidr: List.from(items)),
-              );
-        },
-      ),
-    );
-  }
-}
-
-class DomainItem extends ConsumerWidget {
-  const DomainItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final domain = ref.watch(
-      patchClashConfigProvider.select(
-        (state) => state.dns.fallbackFilter.domain,
-      ),
-    );
-    return ListItem.open(
-      title: Text(appLocalizations.domain),
-      delegate: OpenDelegate(
-        widget: ListInputPage(
-          title: appLocalizations.domain,
-          items: domain,
-          titleBuilder: (item) => Text(item),
-        ),
-        onChanged: (items) {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update(
-                (state) =>
-                    state.copyWith.dns.fallbackFilter(domain: List.from(items)),
-              );
-        },
-      ),
-    );
-  }
-}
-
 class AppendSystemDNSItem extends ConsumerWidget {
   const AppendSystemDNSItem({super.key});
 
@@ -663,40 +474,16 @@ class _DnsAdvancedSection extends StatelessWidget {
       title: Text(Intl.message('Advanced', name: 'advanced')),
       tilePadding: const EdgeInsets.symmetric(horizontal: 16),
       childrenPadding: EdgeInsets.zero,
-      children: [
-        const PreferH3Item(),
-        const Divider(height: 0),
-        const UseHostsItem(),
-        const Divider(height: 0),
-        const UseSystemHostsItem(),
-        const Divider(height: 0),
-        const FakeIpRangeItem(),
-        const Divider(height: 0),
-        const ListenItem(),
-        const Divider(height: 0),
-        ExpansionTile(
-          title: Text(
-            Intl.message(
-              'China / Fallback (legacy)',
-              name: 'dnsFallbackLegacy',
-            ),
-          ),
-          tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-          childrenPadding: EdgeInsets.zero,
-          children: const [
-            FallbackItem(),
-            Divider(height: 0),
-            GeoipItem(),
-            Divider(height: 0),
-            GeoipCodeItem(),
-            Divider(height: 0),
-            GeositeItem(),
-            Divider(height: 0),
-            IpcidrItem(),
-            Divider(height: 0),
-            DomainItem(),
-          ],
-        ),
+      children: const [
+        PreferH3Item(),
+        Divider(height: 0),
+        UseHostsItem(),
+        Divider(height: 0),
+        UseSystemHostsItem(),
+        Divider(height: 0),
+        FakeIpRangeItem(),
+        Divider(height: 0),
+        ListenItem(),
       ],
     );
   }
@@ -709,7 +496,6 @@ const dnsItems = <Widget>[
   _DnsFakeIpSection(),
   _DnsBehaviorSection(),
   _DnsAdvancedSection(),
-  _DnsResetButton(),
 ];
 
 class DnsListView extends ConsumerWidget {
@@ -718,33 +504,5 @@ class DnsListView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     return generateListView(dnsItems);
-  }
-}
-
-class _DnsResetButton extends ConsumerWidget {
-  const _DnsResetButton();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-      child: SizedBox(
-        width: double.infinity,
-        child: FilledButton.tonalIcon(
-          onPressed: () async {
-            final res = await globalState.showMessage(
-              title: appLocalizations.reset,
-              message: TextSpan(text: appLocalizations.resetTip),
-            );
-            if (res != true) return;
-            ref
-                .read(patchClashConfigProvider.notifier)
-                .update((state) => state.copyWith(dns: defaultDns));
-          },
-          icon: const Icon(Icons.replay),
-          label: Text(appLocalizations.reset),
-        ),
-      ),
-    );
   }
 }

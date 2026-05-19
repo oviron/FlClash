@@ -1,9 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/models/clash_config.dart';
-import 'package:fl_clash/models/config.dart';
 import 'package:fl_clash/providers/config.dart';
-import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -307,44 +304,7 @@ final networkItems = [
     ],
   ),
   const _AdvancedNetworkSection(),
-  const _NetworkResetButton(),
 ];
-
-class _NetworkResetButton extends ConsumerWidget {
-  const _NetworkResetButton();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-      child: SizedBox(
-        width: double.infinity,
-        child: FilledButton.tonalIcon(
-          onPressed: () async {
-            final res = await globalState.showMessage(
-              title: appLocalizations.reset,
-              message: TextSpan(text: appLocalizations.resetTip),
-            );
-            if (res != true) return;
-            ref
-                .read(vpnSettingProvider.notifier)
-                .update(
-                  (state) => const VpnProps().copyWith(enable: state.enable),
-                );
-            ref
-                .read(networkSettingProvider.notifier)
-                .update((_) => const NetworkProps());
-            ref
-                .read(patchClashConfigProvider.notifier)
-                .update((state) => state.copyWith(tun: defaultTun));
-          },
-          icon: const Icon(Icons.replay),
-          label: Text(appLocalizations.reset),
-        ),
-      ),
-    );
-  }
-}
 
 class _AdvancedNetworkSection extends ConsumerWidget {
   const _AdvancedNetworkSection();

@@ -204,21 +204,6 @@ extension TunExt on Tun {
 }
 
 @freezed
-abstract class FallbackFilter with _$FallbackFilter {
-  const factory FallbackFilter({
-    @Default(true) bool geoip,
-    @Default('CN') @JsonKey(name: 'geoip-code') String geoipCode,
-    @Default(['gfw']) List<String> geosite,
-    @Default(['240.0.0.0/4']) List<String> ipcidr,
-    @Default(['+.google.com', '+.facebook.com', '+.youtube.com'])
-    List<String> domain,
-  }) = _FallbackFilter;
-
-  factory FallbackFilter.fromJson(Map<String, Object?> json) =>
-      _$FallbackFilterFromJson(json);
-}
-
-@freezed
 abstract class Dns with _$Dns {
   const factory Dns({
     @Default(true) bool enable,
@@ -254,13 +239,9 @@ abstract class Dns with _$Dns {
       'https://cloudflare-dns.com/dns-query',
     ])
     List<String> nameserver,
-    @Default(['tls://8.8.4.4', 'tls://1.1.1.1']) List<String> fallback,
     @Default(['tls://8.8.8.8:853', 'tls://1.1.1.1:853'])
     @JsonKey(name: 'proxy-server-nameserver')
     List<String> proxyServerNameserver,
-    @Default(FallbackFilter())
-    @JsonKey(name: 'fallback-filter')
-    FallbackFilter fallbackFilter,
   }) = _Dns;
 
   factory Dns.fromJson(Map<String, Object?> json) => _$DnsFromJson(json);
