@@ -242,9 +242,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "diagnostics": MessageLookupByLibrary.simpleMessage("诊断"),
     "dnsCoreSection": MessageLookupByLibrary.simpleMessage("核心"),
     "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
-    "dnsFallbackLegacy": MessageLookupByLibrary.simpleMessage(
-      "中国 / Fallback (遗留)",
-    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("服务器"),
     "desc": MessageLookupByLibrary.simpleMessage(
       "基于ClashMeta的多平台代理客户端，简单易用，开源无广告。",

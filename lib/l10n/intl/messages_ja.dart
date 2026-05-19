@@ -270,9 +270,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "diagnostics": MessageLookupByLibrary.simpleMessage("診断"),
     "dnsCoreSection": MessageLookupByLibrary.simpleMessage("コア"),
     "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
-    "dnsFallbackLegacy": MessageLookupByLibrary.simpleMessage(
-      "中国 / フォールバック (レガシー)",
-    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("サーバー"),
     "desc": MessageLookupByLibrary.simpleMessage(
       "ClashMetaベースのマルチプラットフォームプロキシクライアント。シンプルで使いやすく、オープンソースで広告なし。",

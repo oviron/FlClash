@@ -323,9 +323,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteTip": m2,
     "dnsCoreSection": MessageLookupByLibrary.simpleMessage("Core"),
     "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
-    "dnsFallbackLegacy": MessageLookupByLibrary.simpleMessage(
-      "China / Fallback (legacy)",
-    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("Servers"),
     "desc": MessageLookupByLibrary.simpleMessage(
       "A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.",

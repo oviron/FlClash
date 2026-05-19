@@ -338,9 +338,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "diagnostics": MessageLookupByLibrary.simpleMessage("Диагностика"),
     "dnsCoreSection": MessageLookupByLibrary.simpleMessage("Ядро"),
     "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
-    "dnsFallbackLegacy": MessageLookupByLibrary.simpleMessage(
-      "Китай / Fallback (устар.)",
-    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("Серверы"),
     "desc": MessageLookupByLibrary.simpleMessage(
       "Многоплатформенный прокси-клиент на основе ClashMeta, простой и удобный в использовании, с открытым исходным кодом и без рекламы.",
