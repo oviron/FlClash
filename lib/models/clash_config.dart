@@ -131,10 +131,19 @@ abstract class RuleProvider with _$RuleProvider {
       _$RuleProviderFromJson(json);
 }
 
+// Mihomo wiki quick-config enables sniffer with these protocol/port sets
+// by default; without it, domain rules miss HTTP/3 (QUIC) flows which now
+// carry the majority of mobile Google/Meta traffic.
+const defaultSniff = {
+  'HTTP': SnifferConfig(ports: ['80', '8080-8880'], overrideDest: true),
+  'TLS': SnifferConfig(ports: ['443', '8443']),
+  'QUIC': SnifferConfig(ports: ['443', '8443']),
+};
+
 @freezed
 abstract class Sniffer with _$Sniffer {
   const factory Sniffer({
-    @Default(false) bool enable,
+    @Default(true) bool enable,
     @Default(true) @JsonKey(name: 'override-destination') bool overrideDest,
     @Default([]) List<String> sniffing,
     @Default([]) @JsonKey(name: 'force-domain') List<String> forceDomain,
@@ -144,7 +153,7 @@ abstract class Sniffer with _$Sniffer {
     @Default([]) @JsonKey(name: 'port-whitelist') List<String> port,
     @Default(true) @JsonKey(name: 'force-dns-mapping') bool forceDnsMapping,
     @Default(true) @JsonKey(name: 'parse-pure-ip') bool parsePureIp,
-    @Default({}) Map<String, SnifferConfig> sniff,
+    @Default(defaultSniff) Map<String, SnifferConfig> sniff,
   }) = _Sniffer;
 
   factory Sniffer.fromJson(Map<String, Object?> json) =>
@@ -159,7 +168,8 @@ List<String> _formJsonPorts(List<dynamic>? ports) {
 abstract class SnifferConfig with _$SnifferConfig {
   const factory SnifferConfig({
     @Default([]) @JsonKey(fromJson: _formJsonPorts) List<String> ports,
-    @JsonKey(name: 'override-destination') bool? overrideDest,
+    @JsonKey(name: 'override-destination', includeIfNull: false)
+    bool? overrideDest,
   }) = _SnifferConfig;
 
   factory SnifferConfig.fromJson(Map<String, Object?> json) =>
@@ -171,7 +181,9 @@ abstract class Tun with _$Tun {
   const factory Tun({
     @Default(false) bool enable,
     @Default(appName) String device,
-    @JsonKey(name: 'auto-route') @Default(false) bool autoRoute,
+    // Runtime always recomputes this via TunExt.getRealTun (empty routeAddress
+    // -> true). Default true here keeps exported YAML and UI state coherent.
+    @JsonKey(name: 'auto-route') @Default(true) bool autoRoute,
     @Default(TunStack.mixed) TunStack stack,
     @JsonKey(name: 'dns-hijack') @Default(['any:53']) List<String> dnsHijack,
     @JsonKey(name: 'route-address') @Default([]) List<String> routeAddress,
@@ -213,7 +225,10 @@ abstract class Dns with _$Dns {
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    @Default(['tls://8.8.8.8:853', 'tls://1.1.1.1:853'])
+    // Bootstrap layer — resolves DoH/DoT hostnames before the proxy is up.
+    // Must be plain IPs (no scheme): DoT/DoH here is either redundant (same
+    // bare IP) or fails cert validation on IP SAN.
+    @Default(['1.1.1.1', '8.8.8.8', '9.9.9.9'])
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
     @Default(DnsMode.fakeIp)
@@ -222,12 +237,19 @@ abstract class Dns with _$Dns {
     @Default('198.18.0.1/16')
     @JsonKey(name: 'fake-ip-range')
     String fakeIpRange,
+    // Hosts that must resolve to real IPs (not fake-IP) — Android
+    // captive-portal probes, Google Update CDN, NTP. Without these the
+    // OS marks the network as "no internet" within ~3s.
     @Default([
       '*.lan',
       '*.local',
       '*.arpa',
       'connectivitycheck.gstatic.com',
-      'clients3.google.com',
+      'connectivitycheck.android.com',
+      'www.google.com',
+      '+.gvt1.com',
+      '+.gvt2.com',
+      'time.android.com',
     ])
     @JsonKey(name: 'fake-ip-filter')
     List<String> fakeIpFilter,

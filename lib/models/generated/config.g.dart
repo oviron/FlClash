@@ -17,7 +17,7 @@ _AppSettingProps _$AppSettingPropsFromJson(
   inAppLogsEnabled: json['openLogs'] as bool? ?? false,
   logcatLevel:
       $enumDecodeNullable(_$LogLevelEnumMap, json['logcatLevel']) ??
-      LogLevel.debug,
+      LogLevel.info,
   fileLogLevel:
       $enumDecodeNullable(_$LogLevelEnumMap, json['fileLogLevel']) ??
       LogLevel.info,
