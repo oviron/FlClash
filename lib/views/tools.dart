@@ -13,6 +13,7 @@ import 'package:fl_clash/views/config/network.dart';
 import 'package:fl_clash/views/config/rules.dart';
 import 'package:fl_clash/views/config/scripts.dart';
 import 'package:fl_clash/views/privacy.dart';
+import 'package:fl_clash/views/resources.dart';
 import 'package:fl_clash/views/setting/byedpi.dart';
 import 'package:fl_clash/views/setting/logging.dart';
 import 'package:fl_clash/views/setting/network_rules.dart';
@@ -81,6 +82,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
       items: const [
         _CoreItem(),
         _DnsItem(),
+        _GeoDatabasesItem(),
         _RoutingRulesItem(),
         _ScriptsItem(),
       ],
@@ -94,30 +96,6 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     );
   }
 
-  List<Widget> _privacySection() {
-    return generateSection(
-      title: Intl.message('Privacy & Security', name: 'privacyAndSecurity'),
-      items: const [_PrivacyItem()],
-    );
-  }
-
-  List<Widget> _backupSection() {
-    return generateSection(
-      title: context.appLocalizations.backupAndRestore,
-      items: const [_BackupItem()],
-    );
-  }
-
-  List<Widget> _aboutSection(bool enableDeveloperMode) {
-    return generateSection(
-      title: context.appLocalizations.about,
-      items: [
-        if (enableDeveloperMode) const _DeveloperItem(),
-        const _InfoItem(),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final vm2 = ref.watch(
@@ -126,27 +104,33 @@ class _ToolViewState extends ConsumerState<ToolsView> {
       ),
     );
     final items = [
+      ..._appearanceSection(),
+      ..._connectionSection(),
+      ..._engineSection(),
+      ..._applicationSection(),
+      const _PrivacyItem(),
+      const Divider(height: 0),
+      const _BackupItem(),
+      const Divider(height: 0),
+      if (vm2.b) const _DeveloperItem(),
+      if (vm2.b) const Divider(height: 0),
+      const _InfoItem(),
       Consumer(
         builder: (_, ref, _) {
           final state = ref.watch(moreToolsSelectorStateProvider);
           if (state.navigationItems.isEmpty) {
-            return Container();
+            return const SizedBox.shrink();
           }
           return Column(
             children: [
-              ListHeader(title: context.appLocalizations.more),
+              ListHeader(
+                title: Intl.message('Diagnostics', name: 'diagnostics'),
+              ),
               _buildNavigationMenu(state.navigationItems),
             ],
           );
         },
       ),
-      ..._appearanceSection(),
-      ..._connectionSection(),
-      ..._engineSection(),
-      ..._applicationSection(),
-      ..._privacySection(),
-      ..._backupSection(),
-      ..._aboutSection(vm2.b),
     ];
     return CommonScaffold(
       title: context.appLocalizations.tools,
@@ -344,6 +328,25 @@ class _ScriptsItem extends StatelessWidget {
   }
 }
 
+class _GeoDatabasesItem extends StatelessWidget {
+  const _GeoDatabasesItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem.open(
+      leading: const Icon(Icons.public_outlined),
+      title: Text(Intl.message('Geo databases', name: 'geoDatabases')),
+      subtitle: Text(
+        Intl.message(
+          'GeoIP, GeoSite, MMDB, ASN updaters',
+          name: 'geoDatabasesDesc',
+        ),
+      ),
+      delegate: const OpenDelegate(widget: ResourcesView()),
+    );
+  }
+}
+
 class _LoggingItem extends StatelessWidget {
   const _LoggingItem();
 
@@ -365,7 +368,7 @@ class _SettingItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.open(
       leading: const Icon(Icons.settings),
-      title: Text(context.appLocalizations.application),
+      title: Text(Intl.message('General settings', name: 'generalSettings')),
       subtitle: Text(context.appLocalizations.applicationDesc),
       delegate: const OpenDelegate(widget: ApplicationSettingView()),
     );

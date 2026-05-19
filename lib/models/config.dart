@@ -65,7 +65,6 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(defaultDashboardWidgets)
     @JsonKey(fromJson: dashboardWidgetsSafeFormJson)
     List<DashboardWidget> dashboardWidgets,
-    @Default(false) bool autoLaunch,
     @Default(false) bool autoRun,
     @JsonKey(name: 'openLogs') @Default(false) bool inAppLogsEnabled,
     @Default(LogLevel.debug) LogLevel logcatLevel,

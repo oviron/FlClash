@@ -8,7 +8,6 @@ import 'dashboard/dashboard.dart';
 import 'logs.dart';
 import 'profiles/profiles.dart';
 import 'proxies/proxies.dart';
-import 'resources.dart';
 import 'tools.dart';
 
 class Navigation {
@@ -53,14 +52,6 @@ class Navigation {
         builder: (_) =>
             const ConnectionsView(key: GlobalObjectKey(PageLabel.connections)),
         description: 'connectionsDesc',
-        isMore: true,
-      ),
-      NavigationItem(
-        icon: const Icon(Icons.storage),
-        label: PageLabel.resources,
-        description: 'resourcesDesc',
-        builder: (_) =>
-            const ResourcesView(key: GlobalObjectKey(PageLabel.resources)),
         isMore: true,
       ),
       NavigationItem(

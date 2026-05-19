@@ -13,7 +13,6 @@ _AppSettingProps _$AppSettingPropsFromJson(
   dashboardWidgets: json['dashboardWidgets'] == null
       ? defaultDashboardWidgets
       : dashboardWidgetsSafeFormJson(json['dashboardWidgets'] as List?),
-  autoLaunch: json['autoLaunch'] as bool? ?? false,
   autoRun: json['autoRun'] as bool? ?? false,
   inAppLogsEnabled: json['openLogs'] as bool? ?? false,
   logcatLevel:
@@ -42,7 +41,6 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'dashboardWidgets': instance.dashboardWidgets
           .map((e) => _$DashboardWidgetEnumMap[e]!)
           .toList(),
-      'autoLaunch': instance.autoLaunch,
       'autoRun': instance.autoRun,
       'openLogs': instance.inAppLogsEnabled,
       'logcatLevel': _$LogLevelEnumMap[instance.logcatLevel]!,

@@ -6,6 +6,7 @@ import 'package:fl_clash/views/logs.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class LoggingView extends ConsumerStatefulWidget {
   const LoggingView({super.key});
@@ -105,18 +106,6 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
                   .update((s) => s.copyWith(fileLogLevel: v));
             },
           ),
-          ListItem(
-            leading: const Icon(Icons.folder_outlined),
-            title: Text(appLocalizations.loggingFilePathLabel),
-            subtitle: SelectableText(
-              _logDirectory == null ? '…' : '$_logDirectory/debug.log',
-              style: context.textTheme.bodySmall,
-            ),
-          ),
-          ListItem(
-            leading: const Icon(Icons.refresh),
-            title: Text(appLocalizations.loggingFileRotationHint),
-          ),
           const Divider(height: 0),
           _section(appLocalizations.loggingInAppSection),
           ListItem.switchItem(
@@ -132,17 +121,44 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
               },
             ),
           ),
-          ListItem.open(
-            leading: const Icon(Icons.list_alt),
-            title: Text(appLocalizations.loggingOpenViewer),
-            delegate: const OpenDelegate(widget: LogsView()),
-          ),
           const Divider(height: 0),
+          ExpansionTile(
+            title: Text(Intl.message('Details', name: 'detailsSection')),
+            tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+            childrenPadding: EdgeInsets.zero,
+            children: [
+              ListItem(
+                leading: const Icon(Icons.folder_outlined),
+                title: Text(appLocalizations.loggingFilePathLabel),
+                subtitle: SelectableText(
+                  _logDirectory == null ? '…' : '$_logDirectory/debug.log',
+                  style: context.textTheme.bodySmall,
+                ),
+              ),
+              ListItem(
+                leading: const Icon(Icons.refresh),
+                title: Text(appLocalizations.loggingFileRotationHint),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                child: SelectableText(
+                  appLocalizations.loggingHintAdb,
+                  style: context.textTheme.bodySmall,
+                ),
+              ),
+            ],
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-            child: SelectableText(
-              appLocalizations.loggingHintAdb,
-              style: context.textTheme.bodySmall,
+            child: SizedBox(
+              width: double.infinity,
+              child: FilledButton.tonalIcon(
+                onPressed: () {
+                  BaseNavigator.push(context, const LogsView());
+                },
+                icon: const Icon(Icons.list_alt),
+                label: Text(appLocalizations.loggingOpenViewer),
+              ),
             ),
           ),
         ],

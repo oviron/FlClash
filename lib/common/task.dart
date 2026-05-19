@@ -115,7 +115,7 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   rawConfig['socks-port'] = realPatchConfig.socksPort;
   rawConfig['redir-port'] = realPatchConfig.redirPort;
   rawConfig['tproxy-port'] = realPatchConfig.tproxyPort;
-  // YAML-set find-process-mode wins; only fall back to UI value if absent.
+  // YAML-set find-process-mode wins; fall back to UI value (FlClash enum is {always, off}, default always).
   rawConfig['find-process-mode'] ??= realPatchConfig.findProcessMode.name;
   rawConfig['allow-lan'] = realPatchConfig.allowLan;
   rawConfig['mode'] = realPatchConfig.mode.name;

@@ -99,54 +99,6 @@ class HostsItem extends ConsumerWidget {
   }
 }
 
-class Ipv6Item extends ConsumerWidget {
-  const Ipv6Item({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final ipv6 = ref.watch(
-      patchClashConfigProvider.select((state) => state.ipv6),
-    );
-    return ListItem.switchItem(
-      leading: const Icon(Icons.water_outlined),
-      title: Text(Intl.message('IPv6 (engine)', name: 'ipv6Engine')),
-      subtitle: Text(appLocalizations.ipv6Desc),
-      delegate: SwitchDelegate(
-        value: ipv6,
-        onChanged: (bool value) async {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith(ipv6: value));
-        },
-      ),
-    );
-  }
-}
-
-class AppendSystemDNSItem extends ConsumerWidget {
-  const AppendSystemDNSItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final appendSystemDNS = ref.watch(
-      networkSettingProvider.select((state) => state.appendSystemDns),
-    );
-    return ListItem.switchItem(
-      leading: const Icon(Icons.dns_outlined),
-      title: Text(appLocalizations.appendSystemDns),
-      subtitle: Text(appLocalizations.appendSystemDnsTip),
-      delegate: SwitchDelegate(
-        value: appendSystemDNS,
-        onChanged: (bool value) async {
-          ref
-              .read(networkSettingProvider.notifier)
-              .update((state) => state.copyWith(appendSystemDns: value));
-        },
-      ),
-    );
-  }
-}
-
 class AllowLanItem extends ConsumerWidget {
   const AllowLanItem({super.key});
 
@@ -181,7 +133,6 @@ class FindProcessItem extends ConsumerWidget {
         (state) => state.findProcessMode == FindProcessMode.always,
       ),
     );
-
     return ListItem.switchItem(
       leading: const Icon(Icons.polymer_outlined),
       title: Text(appLocalizations.findProcessMode),
@@ -261,16 +212,26 @@ class GeodataLoaderItem extends ConsumerWidget {
 }
 
 final generalItems = <Widget>[
-  const TestUrlItem(),
-  const PortItem(),
-  const HostsItem(),
-  const Ipv6Item(),
-  const AllowLanItem(),
-  const AppendSystemDNSItem(),
-  const FindProcessItem(),
-  const TcpConcurrentItem(),
-  const GeodataLoaderItem(),
-].separated(const Divider(height: 0)).toList();
+  ...<Widget>[
+    const TestUrlItem(),
+    const TcpConcurrentItem(),
+    const HostsItem(),
+  ].separated(const Divider(height: 0)),
+  ExpansionTile(
+    title: Text(Intl.message('Advanced', name: 'advanced')),
+    childrenPadding: EdgeInsets.zero,
+    tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+    children: <Widget>[
+      const FindProcessItem(),
+      const Divider(height: 0),
+      const AllowLanItem(),
+      const Divider(height: 0),
+      const GeodataLoaderItem(),
+      const Divider(height: 0),
+      const PortItem(),
+    ],
+  ),
+];
 
 class _PortDialog extends ConsumerStatefulWidget {
   const _PortDialog();

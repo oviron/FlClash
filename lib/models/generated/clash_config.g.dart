@@ -165,16 +165,25 @@ _FallbackFilter _$FallbackFilterFromJson(
   Map<String, dynamic> json,
 ) => _FallbackFilter(
   geoip: json['geoip'] as bool? ?? true,
-  geoipCode: json['geoip-code'] as String? ?? 'CN',
+  geoipCode: json['geoip-code'] as String? ?? 'RU',
   geosite:
       (json['geosite'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['gfw'],
+      const <String>[],
   ipcidr:
       (json['ipcidr'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['240.0.0.0/4'],
+      const ['0.0.0.0/32', '127.0.0.1/32', '240.0.0.0/4'],
   domain:
       (json['domain'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['+.google.com', '+.facebook.com', '+.youtube.com'],
+      const [
+        '+.openai.com',
+        '+.anthropic.com',
+        '+.x.com',
+        '+.twitter.com',
+        '+.instagram.com',
+        '+.facebook.com',
+        '+.meta.com',
+        '+.linkedin.com',
+      ],
 );
 
 Map<String, dynamic> _$FallbackFilterToJson(_FallbackFilter instance) =>
@@ -198,7 +207,7 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
       (json['default-nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['tls://8.8.8.8:853', 'tls://1.1.1.1:853'],
+      const ['9.9.9.9', '149.112.112.112'],
   enhancedMode:
       $enumDecodeNullable(_$DnsModeEnumMap, json['enhanced-mode']) ??
       DnsMode.fakeIp,
@@ -207,7 +216,13 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
       (json['fake-ip-filter'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['*.lan', '*.local', '*.arpa'],
+      const [
+        '*.lan',
+        '*.local',
+        '*.arpa',
+        'connectivitycheck.gstatic.com',
+        'clients3.google.com',
+      ],
   nameserverPolicy:
       (json['nameserver-policy'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),

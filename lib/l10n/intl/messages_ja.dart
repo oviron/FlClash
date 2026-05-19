@@ -116,6 +116,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "accessControlSettings": MessageLookupByLibrary.simpleMessage("アクセス制御設定"),
     "account": MessageLookupByLibrary.simpleMessage("アカウント"),
     "action": MessageLookupByLibrary.simpleMessage("アクション"),
+    "advanced": MessageLookupByLibrary.simpleMessage("詳細設定"),
     "action_mode": MessageLookupByLibrary.simpleMessage("モード切替"),
     "action_proxy": MessageLookupByLibrary.simpleMessage("システムプロキシ"),
     "action_start": MessageLookupByLibrary.simpleMessage("開始/停止"),
@@ -285,6 +286,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "delete": MessageLookupByLibrary.simpleMessage("削除"),
     "deleteMultipTip": m1,
     "deleteTip": m2,
+    "detailsSection": MessageLookupByLibrary.simpleMessage("詳細"),
+    "diagnostics": MessageLookupByLibrary.simpleMessage("診断"),
+    "dnsCoreSection": MessageLookupByLibrary.simpleMessage("コア"),
+    "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
+    "dnsFallbackLegacy": MessageLookupByLibrary.simpleMessage(
+      "中国 / フォールバック (レガシー)",
+    ),
+    "dnsServersSection": MessageLookupByLibrary.simpleMessage("サーバー"),
     "desc": MessageLookupByLibrary.simpleMessage(
       "ClashMetaベースのマルチプラットフォームプロキシクライアント。シンプルで使いやすく、オープンソースで広告なし。",
     ),
@@ -299,6 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
       "デベロッパーモードが有効になりました。",
     ),
+    "diagnostics": MessageLookupByLibrary.simpleMessage("診断"),
     "direct": MessageLookupByLibrary.simpleMessage("ダイレクト"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("免責事項"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
@@ -348,6 +358,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "forkOf": m6,
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("フルーツサラダ"),
     "general": MessageLookupByLibrary.simpleMessage("一般"),
+    "generalSettings": MessageLookupByLibrary.simpleMessage("一般設定"),
+    "geoDatabases": MessageLookupByLibrary.simpleMessage("Geo データベース"),
+    "geoDatabasesDesc": MessageLookupByLibrary.simpleMessage(
+      "GeoIP, GeoSite, MMDB, ASN の更新",
+    ),
     "geodataLoader": MessageLookupByLibrary.simpleMessage("Geo低メモリモード"),
     "geodataLoaderDesc": MessageLookupByLibrary.simpleMessage(
       "有効化するとGeo低メモリローダーを使用",
@@ -393,6 +408,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "ipcidr": MessageLookupByLibrary.simpleMessage("IPCIDR"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage("有効化するとIPv6トラフィックを受信可能"),
     "ipv6InboundDesc": MessageLookupByLibrary.simpleMessage("IPv6インバウンドを許可"),
+    "ipv6ModeCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
+    "ipv6ModeOff": MessageLookupByLibrary.simpleMessage("オフ"),
+    "ipv6ModeSyncOn": MessageLookupByLibrary.simpleMessage("同期 ON"),
     "ja": MessageLookupByLibrary.simpleMessage("日本語"),
     "justNow": MessageLookupByLibrary.simpleMessage("たった今"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage(
@@ -401,6 +419,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "key": MessageLookupByLibrary.simpleMessage("キー"),
     "language": MessageLookupByLibrary.simpleMessage("言語"),
     "layout": MessageLookupByLibrary.simpleMessage("レイアウト"),
+    "legalAndDisclaimer": MessageLookupByLibrary.simpleMessage("法務と免責事項"),
     "light": MessageLookupByLibrary.simpleMessage("ライト"),
     "list": MessageLookupByLibrary.simpleMessage("リスト"),
     "listen": MessageLookupByLibrary.simpleMessage("リスン"),
