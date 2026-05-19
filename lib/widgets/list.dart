@@ -1,5 +1,4 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/foundation.dart';
@@ -38,26 +37,15 @@ class CheckboxDelegate<T> extends Delegate {
 
 class OpenDelegate<T> extends Delegate {
   final Widget widget;
-  final double? maxWidth;
-  final bool blur;
-  final bool forceFull;
   final ValueChanged<T?>? onChanged;
 
-  const OpenDelegate({
-    required this.widget,
-    this.maxWidth,
-    this.blur = true,
-    this.forceFull = true,
-    this.onChanged,
-  });
+  const OpenDelegate({required this.widget, this.onChanged});
 }
 
 class NextDelegate extends Delegate {
   final Widget widget;
-  final double? maxWidth;
-  final bool blur;
 
-  const NextDelegate({required this.widget, this.maxWidth, this.blur = true});
+  const NextDelegate({required this.widget});
 }
 
 class OptionsDelegate<T> extends Delegate {
@@ -299,15 +287,9 @@ class ListItem<T> extends StatelessWidget {
       return OpenContainer<T>(
         closedBuilder: (_, action) {
           Future<void> openAction() async {
-            final isMobile = appController.isMobile;
-            if (!isMobile || kDebugMode) {
+            if (kDebugMode) {
               final res = await showExtend(
                 context,
-                props: ExtendProps(
-                  blur: openDelegate.blur,
-                  maxWidth: openDelegate.maxWidth,
-                  forceFull: openDelegate.forceFull,
-                ),
                 builder: (_, type) {
                   return child;
                 },
@@ -336,10 +318,6 @@ class ListItem<T> extends StatelessWidget {
         onTap: () {
           showExtend(
             context,
-            props: ExtendProps(
-              blur: nextDelegate.blur,
-              maxWidth: nextDelegate.maxWidth,
-            ),
             builder: (_, type) {
               return child;
             },

@@ -14,7 +14,6 @@ _AppSettingProps _$AppSettingPropsFromJson(
       ? defaultDashboardWidgets
       : dashboardWidgetsSafeFormJson(json['dashboardWidgets'] as List?),
   autoLaunch: json['autoLaunch'] as bool? ?? false,
-  silentLaunch: json['silentLaunch'] as bool? ?? false,
   autoRun: json['autoRun'] as bool? ?? false,
   inAppLogsEnabled: json['openLogs'] as bool? ?? false,
   logcatLevel:
@@ -27,7 +26,6 @@ _AppSettingProps _$AppSettingPropsFromJson(
   closeConnections: json['closeConnections'] as bool? ?? true,
   testUrl: json['testUrl'] as String? ?? defaultTestUrl,
   isAnimateToPage: json['isAnimateToPage'] as bool? ?? true,
-  showLabel: json['showLabel'] as bool? ?? false,
   disclaimerAccepted: json['disclaimerAccepted'] as bool? ?? false,
   minimizeOnExit: json['minimizeOnExit'] as bool? ?? true,
   hidden: json['hidden'] as bool? ?? false,
@@ -35,7 +33,6 @@ _AppSettingProps _$AppSettingPropsFromJson(
   restoreStrategy:
       $enumDecodeNullable(_$RestoreStrategyEnumMap, json['restoreStrategy']) ??
       RestoreStrategy.compatible,
-  showTrayTitle: json['showTrayTitle'] as bool? ?? true,
   includeDavCredsInBackup: json['includeDavCredsInBackup'] as bool? ?? false,
 );
 
@@ -46,7 +43,6 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
           .map((e) => _$DashboardWidgetEnumMap[e]!)
           .toList(),
       'autoLaunch': instance.autoLaunch,
-      'silentLaunch': instance.silentLaunch,
       'autoRun': instance.autoRun,
       'openLogs': instance.inAppLogsEnabled,
       'logcatLevel': _$LogLevelEnumMap[instance.logcatLevel]!,
@@ -55,13 +51,11 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'closeConnections': instance.closeConnections,
       'testUrl': instance.testUrl,
       'isAnimateToPage': instance.isAnimateToPage,
-      'showLabel': instance.showLabel,
       'disclaimerAccepted': instance.disclaimerAccepted,
       'minimizeOnExit': instance.minimizeOnExit,
       'hidden': instance.hidden,
       'developerMode': instance.developerMode,
       'restoreStrategy': _$RestoreStrategyEnumMap[instance.restoreStrategy]!,
-      'showTrayTitle': instance.showTrayTitle,
       'includeDavCredsInBackup': instance.includeDavCredsInBackup,
     };
 
@@ -133,21 +127,6 @@ const _$AccessSortTypeEnumMap = {
   AccessSortType.name: 'name',
   AccessSortType.time: 'time',
 };
-
-_WindowProps _$WindowPropsFromJson(Map<String, dynamic> json) => _WindowProps(
-  width: (json['width'] as num?)?.toDouble() ?? 0,
-  height: (json['height'] as num?)?.toDouble() ?? 0,
-  top: (json['top'] as num?)?.toDouble(),
-  left: (json['left'] as num?)?.toDouble(),
-);
-
-Map<String, dynamic> _$WindowPropsToJson(_WindowProps instance) =>
-    <String, dynamic>{
-      'width': instance.width,
-      'height': instance.height,
-      'top': instance.top,
-      'left': instance.left,
-    };
 
 _VpnProps _$VpnPropsFromJson(Map<String, dynamic> json) => _VpnProps(
   enable: json['enable'] as bool? ?? true,
@@ -348,9 +327,6 @@ _Config _$ConfigFromJson(Map<String, dynamic> json) => _Config(
       : ProxiesStyleProps.fromJson(
           json['proxiesStyleProps'] as Map<String, dynamic>?,
         ),
-  windowProps: json['windowProps'] == null
-      ? defaultWindowProps
-      : WindowProps.fromJson(json['windowProps'] as Map<String, dynamic>?),
   patchClashConfig: json['patchClashConfig'] == null
       ? defaultClashConfig
       : ClashConfig.fromJson(json['patchClashConfig'] as Map<String, dynamic>),
@@ -371,7 +347,6 @@ Map<String, dynamic> _$ConfigToJson(_Config instance) => <String, dynamic>{
   'vpnProps': instance.vpnProps,
   'themeProps': instance.themeProps,
   'proxiesStyleProps': instance.proxiesStyleProps,
-  'windowProps': instance.windowProps,
   'patchClashConfig': instance.patchClashConfig,
   'networkRulesProps': instance.networkRulesProps,
 };

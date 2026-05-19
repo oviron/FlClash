@@ -60,11 +60,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
       } else {
         _conditionKind = _ConditionKind.anyCellular;
       }
-      // Legacy `keep` actions degrade to turnOn so the user can still edit
-      // and re-save the rule under the new two-action model.
-      _action = initial.action == NetworkAction.keep
-          ? NetworkAction.turnOn
-          : initial.action;
+      _action = initial.action;
     }
   }
 

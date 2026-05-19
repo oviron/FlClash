@@ -61,6 +61,58 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("О программе"),
+    "appearance": MessageLookupByLibrary.simpleMessage("Внешний вид"),
+    "confirmDeleteWebDAV": MessageLookupByLibrary.simpleMessage(
+      "Удалить настройки WebDAV?",
+    ),
+    "engine": MessageLookupByLibrary.simpleMessage("Движок"),
+    "hideFromRecents": MessageLookupByLibrary.simpleMessage(
+      "Прятать из недавних задач",
+    ),
+    "hideFromRecentsDesc": MessageLookupByLibrary.simpleMessage(
+      "Иконка не показывается в списке недавних приложений, когда оно уходит в фон",
+    ),
+    "privacyAndSecurity": MessageLookupByLibrary.simpleMessage(
+      "Приватность и безопасность",
+    ),
+    "restoreOnlyProfiles": MessageLookupByLibrary.simpleMessage(
+      "Восстановить только профили",
+    ),
+    "aclSaveDroppedUninstalled": MessageLookupByLibrary.simpleMessage(
+      "Удалено N не-установленных приложений из списка",
+    ),
+    "byedpiAttribution": MessageLookupByLibrary.simpleMessage(
+      "разработка hufrea (MIT)",
+    ),
+    "comingSoon": MessageLookupByLibrary.simpleMessage("Скоро"),
+    "coreDesc": MessageLookupByLibrary.simpleMessage(
+      "Порты, IPv6, hosts, find-process, geodata loader, test URL",
+    ),
+    "crashReporting": MessageLookupByLibrary.simpleMessage("Отчёты о сбоях"),
+    "developerModeDesc": MessageLookupByLibrary.simpleMessage(
+      "Добавляет экран разработчика с диагностическими действиями.",
+    ),
+    "dnsBehaviorSection": MessageLookupByLibrary.simpleMessage("Поведение"),
+    "dnsResolversSection": MessageLookupByLibrary.simpleMessage("Резолверы"),
+    "dnsServerSection": MessageLookupByLibrary.simpleMessage("Сервер"),
+    "ipv6DnsQueries": MessageLookupByLibrary.simpleMessage(
+      "IPv6 (DNS-запросы)",
+    ),
+    "ipv6Engine": MessageLookupByLibrary.simpleMessage("IPv6 (движок)"),
+    "ipv6Inbound": MessageLookupByLibrary.simpleMessage("IPv6 (VPN inbound)"),
+    "launchAndBackground": MessageLookupByLibrary.simpleMessage("Запуск и фон"),
+    "resetSection": MessageLookupByLibrary.simpleMessage("Сброс"),
+    "routeAddressBypassPrivateHint": MessageLookupByLibrary.simpleMessage(
+      "Не используется в режиме Bypass private",
+    ),
+    "routingRules": MessageLookupByLibrary.simpleMessage(
+      "Правила маршрутизации",
+    ),
+    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage(
+      "Сторонние компоненты",
+    ),
+    "userInterface": MessageLookupByLibrary.simpleMessage("Интерфейс"),
+    "vpnSettings": MessageLookupByLibrary.simpleMessage("Настройки VPN"),
     "accessControl": MessageLookupByLibrary.simpleMessage("Контроль доступа"),
     "accessControlAllowDesc": MessageLookupByLibrary.simpleMessage(
       "Разрешить только выбранным приложениям доступ к VPN",
@@ -95,12 +147,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "addressHelp": MessageLookupByLibrary.simpleMessage("Адрес сервера WebDAV"),
     "addressTip": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, введите действительный адрес WebDAV",
-    ),
-    "advancedConfig": MessageLookupByLibrary.simpleMessage(
-      "Расширенная конфигурация",
-    ),
-    "advancedConfigDesc": MessageLookupByLibrary.simpleMessage(
-      "Предоставляет разнообразные варианты конфигурации",
     ),
     "agree": MessageLookupByLibrary.simpleMessage("Согласен"),
     "allowBypass": MessageLookupByLibrary.simpleMessage(
@@ -168,10 +214,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage(
       "Резервное копирование успешно",
-    ),
-    "basicConfig": MessageLookupByLibrary.simpleMessage("Базовая конфигурация"),
-    "basicConfigDesc": MessageLookupByLibrary.simpleMessage(
-      "Глобальное изменение базовых настроек",
     ),
     "bind": MessageLookupByLibrary.simpleMessage("Привязать"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage(
@@ -355,12 +397,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("Английский"),
     "entries": MessageLookupByLibrary.simpleMessage(" записей"),
-    "exclude": MessageLookupByLibrary.simpleMessage(
-      "Прятать из недавних задач",
-    ),
-    "excludeDesc": MessageLookupByLibrary.simpleMessage(
-      "Иконка не показывается в списке недавних приложений, когда оно уходит в фон",
-    ),
     "existsTip": m5,
     "exit": MessageLookupByLibrary.simpleMessage("Выход"),
     "expand": MessageLookupByLibrary.simpleMessage("Стандартный"),
@@ -818,9 +854,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreFromWebDAVDesc": MessageLookupByLibrary.simpleMessage(
       "Восстановить данные через WebDAV",
     ),
-    "restoreOnlyConfig": MessageLookupByLibrary.simpleMessage(
-      "Восстановить только файлы конфигурации",
-    ),
     "restoreStrategy": MessageLookupByLibrary.simpleMessage(
       "Стратегия восстановления",
     ),
@@ -866,10 +899,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
-    "silentLaunch": MessageLookupByLibrary.simpleMessage("Тихий запуск"),
-    "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
-      "Запуск в фоновом режиме",
-    ),
     "size": MessageLookupByLibrary.simpleMessage("Размер"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks-порт"),
     "sort": MessageLookupByLibrary.simpleMessage("Сортировка"),
@@ -937,12 +966,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "turnOff": MessageLookupByLibrary.simpleMessage("Выключить"),
     "turnOn": MessageLookupByLibrary.simpleMessage("Включить"),
     "undo": MessageLookupByLibrary.simpleMessage("Отменить"),
-    "unifiedDelay": MessageLookupByLibrary.simpleMessage(
-      "Унифицированная задержка",
-    ),
-    "unifiedDelayDesc": MessageLookupByLibrary.simpleMessage(
-      "Убрать дополнительные задержки, такие как рукопожатие",
-    ),
     "unknown": MessageLookupByLibrary.simpleMessage("Неизвестно"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Неизвестная сетевая ошибка",

@@ -55,6 +55,48 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("关于"),
+    "appearance": MessageLookupByLibrary.simpleMessage("外观"),
+    "confirmDeleteWebDAV": MessageLookupByLibrary.simpleMessage(
+      "删除 WebDAV 配置？",
+    ),
+    "engine": MessageLookupByLibrary.simpleMessage("引擎"),
+    "hideFromRecents": MessageLookupByLibrary.simpleMessage(
+      "Hide from recents",
+    ),
+    "hideFromRecentsDesc": MessageLookupByLibrary.simpleMessage(
+      "App icon does not appear in the recent apps list while the app is in background",
+    ),
+    "privacyAndSecurity": MessageLookupByLibrary.simpleMessage("隐私与安全"),
+    "restoreOnlyProfiles": MessageLookupByLibrary.simpleMessage("仅恢复订阅"),
+    "aclSaveDroppedUninstalled": MessageLookupByLibrary.simpleMessage(
+      "已从列表中移除 N 个未安装的应用",
+    ),
+    "byedpiAttribution": MessageLookupByLibrary.simpleMessage(
+      "由 hufrea 开发 (MIT)",
+    ),
+    "comingSoon": MessageLookupByLibrary.simpleMessage("即将推出"),
+    "coreDesc": MessageLookupByLibrary.simpleMessage(
+      "端口、IPv6、hosts、find-process、geodata loader、test URL",
+    ),
+    "crashReporting": MessageLookupByLibrary.simpleMessage("崩溃报告"),
+    "developerModeDesc": MessageLookupByLibrary.simpleMessage(
+      "添加包含诊断操作的开发者屏幕。",
+    ),
+    "dnsBehaviorSection": MessageLookupByLibrary.simpleMessage("行为"),
+    "dnsResolversSection": MessageLookupByLibrary.simpleMessage("解析器"),
+    "dnsServerSection": MessageLookupByLibrary.simpleMessage("服务器"),
+    "ipv6DnsQueries": MessageLookupByLibrary.simpleMessage("IPv6 (DNS 查询)"),
+    "ipv6Engine": MessageLookupByLibrary.simpleMessage("IPv6 (引擎)"),
+    "ipv6Inbound": MessageLookupByLibrary.simpleMessage("IPv6 (VPN 入站)"),
+    "launchAndBackground": MessageLookupByLibrary.simpleMessage("启动与后台"),
+    "resetSection": MessageLookupByLibrary.simpleMessage("重置"),
+    "routeAddressBypassPrivateHint": MessageLookupByLibrary.simpleMessage(
+      "Bypass private 模式下不使用",
+    ),
+    "routingRules": MessageLookupByLibrary.simpleMessage("路由规则"),
+    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage("第三方说明"),
+    "userInterface": MessageLookupByLibrary.simpleMessage("用户界面"),
+    "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN 设置"),
     "accessControl": MessageLookupByLibrary.simpleMessage("访问控制"),
     "accessControlAllowDesc": MessageLookupByLibrary.simpleMessage(
       "只允许选中应用进入VPN",
@@ -82,8 +124,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "address": MessageLookupByLibrary.simpleMessage("地址"),
     "addressHelp": MessageLookupByLibrary.simpleMessage("WebDAV服务器地址"),
     "addressTip": MessageLookupByLibrary.simpleMessage("请输入有效的WebDAV地址"),
-    "advancedConfig": MessageLookupByLibrary.simpleMessage("进阶配置"),
-    "advancedConfigDesc": MessageLookupByLibrary.simpleMessage("提供多样化配置"),
     "agree": MessageLookupByLibrary.simpleMessage("同意"),
     "allowBypass": MessageLookupByLibrary.simpleMessage("允许应用绕过VPN"),
     "allowBypassDesc": MessageLookupByLibrary.simpleMessage("开启后部分应用可绕过VPN"),
@@ -123,8 +163,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "通过WebDAV或者文件同步数据",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage("备份成功"),
-    "basicConfig": MessageLookupByLibrary.simpleMessage("基本配置"),
-    "basicConfigDesc": MessageLookupByLibrary.simpleMessage("全局修改基本配置"),
     "bind": MessageLookupByLibrary.simpleMessage("绑定"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("黑名单模式"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI 命令行参数"),
@@ -249,10 +287,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("英语"),
     "entries": MessageLookupByLibrary.simpleMessage("个条目"),
-    "exclude": MessageLookupByLibrary.simpleMessage("Hide from recents"),
-    "excludeDesc": MessageLookupByLibrary.simpleMessage(
-      "App icon does not appear in the recent apps list while the app is in background",
-    ),
     "existsTip": m5,
     "exit": MessageLookupByLibrary.simpleMessage("退出"),
     "expand": MessageLookupByLibrary.simpleMessage("标准"),
@@ -554,7 +588,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreFromWebDAVDesc": MessageLookupByLibrary.simpleMessage(
       "通过WebDAV恢复数据",
     ),
-    "restoreOnlyConfig": MessageLookupByLibrary.simpleMessage("仅恢复配置文件"),
     "restoreStrategy": MessageLookupByLibrary.simpleMessage("恢复策略"),
     "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage("兼容"),
     "restoreStrategy_override": MessageLookupByLibrary.simpleMessage("覆盖"),
@@ -584,10 +617,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings": MessageLookupByLibrary.simpleMessage("设置"),
     "show": MessageLookupByLibrary.simpleMessage("显示"),
     "shrink": MessageLookupByLibrary.simpleMessage("紧凑"),
-    "silentLaunch": MessageLookupByLibrary.simpleMessage("Silent launch"),
-    "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
-      "Start in the background",
-    ),
     "size": MessageLookupByLibrary.simpleMessage("尺寸"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks端口"),
     "sort": MessageLookupByLibrary.simpleMessage("排序"),
@@ -641,8 +670,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "turnOff": MessageLookupByLibrary.simpleMessage("关闭"),
     "turnOn": MessageLookupByLibrary.simpleMessage("开启"),
     "undo": MessageLookupByLibrary.simpleMessage("撤销"),
-    "unifiedDelay": MessageLookupByLibrary.simpleMessage("统一延迟"),
-    "unifiedDelayDesc": MessageLookupByLibrary.simpleMessage("去除握手等额外延迟"),
     "unknown": MessageLookupByLibrary.simpleMessage("未知"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("未知网络错误"),
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),

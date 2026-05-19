@@ -138,10 +138,6 @@ extension StateControllerExt on AppController {
     return _ref.read(configProvider);
   }
 
-  bool get isMobile {
-    return _ref.read(isMobileViewProvider);
-  }
-
   bool get isStart {
     return _ref.read(isStartProvider);
   }
@@ -150,9 +146,7 @@ extension StateControllerExt on AppController {
     return _ref.read(groupsProvider);
   }
 
-  String get ua => _ref.read(patchClashConfigProvider).globalUa.takeFirstValid([
-    globalState.packageInfo.ua,
-  ]);
+  String get ua => globalState.packageInfo.ua;
 
   Mode get mode => _ref.read(patchClashConfigProvider).mode;
 
@@ -816,9 +810,7 @@ extension CoreControllerExt on AppController {
 
 extension SystemControllerExt on AppController {
   Future<List<Package>> getPackages() async {
-    if (_ref.read(isMobileViewProvider)) {
-      await Future.delayed(commonDuration);
-    }
+    await Future.delayed(commonDuration);
     if (_ref.read(packagesProvider).isEmpty) {
       _ref.read(packagesProvider.notifier).value =
           await app?.getPackages() ?? [];
@@ -916,8 +908,6 @@ extension SystemControllerExt on AppController {
         .update((state) => state.copyWith(autoLaunch: !state.autoLaunch));
   }
 
-  Future<void> updateTray() async {}
-
   Future<void> updateLocalIp() async {
     _ref.read(localIpProvider.notifier).value = null;
     await Future.delayed(commonDuration);
@@ -1010,7 +1000,6 @@ extension BackupControllerExt on AppController {
           config.currentProfileId;
       _ref.read(davSettingProvider.notifier).value = config.davProps;
       _ref.read(themeSettingProvider.notifier).value = config.themeProps;
-      _ref.read(windowSettingProvider.notifier).value = config.windowProps;
       _ref.read(vpnSettingProvider.notifier).value = config.vpnProps;
       _ref.read(proxiesStyleSettingProvider.notifier).value =
           config.proxiesStyleProps;
@@ -1068,12 +1057,6 @@ extension CommonControllerExt on AppController {
 
   void updateStart() {
     updateStatus(!_ref.read(isStartProvider));
-  }
-
-  void updateSpeedStatistics() {
-    _ref
-        .read(appSettingProvider.notifier)
-        .update((state) => state.copyWith(showTrayTitle: !state.showTrayTitle));
   }
 
   void updateMode() {

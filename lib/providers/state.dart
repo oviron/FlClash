@@ -65,15 +65,10 @@ NavigationItemsState navigationItemsState(Ref ref) {
 
 @riverpod
 NavigationItemsState currentNavigationItemsState(Ref ref) {
-  final viewWidth = ref.watch(viewWidthProvider);
   final navigationItemsState = ref.watch(navigationItemsStateProvider);
-  final navigationItemMode = switch (viewWidth <= maxMobileWidth) {
-    true => NavigationItemMode.mobile,
-    false => NavigationItemMode.desktop,
-  };
   return NavigationItemsState(
     value: navigationItemsState.value
-        .where((element) => element.modes.contains(navigationItemMode))
+        .where((element) => element.visible && !element.isMore)
         .toList(),
   );
 }
@@ -93,7 +88,6 @@ UpdateParams updateParams(Ref ref) {
         logLevel: state.logLevel,
         ipv6: state.ipv6,
         tcpConcurrent: state.tcpConcurrent,
-        unifiedDelay: state.unifiedDelay,
         mixedPort: state.mixedPort,
       ),
     ),
@@ -120,52 +114,6 @@ ProxyState proxyState(Ref ref) {
 }
 
 @riverpod
-TrayState trayState(Ref ref) {
-  final isStart = ref.watch(runTimeProvider.select((state) => state != null));
-  final systemProxy = ref.watch(
-    networkSettingProvider.select((state) => state.systemProxy),
-  );
-  final clashConfigVm3 = ref.watch(
-    patchClashConfigProvider.select(
-      (state) => VM3(state.mode, state.mixedPort, state.tun.enable),
-    ),
-  );
-  final appSettingVm3 = ref.watch(
-    appSettingProvider.select(
-      (state) => VM3(state.autoLaunch, state.locale, state.showTrayTitle),
-    ),
-  );
-  final groups = ref.watch(currentGroupsStateProvider).value;
-  final brightness = ref.watch(systemBrightnessProvider);
-  final selectedMap = ref.watch(selectedMapProvider);
-
-  return TrayState(
-    mode: clashConfigVm3.a,
-    port: clashConfigVm3.b,
-    autoLaunch: appSettingVm3.a,
-    systemProxy: systemProxy,
-    tunEnable: clashConfigVm3.c,
-    isStart: isStart,
-    locale: appSettingVm3.b,
-    brightness: brightness,
-    groups: groups,
-    selectedMap: selectedMap,
-    showTrayTitle: appSettingVm3.c,
-  );
-}
-
-@riverpod
-TrayTitleState trayTitleState(Ref ref) {
-  final showTrayTitle = ref.watch(
-    appSettingProvider.select((state) => state.showTrayTitle),
-  );
-  final traffic = ref.watch(
-    trafficsProvider.select((state) => state.list.safeLast(const Traffic())),
-  );
-  return TrayTitleState(showTrayTitle: showTrayTitle, traffic: traffic);
-}
-
-@riverpod
 VpnState vpnState(Ref ref) {
   final vpnProps = ref.watch(vpnSettingProvider);
   final stack = ref.watch(
@@ -178,7 +126,6 @@ VpnState vpnState(Ref ref) {
 NavigationState navigationState(Ref ref) {
   final pageLabel = ref.watch(currentPageLabelProvider);
   final navigationItems = ref.watch(currentNavigationItemsStateProvider).value;
-  final viewMode = ref.watch(viewModeProvider);
   final locale = ref.watch(appSettingProvider).locale;
   final index = navigationItems.lastIndexWhere(
     (element) => element.label == pageLabel,
@@ -187,7 +134,6 @@ NavigationState navigationState(Ref ref) {
   return NavigationState(
     pageLabel: pageLabel,
     navigationItems: navigationItems,
-    viewMode: viewMode,
     locale: locale,
     currentIndex: currentIndex,
   );
@@ -195,9 +141,7 @@ NavigationState navigationState(Ref ref) {
 
 @riverpod
 double contentWidth(Ref ref) {
-  final viewWidth = ref.watch(viewWidthProvider);
-  final sideWidth = ref.watch(sideWidthProvider);
-  return viewWidth - sideWidth;
+  return ref.watch(viewWidthProvider);
 }
 
 @riverpod
@@ -363,39 +307,15 @@ PackageListSelectorState packageListSelectorState(Ref ref) {
 
 @riverpod
 MoreToolsSelectorState moreToolsSelectorState(Ref ref) {
-  final viewMode = ref.watch(viewModeProvider);
   final navigationItems = ref.watch(
     navigationItemsStateProvider.select((state) {
-      return state.value.where((element) {
-        final isMore = element.modes.contains(NavigationItemMode.more);
-        final isDesktop = element.modes.contains(NavigationItemMode.desktop);
-        if (isMore && !isDesktop) return true;
-        if (viewMode != ViewMode.mobile || !isMore) {
-          return false;
-        }
-        return true;
-      }).toList();
+      return state.value
+          .where((element) => element.visible && element.isMore)
+          .toList();
     }),
   );
 
   return MoreToolsSelectorState(navigationItems: navigationItems);
-}
-
-@riverpod
-bool isCurrentPage(
-  Ref ref,
-  PageLabel pageLabel, {
-  bool Function(PageLabel pageLabel, ViewMode viewMode)? handler,
-}) {
-  final currentPageLabel = ref.watch(currentPageLabelProvider);
-  if (pageLabel == currentPageLabel) {
-    return true;
-  }
-  if (handler != null) {
-    final viewMode = ref.watch(viewModeProvider);
-    return handler(currentPageLabel, viewMode);
-  }
-  return false;
 }
 
 @riverpod

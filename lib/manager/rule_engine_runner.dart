@@ -66,10 +66,6 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
 
       final action = evaluate(rules: rules, snapshot: snap);
       if (action == null) return;
-      // Legacy data may still carry NetworkAction.keep. The redesigned
-      // UI never produces it, but old persisted rows do. Treat as no
-      // opinion rather than coercing the VPN either way.
-      if (action == NetworkAction.keep) return;
 
       final desiredOn = action == NetworkAction.turnOn;
       final isOn = ref.read(isStartProvider);

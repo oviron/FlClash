@@ -15,7 +15,7 @@ class VPNItem extends ConsumerWidget {
       vpnSettingProvider.select((state) => state.enable),
     );
     return ListItem.switchItem(
-      title: const Text('VPN'),
+      title: Text(Intl.message('VPN', name: 'vpn')),
       subtitle: Text(appLocalizations.vpnEnableDesc),
       delegate: SwitchDelegate(
         value: enable,
@@ -82,7 +82,7 @@ class Ipv6Item extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final ipv6 = ref.watch(vpnSettingProvider.select((state) => state.ipv6));
     return ListItem.switchItem(
-      title: const Text('IPv6'),
+      title: Text(Intl.message('IPv6 (VPN inbound)', name: 'ipv6Inbound')),
       subtitle: Text(appLocalizations.ipv6InboundDesc),
       delegate: SwitchDelegate(
         value: ipv6,
@@ -138,7 +138,6 @@ class BypassDomainItem extends ConsumerWidget {
       title: Text(appLocalizations.bypassDomain),
       subtitle: Text(appLocalizations.bypassDomainDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.bypassDomain,
           items: bypassDomain,
@@ -217,18 +216,27 @@ class RouteAddressItem extends ConsumerWidget {
         (state) => state.routeMode == RouteMode.bypassPrivate,
       ),
     );
-    if (bypassPrivate) {
-      return Container();
-    }
     final routeAddress = ref.watch(
       patchClashConfigProvider.select((state) => state.tun.routeAddress),
     );
+    if (bypassPrivate) {
+      return ListItem(
+        title: Text(
+          appLocalizations.routeAddress,
+          style: TextStyle(color: Theme.of(context).disabledColor),
+        ),
+        subtitle: Text(
+          Intl.message(
+            'Not used in Bypass private mode',
+            name: 'routeAddressBypassPrivateHint',
+          ),
+        ),
+      );
+    }
     return ListItem.open(
       title: Text(appLocalizations.routeAddress),
       subtitle: Text(appLocalizations.routeAddressDesc),
       delegate: OpenDelegate(
-        blur: false,
-        maxWidth: 360,
         widget: ListInputPage(
           title: appLocalizations.routeAddress,
           items: routeAddress,
@@ -249,7 +257,7 @@ class RouteAddressItem extends ConsumerWidget {
 final networkItems = [
   const VPNItem(),
   ...generateSection(
-    title: 'VPN',
+    title: Intl.message('VPN', name: 'vpn'),
     items: [
       const VpnSystemProxyItem(),
       const BypassDomainItem(),

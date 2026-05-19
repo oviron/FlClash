@@ -9,6 +9,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -212,7 +213,17 @@ class _AccessViewState extends ConsumerState<AccessView> {
 
   Future<void> _handleSave() async {
     final accessControl = ref.read(accessControlStateProvider);
-    await _persist(_getRealAccessControlProps(accessControl));
+    final real = _getRealAccessControlProps(accessControl);
+    final droppedCount =
+        accessControl.currentList.length - real.currentList.length;
+    if (droppedCount > 0 && mounted) {
+      final template = Intl.message(
+        'Removed N uninstalled app(s) from list',
+        name: 'aclSaveDroppedUninstalled',
+      );
+      context.showNotifier(template.replaceFirst('N', droppedCount.toString()));
+    }
+    await _persist(real);
   }
 
   Widget _buildConfirm() {

@@ -119,36 +119,10 @@ abstract class NetworkDetectionState with _$NetworkDetectionState {
 }
 
 @freezed
-abstract class TrayState with _$TrayState {
-  const factory TrayState({
-    required Mode mode,
-    required int port,
-    required bool autoLaunch,
-    required bool systemProxy,
-    required bool tunEnable,
-    required bool isStart,
-    required String? locale,
-    required Brightness? brightness,
-    required List<Group> groups,
-    required Map<String, String> selectedMap,
-    required bool showTrayTitle,
-  }) = _TrayState;
-}
-
-@freezed
-abstract class TrayTitleState with _$TrayTitleState {
-  const factory TrayTitleState({
-    required Traffic traffic,
-    required bool showTrayTitle,
-  }) = _TrayTitleState;
-}
-
-@freezed
 abstract class NavigationState with _$NavigationState {
   const factory NavigationState({
     required PageLabel pageLabel,
     required List<NavigationItem> navigationItems,
-    required ViewMode viewMode,
     required String? locale,
     required int currentIndex,
   }) = _NavigationState;

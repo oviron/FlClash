@@ -1,43 +1,17 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:flutter/material.dart';
 
 import 'scaffold.dart';
-import 'side_sheet.dart';
 
 @immutable
 class SheetProps {
-  final double? maxWidth;
-  final double? maxHeight;
   final bool isScrollControlled;
   final bool useSafeArea;
-  final bool blur;
 
-  const SheetProps({
-    this.maxWidth,
-    this.maxHeight,
-    this.useSafeArea = true,
-    this.isScrollControlled = false,
-    this.blur = true,
-  });
+  const SheetProps({this.useSafeArea = true, this.isScrollControlled = false});
 }
 
-@immutable
-class ExtendProps {
-  final double? maxWidth;
-  final bool useSafeArea;
-  final bool blur;
-  final bool forceFull;
-
-  const ExtendProps({
-    this.maxWidth,
-    this.useSafeArea = true,
-    this.blur = true,
-    this.forceFull = false,
-  });
-}
-
-enum SheetType { page, bottomSheet, sideSheet }
+enum SheetType { page, bottomSheet }
 
 typedef SheetBuilder = Widget Function(BuildContext context, SheetType type);
 
@@ -46,48 +20,22 @@ Future<T?> showSheet<T>({
   required SheetBuilder builder,
   SheetProps props = const SheetProps(),
 }) {
-  final isMobile = appController.isMobile;
-  return switch (isMobile) {
-    true => showModalBottomSheet<T>(
-      context: context,
-      isScrollControlled: props.isScrollControlled,
-      builder: (_) {
-        return builder(context, SheetType.bottomSheet);
-      },
-      showDragHandle: false,
-      useSafeArea: props.useSafeArea,
-    ),
-    false => showModalSideSheet<T>(
-      useSafeArea: props.useSafeArea,
-      isScrollControlled: props.isScrollControlled,
-      context: context,
-      constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
-      filter: props.blur ? commonFilter : null,
-      builder: (_) {
-        return builder(context, SheetType.sideSheet);
-      },
-    ),
-  };
+  return showModalBottomSheet<T>(
+    context: context,
+    isScrollControlled: props.isScrollControlled,
+    builder: (_) {
+      return builder(context, SheetType.bottomSheet);
+    },
+    showDragHandle: false,
+    useSafeArea: props.useSafeArea,
+  );
 }
 
 Future<T?> showExtend<T>(
   BuildContext context, {
   required SheetBuilder builder,
-  ExtendProps props = const ExtendProps(),
 }) {
-  final isMobile = appController.isMobile;
-  return switch (isMobile || props.forceFull) {
-    true => BaseNavigator.push(context, builder(context, SheetType.page)),
-    false => showModalSideSheet<T>(
-      useSafeArea: props.useSafeArea,
-      context: context,
-      constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
-      filter: props.blur ? commonFilter : null,
-      builder: (context) {
-        return builder(context, SheetType.sideSheet);
-      },
-    ),
-  };
+  return BaseNavigator.push(context, builder(context, SheetType.page));
 }
 
 class AdaptiveSheetScaffold extends StatefulWidget {
@@ -115,22 +63,14 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
   Widget build(BuildContext context) {
     final backgroundColor = context.colorScheme.surface;
     final bottomSheet = widget.type == SheetType.bottomSheet;
-    final sideSheet = widget.type == SheetType.sideSheet;
     final appBar = AppBar(
-      forceMaterialTransparency: bottomSheet ? true : false,
-      automaticallyImplyLeading: bottomSheet
-          ? false
-          : widget.actions.isEmpty && sideSheet
-          ? false
-          : true,
+      forceMaterialTransparency: bottomSheet,
+      automaticallyImplyLeading: !bottomSheet,
       centerTitle:
           widget.centerTitle ?? (bottomSheet && widget.actions.isEmpty),
       backgroundColor: backgroundColor,
       title: Text(widget.title),
-      actions: genActions([
-        if (widget.actions.isEmpty && sideSheet) const CloseButton(),
-        ...widget.actions,
-      ]),
+      actions: genActions(widget.actions),
     );
     if (bottomSheet) {
       const handleSize = Size(32, 4);

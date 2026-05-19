@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/common.dart';
-import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -154,7 +153,6 @@ class _EditorPageState extends ConsumerState<EditorPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isMobileView = ref.watch(isMobileViewProvider);
     return CommonPopScope(
       onPop: (context) async {
         if (widget.onPop == null) {
@@ -209,8 +207,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
                 targetBuilder: (open) {
                   return IconButton(
                     onPressed: () {
-                      final isMobile = ref.read(isMobileViewProvider);
-                      open(offset: Offset(0, isMobile ? 0 : 20));
+                      open(offset: Offset.zero);
                     },
                     icon: const Icon(Icons.more_vert),
                   );
@@ -257,11 +254,8 @@ class _EditorPageState extends ConsumerState<EditorPage> {
           readOnly: readOnly,
           autofocus: false,
           findController: _findController,
-          findBuilder: (context, controller, readOnly) => FindPanel(
-            controller: controller,
-            readOnly: readOnly,
-            isMobileView: isMobileView,
-          ),
+          findBuilder: (context, controller, readOnly) =>
+              FindPanel(controller: controller, readOnly: readOnly),
           padding: const EdgeInsets.only(right: 16),
           autocompleteSymbols: true,
           focusNode: _focusNode,
@@ -317,19 +311,13 @@ const double _kDefaultFindPanelHeight = 52;
 class FindPanel extends StatelessWidget implements PreferredSizeWidget {
   final CodeFindController controller;
   final bool readOnly;
-  final bool isMobileView;
-  final double height;
+  static const double height = _kDefaultFindPanelHeight * 2 + 8;
 
   const FindPanel({
     super.key,
     required this.controller,
     required this.readOnly,
-    required this.isMobileView,
-  }) : height =
-           (isMobileView
-               ? _kDefaultFindPanelHeight * 2
-               : _kDefaultFindPanelHeight) +
-           8;
+  });
 
   @override
   Size get preferredSize =>
@@ -362,13 +350,6 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (!isMobileView) ...[
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 360),
-              child: _buildFindInput(context, value),
-            ),
-            const SizedBox(width: 12),
-          ],
           Text(result, style: context.textTheme.bodyMedium),
           Expanded(
             child: Row(
@@ -402,18 +383,15 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
     );
-    if (isMobileView) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          bar,
-          const SizedBox(height: 4),
-          _buildFindInput(context, value),
-        ],
-      );
-    }
-    return bar;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        bar,
+        const SizedBox(height: 4),
+        _buildFindInput(context, value),
+      ],
+    );
   }
 
   Widget _buildFindInput(BuildContext context, CodeFindValue value) {

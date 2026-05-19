@@ -6,33 +6,7 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-class UaItem extends ConsumerWidget {
-  const UaItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final globalUa = ref.watch(
-      patchClashConfigProvider.select((state) => state.globalUa),
-    );
-    return ListItem<String?>.options(
-      leading: const Icon(Icons.computer_outlined),
-      title: const Text('UA'),
-      subtitle: Text(globalUa ?? appLocalizations.defaultText),
-      delegate: OptionsDelegate<String?>(
-        title: 'UA',
-        options: [null, 'clash-verge/v2.4.2', 'ClashforWindows/0.19.23'],
-        value: globalUa,
-        onChanged: (value) {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith(globalUa: value));
-        },
-        textBuilder: (ua) => ua ?? appLocalizations.defaultText,
-      ),
-    );
-  }
-}
+import 'package:intl/intl.dart';
 
 class TestUrlItem extends ConsumerWidget {
   const TestUrlItem({super.key});
@@ -103,14 +77,14 @@ class HostsItem extends ConsumerWidget {
     final hosts = ref.watch(
       patchClashConfigProvider.select((state) => state.hosts),
     );
+    final hostsLabel = Intl.message('Hosts', name: 'hosts');
     return ListItem.open(
       leading: const Icon(Icons.view_list_outlined),
-      title: const Text('Hosts'),
+      title: Text(hostsLabel),
       subtitle: Text(appLocalizations.hostsDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: MapInputPage(
-          title: 'Hosts',
+          title: hostsLabel,
           map: hosts,
           titleBuilder: (item) => Text(item.key),
           subtitleBuilder: (item) => Text(item.value),
@@ -135,7 +109,7 @@ class Ipv6Item extends ConsumerWidget {
     );
     return ListItem.switchItem(
       leading: const Icon(Icons.water_outlined),
-      title: const Text('IPv6'),
+      title: Text(Intl.message('IPv6 (engine)', name: 'ipv6Engine')),
       subtitle: Text(appLocalizations.ipv6Desc),
       delegate: SwitchDelegate(
         value: ipv6,
@@ -191,31 +165,6 @@ class AllowLanItem extends ConsumerWidget {
           ref
               .read(patchClashConfigProvider.notifier)
               .update((state) => state.copyWith(allowLan: value));
-        },
-      ),
-    );
-  }
-}
-
-class UnifiedDelayItem extends ConsumerWidget {
-  const UnifiedDelayItem({super.key});
-
-  @override
-  Widget build(BuildContext context, ref) {
-    final unifiedDelay = ref.watch(
-      patchClashConfigProvider.select((state) => state.unifiedDelay),
-    );
-
-    return ListItem.switchItem(
-      leading: const Icon(Icons.compress_outlined),
-      title: Text(appLocalizations.unifiedDelay),
-      subtitle: Text(appLocalizations.unifiedDelayDesc),
-      delegate: SwitchDelegate(
-        value: unifiedDelay,
-        onChanged: (bool value) async {
-          ref
-              .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith(unifiedDelay: value));
         },
       ),
     );
@@ -312,13 +261,11 @@ class GeodataLoaderItem extends ConsumerWidget {
 }
 
 final generalItems = <Widget>[
-  const UaItem(),
   const TestUrlItem(),
   const PortItem(),
   const HostsItem(),
   const Ipv6Item(),
   const AllowLanItem(),
-  const UnifiedDelayItem(),
   const AppendSystemDNSItem(),
   const FindProcessItem(),
   const TcpConcurrentItem(),

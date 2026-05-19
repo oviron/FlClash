@@ -4,6 +4,7 @@ import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class OverrideItem extends ConsumerWidget {
   const OverrideItem({super.key});
@@ -89,7 +90,7 @@ class PreferH3Item extends ConsumerWidget {
       patchClashConfigProvider.select((state) => state.dns.preferH3),
     );
     return ListItem.switchItem(
-      title: const Text('PreferH3'),
+      title: Text(Intl.message('Prefer H3', name: 'preferH3')),
       subtitle: Text(appLocalizations.preferH3Desc),
       delegate: SwitchDelegate(
         value: preferH3,
@@ -112,7 +113,7 @@ class IPv6Item extends ConsumerWidget {
       patchClashConfigProvider.select((state) => state.dns.ipv6),
     );
     return ListItem.switchItem(
-      title: const Text('IPv6'),
+      title: Text(Intl.message('IPv6 (DNS queries)', name: 'ipv6DnsQueries')),
       delegate: SwitchDelegate(
         value: ipv6,
         onChanged: (bool value) async {
@@ -221,7 +222,6 @@ class FakeIpFilterItem extends ConsumerWidget {
     return ListItem.open(
       title: Text(appLocalizations.fakeipFilter),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.fakeipFilter,
           items: fakeIpFilter,
@@ -251,7 +251,6 @@ class DefaultNameserverItem extends ConsumerWidget {
       title: Text(appLocalizations.defaultNameserver),
       subtitle: Text(appLocalizations.defaultNameserverDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.defaultNameserver,
           items: defaultNameserver,
@@ -282,7 +281,6 @@ class NameserverItem extends ConsumerWidget {
       title: Text(appLocalizations.nameserver),
       subtitle: Text(appLocalizations.nameserverDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.nameserver,
           items: nameserver,
@@ -356,7 +354,6 @@ class NameserverPolicyItem extends ConsumerWidget {
       title: Text(appLocalizations.nameserverPolicy),
       subtitle: Text(appLocalizations.nameserverPolicyDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: MapInputPage(
           title: appLocalizations.nameserverPolicy,
           map: nameserverPolicy,
@@ -387,7 +384,6 @@ class ProxyServerNameserverItem extends ConsumerWidget {
       title: Text(appLocalizations.proxyNameserver),
       subtitle: Text(appLocalizations.proxyNameserverDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.proxyNameserver,
           items: proxyServerNameserver,
@@ -418,7 +414,6 @@ class FallbackItem extends ConsumerWidget {
       title: Text(appLocalizations.fallback),
       subtitle: Text(appLocalizations.fallbackDesc),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.fallback,
           items: fallback,
@@ -447,7 +442,7 @@ class GeoipItem extends ConsumerWidget {
       ),
     );
     return ListItem.switchItem(
-      title: const Text('Geoip'),
+      title: Text(Intl.message('Geo IP', name: 'geoip')),
       delegate: SwitchDelegate(
         value: geoip,
         onChanged: (bool value) async {
@@ -509,12 +504,12 @@ class GeositeItem extends ConsumerWidget {
         (state) => state.dns.fallbackFilter.geosite,
       ),
     );
+    final geositeLabel = Intl.message('Geo Site', name: 'geosite');
     return ListItem.open(
-      title: const Text('Geosite'),
+      title: Text(geositeLabel),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
-          title: 'Geosite',
+          title: geositeLabel,
           items: geosite,
           titleBuilder: (item) => Text(item),
         ),
@@ -545,7 +540,6 @@ class IpcidrItem extends ConsumerWidget {
     return ListItem.open(
       title: Text(appLocalizations.ipcidr),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.ipcidr,
           items: ipcidr,
@@ -577,7 +571,6 @@ class DomainItem extends ConsumerWidget {
     return ListItem.open(
       title: Text(appLocalizations.domain),
       delegate: OpenDelegate(
-        blur: false,
         widget: ListInputPage(
           title: appLocalizations.domain,
           items: domain,
@@ -596,30 +589,60 @@ class DomainItem extends ConsumerWidget {
   }
 }
 
-class DnsOptions extends StatelessWidget {
-  const DnsOptions({super.key});
+class DnsServerSection extends StatelessWidget {
+  const DnsServerSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: generateSection(
-        title: appLocalizations.options,
-        items: [
-          const StatusItem(),
-          const ListenItem(),
-          const UseHostsItem(),
-          const UseSystemHostsItem(),
-          const IPv6Item(),
-          const RespectRulesItem(),
-          const PreferH3Item(),
-          const DnsModeItem(),
-          const FakeIpRangeItem(),
-          const FakeIpFilterItem(),
-          const DefaultNameserverItem(),
-          const NameserverPolicyItem(),
-          const NameserverItem(),
-          const FallbackItem(),
-          const ProxyServerNameserverItem(),
+        title: Intl.message('Server', name: 'dnsServerSection'),
+        items: const [
+          StatusItem(),
+          ListenItem(),
+          DnsModeItem(),
+          FakeIpRangeItem(),
+          FakeIpFilterItem(),
+        ],
+      ),
+    );
+  }
+}
+
+class DnsResolversSection extends StatelessWidget {
+  const DnsResolversSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: generateSection(
+        title: Intl.message('Resolvers', name: 'dnsResolversSection'),
+        items: const [
+          DefaultNameserverItem(),
+          NameserverItem(),
+          FallbackItem(),
+          ProxyServerNameserverItem(),
+          NameserverPolicyItem(),
+        ],
+      ),
+    );
+  }
+}
+
+class DnsBehaviorSection extends StatelessWidget {
+  const DnsBehaviorSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: generateSection(
+        title: Intl.message('Behavior', name: 'dnsBehaviorSection'),
+        items: const [
+          RespectRulesItem(),
+          PreferH3Item(),
+          IPv6Item(),
+          UseHostsItem(),
+          UseSystemHostsItem(),
         ],
       ),
     );
@@ -648,7 +671,9 @@ class FallbackFilterOptions extends StatelessWidget {
 
 const dnsItems = <Widget>[
   OverrideItem(),
-  DnsOptions(),
+  DnsServerSection(),
+  DnsResolversSection(),
+  DnsBehaviorSection(),
   FallbackFilterOptions(),
 ];
 

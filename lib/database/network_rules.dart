@@ -12,7 +12,7 @@ class NetworkRules extends Table {
   /// JSON-encoded `List<NetworkCondition>`.
   TextColumn get conditions => text()();
 
-  /// Stored as `NetworkAction.index` (0=turnOn, 1=turnOff, 2=keep).
+  /// Stored as `NetworkAction.index` (0=turnOn, 1=turnOff).
   IntColumn get action => integer()();
 
   IntColumn get priority => integer()();
@@ -91,7 +91,9 @@ extension RawNetworkRuleExt on RawNetworkRule {
       id: id,
       name: name,
       conditions: NetworkConditionListCodec.decode(conditions),
-      action: NetworkAction.values[action],
+      action: action < NetworkAction.values.length
+          ? NetworkAction.values[action]
+          : NetworkAction.turnOn,
       priority: priority,
       enabled: enabled,
     );

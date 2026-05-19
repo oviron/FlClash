@@ -52,19 +52,6 @@ class DeveloperView extends ConsumerWidget {
             },
           ),
         ListItem(
-          title: Text(appLocalizations.clearData),
-          minVerticalPadding: 12,
-          onTap: () async {
-            final res = await globalState.showMessage(
-              message: TextSpan(text: appLocalizations.confirmClearAllData),
-            );
-            if (res != true) {
-              return;
-            }
-            await appController.handleClear();
-          },
-        ),
-        ListItem(
           title: Text(appLocalizations.pruneCache),
           minVerticalPadding: 12,
           onTap: () {

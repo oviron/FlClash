@@ -18,8 +18,8 @@ abstract class NavigationItem with _$NavigationItem {
     required WidgetBuilder builder,
     @Default(true) bool keep,
     String? path,
-    @Default([NavigationItemMode.mobile, NavigationItemMode.desktop])
-    List<NavigationItemMode> modes,
+    @Default(true) bool visible,
+    @Default(false) bool isMore,
   }) = _NavigationItem;
 }
 
@@ -257,10 +257,6 @@ extension TrafficExt on Traffic {
 
   String get desc {
     return '${up.traffic.show} ↑ ${down.traffic.show} ↓';
-  }
-
-  String get trayTitle {
-    return '${up.shortTraffic.show}/s \n ${down.shortTraffic.show}/s';
   }
 
   num get speed => up + down;

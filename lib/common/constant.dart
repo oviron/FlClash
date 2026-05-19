@@ -52,8 +52,6 @@ const configKey = 'config';
 const double dialogCommonWidth = 300;
 const repository = 'oviron/FlClash';
 const upstreamRepository = 'chen08209/FlClash';
-const maxMobileWidth = 600;
-const maxLaptopWidth = 840;
 const defaultTestUrl = 'https://www.gstatic.com/generate_204';
 
 // Separate endpoint for DIRECT outbound delay test. Microsoft NCSI is a

@@ -29,11 +29,6 @@ class RuleCard extends ConsumerWidget {
         return appLocalizations.networkRulesActionShortOn;
       case NetworkAction.turnOff:
         return appLocalizations.networkRulesActionShortOff;
-      case NetworkAction.keep:
-        // Legacy data only — UI never creates this any more. Render as a
-        // muted dash so the user can tell the rule still exists and edit
-        // it to a real action.
-        return '—';
     }
   }
 
@@ -44,8 +39,6 @@ class RuleCard extends ConsumerWidget {
         return scheme.primary;
       case NetworkAction.turnOff:
         return scheme.error;
-      case NetworkAction.keep:
-        return scheme.outline;
     }
   }
 

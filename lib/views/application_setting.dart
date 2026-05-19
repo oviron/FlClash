@@ -1,5 +1,7 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -74,29 +76,6 @@ class AutoLaunchItem extends ConsumerWidget {
   }
 }
 
-class SilentLaunchItem extends ConsumerWidget {
-  const SilentLaunchItem({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final silentLaunch = ref.watch(
-      appSettingProvider.select((state) => state.silentLaunch),
-    );
-    return ListItem.switchItem(
-      title: Text(appLocalizations.silentLaunch),
-      subtitle: Text(appLocalizations.silentLaunchDesc),
-      delegate: SwitchDelegate(
-        value: silentLaunch,
-        onChanged: (bool value) {
-          ref
-              .read(appSettingProvider.notifier)
-              .update((state) => state.copyWith(silentLaunch: value));
-        },
-      ),
-    );
-  }
-}
-
 class AutoRunItem extends ConsumerWidget {
   const AutoRunItem({super.key});
 
@@ -114,29 +93,6 @@ class AutoRunItem extends ConsumerWidget {
           ref
               .read(appSettingProvider.notifier)
               .update((state) => state.copyWith(autoRun: value));
-        },
-      ),
-    );
-  }
-}
-
-class HiddenItem extends ConsumerWidget {
-  const HiddenItem({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final hidden = ref.watch(
-      appSettingProvider.select((state) => state.hidden),
-    );
-    return ListItem.switchItem(
-      title: Text(appLocalizations.exclude),
-      subtitle: Text(appLocalizations.excludeDesc),
-      delegate: SwitchDelegate(
-        value: hidden,
-        onChanged: (value) {
-          ref
-              .read(appSettingProvider.notifier)
-              .update((state) => state.copyWith(hidden: value));
         },
       ),
     );
@@ -166,6 +122,25 @@ class AnimateTabItem extends ConsumerWidget {
   }
 }
 
+class ClearDataItem extends ConsumerWidget {
+  const ClearDataItem({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListItem(
+      leading: const Icon(Icons.delete_forever_outlined),
+      title: Text(context.appLocalizations.clearData),
+      onTap: () async {
+        final res = await globalState.showMessage(
+          message: TextSpan(text: context.appLocalizations.confirmClearAllData),
+        );
+        if (res != true) return;
+        await appController.handleClear();
+      },
+    );
+  }
+}
+
 class ApplicationSettingView extends StatelessWidget {
   const ApplicationSettingView({super.key});
 
@@ -176,24 +151,29 @@ class ApplicationSettingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> items = [
-      const MinimizeItem(),
-      const AutoLaunchItem(),
-      const AutoRunItem(),
-      const HiddenItem(),
-      const AnimateTabItem(),
-      const CloseConnectionsItem(),
+    final appLocalizations = context.appLocalizations;
+    final items = <Widget>[
+      ...generateSection(
+        title: Intl.message('Launch & background', name: 'launchAndBackground'),
+        items: const [AutoLaunchItem(), AutoRunItem(), MinimizeItem()],
+      ),
+      ...generateSection(
+        title: Intl.message('Connection', name: 'connection'),
+        items: const [CloseConnectionsItem()],
+      ),
+      ...generateSection(
+        title: Intl.message('User interface', name: 'userInterface'),
+        items: const [AnimateTabItem()],
+      ),
+      ...generateSection(
+        title: Intl.message('Reset', name: 'resetSection'),
+        items: const [ClearDataItem()],
+      ),
     ];
     return BaseScaffold(
       title: appLocalizations.application,
-      body: ListView.separated(
-        itemBuilder: (_, index) {
-          final item = items[index];
-          return item;
-        },
-        separatorBuilder: (_, _) {
-          return const Divider(height: 0);
-        },
+      body: ListView.builder(
+        itemBuilder: (_, index) => items[index],
         itemCount: items.length,
       ),
     );

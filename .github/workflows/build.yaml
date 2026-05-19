@@ -48,6 +48,24 @@ jobs:
             exit 1
           fi
 
+      - name: DCM check-unused-code
+        run: |
+          out=$(dart run dart_code_linter:metrics check-unused-code lib 2>&1)
+          echo "$out"
+          if echo "$out" | grep -q "✖ total unused"; then
+            echo "::error::dart_code_linter found unused code"
+            exit 1
+          fi
+
+      - name: DCM check-unused-files
+        run: |
+          out=$(dart run dart_code_linter:metrics check-unused-files lib 2>&1)
+          echo "$out"
+          if echo "$out" | grep -q "✖ total unused files"; then
+            echo "::error::dart_code_linter found unused files"
+            exit 1
+          fi
+
       - name: Flutter test
         run: flutter test --no-pub --reporter=expanded
 
@@ -84,6 +102,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
+    # Pull requests get lint+secrets only (under 5 min). Full APK matrix runs
+    # on push to main and on version tags, where it gates the release.
+    if: github.event_name != 'pull_request'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     needs: lint
