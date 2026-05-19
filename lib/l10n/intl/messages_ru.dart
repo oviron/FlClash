@@ -515,9 +515,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "ipv6InboundDesc": MessageLookupByLibrary.simpleMessage(
       "Разрешить входящий IPv6",
     ),
-    "ipv6ModeCustom": MessageLookupByLibrary.simpleMessage("Раздельно"),
-    "ipv6ModeOff": MessageLookupByLibrary.simpleMessage("Выкл"),
-    "ipv6ModeSyncOn": MessageLookupByLibrary.simpleMessage("Синхр. ВКЛ"),
     "ja": MessageLookupByLibrary.simpleMessage("Японский"),
     "justNow": MessageLookupByLibrary.simpleMessage("Только что"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage(
@@ -971,7 +968,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "themeMode": MessageLookupByLibrary.simpleMessage("Режим темы"),
     "tight": MessageLookupByLibrary.simpleMessage("Плотный"),
     "time": MessageLookupByLibrary.simpleMessage("Время"),
-    "tip": MessageLookupByLibrary.simpleMessage("подсказка"),
+    "tip": MessageLookupByLibrary.simpleMessage("Подсказка"),
     "toggle": MessageLookupByLibrary.simpleMessage("Переключить"),
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("Тональный акцент"),
     "tools": MessageLookupByLibrary.simpleMessage("Инструменты"),

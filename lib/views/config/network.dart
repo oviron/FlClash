@@ -1,6 +1,9 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/models/clash_config.dart';
+import 'package:fl_clash/models/config.dart';
 import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,23 +81,6 @@ class VpnSystemProxyItem extends ConsumerWidget {
 class UnifiedIpv6Item extends ConsumerWidget {
   const UnifiedIpv6Item({super.key});
 
-  Ipv6Mode _resolveMode(bool inbound, bool engine, bool dns) {
-    if (!inbound && !engine && !dns) return Ipv6Mode.off;
-    if (inbound && engine && dns) return Ipv6Mode.syncOn;
-    return Ipv6Mode.custom;
-  }
-
-  String _label(Ipv6Mode mode) {
-    switch (mode) {
-      case Ipv6Mode.off:
-        return Intl.message('Off', name: 'ipv6ModeOff');
-      case Ipv6Mode.syncOn:
-        return Intl.message('Sync ON', name: 'ipv6ModeSyncOn');
-      case Ipv6Mode.custom:
-        return Intl.message('Custom', name: 'ipv6ModeCustom');
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inbound = ref.watch(vpnSettingProvider.select((state) => state.ipv6));
@@ -104,20 +90,18 @@ class UnifiedIpv6Item extends ConsumerWidget {
     final dns = ref.watch(
       patchClashConfigProvider.select((state) => state.dns.ipv6),
     );
-    final mode = _resolveMode(inbound, engine, dns);
-    final ipv6Label = Intl.message('IPv6', name: 'ipv6');
-    return ListItem.options(
+    // Majority vote — keep IPv6 a single switch. If layers were left desynced
+    // (e.g. by an older build or manual YAML edit), the displayed value is the
+    // dominant state and any toggle flip rewrites all three layers.
+    final activeCount = (inbound ? 1 : 0) + (engine ? 1 : 0) + (dns ? 1 : 0);
+    final enable = activeCount >= 2;
+    return ListItem.switchItem(
       leading: const Icon(Icons.public),
-      title: Text(ipv6Label),
-      subtitle: Text(_label(mode)),
-      delegate: OptionsDelegate<Ipv6Mode>(
-        title: ipv6Label,
-        options: Ipv6Mode.values,
-        textBuilder: _label,
-        value: mode,
-        onChanged: (value) {
-          if (value == null || value == Ipv6Mode.custom) return;
-          final next = value == Ipv6Mode.syncOn;
+      title: Text(Intl.message('IPv6', name: 'ipv6')),
+      subtitle: Text(appLocalizations.ipv6Desc),
+      delegate: SwitchDelegate(
+        value: enable,
+        onChanged: (next) {
           ref
               .read(vpnSettingProvider.notifier)
               .update((state) => state.copyWith(ipv6: next));
@@ -323,7 +307,44 @@ final networkItems = [
     ],
   ),
   const _AdvancedNetworkSection(),
+  const _NetworkResetButton(),
 ];
+
+class _NetworkResetButton extends ConsumerWidget {
+  const _NetworkResetButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton.tonalIcon(
+          onPressed: () async {
+            final res = await globalState.showMessage(
+              title: appLocalizations.reset,
+              message: TextSpan(text: appLocalizations.resetTip),
+            );
+            if (res != true) return;
+            ref
+                .read(vpnSettingProvider.notifier)
+                .update(
+                  (state) => const VpnProps().copyWith(enable: state.enable),
+                );
+            ref
+                .read(networkSettingProvider.notifier)
+                .update((_) => const NetworkProps());
+            ref
+                .read(patchClashConfigProvider.notifier)
+                .update((state) => state.copyWith(tun: defaultTun));
+          },
+          icon: const Icon(Icons.replay),
+          label: Text(appLocalizations.reset),
+        ),
+      ),
+    );
+  }
+}
 
 class _AdvancedNetworkSection extends ConsumerWidget {
   const _AdvancedNetworkSection();

@@ -231,7 +231,52 @@ final generalItems = <Widget>[
       const PortItem(),
     ],
   ),
+  const _CoreResetButton(),
 ];
+
+class _CoreResetButton extends ConsumerWidget {
+  const _CoreResetButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton.tonalIcon(
+          onPressed: () async {
+            final res = await globalState.showMessage(
+              title: appLocalizations.reset,
+              message: TextSpan(text: appLocalizations.resetTip),
+            );
+            if (res != true) return;
+            ref
+                .read(appSettingProvider.notifier)
+                .update((state) => state.copyWith(testUrl: defaultTestUrl));
+            ref
+                .read(patchClashConfigProvider.notifier)
+                .update(
+                  (state) => state.copyWith(
+                    hosts: const {},
+                    allowLan: false,
+                    tcpConcurrent: true,
+                    geodataLoader: GeodataLoader.memconservative,
+                    findProcessMode: FindProcessMode.always,
+                    mixedPort: defaultMixedPort,
+                    port: 0,
+                    socksPort: 0,
+                    redirPort: 0,
+                    tproxyPort: 0,
+                  ),
+                );
+          },
+          icon: const Icon(Icons.replay),
+          label: Text(appLocalizations.reset),
+        ),
+      ),
+    );
+  }
+}
 
 class _PortDialog extends ConsumerStatefulWidget {
   const _PortDialog();

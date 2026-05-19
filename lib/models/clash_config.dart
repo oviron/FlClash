@@ -207,19 +207,10 @@ extension TunExt on Tun {
 abstract class FallbackFilter with _$FallbackFilter {
   const factory FallbackFilter({
     @Default(true) bool geoip,
-    @Default('RU') @JsonKey(name: 'geoip-code') String geoipCode,
-    @Default(<String>[]) List<String> geosite,
-    @Default(['0.0.0.0/32', '127.0.0.1/32', '240.0.0.0/4']) List<String> ipcidr,
-    @Default([
-      '+.openai.com',
-      '+.anthropic.com',
-      '+.x.com',
-      '+.twitter.com',
-      '+.instagram.com',
-      '+.facebook.com',
-      '+.meta.com',
-      '+.linkedin.com',
-    ])
+    @Default('CN') @JsonKey(name: 'geoip-code') String geoipCode,
+    @Default(['gfw']) List<String> geosite,
+    @Default(['240.0.0.0/4']) List<String> ipcidr,
+    @Default(['+.google.com', '+.facebook.com', '+.youtube.com'])
     List<String> domain,
   }) = _FallbackFilter;
 
@@ -237,7 +228,7 @@ abstract class Dns with _$Dns {
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    @Default(['9.9.9.9', '149.112.112.112'])
+    @Default(['tls://8.8.8.8:853', 'tls://1.1.1.1:853'])
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
     @Default(DnsMode.fakeIp)

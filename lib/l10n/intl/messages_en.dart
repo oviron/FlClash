@@ -493,9 +493,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "ipv6InboundDesc": MessageLookupByLibrary.simpleMessage(
       "Allow IPv6 inbound",
     ),
-    "ipv6ModeCustom": MessageLookupByLibrary.simpleMessage("Custom"),
-    "ipv6ModeOff": MessageLookupByLibrary.simpleMessage("Off"),
-    "ipv6ModeSyncOn": MessageLookupByLibrary.simpleMessage("Sync ON"),
     "ja": MessageLookupByLibrary.simpleMessage("Japanese"),
     "justNow": MessageLookupByLibrary.simpleMessage("Just now"),
     "keepAliveIntervalDesc": MessageLookupByLibrary.simpleMessage(
