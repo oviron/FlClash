@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppSettingProps {
 
- String? get locale;@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> get dashboardWidgets; bool get autoLaunch; bool get silentLaunch; bool get autoRun;@JsonKey(name: 'openLogs') bool get inAppLogsEnabled; LogLevel get logcatLevel; LogLevel get fileLogLevel; bool get fileLogEnabled; bool get closeConnections; String get testUrl; bool get isAnimateToPage; bool get showLabel; bool get disclaimerAccepted; bool get minimizeOnExit; bool get hidden; bool get developerMode; RestoreStrategy get restoreStrategy; bool get showTrayTitle; bool get includeDavCredsInBackup;
+ String? get locale;@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> get dashboardWidgets; bool get autoLaunch; bool get autoRun;@JsonKey(name: 'openLogs') bool get inAppLogsEnabled; LogLevel get logcatLevel; LogLevel get fileLogLevel; bool get fileLogEnabled; bool get closeConnections; String get testUrl; bool get isAnimateToPage; bool get disclaimerAccepted; bool get minimizeOnExit; bool get hidden; bool get developerMode; RestoreStrategy get restoreStrategy; bool get includeDavCredsInBackup;
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AppSettingPropsCopyWith<AppSettingProps> get copyWith => _$AppSettingPropsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other.dashboardWidgets, dashboardWidgets)&&(identical(other.autoLaunch, autoLaunch) || other.autoLaunch == autoLaunch)&&(identical(other.silentLaunch, silentLaunch) || other.silentLaunch == silentLaunch)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.inAppLogsEnabled, inAppLogsEnabled) || other.inAppLogsEnabled == inAppLogsEnabled)&&(identical(other.logcatLevel, logcatLevel) || other.logcatLevel == logcatLevel)&&(identical(other.fileLogLevel, fileLogLevel) || other.fileLogLevel == fileLogLevel)&&(identical(other.fileLogEnabled, fileLogEnabled) || other.fileLogEnabled == fileLogEnabled)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.showLabel, showLabel) || other.showLabel == showLabel)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.showTrayTitle, showTrayTitle) || other.showTrayTitle == showTrayTitle)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other.dashboardWidgets, dashboardWidgets)&&(identical(other.autoLaunch, autoLaunch) || other.autoLaunch == autoLaunch)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.inAppLogsEnabled, inAppLogsEnabled) || other.inAppLogsEnabled == inAppLogsEnabled)&&(identical(other.logcatLevel, logcatLevel) || other.logcatLevel == logcatLevel)&&(identical(other.fileLogLevel, fileLogLevel) || other.fileLogLevel == fileLogLevel)&&(identical(other.fileLogEnabled, fileLogEnabled) || other.fileLogEnabled == fileLogEnabled)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,locale,const DeepCollectionEquality().hash(dashboardWidgets),autoLaunch,silentLaunch,autoRun,inAppLogsEnabled,logcatLevel,fileLogLevel,fileLogEnabled,closeConnections,testUrl,isAnimateToPage,showLabel,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,showTrayTitle,includeDavCredsInBackup]);
+int get hashCode => Object.hash(runtimeType,locale,const DeepCollectionEquality().hash(dashboardWidgets),autoLaunch,autoRun,inAppLogsEnabled,logcatLevel,fileLogLevel,fileLogEnabled,closeConnections,testUrl,isAnimateToPage,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,includeDavCredsInBackup);
 
 @override
 String toString() {
-  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoLaunch: $autoLaunch, silentLaunch: $silentLaunch, autoRun: $autoRun, inAppLogsEnabled: $inAppLogsEnabled, logcatLevel: $logcatLevel, fileLogLevel: $fileLogLevel, fileLogEnabled: $fileLogEnabled, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, showLabel: $showLabel, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, showTrayTitle: $showTrayTitle, includeDavCredsInBackup: $includeDavCredsInBackup)';
+  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoLaunch: $autoLaunch, autoRun: $autoRun, inAppLogsEnabled: $inAppLogsEnabled, logcatLevel: $logcatLevel, fileLogLevel: $fileLogLevel, fileLogEnabled: $fileLogEnabled, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, includeDavCredsInBackup: $includeDavCredsInBackup)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AppSettingPropsCopyWith<$Res>  {
   factory $AppSettingPropsCopyWith(AppSettingProps value, $Res Function(AppSettingProps) _then) = _$AppSettingPropsCopyWithImpl;
 @useResult
 $Res call({
- String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoLaunch, bool silentLaunch, bool autoRun,@JsonKey(name: 'openLogs') bool inAppLogsEnabled, LogLevel logcatLevel, LogLevel fileLogLevel, bool fileLogEnabled, bool closeConnections, String testUrl, bool isAnimateToPage, bool showLabel, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool showTrayTitle, bool includeDavCredsInBackup
+ String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoLaunch, bool autoRun,@JsonKey(name: 'openLogs') bool inAppLogsEnabled, LogLevel logcatLevel, LogLevel fileLogLevel, bool fileLogEnabled, bool closeConnections, String testUrl, bool isAnimateToPage, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool includeDavCredsInBackup
 });
 
 
@@ -65,12 +65,11 @@ class _$AppSettingPropsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoLaunch = null,Object? silentLaunch = null,Object? autoRun = null,Object? inAppLogsEnabled = null,Object? logcatLevel = null,Object? fileLogLevel = null,Object? fileLogEnabled = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? showLabel = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? showTrayTitle = null,Object? includeDavCredsInBackup = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoLaunch = null,Object? autoRun = null,Object? inAppLogsEnabled = null,Object? logcatLevel = null,Object? fileLogLevel = null,Object? fileLogEnabled = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? includeDavCredsInBackup = null,}) {
   return _then(_self.copyWith(
 locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,dashboardWidgets: null == dashboardWidgets ? _self.dashboardWidgets : dashboardWidgets // ignore: cast_nullable_to_non_nullable
 as List<DashboardWidget>,autoLaunch: null == autoLaunch ? _self.autoLaunch : autoLaunch // ignore: cast_nullable_to_non_nullable
-as bool,silentLaunch: null == silentLaunch ? _self.silentLaunch : silentLaunch // ignore: cast_nullable_to_non_nullable
 as bool,autoRun: null == autoRun ? _self.autoRun : autoRun // ignore: cast_nullable_to_non_nullable
 as bool,inAppLogsEnabled: null == inAppLogsEnabled ? _self.inAppLogsEnabled : inAppLogsEnabled // ignore: cast_nullable_to_non_nullable
 as bool,logcatLevel: null == logcatLevel ? _self.logcatLevel : logcatLevel // ignore: cast_nullable_to_non_nullable
@@ -79,14 +78,12 @@ as LogLevel,fileLogEnabled: null == fileLogEnabled ? _self.fileLogEnabled : file
 as bool,closeConnections: null == closeConnections ? _self.closeConnections : closeConnections // ignore: cast_nullable_to_non_nullable
 as bool,testUrl: null == testUrl ? _self.testUrl : testUrl // ignore: cast_nullable_to_non_nullable
 as String,isAnimateToPage: null == isAnimateToPage ? _self.isAnimateToPage : isAnimateToPage // ignore: cast_nullable_to_non_nullable
-as bool,showLabel: null == showLabel ? _self.showLabel : showLabel // ignore: cast_nullable_to_non_nullable
 as bool,disclaimerAccepted: null == disclaimerAccepted ? _self.disclaimerAccepted : disclaimerAccepted // ignore: cast_nullable_to_non_nullable
 as bool,minimizeOnExit: null == minimizeOnExit ? _self.minimizeOnExit : minimizeOnExit // ignore: cast_nullable_to_non_nullable
 as bool,hidden: null == hidden ? _self.hidden : hidden // ignore: cast_nullable_to_non_nullable
 as bool,developerMode: null == developerMode ? _self.developerMode : developerMode // ignore: cast_nullable_to_non_nullable
 as bool,restoreStrategy: null == restoreStrategy ? _self.restoreStrategy : restoreStrategy // ignore: cast_nullable_to_non_nullable
-as RestoreStrategy,showTrayTitle: null == showTrayTitle ? _self.showTrayTitle : showTrayTitle // ignore: cast_nullable_to_non_nullable
-as bool,includeDavCredsInBackup: null == includeDavCredsInBackup ? _self.includeDavCredsInBackup : includeDavCredsInBackup // ignore: cast_nullable_to_non_nullable
+as RestoreStrategy,includeDavCredsInBackup: null == includeDavCredsInBackup ? _self.includeDavCredsInBackup : includeDavCredsInBackup // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -172,10 +169,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool silentLaunch,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool showTrayTitle,  bool includeDavCredsInBackup)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool includeDavCredsInBackup)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettingProps() when $default != null:
-return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silentLaunch,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.showTrayTitle,_that.includeDavCredsInBackup);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.includeDavCredsInBackup);case _:
   return orElse();
 
 }
@@ -193,10 +190,10 @@ return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silen
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool silentLaunch,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool showTrayTitle,  bool includeDavCredsInBackup)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool includeDavCredsInBackup)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettingProps():
-return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silentLaunch,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.showTrayTitle,_that.includeDavCredsInBackup);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.includeDavCredsInBackup);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -213,10 +210,10 @@ return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silen
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool silentLaunch,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool showTrayTitle,  bool includeDavCredsInBackup)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoLaunch,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool includeDavCredsInBackup)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettingProps() when $default != null:
-return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silentLaunch,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.showTrayTitle,_that.includeDavCredsInBackup);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.includeDavCredsInBackup);case _:
   return null;
 
 }
@@ -228,7 +225,7 @@ return $default(_that.locale,_that.dashboardWidgets,_that.autoLaunch,_that.silen
 @JsonSerializable()
 
 class _AppSettingProps implements AppSettingProps {
-  const _AppSettingProps({this.locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson) final  List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets, this.autoLaunch = false, this.silentLaunch = false, this.autoRun = false, @JsonKey(name: 'openLogs') this.inAppLogsEnabled = false, this.logcatLevel = LogLevel.debug, this.fileLogLevel = LogLevel.info, this.fileLogEnabled = false, this.closeConnections = true, this.testUrl = defaultTestUrl, this.isAnimateToPage = true, this.showLabel = false, this.disclaimerAccepted = false, this.minimizeOnExit = true, this.hidden = false, this.developerMode = false, this.restoreStrategy = RestoreStrategy.compatible, this.showTrayTitle = true, this.includeDavCredsInBackup = false}): _dashboardWidgets = dashboardWidgets;
+  const _AppSettingProps({this.locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson) final  List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets, this.autoLaunch = false, this.autoRun = false, @JsonKey(name: 'openLogs') this.inAppLogsEnabled = false, this.logcatLevel = LogLevel.debug, this.fileLogLevel = LogLevel.info, this.fileLogEnabled = false, this.closeConnections = true, this.testUrl = defaultTestUrl, this.isAnimateToPage = true, this.disclaimerAccepted = false, this.minimizeOnExit = true, this.hidden = false, this.developerMode = false, this.restoreStrategy = RestoreStrategy.compatible, this.includeDavCredsInBackup = false}): _dashboardWidgets = dashboardWidgets;
   factory _AppSettingProps.fromJson(Map<String, dynamic> json) => _$AppSettingPropsFromJson(json);
 
 @override final  String? locale;
@@ -240,7 +237,6 @@ class _AppSettingProps implements AppSettingProps {
 }
 
 @override@JsonKey() final  bool autoLaunch;
-@override@JsonKey() final  bool silentLaunch;
 @override@JsonKey() final  bool autoRun;
 @override@JsonKey(name: 'openLogs') final  bool inAppLogsEnabled;
 @override@JsonKey() final  LogLevel logcatLevel;
@@ -249,13 +245,11 @@ class _AppSettingProps implements AppSettingProps {
 @override@JsonKey() final  bool closeConnections;
 @override@JsonKey() final  String testUrl;
 @override@JsonKey() final  bool isAnimateToPage;
-@override@JsonKey() final  bool showLabel;
 @override@JsonKey() final  bool disclaimerAccepted;
 @override@JsonKey() final  bool minimizeOnExit;
 @override@JsonKey() final  bool hidden;
 @override@JsonKey() final  bool developerMode;
 @override@JsonKey() final  RestoreStrategy restoreStrategy;
-@override@JsonKey() final  bool showTrayTitle;
 @override@JsonKey() final  bool includeDavCredsInBackup;
 
 /// Create a copy of AppSettingProps
@@ -271,16 +265,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other._dashboardWidgets, _dashboardWidgets)&&(identical(other.autoLaunch, autoLaunch) || other.autoLaunch == autoLaunch)&&(identical(other.silentLaunch, silentLaunch) || other.silentLaunch == silentLaunch)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.inAppLogsEnabled, inAppLogsEnabled) || other.inAppLogsEnabled == inAppLogsEnabled)&&(identical(other.logcatLevel, logcatLevel) || other.logcatLevel == logcatLevel)&&(identical(other.fileLogLevel, fileLogLevel) || other.fileLogLevel == fileLogLevel)&&(identical(other.fileLogEnabled, fileLogEnabled) || other.fileLogEnabled == fileLogEnabled)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.showLabel, showLabel) || other.showLabel == showLabel)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.showTrayTitle, showTrayTitle) || other.showTrayTitle == showTrayTitle)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other._dashboardWidgets, _dashboardWidgets)&&(identical(other.autoLaunch, autoLaunch) || other.autoLaunch == autoLaunch)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.inAppLogsEnabled, inAppLogsEnabled) || other.inAppLogsEnabled == inAppLogsEnabled)&&(identical(other.logcatLevel, logcatLevel) || other.logcatLevel == logcatLevel)&&(identical(other.fileLogLevel, fileLogLevel) || other.fileLogLevel == fileLogLevel)&&(identical(other.fileLogEnabled, fileLogEnabled) || other.fileLogEnabled == fileLogEnabled)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,locale,const DeepCollectionEquality().hash(_dashboardWidgets),autoLaunch,silentLaunch,autoRun,inAppLogsEnabled,logcatLevel,fileLogLevel,fileLogEnabled,closeConnections,testUrl,isAnimateToPage,showLabel,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,showTrayTitle,includeDavCredsInBackup]);
+int get hashCode => Object.hash(runtimeType,locale,const DeepCollectionEquality().hash(_dashboardWidgets),autoLaunch,autoRun,inAppLogsEnabled,logcatLevel,fileLogLevel,fileLogEnabled,closeConnections,testUrl,isAnimateToPage,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,includeDavCredsInBackup);
 
 @override
 String toString() {
-  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoLaunch: $autoLaunch, silentLaunch: $silentLaunch, autoRun: $autoRun, inAppLogsEnabled: $inAppLogsEnabled, logcatLevel: $logcatLevel, fileLogLevel: $fileLogLevel, fileLogEnabled: $fileLogEnabled, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, showLabel: $showLabel, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, showTrayTitle: $showTrayTitle, includeDavCredsInBackup: $includeDavCredsInBackup)';
+  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoLaunch: $autoLaunch, autoRun: $autoRun, inAppLogsEnabled: $inAppLogsEnabled, logcatLevel: $logcatLevel, fileLogLevel: $fileLogLevel, fileLogEnabled: $fileLogEnabled, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, includeDavCredsInBackup: $includeDavCredsInBackup)';
 }
 
 
@@ -291,7 +285,7 @@ abstract mixin class _$AppSettingPropsCopyWith<$Res> implements $AppSettingProps
   factory _$AppSettingPropsCopyWith(_AppSettingProps value, $Res Function(_AppSettingProps) _then) = __$AppSettingPropsCopyWithImpl;
 @override @useResult
 $Res call({
- String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoLaunch, bool silentLaunch, bool autoRun,@JsonKey(name: 'openLogs') bool inAppLogsEnabled, LogLevel logcatLevel, LogLevel fileLogLevel, bool fileLogEnabled, bool closeConnections, String testUrl, bool isAnimateToPage, bool showLabel, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool showTrayTitle, bool includeDavCredsInBackup
+ String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoLaunch, bool autoRun,@JsonKey(name: 'openLogs') bool inAppLogsEnabled, LogLevel logcatLevel, LogLevel fileLogLevel, bool fileLogEnabled, bool closeConnections, String testUrl, bool isAnimateToPage, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool includeDavCredsInBackup
 });
 
 
@@ -308,12 +302,11 @@ class __$AppSettingPropsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoLaunch = null,Object? silentLaunch = null,Object? autoRun = null,Object? inAppLogsEnabled = null,Object? logcatLevel = null,Object? fileLogLevel = null,Object? fileLogEnabled = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? showLabel = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? showTrayTitle = null,Object? includeDavCredsInBackup = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoLaunch = null,Object? autoRun = null,Object? inAppLogsEnabled = null,Object? logcatLevel = null,Object? fileLogLevel = null,Object? fileLogEnabled = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? includeDavCredsInBackup = null,}) {
   return _then(_AppSettingProps(
 locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,dashboardWidgets: null == dashboardWidgets ? _self._dashboardWidgets : dashboardWidgets // ignore: cast_nullable_to_non_nullable
 as List<DashboardWidget>,autoLaunch: null == autoLaunch ? _self.autoLaunch : autoLaunch // ignore: cast_nullable_to_non_nullable
-as bool,silentLaunch: null == silentLaunch ? _self.silentLaunch : silentLaunch // ignore: cast_nullable_to_non_nullable
 as bool,autoRun: null == autoRun ? _self.autoRun : autoRun // ignore: cast_nullable_to_non_nullable
 as bool,inAppLogsEnabled: null == inAppLogsEnabled ? _self.inAppLogsEnabled : inAppLogsEnabled // ignore: cast_nullable_to_non_nullable
 as bool,logcatLevel: null == logcatLevel ? _self.logcatLevel : logcatLevel // ignore: cast_nullable_to_non_nullable
@@ -322,14 +315,12 @@ as LogLevel,fileLogEnabled: null == fileLogEnabled ? _self.fileLogEnabled : file
 as bool,closeConnections: null == closeConnections ? _self.closeConnections : closeConnections // ignore: cast_nullable_to_non_nullable
 as bool,testUrl: null == testUrl ? _self.testUrl : testUrl // ignore: cast_nullable_to_non_nullable
 as String,isAnimateToPage: null == isAnimateToPage ? _self.isAnimateToPage : isAnimateToPage // ignore: cast_nullable_to_non_nullable
-as bool,showLabel: null == showLabel ? _self.showLabel : showLabel // ignore: cast_nullable_to_non_nullable
 as bool,disclaimerAccepted: null == disclaimerAccepted ? _self.disclaimerAccepted : disclaimerAccepted // ignore: cast_nullable_to_non_nullable
 as bool,minimizeOnExit: null == minimizeOnExit ? _self.minimizeOnExit : minimizeOnExit // ignore: cast_nullable_to_non_nullable
 as bool,hidden: null == hidden ? _self.hidden : hidden // ignore: cast_nullable_to_non_nullable
 as bool,developerMode: null == developerMode ? _self.developerMode : developerMode // ignore: cast_nullable_to_non_nullable
 as bool,restoreStrategy: null == restoreStrategy ? _self.restoreStrategy : restoreStrategy // ignore: cast_nullable_to_non_nullable
-as RestoreStrategy,showTrayTitle: null == showTrayTitle ? _self.showTrayTitle : showTrayTitle // ignore: cast_nullable_to_non_nullable
-as bool,includeDavCredsInBackup: null == includeDavCredsInBackup ? _self.includeDavCredsInBackup : includeDavCredsInBackup // ignore: cast_nullable_to_non_nullable
+as RestoreStrategy,includeDavCredsInBackup: null == includeDavCredsInBackup ? _self.includeDavCredsInBackup : includeDavCredsInBackup // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -624,278 +615,6 @@ as List<String>,sort: null == sort ? _self.sort : sort // ignore: cast_nullable_
 as AccessSortType,isFilterSystemApp: null == isFilterSystemApp ? _self.isFilterSystemApp : isFilterSystemApp // ignore: cast_nullable_to_non_nullable
 as bool,isFilterNonInternetApp: null == isFilterNonInternetApp ? _self.isFilterNonInternetApp : isFilterNonInternetApp // ignore: cast_nullable_to_non_nullable
 as bool,
-  ));
-}
-
-
-}
-
-
-/// @nodoc
-mixin _$WindowProps {
-
- double get width; double get height; double? get top; double? get left;
-/// Create a copy of WindowProps
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$WindowPropsCopyWith<WindowProps> get copyWith => _$WindowPropsCopyWithImpl<WindowProps>(this as WindowProps, _$identity);
-
-  /// Serializes this WindowProps to a JSON map.
-  Map<String, dynamic> toJson();
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WindowProps&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.top, top) || other.top == top)&&(identical(other.left, left) || other.left == left));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,width,height,top,left);
-
-@override
-String toString() {
-  return 'WindowProps(width: $width, height: $height, top: $top, left: $left)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $WindowPropsCopyWith<$Res>  {
-  factory $WindowPropsCopyWith(WindowProps value, $Res Function(WindowProps) _then) = _$WindowPropsCopyWithImpl;
-@useResult
-$Res call({
- double width, double height, double? top, double? left
-});
-
-
-
-
-}
-/// @nodoc
-class _$WindowPropsCopyWithImpl<$Res>
-    implements $WindowPropsCopyWith<$Res> {
-  _$WindowPropsCopyWithImpl(this._self, this._then);
-
-  final WindowProps _self;
-  final $Res Function(WindowProps) _then;
-
-/// Create a copy of WindowProps
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? width = null,Object? height = null,Object? top = freezed,Object? left = freezed,}) {
-  return _then(_self.copyWith(
-width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
-as double,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
-as double,top: freezed == top ? _self.top : top // ignore: cast_nullable_to_non_nullable
-as double?,left: freezed == left ? _self.left : left // ignore: cast_nullable_to_non_nullable
-as double?,
-  ));
-}
-
-}
-
-
-/// Adds pattern-matching-related methods to [WindowProps].
-extension WindowPropsPatterns on WindowProps {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WindowProps value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _WindowProps() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WindowProps value)  $default,){
-final _that = this;
-switch (_that) {
-case _WindowProps():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WindowProps value)?  $default,){
-final _that = this;
-switch (_that) {
-case _WindowProps() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double width,  double height,  double? top,  double? left)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _WindowProps() when $default != null:
-return $default(_that.width,_that.height,_that.top,_that.left);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double width,  double height,  double? top,  double? left)  $default,) {final _that = this;
-switch (_that) {
-case _WindowProps():
-return $default(_that.width,_that.height,_that.top,_that.left);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double width,  double height,  double? top,  double? left)?  $default,) {final _that = this;
-switch (_that) {
-case _WindowProps() when $default != null:
-return $default(_that.width,_that.height,_that.top,_that.left);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-@JsonSerializable()
-
-class _WindowProps implements WindowProps {
-  const _WindowProps({this.width = 0, this.height = 0, this.top, this.left});
-  factory _WindowProps.fromJson(Map<String, dynamic> json) => _$WindowPropsFromJson(json);
-
-@override@JsonKey() final  double width;
-@override@JsonKey() final  double height;
-@override final  double? top;
-@override final  double? left;
-
-/// Create a copy of WindowProps
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$WindowPropsCopyWith<_WindowProps> get copyWith => __$WindowPropsCopyWithImpl<_WindowProps>(this, _$identity);
-
-@override
-Map<String, dynamic> toJson() {
-  return _$WindowPropsToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WindowProps&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.top, top) || other.top == top)&&(identical(other.left, left) || other.left == left));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,width,height,top,left);
-
-@override
-String toString() {
-  return 'WindowProps(width: $width, height: $height, top: $top, left: $left)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$WindowPropsCopyWith<$Res> implements $WindowPropsCopyWith<$Res> {
-  factory _$WindowPropsCopyWith(_WindowProps value, $Res Function(_WindowProps) _then) = __$WindowPropsCopyWithImpl;
-@override @useResult
-$Res call({
- double width, double height, double? top, double? left
-});
-
-
-
-
-}
-/// @nodoc
-class __$WindowPropsCopyWithImpl<$Res>
-    implements _$WindowPropsCopyWith<$Res> {
-  __$WindowPropsCopyWithImpl(this._self, this._then);
-
-  final _WindowProps _self;
-  final $Res Function(_WindowProps) _then;
-
-/// Create a copy of WindowProps
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? width = null,Object? height = null,Object? top = freezed,Object? left = freezed,}) {
-  return _then(_WindowProps(
-width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
-as double,height: null == height ? _self.height : height // ignore: cast_nullable_to_non_nullable
-as double,top: freezed == top ? _self.top : top // ignore: cast_nullable_to_non_nullable
-as double?,left: freezed == left ? _self.left : left // ignore: cast_nullable_to_non_nullable
-as double?,
   ));
 }
 
@@ -2589,7 +2308,7 @@ as bool,
 /// @nodoc
 mixin _$Config {
 
- int? get currentProfileId; bool get overrideDns; List<HotKeyAction> get hotKeyActions;@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps get appSettingProps; DAVProps? get davProps; NetworkProps get networkProps; VpnProps get vpnProps;@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps get themeProps; ProxiesStyleProps get proxiesStyleProps; WindowProps get windowProps; ClashConfig get patchClashConfig; NetworkRulesProps get networkRulesProps;
+ int? get currentProfileId; bool get overrideDns; List<HotKeyAction> get hotKeyActions;@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps get appSettingProps; DAVProps? get davProps; NetworkProps get networkProps; VpnProps get vpnProps;@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps get themeProps; ProxiesStyleProps get proxiesStyleProps; ClashConfig get patchClashConfig; NetworkRulesProps get networkRulesProps;
 /// Create a copy of Config
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2602,16 +2321,16 @@ $ConfigCopyWith<Config> get copyWith => _$ConfigCopyWithImpl<Config>(this as Con
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Config&&(identical(other.currentProfileId, currentProfileId) || other.currentProfileId == currentProfileId)&&(identical(other.overrideDns, overrideDns) || other.overrideDns == overrideDns)&&const DeepCollectionEquality().equals(other.hotKeyActions, hotKeyActions)&&(identical(other.appSettingProps, appSettingProps) || other.appSettingProps == appSettingProps)&&(identical(other.davProps, davProps) || other.davProps == davProps)&&(identical(other.networkProps, networkProps) || other.networkProps == networkProps)&&(identical(other.vpnProps, vpnProps) || other.vpnProps == vpnProps)&&(identical(other.themeProps, themeProps) || other.themeProps == themeProps)&&(identical(other.proxiesStyleProps, proxiesStyleProps) || other.proxiesStyleProps == proxiesStyleProps)&&(identical(other.windowProps, windowProps) || other.windowProps == windowProps)&&(identical(other.patchClashConfig, patchClashConfig) || other.patchClashConfig == patchClashConfig)&&(identical(other.networkRulesProps, networkRulesProps) || other.networkRulesProps == networkRulesProps));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Config&&(identical(other.currentProfileId, currentProfileId) || other.currentProfileId == currentProfileId)&&(identical(other.overrideDns, overrideDns) || other.overrideDns == overrideDns)&&const DeepCollectionEquality().equals(other.hotKeyActions, hotKeyActions)&&(identical(other.appSettingProps, appSettingProps) || other.appSettingProps == appSettingProps)&&(identical(other.davProps, davProps) || other.davProps == davProps)&&(identical(other.networkProps, networkProps) || other.networkProps == networkProps)&&(identical(other.vpnProps, vpnProps) || other.vpnProps == vpnProps)&&(identical(other.themeProps, themeProps) || other.themeProps == themeProps)&&(identical(other.proxiesStyleProps, proxiesStyleProps) || other.proxiesStyleProps == proxiesStyleProps)&&(identical(other.patchClashConfig, patchClashConfig) || other.patchClashConfig == patchClashConfig)&&(identical(other.networkRulesProps, networkRulesProps) || other.networkRulesProps == networkRulesProps));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,currentProfileId,overrideDns,const DeepCollectionEquality().hash(hotKeyActions),appSettingProps,davProps,networkProps,vpnProps,themeProps,proxiesStyleProps,windowProps,patchClashConfig,networkRulesProps);
+int get hashCode => Object.hash(runtimeType,currentProfileId,overrideDns,const DeepCollectionEquality().hash(hotKeyActions),appSettingProps,davProps,networkProps,vpnProps,themeProps,proxiesStyleProps,patchClashConfig,networkRulesProps);
 
 @override
 String toString() {
-  return 'Config(currentProfileId: $currentProfileId, overrideDns: $overrideDns, hotKeyActions: $hotKeyActions, appSettingProps: $appSettingProps, davProps: $davProps, networkProps: $networkProps, vpnProps: $vpnProps, themeProps: $themeProps, proxiesStyleProps: $proxiesStyleProps, windowProps: $windowProps, patchClashConfig: $patchClashConfig, networkRulesProps: $networkRulesProps)';
+  return 'Config(currentProfileId: $currentProfileId, overrideDns: $overrideDns, hotKeyActions: $hotKeyActions, appSettingProps: $appSettingProps, davProps: $davProps, networkProps: $networkProps, vpnProps: $vpnProps, themeProps: $themeProps, proxiesStyleProps: $proxiesStyleProps, patchClashConfig: $patchClashConfig, networkRulesProps: $networkRulesProps)';
 }
 
 
@@ -2622,11 +2341,11 @@ abstract mixin class $ConfigCopyWith<$Res>  {
   factory $ConfigCopyWith(Config value, $Res Function(Config) _then) = _$ConfigCopyWithImpl;
 @useResult
 $Res call({
- int? currentProfileId, bool overrideDns, List<HotKeyAction> hotKeyActions,@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps appSettingProps, DAVProps? davProps, NetworkProps networkProps, VpnProps vpnProps,@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps themeProps, ProxiesStyleProps proxiesStyleProps, WindowProps windowProps, ClashConfig patchClashConfig, NetworkRulesProps networkRulesProps
+ int? currentProfileId, bool overrideDns, List<HotKeyAction> hotKeyActions,@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps appSettingProps, DAVProps? davProps, NetworkProps networkProps, VpnProps vpnProps,@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps themeProps, ProxiesStyleProps proxiesStyleProps, ClashConfig patchClashConfig, NetworkRulesProps networkRulesProps
 });
 
 
-$AppSettingPropsCopyWith<$Res> get appSettingProps;$DAVPropsCopyWith<$Res>? get davProps;$NetworkPropsCopyWith<$Res> get networkProps;$VpnPropsCopyWith<$Res> get vpnProps;$ThemePropsCopyWith<$Res> get themeProps;$ProxiesStylePropsCopyWith<$Res> get proxiesStyleProps;$WindowPropsCopyWith<$Res> get windowProps;$ClashConfigCopyWith<$Res> get patchClashConfig;$NetworkRulesPropsCopyWith<$Res> get networkRulesProps;
+$AppSettingPropsCopyWith<$Res> get appSettingProps;$DAVPropsCopyWith<$Res>? get davProps;$NetworkPropsCopyWith<$Res> get networkProps;$VpnPropsCopyWith<$Res> get vpnProps;$ThemePropsCopyWith<$Res> get themeProps;$ProxiesStylePropsCopyWith<$Res> get proxiesStyleProps;$ClashConfigCopyWith<$Res> get patchClashConfig;$NetworkRulesPropsCopyWith<$Res> get networkRulesProps;
 
 }
 /// @nodoc
@@ -2639,7 +2358,7 @@ class _$ConfigCopyWithImpl<$Res>
 
 /// Create a copy of Config
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? currentProfileId = freezed,Object? overrideDns = null,Object? hotKeyActions = null,Object? appSettingProps = null,Object? davProps = freezed,Object? networkProps = null,Object? vpnProps = null,Object? themeProps = null,Object? proxiesStyleProps = null,Object? windowProps = null,Object? patchClashConfig = null,Object? networkRulesProps = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? currentProfileId = freezed,Object? overrideDns = null,Object? hotKeyActions = null,Object? appSettingProps = null,Object? davProps = freezed,Object? networkProps = null,Object? vpnProps = null,Object? themeProps = null,Object? proxiesStyleProps = null,Object? patchClashConfig = null,Object? networkRulesProps = null,}) {
   return _then(_self.copyWith(
 currentProfileId: freezed == currentProfileId ? _self.currentProfileId : currentProfileId // ignore: cast_nullable_to_non_nullable
 as int?,overrideDns: null == overrideDns ? _self.overrideDns : overrideDns // ignore: cast_nullable_to_non_nullable
@@ -2650,8 +2369,7 @@ as DAVProps?,networkProps: null == networkProps ? _self.networkProps : networkPr
 as NetworkProps,vpnProps: null == vpnProps ? _self.vpnProps : vpnProps // ignore: cast_nullable_to_non_nullable
 as VpnProps,themeProps: null == themeProps ? _self.themeProps : themeProps // ignore: cast_nullable_to_non_nullable
 as ThemeProps,proxiesStyleProps: null == proxiesStyleProps ? _self.proxiesStyleProps : proxiesStyleProps // ignore: cast_nullable_to_non_nullable
-as ProxiesStyleProps,windowProps: null == windowProps ? _self.windowProps : windowProps // ignore: cast_nullable_to_non_nullable
-as WindowProps,patchClashConfig: null == patchClashConfig ? _self.patchClashConfig : patchClashConfig // ignore: cast_nullable_to_non_nullable
+as ProxiesStyleProps,patchClashConfig: null == patchClashConfig ? _self.patchClashConfig : patchClashConfig // ignore: cast_nullable_to_non_nullable
 as ClashConfig,networkRulesProps: null == networkRulesProps ? _self.networkRulesProps : networkRulesProps // ignore: cast_nullable_to_non_nullable
 as NetworkRulesProps,
   ));
@@ -2712,15 +2430,6 @@ $ProxiesStylePropsCopyWith<$Res> get proxiesStyleProps {
   
   return $ProxiesStylePropsCopyWith<$Res>(_self.proxiesStyleProps, (value) {
     return _then(_self.copyWith(proxiesStyleProps: value));
-  });
-}/// Create a copy of Config
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$WindowPropsCopyWith<$Res> get windowProps {
-  
-  return $WindowPropsCopyWith<$Res>(_self.windowProps, (value) {
-    return _then(_self.copyWith(windowProps: value));
   });
 }/// Create a copy of Config
 /// with the given fields replaced by the non-null parameter values.
@@ -2822,10 +2531,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? currentProfileId,  bool overrideDns,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps,  WindowProps windowProps,  ClashConfig patchClashConfig,  NetworkRulesProps networkRulesProps)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? currentProfileId,  bool overrideDns,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps,  ClashConfig patchClashConfig,  NetworkRulesProps networkRulesProps)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Config() when $default != null:
-return $default(_that.currentProfileId,_that.overrideDns,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.themeProps,_that.proxiesStyleProps,_that.windowProps,_that.patchClashConfig,_that.networkRulesProps);case _:
+return $default(_that.currentProfileId,_that.overrideDns,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.themeProps,_that.proxiesStyleProps,_that.patchClashConfig,_that.networkRulesProps);case _:
   return orElse();
 
 }
@@ -2843,10 +2552,10 @@ return $default(_that.currentProfileId,_that.overrideDns,_that.hotKeyActions,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? currentProfileId,  bool overrideDns,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps,  WindowProps windowProps,  ClashConfig patchClashConfig,  NetworkRulesProps networkRulesProps)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? currentProfileId,  bool overrideDns,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps,  ClashConfig patchClashConfig,  NetworkRulesProps networkRulesProps)  $default,) {final _that = this;
 switch (_that) {
 case _Config():
-return $default(_that.currentProfileId,_that.overrideDns,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.themeProps,_that.proxiesStyleProps,_that.windowProps,_that.patchClashConfig,_that.networkRulesProps);case _:
+return $default(_that.currentProfileId,_that.overrideDns,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.themeProps,_that.proxiesStyleProps,_that.patchClashConfig,_that.networkRulesProps);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2863,10 +2572,10 @@ return $default(_that.currentProfileId,_that.overrideDns,_that.hotKeyActions,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? currentProfileId,  bool overrideDns,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps,  WindowProps windowProps,  ClashConfig patchClashConfig,  NetworkRulesProps networkRulesProps)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? currentProfileId,  bool overrideDns,  List<HotKeyAction> hotKeyActions, @JsonKey(fromJson: AppSettingProps.safeFromJson)  AppSettingProps appSettingProps,  DAVProps? davProps,  NetworkProps networkProps,  VpnProps vpnProps, @JsonKey(fromJson: ThemeProps.safeFromJson)  ThemeProps themeProps,  ProxiesStyleProps proxiesStyleProps,  ClashConfig patchClashConfig,  NetworkRulesProps networkRulesProps)?  $default,) {final _that = this;
 switch (_that) {
 case _Config() when $default != null:
-return $default(_that.currentProfileId,_that.overrideDns,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.themeProps,_that.proxiesStyleProps,_that.windowProps,_that.patchClashConfig,_that.networkRulesProps);case _:
+return $default(_that.currentProfileId,_that.overrideDns,_that.hotKeyActions,_that.appSettingProps,_that.davProps,_that.networkProps,_that.vpnProps,_that.themeProps,_that.proxiesStyleProps,_that.patchClashConfig,_that.networkRulesProps);case _:
   return null;
 
 }
@@ -2878,7 +2587,7 @@ return $default(_that.currentProfileId,_that.overrideDns,_that.hotKeyActions,_th
 @JsonSerializable()
 
 class _Config implements Config {
-  const _Config({this.currentProfileId, this.overrideDns = false, final  List<HotKeyAction> hotKeyActions = const [], @JsonKey(fromJson: AppSettingProps.safeFromJson) this.appSettingProps = defaultAppSettingProps, this.davProps, this.networkProps = defaultNetworkProps, this.vpnProps = defaultVpnProps, @JsonKey(fromJson: ThemeProps.safeFromJson) required this.themeProps, this.proxiesStyleProps = defaultProxiesStyleProps, this.windowProps = defaultWindowProps, this.patchClashConfig = defaultClashConfig, this.networkRulesProps = defaultNetworkRulesProps}): _hotKeyActions = hotKeyActions;
+  const _Config({this.currentProfileId, this.overrideDns = false, final  List<HotKeyAction> hotKeyActions = const [], @JsonKey(fromJson: AppSettingProps.safeFromJson) this.appSettingProps = defaultAppSettingProps, this.davProps, this.networkProps = defaultNetworkProps, this.vpnProps = defaultVpnProps, @JsonKey(fromJson: ThemeProps.safeFromJson) required this.themeProps, this.proxiesStyleProps = defaultProxiesStyleProps, this.patchClashConfig = defaultClashConfig, this.networkRulesProps = defaultNetworkRulesProps}): _hotKeyActions = hotKeyActions;
   factory _Config.fromJson(Map<String, dynamic> json) => _$ConfigFromJson(json);
 
 @override final  int? currentProfileId;
@@ -2896,7 +2605,6 @@ class _Config implements Config {
 @override@JsonKey() final  VpnProps vpnProps;
 @override@JsonKey(fromJson: ThemeProps.safeFromJson) final  ThemeProps themeProps;
 @override@JsonKey() final  ProxiesStyleProps proxiesStyleProps;
-@override@JsonKey() final  WindowProps windowProps;
 @override@JsonKey() final  ClashConfig patchClashConfig;
 @override@JsonKey() final  NetworkRulesProps networkRulesProps;
 
@@ -2913,16 +2621,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Config&&(identical(other.currentProfileId, currentProfileId) || other.currentProfileId == currentProfileId)&&(identical(other.overrideDns, overrideDns) || other.overrideDns == overrideDns)&&const DeepCollectionEquality().equals(other._hotKeyActions, _hotKeyActions)&&(identical(other.appSettingProps, appSettingProps) || other.appSettingProps == appSettingProps)&&(identical(other.davProps, davProps) || other.davProps == davProps)&&(identical(other.networkProps, networkProps) || other.networkProps == networkProps)&&(identical(other.vpnProps, vpnProps) || other.vpnProps == vpnProps)&&(identical(other.themeProps, themeProps) || other.themeProps == themeProps)&&(identical(other.proxiesStyleProps, proxiesStyleProps) || other.proxiesStyleProps == proxiesStyleProps)&&(identical(other.windowProps, windowProps) || other.windowProps == windowProps)&&(identical(other.patchClashConfig, patchClashConfig) || other.patchClashConfig == patchClashConfig)&&(identical(other.networkRulesProps, networkRulesProps) || other.networkRulesProps == networkRulesProps));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Config&&(identical(other.currentProfileId, currentProfileId) || other.currentProfileId == currentProfileId)&&(identical(other.overrideDns, overrideDns) || other.overrideDns == overrideDns)&&const DeepCollectionEquality().equals(other._hotKeyActions, _hotKeyActions)&&(identical(other.appSettingProps, appSettingProps) || other.appSettingProps == appSettingProps)&&(identical(other.davProps, davProps) || other.davProps == davProps)&&(identical(other.networkProps, networkProps) || other.networkProps == networkProps)&&(identical(other.vpnProps, vpnProps) || other.vpnProps == vpnProps)&&(identical(other.themeProps, themeProps) || other.themeProps == themeProps)&&(identical(other.proxiesStyleProps, proxiesStyleProps) || other.proxiesStyleProps == proxiesStyleProps)&&(identical(other.patchClashConfig, patchClashConfig) || other.patchClashConfig == patchClashConfig)&&(identical(other.networkRulesProps, networkRulesProps) || other.networkRulesProps == networkRulesProps));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,currentProfileId,overrideDns,const DeepCollectionEquality().hash(_hotKeyActions),appSettingProps,davProps,networkProps,vpnProps,themeProps,proxiesStyleProps,windowProps,patchClashConfig,networkRulesProps);
+int get hashCode => Object.hash(runtimeType,currentProfileId,overrideDns,const DeepCollectionEquality().hash(_hotKeyActions),appSettingProps,davProps,networkProps,vpnProps,themeProps,proxiesStyleProps,patchClashConfig,networkRulesProps);
 
 @override
 String toString() {
-  return 'Config(currentProfileId: $currentProfileId, overrideDns: $overrideDns, hotKeyActions: $hotKeyActions, appSettingProps: $appSettingProps, davProps: $davProps, networkProps: $networkProps, vpnProps: $vpnProps, themeProps: $themeProps, proxiesStyleProps: $proxiesStyleProps, windowProps: $windowProps, patchClashConfig: $patchClashConfig, networkRulesProps: $networkRulesProps)';
+  return 'Config(currentProfileId: $currentProfileId, overrideDns: $overrideDns, hotKeyActions: $hotKeyActions, appSettingProps: $appSettingProps, davProps: $davProps, networkProps: $networkProps, vpnProps: $vpnProps, themeProps: $themeProps, proxiesStyleProps: $proxiesStyleProps, patchClashConfig: $patchClashConfig, networkRulesProps: $networkRulesProps)';
 }
 
 
@@ -2933,11 +2641,11 @@ abstract mixin class _$ConfigCopyWith<$Res> implements $ConfigCopyWith<$Res> {
   factory _$ConfigCopyWith(_Config value, $Res Function(_Config) _then) = __$ConfigCopyWithImpl;
 @override @useResult
 $Res call({
- int? currentProfileId, bool overrideDns, List<HotKeyAction> hotKeyActions,@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps appSettingProps, DAVProps? davProps, NetworkProps networkProps, VpnProps vpnProps,@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps themeProps, ProxiesStyleProps proxiesStyleProps, WindowProps windowProps, ClashConfig patchClashConfig, NetworkRulesProps networkRulesProps
+ int? currentProfileId, bool overrideDns, List<HotKeyAction> hotKeyActions,@JsonKey(fromJson: AppSettingProps.safeFromJson) AppSettingProps appSettingProps, DAVProps? davProps, NetworkProps networkProps, VpnProps vpnProps,@JsonKey(fromJson: ThemeProps.safeFromJson) ThemeProps themeProps, ProxiesStyleProps proxiesStyleProps, ClashConfig patchClashConfig, NetworkRulesProps networkRulesProps
 });
 
 
-@override $AppSettingPropsCopyWith<$Res> get appSettingProps;@override $DAVPropsCopyWith<$Res>? get davProps;@override $NetworkPropsCopyWith<$Res> get networkProps;@override $VpnPropsCopyWith<$Res> get vpnProps;@override $ThemePropsCopyWith<$Res> get themeProps;@override $ProxiesStylePropsCopyWith<$Res> get proxiesStyleProps;@override $WindowPropsCopyWith<$Res> get windowProps;@override $ClashConfigCopyWith<$Res> get patchClashConfig;@override $NetworkRulesPropsCopyWith<$Res> get networkRulesProps;
+@override $AppSettingPropsCopyWith<$Res> get appSettingProps;@override $DAVPropsCopyWith<$Res>? get davProps;@override $NetworkPropsCopyWith<$Res> get networkProps;@override $VpnPropsCopyWith<$Res> get vpnProps;@override $ThemePropsCopyWith<$Res> get themeProps;@override $ProxiesStylePropsCopyWith<$Res> get proxiesStyleProps;@override $ClashConfigCopyWith<$Res> get patchClashConfig;@override $NetworkRulesPropsCopyWith<$Res> get networkRulesProps;
 
 }
 /// @nodoc
@@ -2950,7 +2658,7 @@ class __$ConfigCopyWithImpl<$Res>
 
 /// Create a copy of Config
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? currentProfileId = freezed,Object? overrideDns = null,Object? hotKeyActions = null,Object? appSettingProps = null,Object? davProps = freezed,Object? networkProps = null,Object? vpnProps = null,Object? themeProps = null,Object? proxiesStyleProps = null,Object? windowProps = null,Object? patchClashConfig = null,Object? networkRulesProps = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? currentProfileId = freezed,Object? overrideDns = null,Object? hotKeyActions = null,Object? appSettingProps = null,Object? davProps = freezed,Object? networkProps = null,Object? vpnProps = null,Object? themeProps = null,Object? proxiesStyleProps = null,Object? patchClashConfig = null,Object? networkRulesProps = null,}) {
   return _then(_Config(
 currentProfileId: freezed == currentProfileId ? _self.currentProfileId : currentProfileId // ignore: cast_nullable_to_non_nullable
 as int?,overrideDns: null == overrideDns ? _self.overrideDns : overrideDns // ignore: cast_nullable_to_non_nullable
@@ -2961,8 +2669,7 @@ as DAVProps?,networkProps: null == networkProps ? _self.networkProps : networkPr
 as NetworkProps,vpnProps: null == vpnProps ? _self.vpnProps : vpnProps // ignore: cast_nullable_to_non_nullable
 as VpnProps,themeProps: null == themeProps ? _self.themeProps : themeProps // ignore: cast_nullable_to_non_nullable
 as ThemeProps,proxiesStyleProps: null == proxiesStyleProps ? _self.proxiesStyleProps : proxiesStyleProps // ignore: cast_nullable_to_non_nullable
-as ProxiesStyleProps,windowProps: null == windowProps ? _self.windowProps : windowProps // ignore: cast_nullable_to_non_nullable
-as WindowProps,patchClashConfig: null == patchClashConfig ? _self.patchClashConfig : patchClashConfig // ignore: cast_nullable_to_non_nullable
+as ProxiesStyleProps,patchClashConfig: null == patchClashConfig ? _self.patchClashConfig : patchClashConfig // ignore: cast_nullable_to_non_nullable
 as ClashConfig,networkRulesProps: null == networkRulesProps ? _self.networkRulesProps : networkRulesProps // ignore: cast_nullable_to_non_nullable
 as NetworkRulesProps,
   ));
@@ -3024,15 +2731,6 @@ $ProxiesStylePropsCopyWith<$Res> get proxiesStyleProps {
   
   return $ProxiesStylePropsCopyWith<$Res>(_self.proxiesStyleProps, (value) {
     return _then(_self.copyWith(proxiesStyleProps: value));
-  });
-}/// Create a copy of Config
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$WindowPropsCopyWith<$Res> get windowProps {
-  
-  return $WindowPropsCopyWith<$Res>(_self.windowProps, (value) {
-    return _then(_self.copyWith(windowProps: value));
   });
 }/// Create a copy of Config
 /// with the given fields replaced by the non-null parameter values.

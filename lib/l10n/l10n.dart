@@ -329,26 +329,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Silent launch`
-  String get silentLaunch {
-    return Intl.message(
-      'Silent launch',
-      name: 'silentLaunch',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Start in the background`
-  String get silentLaunchDesc {
-    return Intl.message(
-      'Start in the background',
-      name: 'silentLaunchDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Connect on app open`
   String get autoRun {
     return Intl.message(
@@ -1164,26 +1144,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Unified delay`
-  String get unifiedDelay {
-    return Intl.message(
-      'Unified delay',
-      name: 'unifiedDelay',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remove extra delays such as handshaking`
-  String get unifiedDelayDesc {
-    return Intl.message(
-      'Remove extra delays such as handshaking',
-      name: 'unifiedDelayDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `TCP concurrent`
   String get tcpConcurrent {
     return Intl.message(
@@ -1312,26 +1272,6 @@ class AppLocalizations {
   /// `Sync`
   String get sync {
     return Intl.message('Sync', name: 'sync', desc: '', args: []);
-  }
-
-  /// `Hide from recents`
-  String get exclude {
-    return Intl.message(
-      'Hide from recents',
-      name: 'exclude',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `App icon does not appear in the recent apps list while the app is in background`
-  String get excludeDesc {
-    return Intl.message(
-      'App icon does not appear in the recent apps list while the app is in background',
-      name: 'excludeDesc',
-      desc: '',
-      args: [],
-    );
   }
 
   /// `Standard`
@@ -2292,46 +2232,6 @@ class AppLocalizations {
   /// `none`
   String get none {
     return Intl.message('none', name: 'none', desc: '', args: []);
-  }
-
-  /// `Basic configuration`
-  String get basicConfig {
-    return Intl.message(
-      'Basic configuration',
-      name: 'basicConfig',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Modify the basic configuration globally`
-  String get basicConfigDesc {
-    return Intl.message(
-      'Modify the basic configuration globally',
-      name: 'basicConfigDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Advanced configuration`
-  String get advancedConfig {
-    return Intl.message(
-      'Advanced configuration',
-      name: 'advancedConfig',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Provide diverse configuration options`
-  String get advancedConfigDesc {
-    return Intl.message(
-      'Provide diverse configuration options',
-      name: 'advancedConfigDesc',
-      desc: '',
-      args: [],
-    );
   }
 
   /// `{count} items have been selected`
@@ -3344,16 +3244,6 @@ class AppLocalizations {
     return Intl.message(
       'Restore data via file',
       name: 'restoreFromFileDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Restore configuration files only`
-  String get restoreOnlyConfig {
-    return Intl.message(
-      'Restore configuration files only',
-      name: 'restoreOnlyConfig',
       desc: '',
       args: [],
     );

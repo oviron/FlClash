@@ -13,16 +13,6 @@ class AppSetting extends _$AppSetting with AutoDisposeNotifierMixin {
   }
 }
 
-@Riverpod(keepAlive: true)
-class WindowSetting extends _$WindowSetting with AutoDisposeNotifierMixin {
-  @override
-  WindowProps build() {
-    return const WindowProps();
-  }
-
-  void hello() {}
-}
-
 @riverpod
 class VpnSetting extends _$VpnSetting with AutoDisposeNotifierMixin {
   @override
@@ -101,7 +91,6 @@ class PatchClashConfig extends _$PatchClashConfig
 @Riverpod(name: 'configProvider')
 Config _config(Ref ref) {
   final appSettingProps = ref.watch(appSettingProvider);
-  final windowProps = ref.watch(windowSettingProvider);
   final vpnProps = ref.watch(vpnSettingProvider);
   final networkProps = ref.watch(networkSettingProvider);
   final themeProps = ref.watch(themeSettingProvider);
@@ -114,7 +103,6 @@ Config _config(Ref ref) {
   final networkRulesProps = ref.watch(networkRulesSettingsProvider);
   return Config(
     appSettingProps: appSettingProps,
-    windowProps: windowProps,
     vpnProps: vpnProps,
     networkProps: networkProps,
     themeProps: themeProps,
@@ -131,7 +119,6 @@ Config _config(Ref ref) {
 List<Override> buildConfigOverrides(Config config) {
   return [
     appSettingProvider.overrideWithBuild((_, _) => config.appSettingProps),
-    windowSettingProvider.overrideWithBuild((_, _) => config.windowProps),
     vpnSettingProvider.overrideWithBuild((_, _) => config.vpnProps),
     networkSettingProvider.overrideWithBuild((_, _) => config.networkProps),
     themeSettingProvider.overrideWithBuild((_, _) => config.themeProps),

@@ -1008,7 +1008,6 @@ extension BackupControllerExt on AppController {
           config.currentProfileId;
       _ref.read(davSettingProvider.notifier).value = config.davProps;
       _ref.read(themeSettingProvider.notifier).value = config.themeProps;
-      _ref.read(windowSettingProvider.notifier).value = config.windowProps;
       _ref.read(vpnSettingProvider.notifier).value = config.vpnProps;
       _ref.read(proxiesStyleSettingProvider.notifier).value =
           config.proxiesStyleProps;
@@ -1066,12 +1065,6 @@ extension CommonControllerExt on AppController {
 
   void updateStart() {
     updateStatus(!_ref.read(isStartProvider));
-  }
-
-  void updateSpeedStatistics() {
-    _ref
-        .read(appSettingProvider.notifier)
-        .update((state) => state.copyWith(showTrayTitle: !state.showTrayTitle));
   }
 
   void updateMode() {

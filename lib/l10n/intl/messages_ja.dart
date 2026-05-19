@@ -113,8 +113,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "address": MessageLookupByLibrary.simpleMessage("アドレス"),
     "addressHelp": MessageLookupByLibrary.simpleMessage("WebDAVサーバーアドレス"),
     "addressTip": MessageLookupByLibrary.simpleMessage("有効なWebDAVアドレスを入力"),
-    "advancedConfig": MessageLookupByLibrary.simpleMessage("高度な設定"),
-    "advancedConfigDesc": MessageLookupByLibrary.simpleMessage("多様な設定を提供"),
     "agree": MessageLookupByLibrary.simpleMessage("同意"),
     "allowBypass": MessageLookupByLibrary.simpleMessage("アプリがVPNをバイパスすることを許可"),
     "allowBypassDesc": MessageLookupByLibrary.simpleMessage(
@@ -158,8 +156,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "WebDAVまたはファイルを介してデータを同期する",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage("バックアップ成功"),
-    "basicConfig": MessageLookupByLibrary.simpleMessage("基本設定"),
-    "basicConfigDesc": MessageLookupByLibrary.simpleMessage("基本設定をグローバルに変更"),
     "bind": MessageLookupByLibrary.simpleMessage("バインド"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("ブラックリストモード"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
@@ -306,10 +302,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("英語"),
     "entries": MessageLookupByLibrary.simpleMessage(" エントリ"),
-    "exclude": MessageLookupByLibrary.simpleMessage("Hide from recents"),
-    "excludeDesc": MessageLookupByLibrary.simpleMessage(
-      "App icon does not appear in the recent apps list while the app is in background",
-    ),
     "existsTip": m5,
     "exit": MessageLookupByLibrary.simpleMessage("終了"),
     "expand": MessageLookupByLibrary.simpleMessage("標準"),
@@ -651,7 +643,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreFromWebDAVDesc": MessageLookupByLibrary.simpleMessage(
       "WebDAVを介してデータを復元する",
     ),
-    "restoreOnlyConfig": MessageLookupByLibrary.simpleMessage("設定ファイルのみを復元する"),
     "restoreStrategy": MessageLookupByLibrary.simpleMessage("復元ストラテジー"),
     "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage("互換"),
     "restoreStrategy_override": MessageLookupByLibrary.simpleMessage("上書き"),
@@ -683,10 +674,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("表示"),
     "shrink": MessageLookupByLibrary.simpleMessage("縮小"),
-    "silentLaunch": MessageLookupByLibrary.simpleMessage("Silent launch"),
-    "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
-      "Start in the background",
-    ),
     "size": MessageLookupByLibrary.simpleMessage("サイズ"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socksポート"),
     "sort": MessageLookupByLibrary.simpleMessage("並び替え"),
@@ -742,10 +729,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "turnOff": MessageLookupByLibrary.simpleMessage("オフ"),
     "turnOn": MessageLookupByLibrary.simpleMessage("オン"),
     "undo": MessageLookupByLibrary.simpleMessage("元に戻す"),
-    "unifiedDelay": MessageLookupByLibrary.simpleMessage("統一遅延"),
-    "unifiedDelayDesc": MessageLookupByLibrary.simpleMessage(
-      "ハンドシェイクなどの余分な遅延を削除",
-    ),
     "unknown": MessageLookupByLibrary.simpleMessage("不明"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("不明なネットワークエラー"),
     "unnamed": MessageLookupByLibrary.simpleMessage("無題"),

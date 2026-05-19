@@ -131,12 +131,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "addressTip": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, введите действительный адрес WebDAV",
     ),
-    "advancedConfig": MessageLookupByLibrary.simpleMessage(
-      "Расширенная конфигурация",
-    ),
-    "advancedConfigDesc": MessageLookupByLibrary.simpleMessage(
-      "Предоставляет разнообразные варианты конфигурации",
-    ),
     "agree": MessageLookupByLibrary.simpleMessage("Согласен"),
     "allowBypass": MessageLookupByLibrary.simpleMessage(
       "Разрешить приложениям обходить VPN",
@@ -203,10 +197,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage(
       "Резервное копирование успешно",
-    ),
-    "basicConfig": MessageLookupByLibrary.simpleMessage("Базовая конфигурация"),
-    "basicConfigDesc": MessageLookupByLibrary.simpleMessage(
-      "Глобальное изменение базовых настроек",
     ),
     "bind": MessageLookupByLibrary.simpleMessage("Привязать"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage(
@@ -390,12 +380,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("Английский"),
     "entries": MessageLookupByLibrary.simpleMessage(" записей"),
-    "exclude": MessageLookupByLibrary.simpleMessage(
-      "Прятать из недавних задач",
-    ),
-    "excludeDesc": MessageLookupByLibrary.simpleMessage(
-      "Иконка не показывается в списке недавних приложений, когда оно уходит в фон",
-    ),
     "existsTip": m5,
     "exit": MessageLookupByLibrary.simpleMessage("Выход"),
     "expand": MessageLookupByLibrary.simpleMessage("Стандартный"),
@@ -853,9 +837,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreFromWebDAVDesc": MessageLookupByLibrary.simpleMessage(
       "Восстановить данные через WebDAV",
     ),
-    "restoreOnlyConfig": MessageLookupByLibrary.simpleMessage(
-      "Восстановить только файлы конфигурации",
-    ),
     "restoreStrategy": MessageLookupByLibrary.simpleMessage(
       "Стратегия восстановления",
     ),
@@ -901,10 +882,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
-    "silentLaunch": MessageLookupByLibrary.simpleMessage("Тихий запуск"),
-    "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
-      "Запуск в фоновом режиме",
-    ),
     "size": MessageLookupByLibrary.simpleMessage("Размер"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks-порт"),
     "sort": MessageLookupByLibrary.simpleMessage("Сортировка"),
@@ -972,12 +949,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "turnOff": MessageLookupByLibrary.simpleMessage("Выключить"),
     "turnOn": MessageLookupByLibrary.simpleMessage("Включить"),
     "undo": MessageLookupByLibrary.simpleMessage("Отменить"),
-    "unifiedDelay": MessageLookupByLibrary.simpleMessage(
-      "Унифицированная задержка",
-    ),
-    "unifiedDelayDesc": MessageLookupByLibrary.simpleMessage(
-      "Убрать дополнительные задержки, такие как рукопожатие",
-    ),
     "unknown": MessageLookupByLibrary.simpleMessage("Неизвестно"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Неизвестная сетевая ошибка",

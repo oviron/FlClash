@@ -32,7 +32,6 @@ const defaultAppSettingProps = AppSettingProps();
 const defaultVpnProps = VpnProps();
 const defaultNetworkProps = NetworkProps();
 const defaultProxiesStyleProps = ProxiesStyleProps();
-const defaultWindowProps = WindowProps();
 const defaultAccessControlProps = AccessControlProps();
 const defaultNetworkRulesProps = NetworkRulesProps();
 const defaultThemeProps = ThemeProps(primaryColor: defaultPrimaryColor);
@@ -67,7 +66,6 @@ abstract class AppSettingProps with _$AppSettingProps {
     @JsonKey(fromJson: dashboardWidgetsSafeFormJson)
     List<DashboardWidget> dashboardWidgets,
     @Default(false) bool autoLaunch,
-    @Default(false) bool silentLaunch,
     @Default(false) bool autoRun,
     @JsonKey(name: 'openLogs') @Default(false) bool inAppLogsEnabled,
     @Default(LogLevel.debug) LogLevel logcatLevel,
@@ -76,13 +74,11 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(true) bool closeConnections,
     @Default(defaultTestUrl) String testUrl,
     @Default(true) bool isAnimateToPage,
-    @Default(false) bool showLabel,
     @Default(false) bool disclaimerAccepted,
     @Default(true) bool minimizeOnExit,
     @Default(false) bool hidden,
     @Default(false) bool developerMode,
     @Default(RestoreStrategy.compatible) RestoreStrategy restoreStrategy,
-    @Default(true) bool showTrayTitle,
     @Default(false) bool includeDavCredsInBackup,
   }) = _AppSettingProps;
 
@@ -193,25 +189,6 @@ AccessControlProps? aclFromTunYaml(
 }
 
 @freezed
-abstract class WindowProps with _$WindowProps {
-  const factory WindowProps({
-    @Default(0) double width,
-    @Default(0) double height,
-    double? top,
-    double? left,
-  }) = _WindowProps;
-
-  factory WindowProps.fromJson(Map<String, Object?>? json) =>
-      json == null ? const WindowProps() : _$WindowPropsFromJson(json);
-}
-
-extension WindowPropsExt on WindowProps {
-  Size get _size => Size(width, height);
-
-  Size get size => _size.isEmpty ? const Size(680, 580) : _size;
-}
-
-@freezed
 abstract class VpnProps with _$VpnProps {
   const factory VpnProps({
     @Default(true) bool enable,
@@ -315,7 +292,6 @@ abstract class Config with _$Config {
     @Default(defaultVpnProps) VpnProps vpnProps,
     @JsonKey(fromJson: ThemeProps.safeFromJson) required ThemeProps themeProps,
     @Default(defaultProxiesStyleProps) ProxiesStyleProps proxiesStyleProps,
-    @Default(defaultWindowProps) WindowProps windowProps,
     @Default(defaultClashConfig) ClashConfig patchClashConfig,
     @Default(defaultNetworkRulesProps) NetworkRulesProps networkRulesProps,
   }) = _Config;

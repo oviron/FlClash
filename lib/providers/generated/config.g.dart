@@ -62,59 +62,6 @@ abstract class _$AppSetting extends $Notifier<AppSettingProps> {
   }
 }
 
-@ProviderFor(WindowSetting)
-const windowSettingProvider = WindowSettingProvider._();
-
-final class WindowSettingProvider
-    extends $NotifierProvider<WindowSetting, WindowProps> {
-  const WindowSettingProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'windowSettingProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$windowSettingHash();
-
-  @$internal
-  @override
-  WindowSetting create() => WindowSetting();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(WindowProps value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<WindowProps>(value),
-    );
-  }
-}
-
-String _$windowSettingHash() => r'563249378a248ed631ade7157b3a0c5289186d10';
-
-abstract class _$WindowSetting extends $Notifier<WindowProps> {
-  WindowProps build();
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<WindowProps, WindowProps>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<WindowProps, WindowProps>,
-              WindowProps,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
-  }
-}
-
 @ProviderFor(VpnSetting)
 const vpnSettingProvider = VpnSettingProvider._();
 
@@ -629,4 +576,4 @@ final class _ConfigProvider extends $FunctionalProvider<Config, Config, Config>
   }
 }
 
-String _$_configHash() => r'364e4747aa2ceb7875ccbf872770ea391ce25c86';
+String _$_configHash() => r'587616d48907462fc22135056db8c6018d4018a4';

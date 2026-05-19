@@ -259,10 +259,6 @@ extension TrafficExt on Traffic {
     return '${up.traffic.show} ↑ ${down.traffic.show} ↓';
   }
 
-  String get trayTitle {
-    return '${up.shortTraffic.show}/s \n ${down.shortTraffic.show}/s';
-  }
-
   num get speed => up + down;
 }
 

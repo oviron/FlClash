@@ -134,12 +134,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "addressTip": MessageLookupByLibrary.simpleMessage(
       "Please enter a valid WebDAV address",
     ),
-    "advancedConfig": MessageLookupByLibrary.simpleMessage(
-      "Advanced configuration",
-    ),
-    "advancedConfigDesc": MessageLookupByLibrary.simpleMessage(
-      "Provide diverse configuration options",
-    ),
     "agree": MessageLookupByLibrary.simpleMessage("Agree"),
     "allowBypass": MessageLookupByLibrary.simpleMessage(
       "Allow applications to bypass VPN",
@@ -201,10 +195,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sync data via WebDAV or files",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage("Backup success"),
-    "basicConfig": MessageLookupByLibrary.simpleMessage("Basic configuration"),
-    "basicConfigDesc": MessageLookupByLibrary.simpleMessage(
-      "Modify the basic configuration globally",
-    ),
     "bind": MessageLookupByLibrary.simpleMessage("Bind"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("Blacklist mode"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLI args"),
@@ -377,10 +367,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("English"),
     "entries": MessageLookupByLibrary.simpleMessage(" entries"),
-    "exclude": MessageLookupByLibrary.simpleMessage("Hide from recents"),
-    "excludeDesc": MessageLookupByLibrary.simpleMessage(
-      "App icon does not appear in the recent apps list while the app is in background",
-    ),
     "existsTip": m5,
     "exit": MessageLookupByLibrary.simpleMessage("Exit"),
     "expand": MessageLookupByLibrary.simpleMessage("Standard"),
@@ -806,9 +792,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreFromWebDAVDesc": MessageLookupByLibrary.simpleMessage(
       "Restore data via WebDAV",
     ),
-    "restoreOnlyConfig": MessageLookupByLibrary.simpleMessage(
-      "Restore configuration files only",
-    ),
     "restoreStrategy": MessageLookupByLibrary.simpleMessage("Restore strategy"),
     "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage(
       "Compatible",
@@ -848,10 +831,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
-    "silentLaunch": MessageLookupByLibrary.simpleMessage("Silent launch"),
-    "silentLaunchDesc": MessageLookupByLibrary.simpleMessage(
-      "Start in the background",
-    ),
     "size": MessageLookupByLibrary.simpleMessage("Size"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks Port"),
     "sort": MessageLookupByLibrary.simpleMessage("Sort"),
@@ -915,10 +894,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "turnOff": MessageLookupByLibrary.simpleMessage("Turn Off"),
     "turnOn": MessageLookupByLibrary.simpleMessage("Turn On"),
     "undo": MessageLookupByLibrary.simpleMessage("undo"),
-    "unifiedDelay": MessageLookupByLibrary.simpleMessage("Unified delay"),
-    "unifiedDelayDesc": MessageLookupByLibrary.simpleMessage(
-      "Remove extra delays such as handshaking",
-    ),
     "unknown": MessageLookupByLibrary.simpleMessage("Unknown"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Unknown network error",
