@@ -185,13 +185,6 @@ extension StateControllerExt on AppController {
   List<Group> getCurrentGroups() {
     return _ref.read(currentGroupsStateProvider.select((state) => state.value));
   }
-
-  String? getCurrentGroupName() {
-    final currentGroupName = _ref.read(
-      currentProfileProvider.select((state) => state?.currentGroupName),
-    );
-    return currentGroupName;
-  }
 }
 
 extension ProfilesControllerExt on AppController {
