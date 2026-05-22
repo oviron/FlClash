@@ -30,6 +30,10 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
   TabController? _tabController;
   final _hasMoreButtonNotifier = ValueNotifier<bool>(false);
   ProxyGroupViewKeyMap _keyMap = {};
+  final Set<String> _testingGroups = {};
+  Timer? _persistTimer;
+  String? _pendingPersistName;
+  int? _pendingPersistProfileId;
 
   @override
   void initState() {
@@ -50,19 +54,35 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
 
   @override
   void dispose() {
+    _flushPersist();
     _destroyTabController();
     super.dispose();
   }
 
+  int _visualIndex() {
+    final c = _tabController;
+    if (c == null || c.length == 0) return 0;
+    final raw = c.animation?.value ?? c.index.toDouble();
+    return raw.round().clamp(0, c.length - 1);
+  }
+
   void scrollToGroupSelected() {
-    final currentGroupName = appController.getCurrentGroupName();
-    _keyMap[currentGroupName]?.currentState?.scrollToSelected();
+    final groups = ref.read(proxiesTabStateProvider).groups;
+    if (groups.isEmpty) return;
+    final group = groups[_visualIndex().clamp(0, groups.length - 1)];
+    _keyMap[group.name]?.currentState?.scrollToSelected();
   }
 
   Future<void> delayTestCurrentGroup() async {
-    final currentGroupName = appController.getCurrentGroupName();
-    final currentState = _keyMap[currentGroupName]?.currentState;
-    await delayTest(currentState?.currentProxies ?? [], currentState?.testUrl);
+    final groups = ref.read(proxiesTabStateProvider).groups;
+    if (groups.isEmpty) return;
+    final group = groups[_visualIndex().clamp(0, groups.length - 1)];
+    if (!_testingGroups.add(group.name)) return;
+    try {
+      await delayTest(group.all, group.testUrl);
+    } finally {
+      _testingGroups.remove(group.name);
+    }
   }
 
   Widget _buildMoreButton() {
@@ -83,9 +103,15 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
             padding: const EdgeInsets.all(16),
             child: Consumer(
               builder: (_, ref, _) {
-                final state = ref.watch(proxiesTabControllerStateProvider);
-                final groupNames = state.a;
-                final currentGroupName = state.b;
+                final groupNames = ref.watch(
+                  proxiesTabControllerStateProvider.select((s) => s.a),
+                );
+                final selectedName = groupNames.isEmpty
+                    ? null
+                    : groupNames[_visualIndex().clamp(
+                        0,
+                        groupNames.length - 1,
+                      )];
                 return SizedBox(
                   width: double.infinity,
                   child: Wrap(
@@ -102,10 +128,9 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
                             );
                             if (index == -1) return;
                             _tabController?.animateTo(index);
-                            appController.updateCurrentGroupName(groupName);
                             Navigator.of(context).pop();
                           },
-                          isSelected: groupName == currentGroupName,
+                          isSelected: groupName == selectedName,
                         ),
                     ],
                   ),
@@ -119,27 +144,41 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
     );
   }
 
-  void _tabControllerListener([int? index]) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      int? groupIndex = index;
-      if (groupIndex == -1) {
-        return;
-      }
-      if (groupIndex == null) {
-        final currentIndex = _tabController?.index;
-        groupIndex = currentIndex;
-      }
-      final currentGroups = appController.getCurrentGroups();
-      if (groupIndex == null || groupIndex > currentGroups.length) {
-        return;
-      }
-      final currentGroup = currentGroups[groupIndex];
-      appController.updateCurrentGroupName(currentGroup.name);
-    });
+  void _onTabControllerChanged() {
+    final c = _tabController;
+    if (c == null) return;
+    final groups = ref.read(proxiesTabStateProvider).groups;
+    if (c.index < 0 || c.index >= groups.length) return;
+    final name = groups[c.index].name;
+    if (name == _pendingPersistName) return;
+    _schedulePersist(name);
+  }
+
+  void _schedulePersist(String name) {
+    _pendingPersistName = name;
+    _pendingPersistProfileId = appController.currentProfile?.id;
+    _persistTimer?.cancel();
+    _persistTimer = Timer(const Duration(milliseconds: 300), _flushPersist);
+  }
+
+  void _flushPersist() {
+    _persistTimer?.cancel();
+    _persistTimer = null;
+    final name = _pendingPersistName;
+    final profileId = _pendingPersistProfileId;
+    _pendingPersistName = null;
+    _pendingPersistProfileId = null;
+    if (name == null) return;
+    if (appController.currentProfile?.id != profileId) return;
+    appController.updateCurrentGroupName(name);
   }
 
   void _destroyTabController() {
-    _tabController?.removeListener(_tabControllerListener);
+    _persistTimer?.cancel();
+    _persistTimer = null;
+    _pendingPersistName = null;
+    _pendingPersistProfileId = null;
+    _tabController?.removeListener(_onTabControllerChanged);
     _tabController?.dispose();
     _tabController = null;
   }
@@ -155,8 +194,8 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
       initialIndex: realIndex,
       vsync: this,
     );
-    _tabControllerListener(realIndex);
-    _tabController?.addListener(_tabControllerListener);
+    _onTabControllerChanged();
+    _tabController?.addListener(_onTabControllerChanged);
   }
 
   @override
@@ -371,13 +410,13 @@ class _DelayTestButtonState extends State<DelayTestButton>
   late Animation<double> _animation;
 
   Future<void> _healthcheck() async {
-    if (_controller.isAnimating) {
-      return;
-    }
     unawaited(_controller.forward());
-    await widget.onClick();
-    if (mounted) {
-      unawaited(_controller.reverse());
+    try {
+      await widget.onClick();
+    } finally {
+      if (mounted) {
+        unawaited(_controller.reverse());
+      }
     }
   }
 
