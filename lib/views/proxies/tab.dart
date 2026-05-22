@@ -30,7 +30,7 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
   TabController? _tabController;
   final _hasMoreButtonNotifier = ValueNotifier<bool>(false);
   ProxyGroupViewKeyMap _keyMap = {};
-  final Map<String, bool> _testingByGroup = {};
+  final Set<String> _testingGroups = {};
   Timer? _persistTimer;
   String? _pendingPersistName;
   int? _pendingPersistProfileId;
@@ -77,12 +77,11 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
     final groups = ref.read(proxiesTabStateProvider).groups;
     if (groups.isEmpty) return;
     final group = groups[_visualIndex().clamp(0, groups.length - 1)];
-    if (_testingByGroup[group.name] == true) return;
-    _testingByGroup[group.name] = true;
+    if (!_testingGroups.add(group.name)) return;
     try {
       await delayTest(group.all, group.testUrl);
     } finally {
-      if (mounted) _testingByGroup[group.name] = false;
+      _testingGroups.remove(group.name);
     }
   }
 
@@ -150,17 +149,16 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
     if (c == null) return;
     final groups = ref.read(proxiesTabStateProvider).groups;
     if (c.index < 0 || c.index >= groups.length) return;
-    _schedulePersist(groups[c.index].name);
+    final name = groups[c.index].name;
+    if (name == _pendingPersistName) return;
+    _schedulePersist(name);
   }
 
   void _schedulePersist(String name) {
     _pendingPersistName = name;
     _pendingPersistProfileId = appController.currentProfile?.id;
     _persistTimer?.cancel();
-    _persistTimer = Timer(
-      const Duration(milliseconds: 300),
-      _flushPersist,
-    );
+    _persistTimer = Timer(const Duration(milliseconds: 300), _flushPersist);
   }
 
   void _flushPersist() {
