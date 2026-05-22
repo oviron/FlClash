@@ -411,9 +411,12 @@ class _DelayTestButtonState extends State<DelayTestButton>
 
   Future<void> _healthcheck() async {
     unawaited(_controller.forward());
-    await widget.onClick();
-    if (mounted) {
-      unawaited(_controller.reverse());
+    try {
+      await widget.onClick();
+    } finally {
+      if (mounted) {
+        unawaited(_controller.reverse());
+      }
     }
   }
 
