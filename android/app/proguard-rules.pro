@@ -10,6 +10,11 @@
 -keep class com.follow.clash.byedpi.ByeDpiModule { *; }
 -keep class com.follow.clash.byedpi.ByeDpiModule$Companion { *; }
 
+# StrategyTester loaded reflectively from ServicePlugin (getDeclaredMethod
+# start/stop) in the bydpi flavor; StrategyTestSink is its callback type.
+-keep class com.follow.clash.byedpi.StrategyTester { *; }
+-keep class com.follow.clash.StrategyTestSink { *; }
+
 # Drift uses generated reflective serializers under drift.dart_drift in
 # lib/database/generated/*.g.dart. The codegen keeps its own classes
 # alive, but reflective access to row data classes goes through

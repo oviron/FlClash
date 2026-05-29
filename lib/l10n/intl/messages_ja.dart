@@ -161,6 +161,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiPort": MessageLookupByLibrary.simpleMessage("リッスンポート"),
     "byedpiPreset": MessageLookupByLibrary.simpleMessage("ストラテジー プリセット"),
     "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
+    "byedpiTestTitle": MessageLookupByLibrary.simpleMessage("ストラテジーテスト"),
+    "byedpiTestRun": MessageLookupByLibrary.simpleMessage("テスト実行"),
+    "byedpiTestStop": MessageLookupByLibrary.simpleMessage("停止"),
+    "byedpiTestProgress": MessageLookupByLibrary.simpleMessage("テスト中"),
+    "byedpiTestVpnPaused": MessageLookupByLibrary.simpleMessage(
+      "テスト中はVPNを一時停止",
+    ),
+    "byedpiTestApply": MessageLookupByLibrary.simpleMessage("適用"),
+    "byedpiTestApplied": MessageLookupByLibrary.simpleMessage("ストラテジーを適用しました"),
+    "byedpiTestHint": MessageLookupByLibrary.simpleMessage(
+      "テストを実行して、ネットワークでのテストサイト到達性で戦略をランク付けし、最適なものを適用します。",
+    ),
     "byedpiUpdateStrategies": MessageLookupByLibrary.simpleMessage("戦略を更新"),
     "byedpiResetStrategies": MessageLookupByLibrary.simpleMessage("内蔵版に戻す"),
     "byedpiUpdateOk": MessageLookupByLibrary.simpleMessage("戦略を更新しました"),

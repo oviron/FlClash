@@ -5,6 +5,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/byedpi.dart';
+import 'package:fl_clash/views/setting/byedpi_test.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,6 +79,14 @@ class ByeDpiView extends ConsumerWidget {
             else
               _PresetArgsPreview(preset: settings.preset),
             const _StrategyUpdateTile(),
+            ListTile(
+              leading: const Icon(Icons.speed_outlined),
+              title: Text(appLocalizations.byedpiTestTitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const ByeDpiTestView())),
+            ),
             const _RestartButton(),
             _PortField(port: settings.port),
           ],

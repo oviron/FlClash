@@ -201,6 +201,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiPort": MessageLookupByLibrary.simpleMessage("Порт прослушивания"),
     "byedpiPreset": MessageLookupByLibrary.simpleMessage("Пресет стратегии"),
     "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Свой"),
+    "byedpiTestTitle": MessageLookupByLibrary.simpleMessage("Тест стратегий"),
+    "byedpiTestRun": MessageLookupByLibrary.simpleMessage("Запустить тест"),
+    "byedpiTestStop": MessageLookupByLibrary.simpleMessage("Стоп"),
+    "byedpiTestProgress": MessageLookupByLibrary.simpleMessage("Тестируется"),
+    "byedpiTestVpnPaused": MessageLookupByLibrary.simpleMessage(
+      "VPN приостановлен на время теста",
+    ),
+    "byedpiTestApply": MessageLookupByLibrary.simpleMessage("Применить"),
+    "byedpiTestApplied": MessageLookupByLibrary.simpleMessage(
+      "Стратегия применена",
+    ),
+    "byedpiTestHint": MessageLookupByLibrary.simpleMessage(
+      "Запустите тест, чтобы отранжировать стратегии по доступности тест-сайтов в вашей сети, затем примените лучшую.",
+    ),
     "byedpiUpdateStrategies": MessageLookupByLibrary.simpleMessage(
       "Обновить стратегии",
     ),

@@ -22,6 +22,10 @@ class Service {
   final ObserverList<ServiceListener> _listeners =
       ObserverList<ServiceListener>();
 
+  // Set by the strategy-test controller; receives one JSON progress object per
+  // finished strategy (bydpi flavor only).
+  void Function(String json)? onStrategyTestProgress;
+
   factory Service() {
     _instance ??= Service._internal();
     return _instance!;
@@ -43,6 +47,9 @@ class Service {
           for (final listener in _listeners) {
             listener.onServiceCrash(message);
           }
+          break;
+        case ServiceMethod.strategyTestProgress:
+          onStrategyTestProgress?.call(call.arguments as String? ?? '');
           break;
         default:
           throw MissingPluginException();
@@ -99,6 +106,21 @@ class Service {
   Future<bool> restartByeDpi() async {
     return await methodChannel.invokeMethod<bool>(
           ServiceMethod.restartByeDpi,
+        ) ??
+        false;
+  }
+
+  Future<bool> startStrategyTest(String paramsJson) async {
+    return await methodChannel.invokeMethod<bool>(
+          ServiceMethod.startStrategyTest,
+          paramsJson,
+        ) ??
+        false;
+  }
+
+  Future<bool> stopStrategyTest() async {
+    return await methodChannel.invokeMethod<bool>(
+          ServiceMethod.stopStrategyTest,
         ) ??
         false;
   }
