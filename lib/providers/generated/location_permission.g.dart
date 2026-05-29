@@ -42,7 +42,7 @@ final class LocationPermissionProvider
 }
 
 String _$locationPermissionHash() =>
-    r'd60509c8dc164c959a181659e7e2010fc7f0b89a';
+    r'ef6aa0c25ace50e33d8ae3ec36e19d31f619cb2e';
 
 abstract class _$LocationPermission extends $Notifier<LocationPermissionState> {
   LocationPermissionState build();

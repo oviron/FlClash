@@ -2,49 +2,49 @@ import 'package:fl_clash/byedpi/model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('ByeDpiPreset.args', () {
-    test('every non-custom preset has non-empty args', () {
-      for (final p in ByeDpiPreset.values) {
-        if (p == ByeDpiPreset.custom) continue;
-        expect(
-          p.args,
-          isNotEmpty,
-          reason: 'preset ${p.name} should ship a default args string',
-        );
-      }
+  group('ByeDpiStrategy.fromJson', () {
+    test('parses id, label and args', () {
+      final s = ByeDpiStrategy.fromJson({
+        'id': 'tele2',
+        'label': 'Tele2',
+        'args': '-s1 -o1 -a1',
+      });
+      expect(s.id, 'tele2');
+      expect(s.label, 'Tele2');
+      expect(s.args, '-s1 -o1 -a1');
     });
 
-    test('custom preset has empty args (placeholder)', () {
-      expect(ByeDpiPreset.custom.args, isEmpty);
-    });
-
-    test('args strings contain no surrounding whitespace', () {
-      for (final p in ByeDpiPreset.values) {
-        expect(p.args.trim(), equals(p.args), reason: p.name);
-      }
+    test('label falls back to id, args to empty', () {
+      final s = ByeDpiStrategy.fromJson({'id': 'foo'});
+      expect(s.label, 'foo');
+      expect(s.args, isEmpty);
     });
   });
 
   group('effectiveByeDpiCliArgs', () {
-    test('non-custom preset wins over cliArgs field', () {
-      const s = ByeDpiSettings(
-        preset: ByeDpiPreset.tele2,
-        cliArgs: '--should-be-ignored',
-      );
-      expect(effectiveByeDpiCliArgs(s), equals(ByeDpiPreset.tele2.args));
+    const argsById = {'tele2': '-s1 -o1', 'universal': '-o1 -a1 -r-5+se'};
+
+    test('non-custom preset resolves args from the map', () {
+      const s = ByeDpiSettings(preset: 'tele2', cliArgs: '--should-be-ignored');
+      expect(effectiveByeDpiCliArgs(s, argsById), equals('-s1 -o1'));
+    });
+
+    test('non-custom preset absent from map falls back to default args', () {
+      const s = ByeDpiSettings(preset: 'unknownId');
+      expect(effectiveByeDpiCliArgs(s, argsById), equals(kByeDpiDefaultArgs));
     });
 
     test('custom preset uses cliArgs verbatim', () {
       const s = ByeDpiSettings(
-        preset: ByeDpiPreset.custom,
+        preset: kByeDpiCustomId,
         cliArgs: '--my-strategy 7',
       );
-      expect(effectiveByeDpiCliArgs(s), equals('--my-strategy 7'));
+      expect(effectiveByeDpiCliArgs(s, argsById), equals('--my-strategy 7'));
     });
 
     test('custom preset with empty cliArgs returns empty', () {
-      const s = ByeDpiSettings(preset: ByeDpiPreset.custom, cliArgs: '');
-      expect(effectiveByeDpiCliArgs(s), isEmpty);
+      const s = ByeDpiSettings(preset: kByeDpiCustomId, cliArgs: '');
+      expect(effectiveByeDpiCliArgs(s, argsById), isEmpty);
     });
   });
 }

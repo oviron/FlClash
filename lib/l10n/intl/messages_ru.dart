@@ -180,7 +180,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("Аргументы ByeDPI"),
     "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
-      "--disorder 1 --auto=t,r,s --tlsrec 1+s",
+      "-o1 -a1 -r-5+se",
     ),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "Обход DPI через локальный SOCKS5-прокси",
@@ -200,37 +200,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("Порт прослушивания"),
     "byedpiPreset": MessageLookupByLibrary.simpleMessage("Пресет стратегии"),
-    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage(
-      "Anti-GGC буферизация",
-    ),
-    "byedpiPresetBeelineRt": MessageLookupByLibrary.simpleMessage(
-      "Билайн / Ростелеком",
-    ),
-    "byedpiPresetCascade": MessageLookupByLibrary.simpleMessage(
-      "Каскад (агрессивный multi-offset)",
-    ),
     "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Свой"),
-    "byedpiPresetMegafon2ni": MessageLookupByLibrary.simpleMessage(
-      "МегаФон (2Ni)",
-    ),
-    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage(
-      "MrDrone (агрессивный)",
-    ),
-    "byedpiPresetMtsAggressive": MessageLookupByLibrary.simpleMessage(
-      "МТС (агрессивный)",
-    ),
-    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage(
-      "Tele2 / Tinkoff Mobile",
-    ),
-    "byedpiPresetTlsOnly": MessageLookupByLibrary.simpleMessage(
-      "Только TLS (без auto-mode)",
-    ),
-    "byedpiPresetTtlFixed": MessageLookupByLibrary.simpleMessage(
-      "Фикс TTL (МТС / МегаФон 2025+)",
-    ),
-    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage(
-      "Универсальный (рекомендуется)",
-    ),
     "byedpiRestart": MessageLookupByLibrary.simpleMessage(
       "Перезапустить ByeDPI",
     ),
