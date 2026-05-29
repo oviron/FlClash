@@ -1,3 +1,13 @@
+## v0.13.13
+
+- ByeDPI settings apply live, no manual restart: changing the strategy, port, mode, fallback, or applying a test result now reloads only what is affected (mihomo config and/or the byedpi engine) while the VPN is running. The "Restart ByeDPI" button stays as a manual escape hatch
+
+- VPN settings that require rebuilding the tunnel (per-app app list, TUN stack, IPv6, system proxy) now re-establish automatically (debounced to batch edit bursts) instead of showing a "restart to apply" prompt
+
+- Fix: per-app list editor. "Save" now clears the unsaved state, so the button hides and exiting no longer asks to save again; also fixes the profile-scoped editor where the unsaved state never cleared
+
+- Fix: applying a strategy from the test now restarts byedpi with the new args (it kept the previous strategy until a manual restart), and exclude-only changes rebuild routing instead of being a no-op
+
 ## v0.13.12
 
 - Strategy test is now a manager: re-test a single strategy, sort (%/name/date) and filter (all/tested/≥40%), remove a strategy, prune everything below 40%, or reset to the bundled set. The curated set persists and is what gets tested/applied

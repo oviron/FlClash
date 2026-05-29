@@ -50,6 +50,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
   List<String>? _pinedList;
   bool _isInit = false;
   AccessControlMode? _lastMode;
+  late AccessControlProps _baseline;
 
   final _completer = Completer();
 
@@ -76,6 +77,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
     // Sync seed: postFrameCallback would render frame 1 with stale singleton
     // and freeze the wrong list in the pinned-list cache.
     ref.read(accessControlStateProvider.notifier).value = _seed.copyWith();
+    _baseline = _seed;
     _isInit = true;
   }
 
@@ -224,13 +226,15 @@ class _AccessViewState extends ConsumerState<AccessView> {
       context.showNotifier(template.replaceFirst('N', droppedCount.toString()));
     }
     await _persist(real);
+    // Reset the dirty baseline so the Save button hides and exit stops prompting.
+    if (mounted) setState(() => _baseline = real);
   }
 
   Widget _buildConfirm() {
     return Consumer(
       builder: (_, ref, child) {
         final accessControl = ref.watch(accessControlStateProvider);
-        final noSave = _seed == _getRealAccessControlProps(accessControl);
+        final noSave = _baseline == _getRealAccessControlProps(accessControl);
         if (noSave) {
           return const SizedBox();
         }

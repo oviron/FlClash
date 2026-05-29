@@ -212,7 +212,6 @@ enum FunctionTag {
   checkIp,
   handleWill,
   updateDelay,
-  vpnTip,
   autoLaunch,
   renderPause,
   updatePageIndex,

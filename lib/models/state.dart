@@ -392,6 +392,12 @@ extension SetupStateExt on SetupState {
     if (byeDpiSettings != lastSetupState.byeDpiSettings) {
       return true;
     }
+    if (!const ListEquality<String>().equals(
+      byeDpiHostList,
+      lastSetupState.byeDpiHostList,
+    )) {
+      return true;
+    }
     return false;
   }
 }

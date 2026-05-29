@@ -275,8 +275,10 @@ class StrategyTestController extends _$StrategyTestController {
     final result = state.results.where((r) => r.id == id).firstOrNull;
     final failed = result?.failedHosts ?? const <String>[];
     await writeExclude(failed);
+    // setPreset → engine reload (args, if the preset changed); the core bump
+    // makes the reconciler rebuild routing for the new exclude. Both apply live.
     await ref.read(byeDpiSettingsProvider.notifier).setPreset(id);
-    await appController.applyProfile(silence: true);
+    ref.read(byeDpiCoreRevisionProvider.notifier).bump();
     final total = result?.sites.length ?? 0;
     return (byedpi: total - failed.length, vpn: failed.length);
   }
@@ -291,6 +293,7 @@ class StrategyTestController extends _$StrategyTestController {
     state = state.copyWith(
       results: state.results.where((r) => r.id != id).toList(),
     );
+    await _syncRuntimeIfActive({id});
   }
 
   // Drop strategies whose last test is below [pct]. Untested ones are kept
@@ -311,6 +314,10 @@ class StrategyTestController extends _$StrategyTestController {
     state = state.copyWith(
       results: state.results.where((r) => keptIds.contains(r.id)).toList(),
     );
+    await _syncRuntimeIfActive({
+      for (final s in current)
+        if (!keptIds.contains(s.id)) s.id,
+    });
     return removed;
   }
 
@@ -319,6 +326,17 @@ class StrategyTestController extends _$StrategyTestController {
     await writeTestResults({});
     ref.invalidate(byeDpiStrategiesProvider);
     state = const StrategyTestState();
+    // Args of the still-active preset may revert to the bundled set.
+    await ref.read(byeDpiSettingsProvider.notifier).syncRuntime();
+  }
+
+  // Restart byedpi only when a removed strategy was the active one — its
+  // effective args change (falls back to default); others don't touch the engine.
+  Future<void> _syncRuntimeIfActive(Set<String> removedIds) async {
+    final active = ref.read(byeDpiSettingsProvider).preset;
+    if (removedIds.contains(active)) {
+      await ref.read(byeDpiSettingsProvider.notifier).syncRuntime();
+    }
   }
 
   Future<void> _dropFromCache(Set<String> ids) async {

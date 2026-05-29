@@ -50,6 +50,114 @@ final class ByeDpiStrategiesProvider
 
 String _$byeDpiStrategiesHash() => r'dfb4b2f1e1abfb47ff56a4554e38565cf931fe07';
 
+@ProviderFor(ByeDpiCoreRevision)
+const byeDpiCoreRevisionProvider = ByeDpiCoreRevisionProvider._();
+
+final class ByeDpiCoreRevisionProvider
+    extends $NotifierProvider<ByeDpiCoreRevision, int> {
+  const ByeDpiCoreRevisionProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'byeDpiCoreRevisionProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$byeDpiCoreRevisionHash();
+
+  @$internal
+  @override
+  ByeDpiCoreRevision create() => ByeDpiCoreRevision();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$byeDpiCoreRevisionHash() =>
+    r'90d8a1a36bc78f9fec824b1d40c466f537905e50';
+
+abstract class _$ByeDpiCoreRevision extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(ByeDpiEngineRevision)
+const byeDpiEngineRevisionProvider = ByeDpiEngineRevisionProvider._();
+
+final class ByeDpiEngineRevisionProvider
+    extends $NotifierProvider<ByeDpiEngineRevision, int> {
+  const ByeDpiEngineRevisionProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'byeDpiEngineRevisionProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$byeDpiEngineRevisionHash();
+
+  @$internal
+  @override
+  ByeDpiEngineRevision create() => ByeDpiEngineRevision();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$byeDpiEngineRevisionHash() =>
+    r'3beec5a55cecaf5d2e705ef9413aacb248d57f54';
+
+abstract class _$ByeDpiEngineRevision extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
 @ProviderFor(ByeDpiSettingsNotifier)
 const byeDpiSettingsProvider = ByeDpiSettingsNotifierProvider._();
 
@@ -83,7 +191,7 @@ final class ByeDpiSettingsNotifierProvider
 }
 
 String _$byeDpiSettingsNotifierHash() =>
-    r'c883a592acd5a3aad0dbdf82c5f196c85a319aa0';
+    r'd7b2d827754a9c37ff6994c777d40d2c24bc79cf';
 
 abstract class _$ByeDpiSettingsNotifier extends $Notifier<ByeDpiSettings> {
   ByeDpiSettings build();

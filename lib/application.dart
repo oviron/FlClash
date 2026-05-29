@@ -75,21 +75,25 @@ class ApplicationState extends ConsumerState<Application> {
     return GlobalProxyWatchdogManager(
       child: AppStateManager(
         child: CoreManager(
-          child: RuleEngineRunner(
-            child: ConnectivityManager(
-              onConnectivityChanged: (results) async {
-                commonPrint.log('connectivityChanged ${results.toString()}');
-                unawaited(appController.updateLocalIp());
-                final hasVpn = results.contains(ConnectivityResult.vpn);
-                if (_preHasVpn == hasVpn) {
-                  appController.addCheckIp();
-                }
-                _preHasVpn = hasVpn;
-              },
-              onNetworkSnapshot: (snap) {
-                ref.read(currentNetworkSnapshotProvider.notifier).update(snap);
-              },
-              child: child,
+          child: ByeDpiReconciler(
+            child: RuleEngineRunner(
+              child: ConnectivityManager(
+                onConnectivityChanged: (results) async {
+                  commonPrint.log('connectivityChanged ${results.toString()}');
+                  unawaited(appController.updateLocalIp());
+                  final hasVpn = results.contains(ConnectivityResult.vpn);
+                  if (_preHasVpn == hasVpn) {
+                    appController.addCheckIp();
+                  }
+                  _preHasVpn = hasVpn;
+                },
+                onNetworkSnapshot: (snap) {
+                  ref
+                      .read(currentNetworkSnapshotProvider.notifier)
+                      .update(snap);
+                },
+                child: child,
+              ),
             ),
           ),
         ),

@@ -1,7 +1,7 @@
+import 'dart:async';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
-import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
@@ -17,37 +17,50 @@ class VpnManager extends ConsumerStatefulWidget {
 }
 
 class _VpnContainerState extends ConsumerState<VpnManager> {
+  // VpnOptions (per-app ACL, TUN, ipv6…) are baked into the VpnService at
+  // establish and can't be hot-reloaded — applying them means re-establishing
+  // the tunnel, which drops live connections. Debounce to batch edit bursts.
+  static const _window = Duration(seconds: 2);
+
+  Timer? _debounce;
+  bool _reestablishing = false;
+
   @override
   void initState() {
     super.initState();
     ref.listenManual(vpnStateProvider, (prev, next) {
-      if (prev != next) {
-        showTip(next);
-      }
+      if (prev != next) _schedule();
     });
   }
 
-  void showTip(VpnState state) {
-    throttler.call(
-      FunctionTag.vpnTip,
-      () {
-        if (!ref.read(isStartProvider) || state == globalState.lastVpnState) {
-          return;
-        }
-        globalState.showNotifier(
-          appLocalizations.vpnConfigChangeDetected,
-          actionState: MessageActionState(
-            actionText: appLocalizations.restart,
-            action: () async {
-              await globalState.handleStop();
-              await appController.updateStatus(true);
-            },
-          ),
-        );
-      },
-      duration: const Duration(seconds: 6),
-      fire: true,
-    );
+  void _schedule() {
+    if (!ref.read(isStartProvider)) return;
+    _debounce?.cancel();
+    _debounce = Timer(_window, _reestablish);
+  }
+
+  bool get _dirty =>
+      ref.read(isStartProvider) &&
+      ref.read(vpnStateProvider) != globalState.lastVpnState;
+
+  Future<void> _reestablish() async {
+    if (_reestablishing || !_dirty) return;
+    _reestablishing = true;
+    try {
+      globalState.showNotifier(appLocalizations.vpnConfigChangeDetected);
+      await globalState.handleStop();
+      await appController.updateStatus(true);
+    } finally {
+      _reestablishing = false;
+    }
+    // A change that landed mid-reconnect leaves us dirty — apply it next.
+    if (_dirty) _schedule();
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 
   @override

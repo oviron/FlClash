@@ -238,6 +238,7 @@ class _StrategyUpdateTileState extends ConsumerState<_StrategyUpdateTile> {
     try {
       final count = await updateStrategiesFromRemote();
       ref.invalidate(byeDpiStrategiesProvider);
+      await ref.read(byeDpiSettingsProvider.notifier).syncRuntime();
       _last = await strategiesLastUpdate();
       msg = '${appLocalizations.byedpiUpdateOk} ($count)';
     } catch (e) {
@@ -256,6 +257,7 @@ class _StrategyUpdateTileState extends ConsumerState<_StrategyUpdateTile> {
   Future<void> _reset() async {
     await resetStrategyList();
     ref.invalidate(byeDpiStrategiesProvider);
+    await ref.read(byeDpiSettingsProvider.notifier).syncRuntime();
     if (!mounted) return;
     setState(() => _last = null);
   }

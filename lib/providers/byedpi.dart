@@ -16,6 +16,24 @@ part 'generated/byedpi.g.dart';
 Future<List<ByeDpiStrategy>> byeDpiStrategies(Ref ref) =>
     loadByeDpiStrategies();
 
+// File-driven reload signals (host-list / exclude / strategy-set) the reconciler
+// watches; settings changes flow through byeDpiSettingsProvider directly.
+@riverpod
+class ByeDpiCoreRevision extends _$ByeDpiCoreRevision {
+  @override
+  int build() => 0;
+
+  void bump() => state = state + 1;
+}
+
+@riverpod
+class ByeDpiEngineRevision extends _$ByeDpiEngineRevision {
+  @override
+  int build() => 0;
+
+  void bump() => state = state + 1;
+}
+
 Future<void> writeByeDpiRuntime(ByeDpiSettings s) async {
   final dir = await appPath.homeDirPath;
   final hostsFile = await hostListPath();
@@ -62,5 +80,13 @@ class ByeDpiSettingsNotifier extends _$ByeDpiSettingsNotifier
     final prefs = await SharedPreferences.getInstance();
     await ByeDpiSettingsStore(prefs).write(next);
     await writeByeDpiRuntime(next);
+  }
+
+  // Re-derive runtime.json after the strategy set changed (remote update, prune,
+  // reset) — the active preset's effective args may differ though its id didn't.
+  // Bumps the engine signal so the reconciler restarts byedpi to read them.
+  Future<void> syncRuntime() async {
+    await writeByeDpiRuntime(value);
+    ref.read(byeDpiEngineRevisionProvider.notifier).bump();
   }
 }

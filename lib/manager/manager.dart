@@ -1,5 +1,6 @@
 export 'android_manager.dart';
 export 'app_manager.dart';
+export 'byedpi_reconciler.dart';
 export 'connectivity_manager.dart';
 export 'core_manager.dart';
 export 'global_proxy_watchdog_manager.dart';
