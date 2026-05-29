@@ -1,3 +1,9 @@
+## v0.13.9
+
+- Remote-updatable ByeDPI strategies: refresh the set from the repo without an APK rebuild (fetched through mihomo when the VPN is up), with validation and last-good fallback. New "Update strategies" tile in ByeDpi settings (+ reset to bundled)
+
+- Expand the bundled set to the full upstream romanvht/ByeByeDPI proxytest list (78 strategies, `{sni}` → google.com, raw blobs excluded); ranking is left to the in-app auto-test (planned)
+
 ## v0.13.8
 
 - Data-driven ByeDPI strategies: the `ByeDpiPreset` enum is gone; strategies live solely in `assets/data/byedpi-strategies.json`, loaded at runtime. Updating/adding one is a pure JSON edit (no Dart/codegen/l10n)
