@@ -18,14 +18,15 @@ Future<DateTime?> strategiesLastUpdate() async {
   return ms == null ? null : DateTime.fromMillisecondsSinceEpoch(ms);
 }
 
-// Route through the local mixed-port when the VPN is up (so a blocked release
-// host is reachable), else direct. The inbound carries auth (see
-// inbound_auth.dart), so we must answer the proxy's 407 with the stored
-// credentials — `request._clashDio` doesn't, which is why the generic fetch
-// failed. authenticateProxy matches whatever realm mihomo challenges with.
-Dio _buildDio() {
+// Two egress paths, tried in order:
+//  - direct: the app is excluded from the tun (bydpi flavor), so a direct
+//    socket hits the raw network — the same path the rest of FlClash's own
+//    fetches use, and the one that works under a default-REJECT (whitelist)
+//    routing config where the proxy would reject the app's own traffic.
+//  - proxy: the local mixed-port (for default-allow configs where the release
+//    host is only reachable through the tunnel); answers its inbound-auth 407.
+Dio _dio({required bool viaProxy}) {
   final mixedPort = appController.config.patchClashConfig.mixedPort;
-  final viaProxy = appController.isStart;
   final dio = Dio();
   dio.httpClientAdapter = IOHttpClientAdapter(
     createHttpClient: () {
@@ -33,35 +34,45 @@ Dio _buildDio() {
       client.badCertificateCallback = (_, _, _) => true;
       client.findProxy = (_) =>
           viaProxy ? 'PROXY localhost:$mixedPort' : 'DIRECT';
-      client.authenticateProxy = (host, port, scheme, realm) async {
-        final pwd = await inboundAuthPassword();
-        if (pwd == null || pwd.isEmpty) return false;
-        client.addProxyCredentials(
-          host,
-          port,
-          realm ?? '',
-          HttpClientBasicCredentials(inboundAuthUser, pwd),
-        );
-        return true;
-      };
+      if (viaProxy) {
+        client.authenticateProxy = (host, port, scheme, realm) async {
+          final pwd = await inboundAuthPassword();
+          if (pwd == null || pwd.isEmpty) return false;
+          client.addProxyCredentials(
+            host,
+            port,
+            realm ?? '',
+            HttpClientBasicCredentials(inboundAuthUser, pwd),
+          );
+          return true;
+        };
+      }
       return client;
     },
   );
   return dio;
 }
 
-// Fetch the strategy set from [kStrategiesUrl], validate, atomically write the
-// on-disk override and stamp the update time. Returns the strategy count.
-// Throws on fetch/parse failure — the previous on-disk/bundled set is kept.
+// Fetch + validate + atomically write the on-disk override, stamp the update
+// time. Returns the strategy count. Tries direct first, then proxy; throws the
+// last error only if both paths fail (previous set kept).
 Future<int> updateStrategiesFromRemote() async {
-  final res = await _buildDio().get<String>(
-    kStrategiesUrl,
-    options: Options(responseType: ResponseType.plain),
-  );
-  final raw = res.data ?? '';
-  final list = parseStrategyList(raw);
-  await writeStrategyList(raw);
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setInt(_lastUpdateKey, DateTime.now().millisecondsSinceEpoch);
-  return list.length;
+  Object? lastError;
+  for (final viaProxy in [false, true]) {
+    try {
+      final res = await _dio(viaProxy: viaProxy).get<String>(
+        kStrategiesUrl,
+        options: Options(responseType: ResponseType.plain),
+      );
+      final raw = res.data ?? '';
+      final list = parseStrategyList(raw); // validates; throws on bad payload
+      await writeStrategyList(raw);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(_lastUpdateKey, DateTime.now().millisecondsSinceEpoch);
+      return list.length;
+    } catch (e) {
+      lastError = e;
+    }
+  }
+  throw lastError ?? Exception('strategy update failed');
 }

@@ -1,3 +1,7 @@
+## v0.13.12
+
+- Fix: strategy update now fetches direct first (the path FlClash's own traffic uses), falling back to the proxy. Works under default-REJECT (whitelist) routing where the proxy rejected the app's own request to the release host
+
 ## v0.13.11
 
 - Test-driven host routing: applying a strategy from the test now routes only the hosts it verified through ByeDPI; hosts it can't pierce fall back to the VPN (no longer broken). Apply shows the ByeDPI/VPN split
