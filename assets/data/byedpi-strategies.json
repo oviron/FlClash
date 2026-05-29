@@ -1,0 +1,12 @@
+[
+  { "id": "universal", "label": "Universal (default)", "args": "-o1 -a1 -r-5+se" },
+  { "id": "mrDrone", "label": "MrDrone (aggressive)", "args": "-d1 -d3+s -s6+s -d9+s -s12+s -d15+s -s20+s -d25+s -s30+s -d35+s -r1+s -S -a1" },
+  { "id": "mtsAggressive", "label": "MTS aggressive", "args": "-s1 -q1 -a1 -At,r,s -f-1 -r1+s -a1" },
+  { "id": "megafon2ni", "label": "MegaFon 2Ni", "args": "-o1 -d1 -r1+s -S -s1+s -d3+s -a1" },
+  { "id": "tele2", "label": "Tele2", "args": "-s1 -o1 -a1 -At,r,s -f-1 -r1+s -a1" },
+  { "id": "beelineRt", "label": "Beeline / Rostelecom", "args": "-o1 -d1 -a1 -At,r,s -s1 -d1 -s5+s -s10+s -s15+s -s20+s -r1+s -S -a1" },
+  { "id": "antiGgc", "label": "Anti-GGC", "args": "-d1 -r1+s -f-1 -S -t8 -o3+s -a1" },
+  { "id": "cascade", "label": "Cascade", "args": "-d1 -s1+s -d3+s -s6+s -d9+s -s12+s -d15+s -s20+s -d25+s -s30+s -d35+s -a1" },
+  { "id": "tlsOnly", "label": "TLS-only", "args": "-s1 -d3+s -a1 -At -r1+s -a1" },
+  { "id": "ttlFixed", "label": "TTL fixed", "args": "-q1+s -s29+s -o5+s -f-1 -S -a1" }
+]

@@ -71,7 +71,7 @@ class ByeDpiView extends ConsumerWidget {
             ),
             const Divider(height: 0),
             _PresetPicker(preset: settings.preset),
-            if (settings.preset == ByeDpiPreset.custom)
+            if (settings.preset == kByeDpiCustomId)
               _CliArgsField(cliArgs: settings.cliArgs)
             else
               _PresetArgsPreview(preset: settings.preset),
@@ -85,11 +85,23 @@ class ByeDpiView extends ConsumerWidget {
 }
 
 class _PresetPicker extends ConsumerWidget {
-  final ByeDpiPreset preset;
+  final String preset;
   const _PresetPicker({required this.preset});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final strategies = ref.watch(byeDpiStrategiesProvider).value ?? const [];
+    final items = <DropdownMenuItem<String>>[
+      for (final s in strategies)
+        DropdownMenuItem(value: s.id, child: Text(s.label)),
+      DropdownMenuItem(
+        value: kByeDpiCustomId,
+        child: Text(appLocalizations.byedpiPresetCustom),
+      ),
+    ];
+    // The list resolves async; until then `preset` may not be an item yet —
+    // null the value to avoid a Dropdown assertion.
+    final hasValue = items.any((i) => i.value == preset);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
       child: InputDecorator(
@@ -98,12 +110,10 @@ class _PresetPicker extends ConsumerWidget {
           border: const OutlineInputBorder(),
         ),
         child: DropdownButtonHideUnderline(
-          child: DropdownButton<ByeDpiPreset>(
+          child: DropdownButton<String>(
             isExpanded: true,
-            value: preset,
-            items: ByeDpiPreset.values
-                .map((p) => DropdownMenuItem(value: p, child: Text(p.label)))
-                .toList(),
+            value: hasValue ? preset : null,
+            items: items,
             onChanged: (v) {
               if (v != null) {
                 ref.read(byeDpiSettingsProvider.notifier).setPreset(v);
@@ -167,13 +177,19 @@ class _RestartButtonState extends State<_RestartButton> {
   }
 }
 
-class _PresetArgsPreview extends StatelessWidget {
-  final ByeDpiPreset preset;
+class _PresetArgsPreview extends ConsumerWidget {
+  final String preset;
   const _PresetArgsPreview({required this.preset});
 
   @override
-  Widget build(BuildContext context) {
-    final args = preset.args;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final strategies = ref.watch(byeDpiStrategiesProvider).value ?? const [];
+    final args = strategies
+        .firstWhere(
+          (s) => s.id == preset,
+          orElse: () => const ByeDpiStrategy(id: '', label: '', args: ''),
+        )
+        .args;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: SelectableText(

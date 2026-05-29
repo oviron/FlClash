@@ -136,7 +136,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI 命令行参数"),
     "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
-      "--disorder 1 --auto=t,r,s --tlsrec 1+s",
+      "-o1 -a1 -r-5+se",
     ),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage("通过本地 SOCKS5 代理绕过 DPI"),
     "byedpiEnable": MessageLookupByLibrary.simpleMessage("启用 ByeDPI"),
@@ -148,31 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage("当前配置中没有代理组"),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("监听端口"),
     "byedpiPreset": MessageLookupByLibrary.simpleMessage("策略预设"),
-    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage("Anti-GGC 缓冲"),
-    "byedpiPresetBeelineRt": MessageLookupByLibrary.simpleMessage(
-      "Beeline / Rostelecom",
-    ),
-    "byedpiPresetCascade": MessageLookupByLibrary.simpleMessage(
-      "Cascade (激进 multi-offset)",
-    ),
     "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("自定义"),
-    "byedpiPresetMegafon2ni": MessageLookupByLibrary.simpleMessage(
-      "MegaFon (2Ni)",
-    ),
-    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage("MrDrone (激进)"),
-    "byedpiPresetMtsAggressive": MessageLookupByLibrary.simpleMessage(
-      "MTS (激进)",
-    ),
-    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage(
-      "Tele2 / Tinkoff Mobile",
-    ),
-    "byedpiPresetTlsOnly": MessageLookupByLibrary.simpleMessage(
-      "仅 TLS (无 auto-mode)",
-    ),
-    "byedpiPresetTtlFixed": MessageLookupByLibrary.simpleMessage(
-      "TTL 固定 (MTS / MegaFon 2025+)",
-    ),
-    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage("通用 (推荐)"),
     "byedpiRestart": MessageLookupByLibrary.simpleMessage("重启 ByeDPI"),
     "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
       "重启失败 (VPN 未运行?)",

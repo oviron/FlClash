@@ -3849,10 +3849,10 @@ class AppLocalizations {
     );
   }
 
-  /// `--disorder 1 --auto=t,r,s --tlsrec 1+s`
+  /// `-o1 -a1 -r-5+se`
   String get byedpiCliArgsHint {
     return Intl.message(
-      '--disorder 1 --auto=t,r,s --tlsrec 1+s',
+      '-o1 -a1 -r-5+se',
       name: 'byedpiCliArgsHint',
       desc: '',
       args: [],
@@ -3864,46 +3864,6 @@ class AppLocalizations {
     return Intl.message(
       'Strategy preset',
       name: 'byedpiPreset',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Universal (recommended)`
-  String get byedpiPresetUniversal {
-    return Intl.message(
-      'Universal (recommended)',
-      name: 'byedpiPresetUniversal',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Tele2 / Tinkoff Mobile`
-  String get byedpiPresetTele2 {
-    return Intl.message(
-      'Tele2 / Tinkoff Mobile',
-      name: 'byedpiPresetTele2',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `MrDrone (aggressive)`
-  String get byedpiPresetMrDrone {
-    return Intl.message(
-      'MrDrone (aggressive)',
-      name: 'byedpiPresetMrDrone',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Anti-GGC buffering`
-  String get byedpiPresetAntiGgc {
-    return Intl.message(
-      'Anti-GGC buffering',
-      name: 'byedpiPresetAntiGgc',
       desc: '',
       args: [],
     );
@@ -4172,66 +4132,6 @@ class AppLocalizations {
   /// `Zoom`
   String get zoom {
     return Intl.message('Zoom', name: 'zoom', desc: '', args: []);
-  }
-
-  /// `MTS (aggressive)`
-  String get byedpiPresetMtsAggressive {
-    return Intl.message(
-      'MTS (aggressive)',
-      name: 'byedpiPresetMtsAggressive',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `MegaFon (2Ni)`
-  String get byedpiPresetMegafon2ni {
-    return Intl.message(
-      'MegaFon (2Ni)',
-      name: 'byedpiPresetMegafon2ni',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Beeline / Rostelecom`
-  String get byedpiPresetBeelineRt {
-    return Intl.message(
-      'Beeline / Rostelecom',
-      name: 'byedpiPresetBeelineRt',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cascade (aggressive multi-offset)`
-  String get byedpiPresetCascade {
-    return Intl.message(
-      'Cascade (aggressive multi-offset)',
-      name: 'byedpiPresetCascade',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `TLS-only (no auto-mode)`
-  String get byedpiPresetTlsOnly {
-    return Intl.message(
-      'TLS-only (no auto-mode)',
-      name: 'byedpiPresetTlsOnly',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `TTL Fixed (MTS / MegaFon 2025+)`
-  String get byedpiPresetTtlFixed {
-    return Intl.message(
-      'TTL Fixed (MTS / MegaFon 2025+)',
-      name: 'byedpiPresetTtlFixed',
-      desc: '',
-      args: [],
-    );
   }
 }
 

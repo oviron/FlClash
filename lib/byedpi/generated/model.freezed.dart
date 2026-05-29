@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ByeDpiSettings {
 
- bool get enabled; ByeDpiMode get mode; bool get fallbackEnabled; String get fallbackGroup; int get port; ByeDpiPreset get preset; String get cliArgs;
+ bool get enabled; ByeDpiMode get mode; bool get fallbackEnabled; String get fallbackGroup; int get port; String get preset; String get cliArgs;
 /// Create a copy of ByeDpiSettings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ByeDpiSettingsCopyWith<$Res>  {
   factory $ByeDpiSettingsCopyWith(ByeDpiSettings value, $Res Function(ByeDpiSettings) _then) = _$ByeDpiSettingsCopyWithImpl;
 @useResult
 $Res call({
- bool enabled, ByeDpiMode mode, bool fallbackEnabled, String fallbackGroup, int port, ByeDpiPreset preset, String cliArgs
+ bool enabled, ByeDpiMode mode, bool fallbackEnabled, String fallbackGroup, int port, String preset, String cliArgs
 });
 
 
@@ -73,7 +73,7 @@ as ByeDpiMode,fallbackEnabled: null == fallbackEnabled ? _self.fallbackEnabled :
 as bool,fallbackGroup: null == fallbackGroup ? _self.fallbackGroup : fallbackGroup // ignore: cast_nullable_to_non_nullable
 as String,port: null == port ? _self.port : port // ignore: cast_nullable_to_non_nullable
 as int,preset: null == preset ? _self.preset : preset // ignore: cast_nullable_to_non_nullable
-as ByeDpiPreset,cliArgs: null == cliArgs ? _self.cliArgs : cliArgs // ignore: cast_nullable_to_non_nullable
+as String,cliArgs: null == cliArgs ? _self.cliArgs : cliArgs // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  ByeDpiPreset preset,  String cliArgs)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  String preset,  String cliArgs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ByeDpiSettings() when $default != null:
 return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGroup,_that.port,_that.preset,_that.cliArgs);case _:
@@ -180,7 +180,7 @@ return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGro
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  ByeDpiPreset preset,  String cliArgs)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  String preset,  String cliArgs)  $default,) {final _that = this;
 switch (_that) {
 case _ByeDpiSettings():
 return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGroup,_that.port,_that.preset,_that.cliArgs);case _:
@@ -200,7 +200,7 @@ return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGro
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  ByeDpiPreset preset,  String cliArgs)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled,  ByeDpiMode mode,  bool fallbackEnabled,  String fallbackGroup,  int port,  String preset,  String cliArgs)?  $default,) {final _that = this;
 switch (_that) {
 case _ByeDpiSettings() when $default != null:
 return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGroup,_that.port,_that.preset,_that.cliArgs);case _:
@@ -215,7 +215,7 @@ return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGro
 @JsonSerializable()
 
 class _ByeDpiSettings implements ByeDpiSettings {
-  const _ByeDpiSettings({this.enabled = false, this.mode = ByeDpiMode.auto, this.fallbackEnabled = true, this.fallbackGroup = '', this.port = 1080, this.preset = ByeDpiPreset.universal, this.cliArgs = '--disorder 1 --auto=t,r,s --tlsrec 1+s'});
+  const _ByeDpiSettings({this.enabled = false, this.mode = ByeDpiMode.auto, this.fallbackEnabled = true, this.fallbackGroup = '', this.port = 1080, this.preset = kByeDpiDefaultId, this.cliArgs = kByeDpiDefaultArgs});
   factory _ByeDpiSettings.fromJson(Map<String, dynamic> json) => _$ByeDpiSettingsFromJson(json);
 
 @override@JsonKey() final  bool enabled;
@@ -223,7 +223,7 @@ class _ByeDpiSettings implements ByeDpiSettings {
 @override@JsonKey() final  bool fallbackEnabled;
 @override@JsonKey() final  String fallbackGroup;
 @override@JsonKey() final  int port;
-@override@JsonKey() final  ByeDpiPreset preset;
+@override@JsonKey() final  String preset;
 @override@JsonKey() final  String cliArgs;
 
 /// Create a copy of ByeDpiSettings
@@ -259,7 +259,7 @@ abstract mixin class _$ByeDpiSettingsCopyWith<$Res> implements $ByeDpiSettingsCo
   factory _$ByeDpiSettingsCopyWith(_ByeDpiSettings value, $Res Function(_ByeDpiSettings) _then) = __$ByeDpiSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- bool enabled, ByeDpiMode mode, bool fallbackEnabled, String fallbackGroup, int port, ByeDpiPreset preset, String cliArgs
+ bool enabled, ByeDpiMode mode, bool fallbackEnabled, String fallbackGroup, int port, String preset, String cliArgs
 });
 
 
@@ -284,7 +284,7 @@ as ByeDpiMode,fallbackEnabled: null == fallbackEnabled ? _self.fallbackEnabled :
 as bool,fallbackGroup: null == fallbackGroup ? _self.fallbackGroup : fallbackGroup // ignore: cast_nullable_to_non_nullable
 as String,port: null == port ? _self.port : port // ignore: cast_nullable_to_non_nullable
 as int,preset: null == preset ? _self.preset : preset // ignore: cast_nullable_to_non_nullable
-as ByeDpiPreset,cliArgs: null == cliArgs ? _self.cliArgs : cliArgs // ignore: cast_nullable_to_non_nullable
+as String,cliArgs: null == cliArgs ? _self.cliArgs : cliArgs // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

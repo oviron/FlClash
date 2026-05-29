@@ -29,18 +29,13 @@ class ByeDpiSettingsStore {
         _legacyCliArgs.contains(storedCli);
 
     final preset = legacy
-        ? ByeDpiPreset.universal
-        : (storedPreset != null
-              ? ByeDpiPreset.values.firstWhere(
-                  (p) => p.name == storedPreset,
-                  orElse: () => ByeDpiPreset.universal,
-                )
-              : ByeDpiPreset.universal);
+        ? kByeDpiDefaultId
+        : (storedPreset ?? kByeDpiDefaultId);
 
-    // When migrating away from legacy cliArgs, surface the new universal
-    // defaults so a later switch to Custom doesn't show a stale string.
+    // When migrating away from legacy cliArgs, surface the new default args so
+    // a later switch to Custom doesn't show a stale string.
     final cliArgs = (legacy || storedCli == null)
-        ? ByeDpiPreset.universal.args
+        ? kByeDpiDefaultArgs
         : storedCli;
 
     return ByeDpiSettings(
@@ -62,7 +57,7 @@ class ByeDpiSettingsStore {
     await _prefs.setBool('byedpi.fallbackEnabled', s.fallbackEnabled);
     await _prefs.setString('byedpi.fallbackGroup', s.fallbackGroup);
     await _prefs.setInt('byedpi.port', s.port);
-    await _prefs.setString('byedpi.preset', s.preset.name);
+    await _prefs.setString('byedpi.preset', s.preset);
     await _prefs.setString('byedpi.cliArgs', s.cliArgs);
   }
 }

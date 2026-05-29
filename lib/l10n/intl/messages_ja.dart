@@ -142,7 +142,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiAttribution": MessageLookupByLibrary.simpleMessage("hufrea 作 (MIT)"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
     "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
-      "--disorder 1 --auto=t,r,s --tlsrec 1+s",
+      "-o1 -a1 -r-5+se",
     ),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "ローカル SOCKS5 プロキシ経由でDPIをバイパス",
@@ -160,35 +160,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("リッスンポート"),
     "byedpiPreset": MessageLookupByLibrary.simpleMessage("ストラテジー プリセット"),
-    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage(
-      "Anti-GGC バッファリング",
-    ),
-    "byedpiPresetBeelineRt": MessageLookupByLibrary.simpleMessage(
-      "Beeline / Rostelecom",
-    ),
-    "byedpiPresetCascade": MessageLookupByLibrary.simpleMessage(
-      "Cascade (アグレッシブ multi-offset)",
-    ),
     "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
-    "byedpiPresetMegafon2ni": MessageLookupByLibrary.simpleMessage(
-      "MegaFon (2Ni)",
-    ),
-    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage(
-      "MrDrone (アグレッシブ)",
-    ),
-    "byedpiPresetMtsAggressive": MessageLookupByLibrary.simpleMessage(
-      "MTS (アグレッシブ)",
-    ),
-    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage(
-      "Tele2 / Tinkoff Mobile",
-    ),
-    "byedpiPresetTlsOnly": MessageLookupByLibrary.simpleMessage(
-      "TLSのみ (auto-mode 無し)",
-    ),
-    "byedpiPresetTtlFixed": MessageLookupByLibrary.simpleMessage(
-      "TTL固定 (MTS / MegaFon 2025+)",
-    ),
-    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage("汎用 (推奨)"),
     "byedpiRestart": MessageLookupByLibrary.simpleMessage("ByeDPIを再起動"),
     "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
       "再起動失敗 (VPN未起動?)",

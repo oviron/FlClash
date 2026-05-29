@@ -175,7 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLI args"),
     "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
-      "--disorder 1 --auto=t,r,s --tlsrec 1+s",
+      "-o1 -a1 -r-5+se",
     ),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "DPI bypass via local SOCKS5 proxy",
@@ -195,37 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiPort": MessageLookupByLibrary.simpleMessage("Listening port"),
     "byedpiPreset": MessageLookupByLibrary.simpleMessage("Strategy preset"),
-    "byedpiPresetAntiGgc": MessageLookupByLibrary.simpleMessage(
-      "Anti-GGC buffering",
-    ),
-    "byedpiPresetBeelineRt": MessageLookupByLibrary.simpleMessage(
-      "Beeline / Rostelecom",
-    ),
-    "byedpiPresetCascade": MessageLookupByLibrary.simpleMessage(
-      "Cascade (aggressive multi-offset)",
-    ),
     "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Custom"),
-    "byedpiPresetMegafon2ni": MessageLookupByLibrary.simpleMessage(
-      "MegaFon (2Ni)",
-    ),
-    "byedpiPresetMrDrone": MessageLookupByLibrary.simpleMessage(
-      "MrDrone (aggressive)",
-    ),
-    "byedpiPresetMtsAggressive": MessageLookupByLibrary.simpleMessage(
-      "MTS (aggressive)",
-    ),
-    "byedpiPresetTele2": MessageLookupByLibrary.simpleMessage(
-      "Tele2 / Tinkoff Mobile",
-    ),
-    "byedpiPresetTlsOnly": MessageLookupByLibrary.simpleMessage(
-      "TLS-only (no auto-mode)",
-    ),
-    "byedpiPresetTtlFixed": MessageLookupByLibrary.simpleMessage(
-      "TTL Fixed (MTS / MegaFon 2025+)",
-    ),
-    "byedpiPresetUniversal": MessageLookupByLibrary.simpleMessage(
-      "Universal (recommended)",
-    ),
     "byedpiRestart": MessageLookupByLibrary.simpleMessage("Restart ByeDPI"),
     "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
       "Restart failed (VPN not running?)",

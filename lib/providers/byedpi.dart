@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:fl_clash/byedpi/host_list.dart';
 import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/byedpi/settings_store.dart';
+import 'package:fl_clash/byedpi/strategy_args.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,16 +12,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'generated/byedpi.g.dart';
 
+@riverpod
+Future<List<ByeDpiStrategy>> byeDpiStrategies(Ref ref) =>
+    loadByeDpiStrategies();
+
 Future<void> writeByeDpiRuntime(ByeDpiSettings s) async {
   final dir = await appPath.homeDirPath;
   final hostsFile = await hostListPath();
+  final strategyArgs = await readStrategyArgs();
   final target = File(join(dir, 'byedpi-runtime.json'));
   final tmp = File(join(dir, 'byedpi-runtime.json.tmp'));
   await tmp.writeAsString(
     jsonEncode({
       'enabled': s.enabled,
       'port': s.port,
-      'cliArgs': effectiveByeDpiCliArgs(s),
+      'cliArgs': effectiveByeDpiCliArgs(s, strategyArgs),
       'hostsFile': hostsFile,
     }),
   );
@@ -47,7 +53,7 @@ class ByeDpiSettingsNotifier extends _$ByeDpiSettingsNotifier
 
   Future<void> setPort(int v) => _persist(value.copyWith(port: v));
 
-  Future<void> setPreset(ByeDpiPreset v) => _persist(value.copyWith(preset: v));
+  Future<void> setPreset(String v) => _persist(value.copyWith(preset: v));
 
   Future<void> setCliArgs(String v) => _persist(value.copyWith(cliArgs: v));
 

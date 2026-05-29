@@ -1,3 +1,11 @@
+## v0.13.8
+
+- Move ByeDPI strategy args to data-driven `assets/data/byedpi-strategies.json`; updating strategies no longer touches Dart/codegen/l10n. Enum args kept as compiled fallback
+
+- On-disk override (no force-install) seams in a future remote-refresh of the strategy set without a release
+
+- Refresh strategy set from upstream romanvht/ByeByeDPI proxytest list (2026-05); adopt new upstream default `-o1 -a1 -r-5+se`
+
 ## v0.12.0
 
 - Audit sweep: 59 findings + 4 carry-overs
