@@ -468,6 +468,8 @@
   "permissionRequiredHint": "権限が必要です",
   "openSettings": "設定を開く",
   "networkRulesPermissionBanner": "SSIDを照合するため、ネットワークルールにはWi-Fi権限が必要です",
+  "locationServicesDisabled": "権限はありますが、端末の位置情報がオフです。Wi-Fiネットワーク名を読み取れるよう、システム設定で位置情報をオンにしてください。",
+  "backgroundLocationRationale": "アプリがバックグラウンドにあるときも自動で切り替えるには、位置情報へのアクセスを常に許可してください。",
   "networkRulesTitle": "ネットワークルール",
   "networkRulesEnable": "ネットワークルールを有効にする",
   "networkRulesEmpty": "最初のルールを追加",

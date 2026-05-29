@@ -2,97 +2,65 @@
 // This is a library that provides messages for a ru locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
+
 // Ignore issues from commonly used lints in this file.
 // ignore_for_file:unnecessary_brace_in_string_interps, unnecessary_new
 // ignore_for_file:prefer_single_quotes,comment_references, directives_ordering
 // ignore_for_file:annotate_overrides,prefer_generic_function_type_aliases
 // ignore_for_file:unused_import, file_names, avoid_escaping_inner_quotes
 // ignore_for_file:unnecessary_string_interpolations, unnecessary_string_escapes
+
 import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 
 final messages = new MessageLookup();
+
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ru';
+
   static String m0(count) =>
       "${Intl.plural(count, one: '${count} день назад', few: '${count} дня назад', many: '${count} дней назад', other: '${count} дня назад')}";
+
   static String m1(label) =>
       "Вы уверены, что хотите удалить выбранные ${label}?";
+
   static String m2(label) => "Вы уверены, что хотите удалить текущий ${label}?";
+
   static String m3(label) => "Детали {}";
+
   static String m4(label) => "${label} не может быть пустым";
+
   static String m5(label) => "Текущий ${label} уже существует";
+
   static String m6(upstream) => "Форк ${upstream}";
+
   static String m7(count) =>
       "${Intl.plural(count, one: '${count} час назад', few: '${count} часа назад', many: '${count} часов назад', other: '${count} часа назад')}";
+
   static String m8(count) =>
       "${Intl.plural(count, one: '${count} минута назад', few: '${count} минуты назад', many: '${count} минут назад', other: '${count} минуты назад')}";
+
   static String m9(count) =>
       "${Intl.plural(count, one: '${count} месяц назад', few: '${count} месяца назад', many: '${count} месяцев назад', other: '${count} месяца назад')}";
+
   static String m10(label) => "${label} пока отсутствуют";
+
   static String m11(label) => "${label} должно быть числом";
+
   static String m12(label) => "${label} должен быть числом от 1024 до 49151";
+
   static String m13(count) => "Выбрано ${count} элементов";
+
   static String m14(label) => "${label} должен быть URL";
+
   static String m15(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("О программе"),
-    "appearance": MessageLookupByLibrary.simpleMessage("Внешний вид"),
-    "confirmDeleteWebDAV": MessageLookupByLibrary.simpleMessage(
-      "Удалить настройки WebDAV?",
-    ),
-    "engine": MessageLookupByLibrary.simpleMessage("Движок"),
-    "hideFromRecents": MessageLookupByLibrary.simpleMessage(
-      "Прятать из недавних задач",
-    ),
-    "hideFromRecentsDesc": MessageLookupByLibrary.simpleMessage(
-      "Иконка не показывается в списке недавних приложений, когда оно уходит в фон",
-    ),
-    "privacyAndSecurity": MessageLookupByLibrary.simpleMessage(
-      "Приватность и безопасность",
-    ),
-    "restoreOnlyProfiles": MessageLookupByLibrary.simpleMessage(
-      "Восстановить только профили",
-    ),
-    "aclSaveDroppedUninstalled": MessageLookupByLibrary.simpleMessage(
-      "Удалено N не-установленных приложений из списка",
-    ),
-    "byedpiAttribution": MessageLookupByLibrary.simpleMessage(
-      "разработка hufrea (MIT)",
-    ),
-    "comingSoon": MessageLookupByLibrary.simpleMessage("Скоро"),
-    "coreDesc": MessageLookupByLibrary.simpleMessage(
-      "Порты, IPv6, hosts, find-process, geodata loader, test URL",
-    ),
-    "crashReporting": MessageLookupByLibrary.simpleMessage("Отчёты о сбоях"),
-    "developerModeDesc": MessageLookupByLibrary.simpleMessage(
-      "Добавляет экран разработчика с диагностическими действиями.",
-    ),
-    "dnsBehaviorSection": MessageLookupByLibrary.simpleMessage("Поведение"),
-    "dnsResolversSection": MessageLookupByLibrary.simpleMessage("Резолверы"),
-    "dnsServerSection": MessageLookupByLibrary.simpleMessage("Сервер"),
-    "ipv6DnsQueries": MessageLookupByLibrary.simpleMessage(
-      "IPv6 (DNS-запросы)",
-    ),
-    "ipv6Engine": MessageLookupByLibrary.simpleMessage("IPv6 (движок)"),
-    "ipv6Inbound": MessageLookupByLibrary.simpleMessage("IPv6 (VPN inbound)"),
-    "launchAndBackground": MessageLookupByLibrary.simpleMessage("Запуск и фон"),
-    "resetSection": MessageLookupByLibrary.simpleMessage("Сброс"),
-    "routeAddressBypassPrivateHint": MessageLookupByLibrary.simpleMessage(
-      "Не используется в режиме Bypass private",
-    ),
-    "routingRules": MessageLookupByLibrary.simpleMessage(
-      "Правила маршрутизации",
-    ),
-    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage(
-      "Сторонние компоненты",
-    ),
-    "userInterface": MessageLookupByLibrary.simpleMessage("Интерфейс"),
-    "vpnSettings": MessageLookupByLibrary.simpleMessage("Настройки VPN"),
     "accessControl": MessageLookupByLibrary.simpleMessage("Контроль доступа"),
     "accessControlAllowDesc": MessageLookupByLibrary.simpleMessage(
       "Разрешить только выбранным приложениям доступ к VPN",
@@ -113,8 +81,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Настройки контроля доступа",
     ),
     "account": MessageLookupByLibrary.simpleMessage("Аккаунт"),
+    "aclSaveDroppedUninstalled": MessageLookupByLibrary.simpleMessage(
+      "Удалено N не-установленных приложений из списка",
+    ),
     "action": MessageLookupByLibrary.simpleMessage("Действие"),
-    "advanced": MessageLookupByLibrary.simpleMessage("Дополнительно"),
     "action_mode": MessageLookupByLibrary.simpleMessage("Переключить режим"),
     "action_proxy": MessageLookupByLibrary.simpleMessage("Системный прокси"),
     "action_start": MessageLookupByLibrary.simpleMessage("Старт/Стоп"),
@@ -129,6 +99,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "addressTip": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, введите действительный адрес WebDAV",
     ),
+    "advanced": MessageLookupByLibrary.simpleMessage("Дополнительно"),
     "agree": MessageLookupByLibrary.simpleMessage("Согласен"),
     "allowBypass": MessageLookupByLibrary.simpleMessage(
       "Разрешить приложениям обходить VPN",
@@ -144,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "appAccessControl": MessageLookupByLibrary.simpleMessage(
       "Контроль доступа приложений",
     ),
+    "appearance": MessageLookupByLibrary.simpleMessage("Внешний вид"),
     "appendSystemDns": MessageLookupByLibrary.simpleMessage(
       "Добавить системный DNS",
     ),
@@ -180,6 +152,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал автообновления (минуты)",
     ),
+    "backgroundLocationRationale": MessageLookupByLibrary.simpleMessage(
+      "Чтобы переключение работало в фоне, разрешите доступ к местоположению всегда.",
+    ),
     "backup": MessageLookupByLibrary.simpleMessage("Резервное копирование"),
     "backupAndRecovery": MessageLookupByLibrary.simpleMessage(
       "Резервное копирование и восстановление",
@@ -199,6 +174,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "bind": MessageLookupByLibrary.simpleMessage("Привязать"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage(
       "Режим черного списка",
+    ),
+    "byedpiAttribution": MessageLookupByLibrary.simpleMessage(
+      "разработка hufrea (MIT)",
     ),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("Аргументы ByeDPI"),
     "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
@@ -284,10 +262,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "color": MessageLookupByLibrary.simpleMessage("Цвет"),
     "colorSchemes": MessageLookupByLibrary.simpleMessage("Цветовые схемы"),
     "columns": MessageLookupByLibrary.simpleMessage("Столбцы"),
+    "comingSoon": MessageLookupByLibrary.simpleMessage("Скоро"),
     "compatible": MessageLookupByLibrary.simpleMessage("Режим совместимости"),
     "confirm": MessageLookupByLibrary.simpleMessage("Подтвердить"),
     "confirmClearAllData": MessageLookupByLibrary.simpleMessage(
       "Вы уверены, что хотите очистить все данные?",
+    ),
+    "confirmDeleteWebDAV": MessageLookupByLibrary.simpleMessage(
+      "Удалить настройки WebDAV?",
     ),
     "confirmForceCrashCore": MessageLookupByLibrary.simpleMessage(
       "Вы уверены, что хотите принудительно аварийно завершить работу ядра?",
@@ -312,8 +294,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "copyLink": MessageLookupByLibrary.simpleMessage("Копировать ссылку"),
     "copySuccess": MessageLookupByLibrary.simpleMessage("Копирование успешно"),
     "core": MessageLookupByLibrary.simpleMessage("Ядро"),
+    "coreDesc": MessageLookupByLibrary.simpleMessage(
+      "Порты, IPv6, hosts, find-process, geodata loader, test URL",
+    ),
     "coreStatus": MessageLookupByLibrary.simpleMessage("Основной статус"),
     "country": MessageLookupByLibrary.simpleMessage("Страна"),
+    "crashReporting": MessageLookupByLibrary.simpleMessage("Отчёты о сбоях"),
     "crashTest": MessageLookupByLibrary.simpleMessage("Тест на сбои"),
     "create": MessageLookupByLibrary.simpleMessage("Создать"),
     "creationTime": MessageLookupByLibrary.simpleMessage("Время создания"),
@@ -334,11 +320,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "delete": MessageLookupByLibrary.simpleMessage("Удалить"),
     "deleteMultipTip": m1,
     "deleteTip": m2,
-    "detailsSection": MessageLookupByLibrary.simpleMessage("Подробности"),
-    "diagnostics": MessageLookupByLibrary.simpleMessage("Диагностика"),
-    "dnsCoreSection": MessageLookupByLibrary.simpleMessage("Ядро"),
-    "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
-    "dnsServersSection": MessageLookupByLibrary.simpleMessage("Серверы"),
     "desc": MessageLookupByLibrary.simpleMessage(
       "Многоплатформенный прокси-клиент на основе ClashMeta, простой и удобный в использовании, с открытым исходным кодом и без рекламы.",
     ),
@@ -348,15 +329,20 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "destinationIPASN": MessageLookupByLibrary.simpleMessage("ASN назначения"),
     "details": m3,
+    "detailsSection": MessageLookupByLibrary.simpleMessage("Подробности"),
     "detectionRejected": MessageLookupByLibrary.simpleMessage("REJECT"),
     "detectionTimeout": MessageLookupByLibrary.simpleMessage("timeout"),
     "detectionTip": MessageLookupByLibrary.simpleMessage(
       "Опирается на сторонний API, только для справки",
     ),
     "developerMode": MessageLookupByLibrary.simpleMessage("Режим разработчика"),
+    "developerModeDesc": MessageLookupByLibrary.simpleMessage(
+      "Добавляет экран разработчика с диагностическими действиями.",
+    ),
     "developerModeEnableTip": MessageLookupByLibrary.simpleMessage(
       "Режим разработчика активирован.",
     ),
+    "diagnostics": MessageLookupByLibrary.simpleMessage("Диагностика"),
     "direct": MessageLookupByLibrary.simpleMessage("Прямой"),
     "disclaimer": MessageLookupByLibrary.simpleMessage(
       "Отказ от ответственности",
@@ -365,11 +351,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "Это программное обеспечение используется только в некоммерческих целях, таких как учебные обмены и научные исследования. Запрещено использовать это программное обеспечение в коммерческих целях. Любая коммерческая деятельность, если таковая имеется, не имеет отношения к этому программному обеспечению.",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("Отключено"),
+    "dnsBehaviorSection": MessageLookupByLibrary.simpleMessage("Поведение"),
+    "dnsCoreSection": MessageLookupByLibrary.simpleMessage("Ядро"),
     "dnsDesc": MessageLookupByLibrary.simpleMessage(
       "Обновление настроек, связанных с DNS",
     ),
+    "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS-перехват"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("Режим DNS"),
+    "dnsResolversSection": MessageLookupByLibrary.simpleMessage("Резолверы"),
+    "dnsServerSection": MessageLookupByLibrary.simpleMessage("Сервер"),
+    "dnsServersSection": MessageLookupByLibrary.simpleMessage("Серверы"),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Вы хотите пропустить",
     ),
@@ -381,6 +373,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "editRule": MessageLookupByLibrary.simpleMessage("Редактировать правило"),
     "emptyTip": m4,
     "en": MessageLookupByLibrary.simpleMessage("Английский"),
+    "engine": MessageLookupByLibrary.simpleMessage("Движок"),
     "entries": MessageLookupByLibrary.simpleMessage(" записей"),
     "existsTip": m5,
     "exit": MessageLookupByLibrary.simpleMessage("Выход"),
@@ -403,7 +396,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Режим поиска процесса",
     ),
     "findProcessModeDesc": MessageLookupByLibrary.simpleMessage(
-      "При включении возможны небольшие потери производительности",
+      "Используется, только если в YAML профиля не задано find-process-mode. Возможны небольшие потери производительности.",
     ),
     "fontFamily": MessageLookupByLibrary.simpleMessage("Семейство шрифтов"),
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
@@ -431,7 +424,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Хотите сохранить изменения в кэше?",
     ),
+    "hideFromRecents": MessageLookupByLibrary.simpleMessage(
+      "Прятать из недавних задач",
+    ),
+    "hideFromRecentsDesc": MessageLookupByLibrary.simpleMessage(
+      "Иконка не показывается в списке недавних приложений, когда оно уходит в фон",
+    ),
     "host": MessageLookupByLibrary.simpleMessage("Хост"),
+    "hosts": MessageLookupByLibrary.simpleMessage("Hosts"),
     "hostsDesc": MessageLookupByLibrary.simpleMessage("Добавить Hosts"),
     "hotkeyConflict": MessageLookupByLibrary.simpleMessage(
       "Конфликт горячих клавиш",
@@ -476,9 +476,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "invalidBackupFile": MessageLookupByLibrary.simpleMessage(
       "Неверный файл резервной копии",
     ),
+    "ipv6": MessageLookupByLibrary.simpleMessage("IPv6"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage(
       "При включении будет возможно получать IPv6 трафик",
     ),
+    "ipv6DnsQueries": MessageLookupByLibrary.simpleMessage(
+      "IPv6 (DNS-запросы)",
+    ),
+    "ipv6Engine": MessageLookupByLibrary.simpleMessage("IPv6 (движок)"),
+    "ipv6Inbound": MessageLookupByLibrary.simpleMessage("IPv6 (VPN inbound)"),
     "ipv6InboundDesc": MessageLookupByLibrary.simpleMessage(
       "Разрешить входящий IPv6",
     ),
@@ -489,6 +495,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "key": MessageLookupByLibrary.simpleMessage("Ключ"),
     "language": MessageLookupByLibrary.simpleMessage("Язык"),
+    "launchAndBackground": MessageLookupByLibrary.simpleMessage("Запуск и фон"),
     "layout": MessageLookupByLibrary.simpleMessage("Макет"),
     "legalAndDisclaimer": MessageLookupByLibrary.simpleMessage(
       "Правовая информация",
@@ -509,6 +516,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "locationPermissionTitle": MessageLookupByLibrary.simpleMessage(
       "Разрешение на геолокацию",
+    ),
+    "locationServicesDisabled": MessageLookupByLibrary.simpleMessage(
+      "Разрешение выдано, но геолокация на устройстве выключена. Включите её в системных настройках, чтобы можно было читать имя Wi-Fi-сети.",
     ),
     "log": MessageLookupByLibrary.simpleMessage("Журнал"),
     "loggingDesc": MessageLookupByLibrary.simpleMessage(
@@ -717,6 +727,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Введите другой порт",
     ),
     "portTip": m12,
+    "preferH3": MessageLookupByLibrary.simpleMessage("Prefer H3"),
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Приоритетное использование HTTP/3 для DOH",
     ),
@@ -724,6 +735,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Пожалуйста, нажмите клавишу.",
     ),
     "preview": MessageLookupByLibrary.simpleMessage("Предпросмотр"),
+    "privacyAndSecurity": MessageLookupByLibrary.simpleMessage(
+      "Приватность и безопасность",
+    ),
     "process": MessageLookupByLibrary.simpleMessage("процесс"),
     "profile": MessageLookupByLibrary.simpleMessage("Профиль"),
     "profileAppAccess": MessageLookupByLibrary.simpleMessage(
@@ -804,6 +818,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "resetPageChangesTip": MessageLookupByLibrary.simpleMessage(
       "На текущей странице есть изменения. Вы уверены, что хотите сбросить?",
     ),
+    "resetSection": MessageLookupByLibrary.simpleMessage("Сброс"),
     "resetTip": MessageLookupByLibrary.simpleMessage(
       "Убедитесь, что хотите сбросить",
     ),
@@ -838,6 +853,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreFromWebDAVDesc": MessageLookupByLibrary.simpleMessage(
       "Восстановить данные через WebDAV",
     ),
+    "restoreOnlyProfiles": MessageLookupByLibrary.simpleMessage(
+      "Восстановить только профили",
+    ),
     "restoreStrategy": MessageLookupByLibrary.simpleMessage(
       "Стратегия восстановления",
     ),
@@ -851,6 +869,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Восстановление успешно",
     ),
     "routeAddress": MessageLookupByLibrary.simpleMessage("Адрес маршрутизации"),
+    "routeAddressBypassPrivateHint": MessageLookupByLibrary.simpleMessage(
+      "Не используется в режиме Bypass private",
+    ),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage(
       "Настройка адреса прослушивания маршрутизации",
     ),
@@ -860,6 +881,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage(
       "Использовать конфигурацию",
+    ),
+    "routingRules": MessageLookupByLibrary.simpleMessage(
+      "Правила маршрутизации",
     ),
     "ru": MessageLookupByLibrary.simpleMessage("Русский"),
     "rule": MessageLookupByLibrary.simpleMessage("Правило"),
@@ -933,6 +957,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Установить темный режим, настроить цвет",
     ),
     "themeMode": MessageLookupByLibrary.simpleMessage("Режим темы"),
+    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage(
+      "Сторонние компоненты",
+    ),
     "tight": MessageLookupByLibrary.simpleMessage("Плотный"),
     "time": MessageLookupByLibrary.simpleMessage("Время"),
     "tip": MessageLookupByLibrary.simpleMessage("Подсказка"),
@@ -966,15 +993,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
     ),
+    "userInterface": MessageLookupByLibrary.simpleMessage("Интерфейс"),
     "value": MessageLookupByLibrary.simpleMessage("Значение"),
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("Яркие"),
     "view": MessageLookupByLibrary.simpleMessage("Просмотр"),
+    "vpn": MessageLookupByLibrary.simpleMessage("VPN"),
     "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
       "Обнаружено изменение конфигурации VPN",
     ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "Автоматически направляет весь системный трафик через VpnService",
     ),
+    "vpnSettings": MessageLookupByLibrary.simpleMessage("Настройки VPN"),
     "vpnTip": MessageLookupByLibrary.simpleMessage(
       "Изменения вступят в силу после перезапуска VPN",
     ),

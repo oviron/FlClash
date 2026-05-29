@@ -1,12 +1,7 @@
-// Wi-Fi SSID permission. On Android 13+ this is NEARBY_WIFI_DEVICES (not
-// auto-revoked by App Hibernation, works in background). Below that, falls
-// back to ACCESS_FINE_LOCATION (the only API path before Android 13).
-// `restricted` folds into permanentlyDenied (policy-blocked, re-asking
-// can't lift it).
+// SSID is location-sensitive: WifiInfo.getSSID() returns "<unknown ssid>"
+// without ACCESS_FINE_LOCATION at runtime + the device location toggle on.
+// NEARBY_WIFI_DEVICES does not unlock it; locationAlways covers background.
 
-import 'dart:io';
-
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,58 +12,67 @@ enum LocationPermissionState {
   denied,
   notDetermined,
   permanentlyDenied,
+
+  /// Permission is held but the device-level location toggle is off, so the
+  /// SSID still reads back as `<unknown ssid>`. Distinct because the fix is
+  /// "turn on location services", not "grant permission".
+  serviceDisabled,
 }
 
-LocationPermissionState _mapStatus(PermissionStatus status) {
+const _foreground = Permission.locationWhenInUse;
+const _background = Permission.locationAlways;
+
+LocationPermissionState _mapDenied(PermissionStatus status) {
   switch (status) {
-    case PermissionStatus.granted:
-    case PermissionStatus.provisional:
-    case PermissionStatus.limited:
-      return LocationPermissionState.granted;
-    case PermissionStatus.denied:
-      return LocationPermissionState.denied;
     case PermissionStatus.permanentlyDenied:
     case PermissionStatus.restricted:
       return LocationPermissionState.permanentlyDenied;
+    default:
+      return LocationPermissionState.denied;
   }
-}
-
-Future<Permission> _activePermission() async {
-  if (Platform.isAndroid) {
-    final info = await DeviceInfoPlugin().androidInfo;
-    if (info.version.sdkInt >= 33) {
-      return Permission.nearbyWifiDevices;
-    }
-  }
-  return Permission.locationWhenInUse;
 }
 
 @Riverpod(keepAlive: true)
 class LocationPermission extends _$LocationPermission {
   @override
   LocationPermissionState build() {
-    // Synchronous initial value so widgets do not have to handle AsyncValue
-    // on first frame. The actual status comes from refresh() which the UI
-    // is expected to call once after mount.
+    // Reconcile with the OS as soon as the provider is created so the stored
+    // value never lags behind a grant made earlier or in system Settings.
+    Future.microtask(refresh);
     return LocationPermissionState.notDetermined;
   }
 
-  /// Re-read the current OS-level status and update [state]. Call this after
-  /// returning from system Settings (the user may have toggled the toggle
-  /// without going through our flow) or once on app startup if the UI cares.
+  /// Re-read the OS status. Call after returning from system Settings or on
+  /// app resume; build() already calls it once on creation.
   Future<void> refresh() async {
-    final perm = await _activePermission();
-    final status = await perm.status;
-    state = _mapStatus(status);
+    final status = await _foreground.status;
+    if (!(status.isGranted || status.isLimited || status.isProvisional)) {
+      state = _mapDenied(status);
+      return;
+    }
+    final service = await _foreground.serviceStatus;
+    state = service == ServiceStatus.disabled
+        ? LocationPermissionState.serviceDisabled
+        : LocationPermissionState.granted;
   }
 
-  /// Trigger the system permission dialog and return the new state.
+  /// Trigger the system foreground-permission dialog, then re-evaluate
+  /// (which also folds in the location-service toggle).
   Future<LocationPermissionState> request() async {
-    final perm = await _activePermission();
-    final status = await perm.request();
-    final mapped = _mapStatus(status);
-    state = mapped;
-    return mapped;
+    await _foreground.request();
+    await refresh();
+    return state;
+  }
+
+  Future<bool> isBackgroundGranted() async {
+    return (await _background.status).isGranted;
+  }
+
+  /// API <= 29 may grant background in the same dialog; API 30+ forces the
+  /// user through system Settings ("Allow all the time").
+  Future<bool> requestBackground() async {
+    final status = await _background.request();
+    return status.isGranted;
   }
 
   bool get isGranted => state == LocationPermissionState.granted;

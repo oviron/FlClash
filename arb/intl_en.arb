@@ -459,6 +459,8 @@
   "permissionRequiredHint": "Permission required",
   "openSettings": "Open settings",
   "networkRulesPermissionBanner": "Network rules need Wi-Fi permission to match SSIDs",
+  "locationServicesDisabled": "Permission is granted, but Location is turned off on the device. Turn on Location in system settings so the Wi-Fi network name can be read.",
+  "backgroundLocationRationale": "To switch automatically while the app is in the background, allow location access all the time.",
   "networkRulesTitle": "Network rules",
   "networkRulesEnable": "Enable network rules",
   "networkRulesEmpty": "Add your first rule",

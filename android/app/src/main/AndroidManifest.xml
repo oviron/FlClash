@@ -23,14 +23,15 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Wi-Fi SSID/BSSID for network-rules matching.
-         API <= 32: ACCESS_FINE_LOCATION (only path before NEARBY_WIFI_DEVICES existed).
-         API >= 33: NEARBY_WIFI_DEVICES with neverForLocation — not subject to
-         App Hibernation auto-revoke and works in background after a single grant. -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"
-        android:usesPermissionFlags="neverForLocation" />
+    <!-- Wi-Fi SSID for network-rules matching. The connected SSID is
+         location-sensitive on every supported Android version: WifiInfo.getSSID()
+         returns "<unknown ssid>" without ACCESS_FINE_LOCATION held at runtime and
+         the device location toggle on. NEARBY_WIFI_DEVICES does NOT unlock it.
+         ACCESS_BACKGROUND_LOCATION keeps SSID readable while only the VPN service
+         runs (UI backgrounded). See developer.android.com/.../wifi-permissions. -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:name=".Application"

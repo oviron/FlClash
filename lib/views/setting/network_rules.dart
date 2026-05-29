@@ -10,17 +10,32 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NetworkRulesView extends ConsumerWidget {
+class NetworkRulesView extends ConsumerStatefulWidget {
   const NetworkRulesView({super.key});
 
-  Future<void> _openCreateDialog(BuildContext context, WidgetRef ref) async {
+  @override
+  ConsumerState<NetworkRulesView> createState() => _NetworkRulesViewState();
+}
+
+class _NetworkRulesViewState extends ConsumerState<NetworkRulesView> {
+  @override
+  void initState() {
+    super.initState();
+    // Reconcile with the OS on entry so a grant made earlier (or revoked in
+    // Settings) is reflected instead of a stale cached value.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(locationPermissionProvider.notifier).refresh();
+    });
+  }
+
+  Future<void> _openCreateDialog(BuildContext context) async {
     final created = await EditRuleDialog.show(context: context);
     if (created == null) return;
     await ref.read(networkRulesRepoProvider.notifier).add(created);
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final settings = ref.watch(networkRulesSettingsProvider);
     final rulesAsync = ref.watch(networkRulesStreamProvider);
 
@@ -48,7 +63,7 @@ class NetworkRulesView extends ConsumerWidget {
             right: 16,
             bottom: 80,
             child: FloatingActionButton.extended(
-              onPressed: () => _openCreateDialog(context, ref),
+              onPressed: () => _openCreateDialog(context),
               icon: const Icon(Icons.add),
               label: Text(appLocalizations.networkRulesAdd),
             ),
@@ -64,10 +79,13 @@ class _PermissionBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final granted =
-        ref.watch(locationPermissionProvider) ==
-        LocationPermissionState.granted;
-    if (granted) return const SizedBox.shrink();
+    final state = ref.watch(locationPermissionProvider);
+    // notDetermined = OS not read yet; granted = fine. Neither is an error to
+    // surface, so the banner stays hidden and never flashes on a fresh open.
+    if (state == LocationPermissionState.granted ||
+        state == LocationPermissionState.notDetermined) {
+      return const SizedBox.shrink();
+    }
 
     final rules = ref.watch(networkRulesStreamProvider).value ?? const [];
     final needsWifi = rules.any(
@@ -76,6 +94,7 @@ class _PermissionBanner extends ConsumerWidget {
     );
     if (!needsWifi) return const SizedBox.shrink();
 
+    final serviceOff = state == LocationPermissionState.serviceDisabled;
     final scheme = Theme.of(context).colorScheme;
     return Container(
       color: scheme.errorContainer,
@@ -86,7 +105,9 @@ class _PermissionBanner extends ConsumerWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              appLocalizations.networkRulesPermissionBanner,
+              serviceOff
+                  ? appLocalizations.locationServicesDisabled
+                  : appLocalizations.networkRulesPermissionBanner,
               style: TextStyle(color: scheme.onErrorContainer),
             ),
           ),
@@ -95,7 +116,11 @@ class _PermissionBanner extends ConsumerWidget {
             style: TextButton.styleFrom(
               foregroundColor: scheme.onErrorContainer,
             ),
-            child: Text(appLocalizations.permissionAllow),
+            child: Text(
+              serviceOff
+                  ? appLocalizations.openSettings
+                  : appLocalizations.permissionAllow,
+            ),
           ),
         ],
       ),

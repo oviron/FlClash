@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/foundation.dart';
@@ -54,6 +55,9 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
         appController.tryCheckIp();
         if (system.isAndroid) {
           appController.tryStartCore();
+          // Pick up a location grant/revoke made in system Settings while we
+          // were backgrounded, so the network-rules banner never lies.
+          ref.read(locationPermissionProvider.notifier).refresh();
         }
       });
     }

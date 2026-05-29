@@ -468,6 +468,8 @@
   "permissionRequiredHint": "Требуется разрешение",
   "openSettings": "Открыть настройки",
   "networkRulesPermissionBanner": "Сетевым правилам нужно разрешение для определения Wi-Fi-сетей",
+  "locationServicesDisabled": "Разрешение выдано, но геолокация на устройстве выключена. Включите её в системных настройках, чтобы можно было читать имя Wi-Fi-сети.",
+  "backgroundLocationRationale": "Чтобы переключение работало в фоне, разрешите доступ к местоположению всегда.",
   "networkRulesTitle": "Правила по сети",
   "networkRulesEnable": "Включить правила по сети",
   "networkRulesEmpty": "Добавьте первое правило",
