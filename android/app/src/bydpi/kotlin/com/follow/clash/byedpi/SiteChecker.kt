@@ -38,48 +38,62 @@ class SiteChecker(proxyPort: Int) {
     }
 
     private fun checkSite(site: String, requests: Int, timeoutSec: Long): Int {
-        val url = try {
-            URL(if (site.startsWith("http://") || site.startsWith("https://")) site else "https://$site")
-        } catch (_: Exception) {
-            return 0
-        }
+        val url = parseUrl(site) ?: return 0
         var ok = 0
         repeat(requests) {
-            var conn: HttpURLConnection? = null
-            try {
-                conn = (url.openConnection(proxy) as HttpURLConnection).apply {
-                    connectTimeout = (timeoutSec * 1000).toInt()
-                    readTimeout = (timeoutSec * 1000).toInt()
-                    instanceFollowRedirects = true
-                    setRequestProperty("Connection", "close")
-                }
-                val code = conn.responseCode
-                val declared = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    conn.contentLengthLong
-                } else {
-                    conn.contentLength.toLong()
-                }
-                var actual = 0L
-                try {
-                    val ins = if (code in 200..299) conn.inputStream else conn.errorStream
-                    if (ins != null) {
-                        val buf = ByteArray(8192)
-                        val limit = if (declared > 0) declared else 1024L * 1024
-                        while (actual < limit) {
-                            val toRead = minOf(buf.size.toLong(), limit - actual).toInt()
-                            val n = ins.read(buf, 0, toRead)
-                            if (n == -1) break
-                            actual += n
-                        }
-                    }
-                } catch (_: IOException) {
-                }
-                if (declared <= 0L || actual >= declared) ok++
-            } catch (_: Exception) {
-            } finally {
-                conn?.disconnect()
-            }
+            if (probe(url, timeoutSec)) ok++
         }
         return ok
+    }
+
+    private fun parseUrl(site: String): URL? = try {
+        URL(if (site.startsWith("http://") || site.startsWith("https://")) site else "https://$site")
+    } catch (_: Exception) {
+        null
+    }
+
+    private fun probe(url: URL, timeoutSec: Long): Boolean {
+        var conn: HttpURLConnection? = null
+        return try {
+            conn = (url.openConnection(proxy) as HttpURLConnection).apply {
+                connectTimeout = (timeoutSec * 1000).toInt()
+                readTimeout = (timeoutSec * 1000).toInt()
+                instanceFollowRedirects = true
+                setRequestProperty("Connection", "close")
+            }
+            val code = conn.responseCode
+            val declared = declaredLength(conn)
+            val actual = readBody(conn, code, declared)
+            declared <= 0L || actual >= declared
+        } catch (_: Exception) {
+            false
+        } finally {
+            conn?.disconnect()
+        }
+    }
+
+    private fun declaredLength(conn: HttpURLConnection): Long =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            conn.contentLengthLong
+        } else {
+            conn.contentLength.toLong()
+        }
+
+    private fun readBody(conn: HttpURLConnection, code: Int, declared: Long): Long {
+        return try {
+            val ins = (if (code in 200..299) conn.inputStream else conn.errorStream)
+                ?: return 0L
+            val buf = ByteArray(8192)
+            val limit = if (declared > 0) declared else 1024L * 1024
+            var actual = 0L
+            while (actual < limit) {
+                val n = ins.read(buf, 0, minOf(buf.size.toLong(), limit - actual).toInt())
+                if (n == -1) break
+                actual += n
+            }
+            actual
+        } catch (_: IOException) {
+            0L
+        }
     }
 }
