@@ -1,3 +1,9 @@
+## v0.13.10
+
+- In-app ByeDPI strategy auto-test: a Strategy-test screen runs each strategy through a standalone byedpi SOCKS proxy and ranks them by how well they reach the test sites on the current network; apply the best in one tap
+
+- Tests the same set the picker uses (Apply = select that strategy); the VPN is auto-paused for the run and restored after; targets reuse the bundled host list
+
 ## v0.13.9
 
 - Remote-updatable ByeDPI strategies: refresh the set from the repo without an APK rebuild (fetched through mihomo when the VPN is up), with validation and last-good fallback. New "Update strategies" tile in ByeDpi settings (+ reset to bundled)
