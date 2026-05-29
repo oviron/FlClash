@@ -6,6 +6,44 @@
 
 - On-disk override (no force-install) seams in a future remote refresh of the strategy set without a release
 
+## v0.13.7
+
+- Maintenance release: version bump, no functional changes since v0.13.6
+
+## v0.13.6
+
+- Bump libmihomo-android 0.1.1 -> 0.1.2
+
+## v0.13.5
+
+- Fix: proxies tab FAB pings the visible group instead of the persisted one
+
+## v0.13.4
+
+- Drop China-specific leftovers from default config; add Android connectivity probe coverage; enable sniffer by default
+
+- Omit null override-destination in defaults
+
+## v0.13.3
+
+- Restore v0.12.0 DNS defaults; simplify IPv6 to a 2-state toggle
+
+- Remove the fallback-filter setting; move Reset to an AppBar icon
+
+- l10n cleanup (drop orphaned keys from the removed fallback-filter)
+
+## v0.13.2
+
+- Deep information-architecture restructure of settings, research-driven (settings audit PR1-PR5.9)
+
+- Flatten single-tile tool sections; move Diagnostics to the bottom
+
+- Strip desktop/dead code paths (ViewMode, NavigationItemMode, isMobile branches)
+
+- dart_code_linter sweep + CI gate; skip APK build on pull requests
+
+- Add 7 missing l10n entries
+
 ## v0.12.0
 
 - Audit sweep: 59 findings + 4 carry-overs
