@@ -1,3 +1,11 @@
+## v0.13.11
+
+- Test-driven host routing: applying a strategy from the test now routes only the hosts it verified through ByeDPI; hosts it can't pierce fall back to the VPN (no longer broken). Apply shows the ByeDPI/VPN split
+
+- Strategy test is now a dashboard: per-strategy results + timestamps persist and render from cache; the active strategy is badged
+
+- Fix: updating strategies through the VPN no longer fails with 407 (answers the local proxy's inbound-auth challenge)
+
 ## v0.13.10
 
 - In-app ByeDPI strategy auto-test: a Strategy-test screen runs each strategy through a standalone byedpi SOCKS proxy and ranks them by how well they reach the test sites on the current network; apply the best in one tap

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:fl_clash/byedpi/host_list.dart';
+import 'package:fl_clash/byedpi/test_store.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/byedpi.dart';
@@ -26,6 +27,7 @@ class StrategyTestResult {
   final int success;
   final int totalRequests;
   final List<SiteOutcome> sites;
+  final int? testedAt; // epoch ms
 
   const StrategyTestResult({
     required this.id,
@@ -34,8 +36,17 @@ class StrategyTestResult {
     required this.success,
     required this.totalRequests,
     required this.sites,
+    this.testedAt,
   });
+
+  List<String> get failedHosts => [
+    for (final s in sites)
+      if (s.ok == 0) s.site,
+  ];
 }
+
+// (byedpiCount, vpnCount) reported back to the UI on apply().
+typedef ApplySplit = ({int byedpi, int vpn});
 
 class StrategyTestState {
   final TestPhase phase;
@@ -72,8 +83,9 @@ class StrategyTestState {
 
 // Drives the in-app strategy auto-test (bydpi flavor). The native side runs
 // byedpi standalone (no VPN tun) per strategy and streams progress; we snapshot
-// and pause the VPN for the run, then restore it. Apply selects the winning id
-// through the existing preset model.
+// and pause the VPN for the run, then restore it. Results persist to a cache so
+// the dashboard renders without re-testing. Apply selects the winning id AND
+// rewrites the byedpi exclude list (hosts that strategy failed → routed via VPN).
 @riverpod
 class StrategyTestController extends _$StrategyTestController {
   Service get _svc => Service();
@@ -82,6 +94,40 @@ class StrategyTestController extends _$StrategyTestController {
 
   @override
   StrategyTestState build() => const StrategyTestState();
+
+  // Render last results from the on-disk cache (no re-test).
+  Future<void> loadCached() async {
+    if (state.phase == TestPhase.running || state.results.isNotEmpty) return;
+    final cache = await readTestResults();
+    if (cache.isEmpty) return;
+    final results = <StrategyTestResult>[];
+    cache.forEach((id, raw) {
+      if (raw is! Map) return;
+      results.add(_resultFromCache(id, Map<String, dynamic>.from(raw)));
+    });
+    results.sort((a, b) => b.percent.compareTo(a.percent));
+    state = StrategyTestState(phase: TestPhase.done, results: results);
+  }
+
+  StrategyTestResult _resultFromCache(String id, Map<String, dynamic> raw) {
+    final sites = [
+      for (final s in (raw['sites'] as List? ?? []))
+        SiteOutcome(
+          (s as Map)['site'].toString(),
+          (s['ok'] as num).toInt(),
+          (s['total'] as num).toInt(),
+        ),
+    ];
+    return StrategyTestResult(
+      id: id,
+      label: (raw['label'] ?? id).toString(),
+      percent: (raw['percent'] as num?)?.toInt() ?? 0,
+      success: sites.fold(0, (a, s) => a + s.ok),
+      totalRequests: sites.fold(0, (a, s) => a + s.total),
+      sites: sites,
+      testedAt: (raw['timestamp'] as num?)?.toInt(),
+    );
+  }
 
   Future<void> run({
     int requests = 1,
@@ -176,17 +222,57 @@ class StrategyTestController extends _$StrategyTestController {
       await appController.updateStatus(true);
       _wasVpnOn = false;
     }
-    final sorted = [...state.results]
-      ..sort((a, b) => b.percent.compareTo(a.percent));
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final stamped = [
+      for (final r in state.results)
+        StrategyTestResult(
+          id: r.id,
+          label: r.label,
+          percent: r.percent,
+          success: r.success,
+          totalRequests: r.totalRequests,
+          sites: r.sites,
+          testedAt: now,
+        ),
+    ]..sort((a, b) => b.percent.compareTo(a.percent));
+    await _persist(stamped);
     state = StrategyTestState(
       phase: TestPhase.done,
       completed: state.completed,
       total: state.total,
-      results: sorted,
+      results: stamped,
       error: error,
     );
   }
 
-  Future<void> apply(String id) =>
-      ref.read(byeDpiSettingsProvider.notifier).setPreset(id);
+  // Merge this run's results into the on-disk cache (other strategies' prior
+  // entries survive), so per-strategy dates and offline render work.
+  Future<void> _persist(List<StrategyTestResult> results) async {
+    final cache = await readTestResults();
+    for (final r in results) {
+      cache[r.id] = {
+        'label': r.label,
+        'percent': r.percent,
+        'timestamp': r.testedAt,
+        'sites': [
+          for (final s in r.sites)
+            {'site': s.site, 'ok': s.ok, 'total': s.total},
+        ],
+      };
+    }
+    await writeTestResults(cache);
+  }
+
+  // Apply a strategy: make it active AND route its failed hosts via VPN by
+  // writing them to the exclude list, then re-apply the profile so the byedpi
+  // routing rules rebuild. Returns the byedpi/VPN split for the UI.
+  Future<ApplySplit> apply(String id) async {
+    final result = state.results.where((r) => r.id == id).firstOrNull;
+    final failed = result?.failedHosts ?? const <String>[];
+    await writeExclude(failed);
+    await ref.read(byeDpiSettingsProvider.notifier).setPreset(id);
+    await appController.applyProfile(silence: true);
+    final total = result?.sites.length ?? 0;
+    return (byedpi: total - failed.length, vpn: failed.length);
+  }
 }
