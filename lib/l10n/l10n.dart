@@ -3879,6 +3879,71 @@ class AppLocalizations {
     );
   }
 
+  /// `Strategy test`
+  String get byedpiTestTitle {
+    return Intl.message(
+      'Strategy test',
+      name: 'byedpiTestTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Run test`
+  String get byedpiTestRun {
+    return Intl.message('Run test', name: 'byedpiTestRun', desc: '', args: []);
+  }
+
+  /// `Stop`
+  String get byedpiTestStop {
+    return Intl.message('Stop', name: 'byedpiTestStop', desc: '', args: []);
+  }
+
+  /// `Testing`
+  String get byedpiTestProgress {
+    return Intl.message(
+      'Testing',
+      name: 'byedpiTestProgress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VPN paused for testing`
+  String get byedpiTestVpnPaused {
+    return Intl.message(
+      'VPN paused for testing',
+      name: 'byedpiTestVpnPaused',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply`
+  String get byedpiTestApply {
+    return Intl.message('Apply', name: 'byedpiTestApply', desc: '', args: []);
+  }
+
+  /// `Strategy applied`
+  String get byedpiTestApplied {
+    return Intl.message(
+      'Strategy applied',
+      name: 'byedpiTestApplied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Run the test to rank strategies by how well they reach the test sites on your network, then apply the best.`
+  String get byedpiTestHint {
+    return Intl.message(
+      'Run the test to rank strategies by how well they reach the test sites on your network, then apply the best.',
+      name: 'byedpiTestHint',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Update strategies`
   String get byedpiUpdateStrategies {
     return Intl.message(

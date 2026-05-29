@@ -10,9 +10,12 @@ abstract final class ServiceMethod {
   static const start = 'start';
   static const stop = 'stop';
   static const restartByeDpi = 'restartByeDpi';
+  static const startStrategyTest = 'startStrategyTest';
+  static const stopStrategyTest = 'stopStrategyTest';
   // Inbound (Kotlin → Dart)
   static const event = 'event';
   static const crash = 'crash';
+  static const strategyTestProgress = 'strategyTestProgress';
 }
 
 abstract final class AppMethod {
