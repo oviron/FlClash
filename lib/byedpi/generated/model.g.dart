@@ -6,21 +6,20 @@ part of '../model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_ByeDpiSettings _$ByeDpiSettingsFromJson(
-  Map<String, dynamic> json,
-) => _ByeDpiSettings(
-  enabled: json['enabled'] as bool? ?? false,
-  mode:
-      $enumDecodeNullable(_$ByeDpiModeEnumMap, json['mode']) ?? ByeDpiMode.auto,
-  fallbackEnabled: json['fallbackEnabled'] as bool? ?? true,
-  fallbackGroup: json['fallbackGroup'] as String? ?? '',
-  port: (json['port'] as num?)?.toInt() ?? 1080,
-  preset:
-      $enumDecodeNullable(_$ByeDpiPresetEnumMap, json['preset']) ??
-      ByeDpiPreset.universal,
-  cliArgs:
-      json['cliArgs'] as String? ?? '--disorder 1 --auto=t,r,s --tlsrec 1+s',
-);
+_ByeDpiSettings _$ByeDpiSettingsFromJson(Map<String, dynamic> json) =>
+    _ByeDpiSettings(
+      enabled: json['enabled'] as bool? ?? false,
+      mode:
+          $enumDecodeNullable(_$ByeDpiModeEnumMap, json['mode']) ??
+          ByeDpiMode.auto,
+      fallbackEnabled: json['fallbackEnabled'] as bool? ?? true,
+      fallbackGroup: json['fallbackGroup'] as String? ?? '',
+      port: (json['port'] as num?)?.toInt() ?? 1080,
+      preset:
+          $enumDecodeNullable(_$ByeDpiPresetEnumMap, json['preset']) ??
+          ByeDpiPreset.universal,
+      cliArgs: json['cliArgs'] as String? ?? '-o1 -a1 -r-5+se',
+    );
 
 Map<String, dynamic> _$ByeDpiSettingsToJson(_ByeDpiSettings instance) =>
     <String, dynamic>{

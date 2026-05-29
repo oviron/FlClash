@@ -136,7 +136,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI 命令行参数"),
     "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
-      "--disorder 1 --auto=t,r,s --tlsrec 1+s",
+      "-o1 -a1 -r-5+se",
     ),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage("通过本地 SOCKS5 代理绕过 DPI"),
     "byedpiEnable": MessageLookupByLibrary.simpleMessage("启用 ByeDPI"),

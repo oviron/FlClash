@@ -7,28 +7,22 @@ part 'generated/model.g.dart';
 enum ByeDpiMode { manual, auto }
 
 enum ByeDpiPreset {
-  universal('--disorder 1 --auto=t,r,s --tlsrec 1+s'),
+  universal('-o1 -a1 -r-5+se'),
   mrDrone(
-    '-Ku -a3 -An -Kt,h -s0 -o1 -d1 -r1+s -Ar -o1 -At -f-1 -r1+s -As -b+500',
+    '-d1 -d3+s -s6+s -d9+s -s12+s -d15+s -s20+s -d25+s -s30+s -d35+s -r1+s -S -a1',
   ),
-  mtsAggressive(
-    '-Ku -a1 -An -Kt -V443 -H:googlevideo.com -n www.google.com -o1 -An -d0+sm -At -r1+s',
-  ),
-  megafon2ni(
-    '-Ku -a5 -An -Kt -V443 -H:googlevideo.com -n www.google.com -o1 -An -f-1 -T0.5 -Ars -d0+sm -At -r1+s',
-  ),
-  tele2('--disorder 1 --auto=t,r,s --fake 2'),
+  mtsAggressive('-s1 -q1 -a1 -At,r,s -f-1 -r1+s -a1'),
+  megafon2ni('-o1 -d1 -r1+s -S -s1+s -d3+s -a1'),
+  tele2('-s1 -o1 -a1 -At,r,s -f-1 -r1+s -a1'),
   beelineRt(
     '-o1 -d1 -a1 -At,r,s -s1 -d1 -s5+s -s10+s -s15+s -s20+s -r1+s -S -a1',
   ),
-  antiGgc('--split 3 --oob 1 --disorder 3 --auto=t,r,s'),
+  antiGgc('-d1 -r1+s -f-1 -S -t8 -o3+s -a1'),
   cascade(
-    '-d1 -d3+s -s6+s -d9+s -s12+s -d15+s -s20+s -d25+s -s30+s -d35+s -r1+s -S -a1',
+    '-d1 -s1+s -d3+s -s6+s -d9+s -s12+s -d15+s -s20+s -d25+s -s30+s -d35+s -a1',
   ),
-  tlsOnly('-Kt -r1+s -s1+s -d3+s -a1'),
-  ttlFixed(
-    '-g25 -H:"googlevideo.com youtube.com discord.com" -f-1 -n www.google.com -t4 -r1+s -An -d1 -s25+s -d30+s',
-  ),
+  tlsOnly('-s1 -d3+s -a1 -At -r1+s -a1'),
+  ttlFixed('-q1+s -s29+s -o5+s -f-1 -S -a1'),
   custom('');
 
   const ByeDpiPreset(this.args);
@@ -50,8 +44,15 @@ enum ByeDpiPreset {
   };
 }
 
-String effectiveByeDpiCliArgs(ByeDpiSettings s) =>
-    s.preset == ByeDpiPreset.custom ? s.cliArgs : s.preset.args;
+// `overrides` (keyed by preset id) is the data-driven source from
+// byedpi-strategies.json; the enum's compiled `.args` stays as fallback when
+// the asset is missing/corrupt. Empty map = pure fallback (keeps old callers).
+String effectiveByeDpiCliArgs(
+  ByeDpiSettings s, [
+  Map<String, String> overrides = const {},
+]) => s.preset == ByeDpiPreset.custom
+    ? s.cliArgs
+    : (overrides[s.preset.name] ?? s.preset.args);
 
 @freezed
 abstract class ByeDpiSettings with _$ByeDpiSettings {
@@ -62,7 +63,7 @@ abstract class ByeDpiSettings with _$ByeDpiSettings {
     @Default('') String fallbackGroup,
     @Default(1080) int port,
     @Default(ByeDpiPreset.universal) ByeDpiPreset preset,
-    @Default('--disorder 1 --auto=t,r,s --tlsrec 1+s') String cliArgs,
+    @Default('-o1 -a1 -r-5+se') String cliArgs,
   }) = _ByeDpiSettings;
 
   factory ByeDpiSettings.fromJson(Map<String, Object?> json) =>

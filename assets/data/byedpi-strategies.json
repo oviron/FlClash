@@ -1,0 +1,12 @@
+{
+  "universal": "-o1 -a1 -r-5+se",
+  "mrDrone": "-d1 -d3+s -s6+s -d9+s -s12+s -d15+s -s20+s -d25+s -s30+s -d35+s -r1+s -S -a1",
+  "mtsAggressive": "-s1 -q1 -a1 -At,r,s -f-1 -r1+s -a1",
+  "megafon2ni": "-o1 -d1 -r1+s -S -s1+s -d3+s -a1",
+  "tele2": "-s1 -o1 -a1 -At,r,s -f-1 -r1+s -a1",
+  "beelineRt": "-o1 -d1 -a1 -At,r,s -s1 -d1 -s5+s -s10+s -s15+s -s20+s -r1+s -S -a1",
+  "antiGgc": "-d1 -r1+s -f-1 -S -t8 -o3+s -a1",
+  "cascade": "-d1 -s1+s -d3+s -s6+s -d9+s -s12+s -d15+s -s20+s -d25+s -s30+s -d35+s -a1",
+  "tlsOnly": "-s1 -d3+s -a1 -At -r1+s -a1",
+  "ttlFixed": "-q1+s -s29+s -o5+s -f-1 -S -a1"
+}

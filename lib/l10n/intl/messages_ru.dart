@@ -180,7 +180,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("Аргументы ByeDPI"),
     "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
-      "--disorder 1 --auto=t,r,s --tlsrec 1+s",
+      "-o1 -a1 -r-5+se",
     ),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "Обход DPI через локальный SOCKS5-прокси",

@@ -3849,10 +3849,10 @@ class AppLocalizations {
     );
   }
 
-  /// `--disorder 1 --auto=t,r,s --tlsrec 1+s`
+  /// `-o1 -a1 -r-5+se`
   String get byedpiCliArgsHint {
     return Intl.message(
-      '--disorder 1 --auto=t,r,s --tlsrec 1+s',
+      '-o1 -a1 -r-5+se',
       name: 'byedpiCliArgsHint',
       desc: '',
       args: [],

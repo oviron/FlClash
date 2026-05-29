@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:fl_clash/byedpi/host_list.dart';
 import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/byedpi/settings_store.dart';
+import 'package:fl_clash/byedpi/strategy_args.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,13 +15,14 @@ part 'generated/byedpi.g.dart';
 Future<void> writeByeDpiRuntime(ByeDpiSettings s) async {
   final dir = await appPath.homeDirPath;
   final hostsFile = await hostListPath();
+  final strategyArgs = await readStrategyArgs();
   final target = File(join(dir, 'byedpi-runtime.json'));
   final tmp = File(join(dir, 'byedpi-runtime.json.tmp'));
   await tmp.writeAsString(
     jsonEncode({
       'enabled': s.enabled,
       'port': s.port,
-      'cliArgs': effectiveByeDpiCliArgs(s),
+      'cliArgs': effectiveByeDpiCliArgs(s, strategyArgs),
       'hostsFile': hostsFile,
     }),
   );

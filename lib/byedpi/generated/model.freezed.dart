@@ -215,7 +215,7 @@ return $default(_that.enabled,_that.mode,_that.fallbackEnabled,_that.fallbackGro
 @JsonSerializable()
 
 class _ByeDpiSettings implements ByeDpiSettings {
-  const _ByeDpiSettings({this.enabled = false, this.mode = ByeDpiMode.auto, this.fallbackEnabled = true, this.fallbackGroup = '', this.port = 1080, this.preset = ByeDpiPreset.universal, this.cliArgs = '--disorder 1 --auto=t,r,s --tlsrec 1+s'});
+  const _ByeDpiSettings({this.enabled = false, this.mode = ByeDpiMode.auto, this.fallbackEnabled = true, this.fallbackGroup = '', this.port = 1080, this.preset = ByeDpiPreset.universal, this.cliArgs = '-o1 -a1 -r-5+se'});
   factory _ByeDpiSettings.fromJson(Map<String, dynamic> json) => _$ByeDpiSettingsFromJson(json);
 
 @override@JsonKey() final  bool enabled;

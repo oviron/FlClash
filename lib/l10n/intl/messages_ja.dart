@@ -142,7 +142,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiAttribution": MessageLookupByLibrary.simpleMessage("hufrea 作 (MIT)"),
     "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
     "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
-      "--disorder 1 --auto=t,r,s --tlsrec 1+s",
+      "-o1 -a1 -r-5+se",
     ),
     "byedpiDesc": MessageLookupByLibrary.simpleMessage(
       "ローカル SOCKS5 プロキシ経由でDPIをバイパス",
