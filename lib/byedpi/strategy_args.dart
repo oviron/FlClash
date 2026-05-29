@@ -39,10 +39,8 @@ List<ByeDpiStrategy> parseStrategyList(String raw) {
   return list;
 }
 
-// Bundled JSON asset is the source of truth; an on-disk file (written by the
-// remote updater or by hand) overrides it. Not force-installed on start, so an
-// updated set persists across launches. Falls back to the asset, then empty, if
-// the on-disk copy is unreadable.
+// On-disk file (remote updater / manual) overrides the bundled asset; not
+// force-installed, so an updated set persists. Falls back to asset, then empty.
 Future<List<ByeDpiStrategy>> loadByeDpiStrategies() async {
   final f = File(await strategyListPath());
   if (f.existsSync()) {

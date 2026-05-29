@@ -81,11 +81,9 @@ class StrategyTestState {
   );
 }
 
-// Drives the in-app strategy auto-test (bydpi flavor). The native side runs
-// byedpi standalone (no VPN tun) per strategy and streams progress; we snapshot
-// and pause the VPN for the run, then restore it. Results persist to a cache so
-// the dashboard renders without re-testing. Apply selects the winning id AND
-// rewrites the byedpi exclude list (hosts that strategy failed → routed via VPN).
+// In-app strategy auto-test: pauses the VPN, runs byedpi standalone per strategy
+// via native, caches results. Apply selects the id + writes the exclude list
+// (its failed hosts → routed via VPN).
 @riverpod
 class StrategyTestController extends _$StrategyTestController {
   Service get _svc => Service();

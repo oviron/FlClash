@@ -16,11 +16,8 @@ Future<DateTime?> strategiesLastUpdate() async {
   return ms == null ? null : DateTime.fromMillisecondsSinceEpoch(ms);
 }
 
-// Fetch the strategy set straight from GitHub. The app is excluded from the tun
-// (bydpi flavor), so a direct socket is a raw fetch — the same egress the rest
-// of FlClash's own traffic uses. `findProxy = DIRECT` is required to bypass the
-// app-wide HttpOverrides (lib/common/http.dart) that otherwise forces every
-// HttpClient through the local mixed-port when the VPN is up.
+// Direct GitHub fetch (app is excluded from the tun, so this is raw).
+// findProxy=DIRECT bypasses the app-wide HttpOverrides that force the proxy.
 Future<int> updateStrategiesFromRemote() async {
   final dio = Dio()
     ..httpClientAdapter = IOHttpClientAdapter(
