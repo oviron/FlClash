@@ -240,13 +240,16 @@ class _StrategyUpdateTileState extends ConsumerState<_StrategyUpdateTile> {
       ref.invalidate(byeDpiStrategiesProvider);
       _last = await strategiesLastUpdate();
       msg = '${appLocalizations.byedpiUpdateOk} ($count)';
-    } catch (_) {
-      msg = appLocalizations.byedpiUpdateFail;
+    } catch (e) {
+      final detail = e.toString();
+      msg =
+          '${appLocalizations.byedpiUpdateFail}: '
+          '${detail.length > 120 ? detail.substring(0, 120) : detail}';
     }
     if (!mounted) return;
     setState(() => _busy = false);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), duration: const Duration(seconds: 2)),
+      SnackBar(content: Text(msg), duration: const Duration(seconds: 4)),
     );
   }
 
