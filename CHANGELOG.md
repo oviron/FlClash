@@ -1,10 +1,10 @@
 ## v0.13.8
 
-- Move ByeDPI strategy args to data-driven `assets/data/byedpi-strategies.json`; updating strategies no longer touches Dart/codegen/l10n. Enum args kept as compiled fallback
+- Data-driven ByeDPI strategies: the `ByeDpiPreset` enum is gone; strategies live solely in `assets/data/byedpi-strategies.json`, loaded at runtime. Updating/adding one is a pure JSON edit (no Dart/codegen/l10n)
 
-- On-disk override (no force-install) seams in a future remote-refresh of the strategy set without a release
+- Strategy set is taken verbatim from upstream romanvht/ByeByeDPI `proxytest_strategies.list` (2026-05): `universal` is the maintainer's own default, the rest are the top usable entries (excluding `{sni}`/raw-blob lines we can't run) with neutral labels. No invented per-operator labeling
 
-- Refresh strategy set from upstream romanvht/ByeByeDPI proxytest list (2026-05); adopt new upstream default `-o1 -a1 -r-5+se`
+- On-disk override (no force-install) seams in a future remote refresh of the strategy set without a release
 
 ## v0.12.0
 
