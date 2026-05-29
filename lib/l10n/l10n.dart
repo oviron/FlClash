@@ -3879,6 +3879,56 @@ class AppLocalizations {
     );
   }
 
+  /// `Update strategies`
+  String get byedpiUpdateStrategies {
+    return Intl.message(
+      'Update strategies',
+      name: 'byedpiUpdateStrategies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset to bundled`
+  String get byedpiResetStrategies {
+    return Intl.message(
+      'Reset to bundled',
+      name: 'byedpiResetStrategies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Strategies updated`
+  String get byedpiUpdateOk {
+    return Intl.message(
+      'Strategies updated',
+      name: 'byedpiUpdateOk',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update failed`
+  String get byedpiUpdateFail {
+    return Intl.message(
+      'Update failed',
+      name: 'byedpiUpdateFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not updated yet`
+  String get byedpiStrategiesNever {
+    return Intl.message(
+      'Not updated yet',
+      name: 'byedpiStrategiesNever',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Restart ByeDPI`
   String get byedpiRestart {
     return Intl.message(

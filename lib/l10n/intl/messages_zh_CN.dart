@@ -149,6 +149,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiPort": MessageLookupByLibrary.simpleMessage("监听端口"),
     "byedpiPreset": MessageLookupByLibrary.simpleMessage("策略预设"),
     "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("自定义"),
+    "byedpiUpdateStrategies": MessageLookupByLibrary.simpleMessage("更新策略"),
+    "byedpiResetStrategies": MessageLookupByLibrary.simpleMessage("重置为内置"),
+    "byedpiUpdateOk": MessageLookupByLibrary.simpleMessage("策略已更新"),
+    "byedpiUpdateFail": MessageLookupByLibrary.simpleMessage("更新失败"),
+    "byedpiStrategiesNever": MessageLookupByLibrary.simpleMessage("尚未更新"),
     "byedpiRestart": MessageLookupByLibrary.simpleMessage("重启 ByeDPI"),
     "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
       "重启失败 (VPN 未运行?)",

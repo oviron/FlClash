@@ -196,6 +196,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiPort": MessageLookupByLibrary.simpleMessage("Listening port"),
     "byedpiPreset": MessageLookupByLibrary.simpleMessage("Strategy preset"),
     "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "byedpiUpdateStrategies": MessageLookupByLibrary.simpleMessage(
+      "Update strategies",
+    ),
+    "byedpiResetStrategies": MessageLookupByLibrary.simpleMessage(
+      "Reset to bundled",
+    ),
+    "byedpiUpdateOk": MessageLookupByLibrary.simpleMessage(
+      "Strategies updated",
+    ),
+    "byedpiUpdateFail": MessageLookupByLibrary.simpleMessage("Update failed"),
+    "byedpiStrategiesNever": MessageLookupByLibrary.simpleMessage(
+      "Not updated yet",
+    ),
     "byedpiRestart": MessageLookupByLibrary.simpleMessage("Restart ByeDPI"),
     "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
       "Restart failed (VPN not running?)",
