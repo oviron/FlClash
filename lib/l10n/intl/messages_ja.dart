@@ -168,6 +168,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiTestVpnPaused": MessageLookupByLibrary.simpleMessage(
       "テスト中はVPNを一時停止",
     ),
+    "byedpiTestSortName": MessageLookupByLibrary.simpleMessage("名前順"),
+    "byedpiTestSortDate": MessageLookupByLibrary.simpleMessage("日付順"),
+    "byedpiTestFilterAll": MessageLookupByLibrary.simpleMessage("すべて"),
+    "byedpiTestFilterTested": MessageLookupByLibrary.simpleMessage("テスト済み"),
+    "byedpiTestPrune": MessageLookupByLibrary.simpleMessage("40%未満の戦略を削除"),
+    "byedpiTestReset": MessageLookupByLibrary.simpleMessage("既定に戻す"),
+    "byedpiTestRetest": MessageLookupByLibrary.simpleMessage("再テスト"),
+    "byedpiTestRemove": MessageLookupByLibrary.simpleMessage("削除"),
     "byedpiTestApply": MessageLookupByLibrary.simpleMessage("適用"),
     "byedpiTestApplied": MessageLookupByLibrary.simpleMessage("ストラテジーを適用しました"),
     "byedpiTestHint": MessageLookupByLibrary.simpleMessage(

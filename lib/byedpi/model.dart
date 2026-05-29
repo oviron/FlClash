@@ -26,6 +26,8 @@ class ByeDpiStrategy {
     label: (json['label'] ?? json['id']) as String,
     args: json['args'] as String? ?? '',
   );
+
+  Map<String, dynamic> toJson() => {'id': id, 'label': label, 'args': args};
 }
 
 // Args resolve from the loaded strategy set (byedpi-strategies.json); `custom`

@@ -70,6 +70,10 @@ Future<void> writeStrategyList(String raw) async {
   await tmp.rename(path);
 }
 
+// Persist a curated set as the on-disk override (manual edit / prune).
+Future<void> saveStrategyList(List<ByeDpiStrategy> list) =>
+    writeStrategyList(jsonEncode([for (final s in list) s.toJson()]));
+
 // Drop the on-disk override so the bundled asset takes over again.
 Future<void> resetStrategyList() async {
   final f = File(await strategyListPath());

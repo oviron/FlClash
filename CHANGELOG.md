@@ -1,6 +1,8 @@
 ## v0.13.12
 
-- Fix: strategy update now fetches direct first (the path FlClash's own traffic uses), falling back to the proxy. Works under default-REJECT (whitelist) routing where the proxy rejected the app's own request to the release host
+- Strategy test is now a manager: re-test a single strategy, sort (%/name/date) and filter (all/tested/≥40%), remove a strategy, prune everything below 40%, or reset to the bundled set. The curated set persists and is what gets tested/applied
+
+- Fix: strategy update fetches GitHub directly (the path FlClash's own traffic uses), so it works under default-REJECT (whitelist) routing where the proxy rejected the app's own request
 
 ## v0.13.11
 
