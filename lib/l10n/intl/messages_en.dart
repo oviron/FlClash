@@ -203,6 +203,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiTestVpnPaused": MessageLookupByLibrary.simpleMessage(
       "VPN paused for testing",
     ),
+    "byedpiTestSortName": MessageLookupByLibrary.simpleMessage("By name"),
+    "byedpiTestSortDate": MessageLookupByLibrary.simpleMessage("By date"),
+    "byedpiTestFilterAll": MessageLookupByLibrary.simpleMessage("All"),
+    "byedpiTestFilterTested": MessageLookupByLibrary.simpleMessage("Tested"),
+    "byedpiTestPrune": MessageLookupByLibrary.simpleMessage(
+      "Remove strategies below 40%",
+    ),
+    "byedpiTestReset": MessageLookupByLibrary.simpleMessage("Reset to default"),
+    "byedpiTestRetest": MessageLookupByLibrary.simpleMessage("Re-test"),
+    "byedpiTestRemove": MessageLookupByLibrary.simpleMessage("Remove"),
     "byedpiTestApply": MessageLookupByLibrary.simpleMessage("Apply"),
     "byedpiTestApplied": MessageLookupByLibrary.simpleMessage(
       "Strategy applied",

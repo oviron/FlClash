@@ -1,3 +1,9 @@
+## v0.13.12
+
+- Strategy test is now a manager: re-test a single strategy, sort (%/name/date) and filter (all/tested/≥40%), remove a strategy, prune everything below 40%, or reset to the bundled set. The curated set persists and is what gets tested/applied
+
+- Fix: strategy update fetches GitHub directly (the path FlClash's own traffic uses), so it works under default-REJECT (whitelist) routing where the proxy rejected the app's own request
+
 ## v0.13.11
 
 - Test-driven host routing: applying a strategy from the test now routes only the hosts it verified through ByeDPI; hosts it can't pierce fall back to the VPN (no longer broken). Apply shows the ByeDPI/VPN split

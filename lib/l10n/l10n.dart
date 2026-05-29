@@ -3919,6 +3919,76 @@ class AppLocalizations {
     );
   }
 
+  /// `By name`
+  String get byedpiTestSortName {
+    return Intl.message(
+      'By name',
+      name: 'byedpiTestSortName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By date`
+  String get byedpiTestSortDate {
+    return Intl.message(
+      'By date',
+      name: 'byedpiTestSortDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All`
+  String get byedpiTestFilterAll {
+    return Intl.message('All', name: 'byedpiTestFilterAll', desc: '', args: []);
+  }
+
+  /// `Tested`
+  String get byedpiTestFilterTested {
+    return Intl.message(
+      'Tested',
+      name: 'byedpiTestFilterTested',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove strategies below 40%`
+  String get byedpiTestPrune {
+    return Intl.message(
+      'Remove strategies below 40%',
+      name: 'byedpiTestPrune',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset to default`
+  String get byedpiTestReset {
+    return Intl.message(
+      'Reset to default',
+      name: 'byedpiTestReset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Re-test`
+  String get byedpiTestRetest {
+    return Intl.message(
+      'Re-test',
+      name: 'byedpiTestRetest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove`
+  String get byedpiTestRemove {
+    return Intl.message('Remove', name: 'byedpiTestRemove', desc: '', args: []);
+  }
+
   /// `Apply`
   String get byedpiTestApply {
     return Intl.message('Apply', name: 'byedpiTestApply', desc: '', args: []);

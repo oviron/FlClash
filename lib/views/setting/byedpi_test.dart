@@ -5,6 +5,12 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+enum _Sort { percent, name, date }
+
+enum _Filter { all, tested, working }
+
+const _kPruneBelow = 40;
+
 class ByeDpiTestView extends ConsumerStatefulWidget {
   const ByeDpiTestView({super.key});
 
@@ -13,6 +19,9 @@ class ByeDpiTestView extends ConsumerStatefulWidget {
 }
 
 class _ByeDpiTestViewState extends ConsumerState<ByeDpiTestView> {
+  _Sort _sort = _Sort.percent;
+  _Filter _filter = _Filter.all;
+
   @override
   void initState() {
     super.initState();
@@ -21,30 +30,150 @@ class _ByeDpiTestViewState extends ConsumerState<ByeDpiTestView> {
     });
   }
 
-  Future<void> _apply(String id) async {
-    final ctrl = ref.read(strategyTestControllerProvider.notifier);
-    final split = await ctrl.apply(id);
+  StrategyTestController get _ctrl =>
+      ref.read(strategyTestControllerProvider.notifier);
+
+  List<StrategyTestResult> _view(List<StrategyTestResult> all) {
+    final list = all.where((x) {
+      return switch (_filter) {
+        _Filter.all => true,
+        _Filter.tested => x.testedAt != null,
+        _Filter.working => x.percent >= _kPruneBelow,
+      };
+    }).toList();
+    list.sort((a, b) {
+      return switch (_sort) {
+        _Sort.percent => b.percent.compareTo(a.percent),
+        _Sort.name => a.label.compareTo(b.label),
+        _Sort.date => (b.testedAt ?? 0).compareTo(a.testedAt ?? 0),
+      };
+    });
+    return list;
+  }
+
+  void _snack(String text) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '${appLocalizations.byedpiTestApplied} · '
-          'ByeDPI ${split.byedpi} · VPN ${split.vpn}',
-        ),
-        duration: const Duration(seconds: 3),
+      SnackBar(content: Text(text), duration: const Duration(seconds: 3)),
+    );
+  }
+
+  Future<void> _apply(String id) async {
+    final split = await _ctrl.apply(id);
+    _snack(
+      '${appLocalizations.byedpiTestApplied} · '
+      'ByeDPI ${split.byedpi} · VPN ${split.vpn}',
+    );
+  }
+
+  Future<bool> _confirm(String message) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(appLocalizations.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(appLocalizations.confirm),
+          ),
+        ],
       ),
     );
+    return ok ?? false;
+  }
+
+  Future<void> _remove(StrategyTestResult r) async {
+    if (await _confirm('${appLocalizations.byedpiTestRemove}: ${r.label}?')) {
+      await _ctrl.removeStrategy(r.id);
+    }
+  }
+
+  Future<void> _prune() async {
+    if (await _confirm(appLocalizations.byedpiTestPrune)) {
+      final n = await _ctrl.pruneBelow(_kPruneBelow);
+      _snack('−$n');
+    }
+  }
+
+  Future<void> _reset() async {
+    if (await _confirm(appLocalizations.byedpiTestReset)) {
+      await _ctrl.resetStrategies();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final st = ref.watch(strategyTestControllerProvider);
-    final ctrl = ref.read(strategyTestControllerProvider.notifier);
     final activeId = ref.watch(byeDpiSettingsProvider).preset;
     final running = st.phase == TestPhase.running;
+    final view = _view(st.results);
+    final topPercent = st.results.isEmpty
+        ? -1
+        : st.results.map((e) => e.percent).reduce((a, b) => a > b ? a : b);
 
     return BaseScaffold(
       title: appLocalizations.byedpiTestTitle,
+      actions: [
+        PopupMenuButton<_Sort>(
+          icon: const Icon(Icons.sort),
+          onSelected: (v) => setState(() => _sort = v),
+          itemBuilder: (_) => [
+            CheckedPopupMenuItem(
+              value: _Sort.percent,
+              checked: _sort == _Sort.percent,
+              child: const Text('%'),
+            ),
+            CheckedPopupMenuItem(
+              value: _Sort.name,
+              checked: _sort == _Sort.name,
+              child: Text(appLocalizations.byedpiTestSortName),
+            ),
+            CheckedPopupMenuItem(
+              value: _Sort.date,
+              checked: _sort == _Sort.date,
+              child: Text(appLocalizations.byedpiTestSortDate),
+            ),
+          ],
+        ),
+        PopupMenuButton<_Filter>(
+          icon: const Icon(Icons.filter_list),
+          onSelected: (v) => setState(() => _filter = v),
+          itemBuilder: (_) => [
+            CheckedPopupMenuItem(
+              value: _Filter.all,
+              checked: _filter == _Filter.all,
+              child: Text(appLocalizations.byedpiTestFilterAll),
+            ),
+            CheckedPopupMenuItem(
+              value: _Filter.tested,
+              checked: _filter == _Filter.tested,
+              child: Text(appLocalizations.byedpiTestFilterTested),
+            ),
+            CheckedPopupMenuItem(
+              value: _Filter.working,
+              checked: _filter == _Filter.working,
+              child: const Text('≥$_kPruneBelow%'),
+            ),
+          ],
+        ),
+        PopupMenuButton<String>(
+          onSelected: (v) => v == 'prune' ? _prune() : _reset(),
+          itemBuilder: (_) => [
+            PopupMenuItem(
+              value: 'prune',
+              child: Text(appLocalizations.byedpiTestPrune),
+            ),
+            PopupMenuItem(
+              value: 'reset',
+              child: Text(appLocalizations.byedpiTestReset),
+            ),
+          ],
+        ),
+      ],
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -81,16 +210,20 @@ class _ByeDpiTestViewState extends ConsumerState<ByeDpiTestView> {
               ),
             ),
           Expanded(
-            child: st.results.isEmpty
+            child: view.isEmpty
                 ? _IdleHint(running: running)
                 : ListView.builder(
                     padding: const EdgeInsets.only(bottom: 16),
-                    itemCount: st.results.length,
+                    itemCount: view.length,
                     itemBuilder: (_, i) => _ResultTile(
-                      result: st.results[i],
-                      isWinner: !running && i == 0,
-                      isActive: st.results[i].id == activeId,
-                      onApply: () => _apply(st.results[i].id),
+                      result: view[i],
+                      isWinner: view[i].percent == topPercent,
+                      isActive: view[i].id == activeId,
+                      onApply: () => _apply(view[i].id),
+                      onRetest: running
+                          ? null
+                          : () => _ctrl.testOne(view[i].id),
+                      onRemove: running ? null : () => _remove(view[i]),
                     ),
                   ),
           ),
@@ -107,7 +240,7 @@ class _ByeDpiTestViewState extends ConsumerState<ByeDpiTestView> {
                         ? appLocalizations.byedpiTestStop
                         : appLocalizations.byedpiTestRun,
                   ),
-                  onPressed: () => running ? ctrl.stop() : ctrl.run(),
+                  onPressed: () => running ? _ctrl.stop() : _ctrl.run(),
                 ),
               ),
             ),
@@ -144,12 +277,16 @@ class _ResultTile extends StatelessWidget {
   final bool isWinner;
   final bool isActive;
   final VoidCallback onApply;
+  final VoidCallback? onRetest;
+  final VoidCallback? onRemove;
 
   const _ResultTile({
     required this.result,
     required this.isWinner,
     required this.isActive,
     required this.onApply,
+    required this.onRetest,
+    required this.onRemove,
   });
 
   Color _color(BuildContext context) {
@@ -244,13 +381,25 @@ class _ResultTile extends StatelessWidget {
               ],
             ),
           ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton.icon(
-            icon: const Icon(Icons.check),
-            label: Text(appLocalizations.byedpiTestApply),
-            onPressed: onApply,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton.icon(
+              icon: const Icon(Icons.refresh, size: 18),
+              label: Text(appLocalizations.byedpiTestRetest),
+              onPressed: onRetest,
+            ),
+            TextButton.icon(
+              icon: const Icon(Icons.delete_outline, size: 18),
+              label: Text(appLocalizations.byedpiTestRemove),
+              onPressed: onRemove,
+            ),
+            TextButton.icon(
+              icon: const Icon(Icons.check, size: 18),
+              label: Text(appLocalizations.byedpiTestApply),
+              onPressed: onApply,
+            ),
+          ],
         ),
       ],
     );

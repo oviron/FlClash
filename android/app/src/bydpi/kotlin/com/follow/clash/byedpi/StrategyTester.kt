@@ -15,11 +15,9 @@ import kotlin.coroutines.coroutineContext
 import org.json.JSONArray
 import org.json.JSONObject
 
-// App-process strategy tester (bydpi flavor only), invoked reflectively from
-// ServicePlugin. Runs byedpi as a standalone SOCKS proxy on a dedicated test
-// port — NO VpnService tun — so probes hit the raw network. The Dart caller
-// guarantees the VPN is down first. Emits one JSON object per finished strategy
-// through [StrategyTestSink]; the last carries done=true (or {"error":...}).
+// Runs byedpi standalone (no VpnService tun) per strategy on a test port so
+// probes hit the raw network; the Dart caller ensures the VPN is down. Emits one
+// JSON progress object per finished strategy (last has done=true / {"error"}).
 object StrategyTester {
     private const val TEST_PORT = 10800
     private const val STOP_TIMEOUT_MS = 3_000L

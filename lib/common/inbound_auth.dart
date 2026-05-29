@@ -7,12 +7,6 @@ const _kInboundAuthAlphabet =
     'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz0123456789';
 const _kInboundAuthLength = 24;
 
-// Exposed so app-side clients going through the local mixed-port can answer its
-// 407 challenge (the inbound auth below is otherwise opaque to them).
-const inboundAuthUser = _kInboundAuthUser;
-
-Future<String?> inboundAuthPassword() => preferences.getInboundAuth();
-
 String _generateInboundPassword() {
   final r = Random.secure();
   final buf = StringBuffer();
