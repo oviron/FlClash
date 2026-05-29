@@ -201,6 +201,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiPort": MessageLookupByLibrary.simpleMessage("Порт прослушивания"),
     "byedpiPreset": MessageLookupByLibrary.simpleMessage("Пресет стратегии"),
     "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Свой"),
+    "byedpiUpdateStrategies": MessageLookupByLibrary.simpleMessage(
+      "Обновить стратегии",
+    ),
+    "byedpiResetStrategies": MessageLookupByLibrary.simpleMessage(
+      "Сбросить к встроенным",
+    ),
+    "byedpiUpdateOk": MessageLookupByLibrary.simpleMessage(
+      "Стратегии обновлены",
+    ),
+    "byedpiUpdateFail": MessageLookupByLibrary.simpleMessage(
+      "Ошибка обновления",
+    ),
+    "byedpiStrategiesNever": MessageLookupByLibrary.simpleMessage(
+      "Ещё не обновлялось",
+    ),
     "byedpiRestart": MessageLookupByLibrary.simpleMessage(
       "Перезапустить ByeDPI",
     ),

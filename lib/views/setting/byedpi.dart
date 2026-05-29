@@ -1,4 +1,6 @@
 import 'package:fl_clash/byedpi/model.dart';
+import 'package:fl_clash/byedpi/strategy_args.dart';
+import 'package:fl_clash/byedpi/strategy_update.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/app.dart';
@@ -75,6 +77,7 @@ class ByeDpiView extends ConsumerWidget {
               _CliArgsField(cliArgs: settings.cliArgs)
             else
               _PresetArgsPreview(preset: settings.preset),
+            const _StrategyUpdateTile(),
             const _RestartButton(),
             _PortField(port: settings.port),
           ],
@@ -196,6 +199,82 @@ class _PresetArgsPreview extends ConsumerWidget {
         args,
         style: const TextStyle(fontFamily: 'JetBrainsMono', fontSize: 12),
       ),
+    );
+  }
+}
+
+class _StrategyUpdateTile extends ConsumerStatefulWidget {
+  const _StrategyUpdateTile();
+
+  @override
+  ConsumerState<_StrategyUpdateTile> createState() =>
+      _StrategyUpdateTileState();
+}
+
+class _StrategyUpdateTileState extends ConsumerState<_StrategyUpdateTile> {
+  bool _busy = false;
+  DateTime? _last;
+
+  @override
+  void initState() {
+    super.initState();
+    strategiesLastUpdate().then((v) {
+      if (mounted) setState(() => _last = v);
+    });
+  }
+
+  Future<void> _update() async {
+    setState(() => _busy = true);
+    String msg;
+    try {
+      final count = await updateStrategiesFromRemote();
+      ref.invalidate(byeDpiStrategiesProvider);
+      _last = await strategiesLastUpdate();
+      msg = '${appLocalizations.byedpiUpdateOk} ($count)';
+    } catch (_) {
+      msg = appLocalizations.byedpiUpdateFail;
+    }
+    if (!mounted) return;
+    setState(() => _busy = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg), duration: const Duration(seconds: 2)),
+    );
+  }
+
+  Future<void> _reset() async {
+    await resetStrategyList();
+    ref.invalidate(byeDpiStrategiesProvider);
+    if (!mounted) return;
+    setState(() => _last = null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final subtitle = _last == null
+        ? appLocalizations.byedpiStrategiesNever
+        : _last!.toLocal().toString().split('.').first;
+    return ListTile(
+      leading: const Icon(Icons.cloud_download_outlined),
+      title: Text(appLocalizations.byedpiUpdateStrategies),
+      subtitle: Text(subtitle),
+      trailing: _busy
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : PopupMenuButton<String>(
+              onSelected: (v) {
+                if (v == 'reset') _reset();
+              },
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  value: 'reset',
+                  child: Text(appLocalizations.byedpiResetStrategies),
+                ),
+              ],
+            ),
+      onTap: _busy ? null : _update,
     );
   }
 }

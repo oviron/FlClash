@@ -161,6 +161,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "byedpiPort": MessageLookupByLibrary.simpleMessage("リッスンポート"),
     "byedpiPreset": MessageLookupByLibrary.simpleMessage("ストラテジー プリセット"),
     "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
+    "byedpiUpdateStrategies": MessageLookupByLibrary.simpleMessage("戦略を更新"),
+    "byedpiResetStrategies": MessageLookupByLibrary.simpleMessage("内蔵版に戻す"),
+    "byedpiUpdateOk": MessageLookupByLibrary.simpleMessage("戦略を更新しました"),
+    "byedpiUpdateFail": MessageLookupByLibrary.simpleMessage("更新に失敗しました"),
+    "byedpiStrategiesNever": MessageLookupByLibrary.simpleMessage("未更新"),
     "byedpiRestart": MessageLookupByLibrary.simpleMessage("ByeDPIを再起動"),
     "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
       "再起動失敗 (VPN未起動?)",
