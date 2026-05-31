@@ -1,6 +1,4 @@
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:fl_clash/byedpi/host_list.dart';
-import 'package:fl_clash/byedpi/test_store.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -13,6 +11,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'app.dart';
 import 'byedpi.dart';
+import 'byedpi_routing.dart';
 import 'config.dart';
 import 'database.dart';
 
@@ -614,14 +613,7 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
       ? await ref.watch(addedRuleStreamProvider(profileId).future)
       : [];
   final byeDpiSettings = ref.watch(byeDpiSettingsProvider);
-  final hostListText = await readHostList();
-  // Route to byedpi only hosts the active strategy verified (list − exclude);
-  // excluded hosts get no byedpi rule and fall to normal routing (VPN).
-  final exclude = await readExclude();
-  final byeDpiHostList = hostListText
-      .split('\n')
-      .where((h) => !exclude.contains(h.trim()))
-      .toList();
+  final byeDpiHostList = await ref.watch(byeDpiRoutingHostListProvider.future);
   return SetupState(
     profileId: profileId,
     profileLastUpdateDate: profileLastUpdateDate,

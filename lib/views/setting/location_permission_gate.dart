@@ -1,10 +1,9 @@
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/providers/location_permission.dart';
+import 'package:fl_clash/views/setting/widgets/location_permission_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import '../views/setting/widgets/location_permission_dialog.dart';
 
 Future<bool> ensureLocationPermissionForSsid(
   BuildContext context,
@@ -49,7 +48,7 @@ Future<bool> ensureLocationPermissionForSsid(
 
 // Foreground location is enough to read the SSID while the app is in use; the
 // background grant only extends that to "UI closed, VPN service alive". So a
-// declined background prompt never fails the gate — we ask once and move on.
+// declined background prompt never fails the gate, we ask once and move on.
 Future<void> _ensureBackground(
   BuildContext context,
   LocationPermission notifier,

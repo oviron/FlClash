@@ -26,6 +26,7 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
 
   Timer? _debounce;
   bool _reestablishing = false;
+  bool _forceReestablish = false;
 
   @override
   void initState() {
@@ -42,19 +43,21 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
         previousEnabled: prev,
         nextEnabled: next,
       )) {
-        _schedule();
+        _schedule(force: true);
       }
     });
   }
 
-  void _schedule() {
+  void _schedule({bool force = false}) {
     if (!ref.read(isStartProvider)) return;
+    _forceReestablish |= force;
     _debounce?.cancel();
     _debounce = Timer(_window, _reestablish);
   }
 
-  bool get _dirty => shouldScheduleVpnReestablish(
+  bool get _dirty => shouldRunVpnReestablish(
     isStarted: ref.read(isStartProvider),
+    forceReestablish: _forceReestablish,
     currentVpnState: ref.read(vpnStateProvider),
     lastVpnState: globalState.lastVpnState,
     isReestablishing: false,
@@ -63,6 +66,7 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
   Future<void> _reestablish() async {
     if (_reestablishing || !_dirty) return;
     _reestablishing = true;
+    _forceReestablish = false;
     try {
       globalState.showNotifier(appLocalizations.vpnConfigChangeDetected);
       await globalState.handleStop();
