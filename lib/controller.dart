@@ -26,7 +26,6 @@ part 'controllers/setup_controller.dart';
 part 'controllers/core_controller.dart';
 part 'controllers/system_controller.dart';
 part 'controllers/backup_controller.dart';
-part 'controllers/back_block_control.dart';
 part 'controllers/store_controller.dart';
 part 'controllers/common_controller.dart';
 

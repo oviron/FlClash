@@ -42,7 +42,7 @@ final class StrategyTestControllerProvider
 }
 
 String _$strategyTestControllerHash() =>
-    r'8ff1f6080beef7ef6b02bb68b011583a8c0e494e';
+    r'ab6ee1f7fff39c8b4d9c39a48980464bafba38cd';
 
 abstract class _$StrategyTestController extends $Notifier<StrategyTestState> {
   StrategyTestState build();

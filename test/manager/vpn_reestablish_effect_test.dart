@@ -35,6 +35,42 @@ void main() {
     });
   });
 
+  group('shouldRunVpnReestablish', () {
+    test('runs for forced ByeDPI toggle even when vpn state is unchanged', () {
+      expect(
+        shouldRunVpnReestablish(
+          isStarted: true,
+          forceReestablish: true,
+          currentVpnState: 'same',
+          lastVpnState: 'same',
+        ),
+        isTrue,
+      );
+    });
+
+    test('does not run when stopped or already reestablishing', () {
+      expect(
+        shouldRunVpnReestablish(
+          isStarted: false,
+          forceReestablish: true,
+          currentVpnState: 'same',
+          lastVpnState: 'same',
+        ),
+        isFalse,
+      );
+      expect(
+        shouldRunVpnReestablish(
+          isStarted: true,
+          forceReestablish: true,
+          currentVpnState: 'same',
+          lastVpnState: 'same',
+          isReestablishing: true,
+        ),
+        isFalse,
+      );
+    });
+  });
+
   group('shouldReestablishVpnForByeDpiToggle', () {
     test('schedules running VPN when ByeDPI enabled flag changes', () {
       expect(

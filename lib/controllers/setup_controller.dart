@@ -199,9 +199,13 @@ extension SetupControllerExt on AppController {
     final configFilePath = await appPath.configFilePath;
     final yamlString = await encodeYamlTask(config);
     await File(configFilePath).safeWriteAsString(yamlString);
+    final selectedMap = _ref.read(selectedMapProvider);
+    final testUrl = _ref.read(
+      appSettingProvider.select((state) => state.testUrl),
+    );
     final message = await coreController.setupConfig(
       setupState: setupState,
-      params: setupParams,
+      params: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
       preloadInvoke: preloadInvoke,
     );
     if (message.isNotEmpty) {

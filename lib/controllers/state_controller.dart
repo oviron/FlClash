@@ -25,10 +25,6 @@ extension StateControllerExt on AppController {
     return _ref.read(getSelectedProxyNameProvider(groupName));
   }
 
-  Future<SetupState> getSetupState(int profileId) async {
-    return await _ref.read(setupStateProvider(profileId).future);
-  }
-
   String getRealTestUrl(String? url) {
     return _ref.read(realTestUrlProvider(url));
   }
@@ -39,14 +35,6 @@ extension StateControllerExt on AppController {
 
   SharedState get sharedState {
     return _ref.read(sharedStateProvider);
-  }
-
-  SetupParams get setupParams {
-    final selectedMap = _ref.read(selectedMapProvider);
-    final testUrl = _ref.read(
-      appSettingProvider.select((state) => state.testUrl),
-    );
-    return SetupParams(selectedMap: selectedMap, testUrl: testUrl);
   }
 
   List<Group> getCurrentGroups() {

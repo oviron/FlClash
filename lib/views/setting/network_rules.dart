@@ -1,6 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
-import 'package:fl_clash/network_rules/permission_gate.dart';
+import 'package:fl_clash/views/setting/location_permission_gate.dart';
 import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/network_rules.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';

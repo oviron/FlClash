@@ -1,14 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:fl_clash/byedpi/host_list.dart';
-import 'package:fl_clash/byedpi/strategy_args.dart';
-import 'package:fl_clash/byedpi/strategy_test_codec.dart';
+import 'package:fl_clash/byedpi/strategy_test_cache.dart';
 import 'package:fl_clash/byedpi/strategy_test_model.dart';
+import 'package:fl_clash/byedpi/strategy_test_runner.dart';
+import 'package:fl_clash/byedpi/strategy_test_store.dart';
 import 'package:fl_clash/byedpi/test_store.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/byedpi.dart';
+import 'package:fl_clash/providers/byedpi_routing.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/strategy_test.g.dart';
@@ -19,8 +20,17 @@ part 'generated/strategy_test.g.dart';
 @riverpod
 class StrategyTestController extends _$StrategyTestController {
   Service get _svc => Service();
+  late final StrategyTestCache _cache = const StrategyTestCache(
+    read: readTestResults,
+    write: writeTestResults,
+  );
+  late final StrategyTestStore _store = const StrategyTestStore();
+  late final StrategyTestNativeRunner _runner = StrategyTestNativeRunner(
+    bindProgress: (cb) => _svc.onStrategyTestProgress = cb,
+    startNative: _svc.startStrategyTest,
+    stopNative: _svc.stopStrategyTest,
+  );
   bool _wasVpnOn = false;
-  Map<String, String> _labels = const {};
 
   @override
   StrategyTestState build() => const StrategyTestState();
@@ -28,20 +38,8 @@ class StrategyTestController extends _$StrategyTestController {
   // Render last results from the on-disk cache (no re-test).
   Future<void> loadCached() async {
     if (state.phase == TestPhase.running || state.results.isNotEmpty) return;
-    final cache = await readTestResults();
-    if (cache.isEmpty) return;
-    final results = <StrategyTestResult>[];
-    cache.forEach((id, raw) {
-      if (raw is! Map) return;
-      try {
-        results.add(
-          strategyTestResultFromCache(id, Map<String, dynamic>.from(raw)),
-        );
-      } catch (_) {
-        return;
-      }
-    });
-    results.sort((a, b) => b.percent.compareTo(a.percent));
+    final results = await _cache.load();
+    if (results.isEmpty) return;
     state = StrategyTestState(phase: TestPhase.done, results: results);
   }
 
@@ -59,13 +57,14 @@ class StrategyTestController extends _$StrategyTestController {
     final strategies = onlyIds == null
         ? all
         : all.where((s) => onlyIds.contains(s.id)).toList();
-    final hostsRaw = await readHostList();
-    final sites = hostsRaw
-        .split('\n')
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty && !e.startsWith('#'))
-        .toList();
-    if (strategies.isEmpty || sites.isEmpty) {
+    final request = StrategyTestRunRequest(
+      strategies: strategies,
+      sites: parseStrategyTestSites(await readHostList()),
+      requests: requests,
+      timeout: timeout,
+      concurrency: concurrency,
+    );
+    if (request.isEmpty) {
       state = const StrategyTestState(
         phase: TestPhase.done,
         error: 'no strategies or sites',
@@ -73,7 +72,6 @@ class StrategyTestController extends _$StrategyTestController {
       return;
     }
 
-    _labels = {for (final s in all) s.id: s.label};
     _wasVpnOn = appController.isStart;
     if (_wasVpnOn) await appController.updateStatus(false);
 
@@ -82,33 +80,13 @@ class StrategyTestController extends _$StrategyTestController {
       total: strategies.length,
       results: state.results,
     );
-    _svc.onStrategyTestProgress = _onProgress;
-
-    final params = jsonEncode({
-      'strategies': [
-        for (final s in strategies) {'id': s.id, 'args': s.args},
-      ],
-      'sites': sites,
-      'requests': requests,
-      'timeout': timeout,
-      'concurrency': concurrency,
-    });
-    final ok = await _svc.startStrategyTest(params);
+    final ok = await _runner.start(request: request, onProgress: _onProgress);
     if (!ok) await _finish(error: 'failed to start test');
   }
 
   Future<void> testOne(String id) => run(onlyIds: {id});
 
-  void _onProgress(String jsonStr) {
-    final StrategyTestProgress progress;
-    try {
-      progress = parseStrategyTestProgress(
-        jsonStr,
-        labelFor: (id) => _labels[id] ?? id,
-      );
-    } catch (_) {
-      return;
-    }
+  void _onProgress(StrategyTestProgress progress) {
     if (progress.error != null) {
       unawaited(_finish(error: progress.error));
       return;
@@ -132,19 +110,18 @@ class StrategyTestController extends _$StrategyTestController {
 
   Future<void> stop() async {
     if (state.phase != TestPhase.running) return;
-    await _svc.stopStrategyTest();
+    await _runner.stop();
     await _finish();
   }
 
   Future<void> _finish({String? error}) async {
-    _svc.onStrategyTestProgress = null;
+    _runner.detach();
     if (_wasVpnOn) {
       await appController.updateStatus(true);
       _wasVpnOn = false;
     }
-    final sorted = [...state.results]
-      ..sort((a, b) => b.percent.compareTo(a.percent));
-    await _persist(sorted);
+    final sorted = sortStrategyTestResults(state.results);
+    await _cache.merge(sorted);
     state = StrategyTestState(
       phase: TestPhase.done,
       completed: state.completed,
@@ -152,16 +129,6 @@ class StrategyTestController extends _$StrategyTestController {
       results: sorted,
       error: error,
     );
-  }
-
-  // Merge this run's results into the on-disk cache (other strategies' prior
-  // entries survive), so per-strategy dates and offline render work.
-  Future<void> _persist(List<StrategyTestResult> results) async {
-    final cache = await readTestResults();
-    for (final r in results) {
-      cache[r.id] = strategyTestResultToCache(r);
-    }
-    await writeTestResults(cache);
   }
 
   // Apply a strategy: make it active AND route its failed hosts via VPN by
@@ -174,6 +141,7 @@ class StrategyTestController extends _$StrategyTestController {
     // setPreset → engine reload (args, if the preset changed); the core bump
     // makes the reconciler rebuild routing for the new exclude. Both apply live.
     await ref.read(byeDpiSettingsProvider.notifier).setPreset(id);
+    ref.invalidate(byeDpiRoutingHostListProvider);
     ref.read(byeDpiCoreRevisionProvider.notifier).bump();
     final total = result?.sites.length ?? 0;
     return (byedpi: total - failed.length, vpn: failed.length);
@@ -182,9 +150,8 @@ class StrategyTestController extends _$StrategyTestController {
   // Curation — writes the on-disk strategy override (persists; reset reverts to
   // the bundled default). The picker/test/routing all read the same set.
   Future<void> removeStrategy(String id) async {
-    final current = await loadByeDpiStrategies();
-    await saveStrategyList(current.where((s) => s.id != id).toList());
-    await _dropFromCache({id});
+    await _store.remove(id);
+    await _cache.drop({id});
     ref.invalidate(byeDpiStrategiesProvider);
     state = state.copyWith(
       results: state.results.where((r) => r.id != id).toList(),
@@ -196,30 +163,24 @@ class StrategyTestController extends _$StrategyTestController {
   // (not measured). Returns how many were removed.
   Future<int> pruneBelow(int pct) async {
     final tested = {for (final r in state.results) r.id: r.percent};
-    final current = await loadByeDpiStrategies();
-    final kept = current.where((s) => (tested[s.id] ?? pct) >= pct).toList();
-    final removed = current.length - kept.length;
-    if (removed == 0) return 0;
-    final keptIds = {for (final s in kept) s.id};
-    await saveStrategyList(kept);
-    await _dropFromCache({
-      for (final s in current)
-        if (!keptIds.contains(s.id)) s.id,
-    });
+    final prune = await _store.pruneBelow(
+      testedPercentById: tested,
+      percent: pct,
+    );
+    if (prune.removed == 0) return 0;
+    await _cache.drop(prune.removedIds);
+    final keptIds = {for (final s in prune.kept) s.id};
     ref.invalidate(byeDpiStrategiesProvider);
     state = state.copyWith(
       results: state.results.where((r) => keptIds.contains(r.id)).toList(),
     );
-    await _syncRuntimeIfActive({
-      for (final s in current)
-        if (!keptIds.contains(s.id)) s.id,
-    });
-    return removed;
+    await _syncRuntimeIfActive(prune.removedIds);
+    return prune.removed;
   }
 
   Future<void> resetStrategies() async {
-    await resetStrategyList();
-    await writeTestResults({});
+    await _store.reset();
+    await _cache.clear();
     ref.invalidate(byeDpiStrategiesProvider);
     state = const StrategyTestState();
     // Args of the still-active preset may revert to the bundled set.
@@ -233,13 +194,5 @@ class StrategyTestController extends _$StrategyTestController {
     if (removedIds.contains(active)) {
       await ref.read(byeDpiSettingsProvider.notifier).syncRuntime();
     }
-  }
-
-  Future<void> _dropFromCache(Set<String> ids) async {
-    final cache = await readTestResults();
-    for (final id in ids) {
-      cache.remove(id);
-    }
-    await writeTestResults(cache);
   }
 }
