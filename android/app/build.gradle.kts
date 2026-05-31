@@ -119,6 +119,7 @@ dependencies {
     implementation(project(":common"))
     implementation(libs.core.splashscreen)
     implementation(libs.gson)
+    implementation(fileTree("../core/libs") { include("libmihomo-android-v*.aar") })
     "bydpiImplementation"(libs.kotlinx.coroutines.android)
     "bydpiImplementation"(fileTree("libs") { include("libbyedpi-android-v*.aar") })
 }
