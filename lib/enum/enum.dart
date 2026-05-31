@@ -328,8 +328,6 @@ enum RestoreStrategy { compatible, override }
 
 enum Language { yaml, javaScript, json }
 
-enum ImportOption { file, url }
-
 enum ScrollPositionCacheKey { tools, profiles, proxiesList, proxiesTabList }
 
 enum QueryTag { proxies, access }
