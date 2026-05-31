@@ -56,6 +56,7 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
   void dispose() {
     _flushPersist();
     _destroyTabController();
+    _hasMoreButtonNotifier.dispose();
     super.dispose();
   }
 
@@ -339,6 +340,9 @@ class _ProxyGroupViewState extends ConsumerState<ProxyGroupView> {
   }
 
   void scrollToSelected() {
+    if (!_controller.hasClients) {
+      return;
+    }
     if (_controller.position.maxScrollExtent == 0) {
       return;
     }

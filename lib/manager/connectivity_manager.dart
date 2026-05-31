@@ -52,7 +52,8 @@ class _ConnectivityManagerState extends State<ConnectivityManager> {
     });
     // Fire once on mount so the engine has an initial snapshot to work from.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _emitSnapshot();
+      if (!mounted) return;
+      unawaited(_emitSnapshot());
     });
   }
 
@@ -66,7 +67,7 @@ class _ConnectivityManagerState extends State<ConnectivityManager> {
 
   @override
   void dispose() {
-    subscription.cancel();
+    unawaited(subscription.cancel());
     _underlyingChannel.setMethodCallHandler(null);
     super.dispose();
   }

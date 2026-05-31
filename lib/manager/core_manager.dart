@@ -98,11 +98,10 @@ class _CoreContainerState extends ConsumerState<CoreManager>
         }
       }
     }
-    super.onConnections(trackers);
   }
 
   @override
-  Future<void> dispose() async {
+  void dispose() {
     coreEventManager.removeListener(this);
     unawaited(coreController.unsubscribeConnections());
     super.dispose();
@@ -128,7 +127,6 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     if (log.logLevel == LogLevel.error && !_isProbeNoise(log.payload)) {
       globalState.showNotifier(log.payload);
     }
-    super.onLog(log);
   }
 
   // URLTest/Fallback probes storm during handovers; suppress snackbar but
@@ -139,7 +137,7 @@ class _CoreContainerState extends ConsumerState<CoreManager>
   }
 
   @override
-  Future<void> onCrash(String message) async {
+  void onCrash(String message) {
     if (ref.read(coreStatusProvider) != CoreStatus.connected) {
       return;
     }
@@ -147,7 +145,6 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
       context.showNotifier(message);
     }
-    await coreController.shutdown(false);
-    super.onCrash(message);
+    unawaited(coreController.shutdown(false));
   }
 }
