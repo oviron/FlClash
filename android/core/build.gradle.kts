@@ -29,6 +29,6 @@ kotlin {
 // + GPG verification before Gradle runs. Filename = single source of truth
 // in setup.dart; Gradle picks up whatever .aar landed.
 dependencies {
-    api(fileTree("libs") { include("libmihomo-android-v*.aar") })
+    compileOnly(fileTree("libs") { include("libmihomo-android-v*.aar") })
     implementation(libs.annotation.jvm)
 }

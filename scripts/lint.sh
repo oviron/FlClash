@@ -24,7 +24,7 @@ run_kotlin() {
   fi
   detekt \
     --config detekt.yml \
-    --input android/app/src/main/kotlin,android/core/src/main/java,android/service/src/main/java,android/common/src/main/java \
+    --input android/app/src/main/kotlin,android/app/src/bydpi/kotlin,android/service/src/main/java,android/common/src/main/java \
     --build-upon-default-config \
     2>&1 \
     && ok "detekt clean" \

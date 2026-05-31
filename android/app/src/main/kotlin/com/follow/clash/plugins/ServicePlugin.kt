@@ -120,7 +120,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         }
         launch {
             Service.invokeAction(data) {
-                result.success(it)
+                launch(Dispatchers.Main) { result.success(it) }
             }
         }
     }
@@ -164,7 +164,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         State.sharedState = Gson().fromJson(data, SharedState::class.java)
         launch {
             State.syncState()
-            result.success("")
+            launch(Dispatchers.Main) { result.success("") }
         }
     }
 
@@ -175,11 +175,10 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
             Service.setEventListener {
                 handleSendEvent(it)
             }.onSuccess {
-                result.success("")
+                launch(Dispatchers.Main) { result.success("") }
             }.onFailure {
-                result.success(it.message)
+                launch(Dispatchers.Main) { result.success(it.message) }
             }
-
         }
         Service.onServiceDisconnected = ::onServiceDisconnected
     }
@@ -187,7 +186,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     private fun handleGetRunTime(result: MethodChannel.Result) {
         launch {
             State.handleSyncState()
-            result.success(State.runTime)
+            launch(Dispatchers.Main) { result.success(State.runTime) }
         }
     }
 }
