@@ -19,6 +19,7 @@ export 'indexing.dart';
 export 'iterable.dart';
 export 'keyboard.dart';
 export 'link.dart';
+export 'list_mirror.dart';
 export 'lock.dart';
 export 'measure.dart';
 export 'migration.dart';

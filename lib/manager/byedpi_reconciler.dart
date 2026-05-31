@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/manager/effects/byedpi_reconcile_effect.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/byedpi.dart';
 import 'package:fl_clash/providers/state.dart';
@@ -41,19 +42,10 @@ class _ByeDpiReconcilerState extends ConsumerState<ByeDpiReconciler> {
   }
 
   void _onSettings(ByeDpiSettings? prev, ByeDpiSettings next) {
-    if (prev == null) return;
-    final core =
-        prev.enabled != next.enabled ||
-        prev.mode != next.mode ||
-        prev.fallbackEnabled != next.fallbackEnabled ||
-        prev.fallbackGroup != next.fallbackGroup ||
-        prev.port != next.port;
-    final engine =
-        prev.enabled != next.enabled ||
-        prev.port != next.port ||
-        prev.preset != next.preset ||
-        prev.cliArgs != next.cliArgs;
-    if (core || engine) _request(core: core, engine: engine);
+    final request = byeDpiSettingsReconcileRequest(prev, next);
+    if (!request.isEmpty) {
+      _request(core: request.core, engine: request.engine);
+    }
   }
 
   void _request({required bool core, required bool engine}) {

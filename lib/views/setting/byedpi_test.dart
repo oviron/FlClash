@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/byedpi/strategy_test_model.dart';
 import 'package:fl_clash/providers/byedpi.dart';
 import 'package:fl_clash/providers/strategy_test.dart';
 import 'package:fl_clash/widgets/widgets.dart';

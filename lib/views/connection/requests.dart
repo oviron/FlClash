@@ -60,25 +60,15 @@ class _RequestsViewState extends ConsumerState<RequestsView> {
   }
 
   void updateRequestsThrottler() {
-    throttler.call(FunctionTag.requests, () {
-      if (!mounted) {
-        return;
-      }
-      final isEquality = trackerInfoListEquality.equals(
-        _requests,
-        _requestsStateNotifier.value.trackerInfos,
-      );
-      if (isEquality) {
-        return;
-      }
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _requestsStateNotifier.value = _requestsStateNotifier.value.copyWith(
-            trackerInfos: _requests,
-          );
-        }
-      });
-    }, duration: commonDuration);
+    scheduleThrottledListMirrorUpdate(
+      tag: FunctionTag.requests,
+      mounted: () => mounted,
+      source: _requests,
+      notifier: _requestsStateNotifier,
+      currentList: (state) => state.trackerInfos,
+      updateList: (state, requests) => state.copyWith(trackerInfos: requests),
+      equals: trackerInfoListEquality.equals,
+    );
   }
 
   @override
