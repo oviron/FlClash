@@ -3,20 +3,25 @@ import 'package:fl_clash/network_rules/engine.dart';
 class NetworkRuleDispatchDecision {
   final NetworkAction? action;
   final bool shouldDispatch;
+  final bool shouldLog;
   final String message;
 
   const NetworkRuleDispatchDecision._({
     required this.action,
     required this.shouldDispatch,
+    required this.shouldLog,
     required this.message,
   });
 
-  factory NetworkRuleDispatchDecision.skip(String message) =>
-      NetworkRuleDispatchDecision._(
-        action: null,
-        shouldDispatch: false,
-        message: message,
-      );
+  factory NetworkRuleDispatchDecision.skip(
+    String message, {
+    bool shouldLog = false,
+  }) => NetworkRuleDispatchDecision._(
+    action: null,
+    shouldDispatch: false,
+    shouldLog: shouldLog,
+    message: message,
+  );
 
   factory NetworkRuleDispatchDecision.dispatch({
     required NetworkAction action,
@@ -24,6 +29,7 @@ class NetworkRuleDispatchDecision {
   }) => NetworkRuleDispatchDecision._(
     action: action,
     shouldDispatch: true,
+    shouldLog: true,
     message: message,
   );
 }
@@ -50,6 +56,7 @@ NetworkRuleDispatchDecision decideNetworkRuleDispatch({
   if (desiredOn == isOn) {
     return NetworkRuleDispatchDecision.skip(
       'action ${action.name} equals current state, skip ($snapDescr)',
+      shouldLog: true,
     );
   }
 

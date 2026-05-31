@@ -31,9 +31,15 @@ class StrategyTestController extends _$StrategyTestController {
     stopNative: _svc.stopStrategyTest,
   );
   bool _wasVpnOn = false;
+  bool _nativeRunStarted = false;
+  bool _disposed = false;
+  Future<void>? _vpnPause;
 
   @override
-  StrategyTestState build() => const StrategyTestState();
+  StrategyTestState build() {
+    ref.onDispose(_disposeRun);
+    return const StrategyTestState();
+  }
 
   // Render last results from the on-disk cache (no re-test).
   Future<void> loadCached() async {
@@ -54,6 +60,7 @@ class StrategyTestController extends _$StrategyTestController {
     if (state.phase == TestPhase.running) return;
 
     final all = await ref.read(byeDpiStrategiesProvider.future);
+    if (_disposed) return;
     final strategies = onlyIds == null
         ? all
         : all.where((s) => onlyIds.contains(s.id)).toList();
@@ -72,8 +79,20 @@ class StrategyTestController extends _$StrategyTestController {
       return;
     }
 
-    _wasVpnOn = appController.isStart;
-    if (_wasVpnOn) await appController.updateStatus(false);
+    try {
+      await _pauseVpnForRun();
+    } catch (_) {
+      _wasVpnOn = false;
+      if (!_disposed) {
+        state = StrategyTestState(
+          phase: TestPhase.done,
+          results: state.results,
+          error: 'failed to stop VPN for test',
+        );
+      }
+      return;
+    }
+    if (_disposed) return;
 
     state = StrategyTestState(
       phase: TestPhase.running,
@@ -87,12 +106,15 @@ class StrategyTestController extends _$StrategyTestController {
       await _finish(error: 'failed to start test');
       return;
     }
+    if (_disposed) return;
+    _nativeRunStarted = ok;
     if (!ok) await _finish(error: 'failed to start test');
   }
 
   Future<void> testOne(String id) => run(onlyIds: {id});
 
   void _onProgress(StrategyTestProgress progress) {
+    if (_disposed) return;
     if (progress.error != null) {
       unawaited(_finish(error: progress.error));
       return;
@@ -117,15 +139,15 @@ class StrategyTestController extends _$StrategyTestController {
   Future<void> stop() async {
     if (state.phase != TestPhase.running) return;
     await _runner.stop();
+    _nativeRunStarted = false;
     await _finish();
   }
 
   Future<void> _finish({String? error}) async {
+    if (_disposed) return;
     _runner.detach();
-    if (_wasVpnOn) {
-      await appController.updateStatus(true);
-      _wasVpnOn = false;
-    }
+    _nativeRunStarted = false;
+    await _restoreVpnAfterRun();
     final sorted = sortStrategyTestResults(state.results);
     await _cache.merge(sorted);
     state = StrategyTestState(
@@ -135,6 +157,64 @@ class StrategyTestController extends _$StrategyTestController {
       results: sorted,
       error: error,
     );
+  }
+
+  void _disposeRun() {
+    _disposed = true;
+    if (_nativeRunStarted) {
+      _nativeRunStarted = false;
+      unawaited(_stopRunnerOnDispose());
+    } else {
+      _runner.detach();
+    }
+    if (_wasVpnOn) {
+      _wasVpnOn = false;
+      unawaited(_restoreVpnOnDispose());
+    }
+  }
+
+  Future<void> _stopRunnerOnDispose() async {
+    try {
+      await _runner.stop();
+    } catch (_) {
+      _runner.detach();
+    }
+  }
+
+  Future<void> _pauseVpnForRun() async {
+    _wasVpnOn = appController.isStart;
+    if (!_wasVpnOn) return;
+    final pause = appController.updateStatus(false);
+    _vpnPause = pause;
+    try {
+      await pause;
+    } finally {
+      if (identical(_vpnPause, pause)) {
+        _vpnPause = null;
+      }
+    }
+  }
+
+  Future<void> _restoreVpnAfterRun() async {
+    if (!_wasVpnOn) return;
+    _wasVpnOn = false;
+    await appController.updateStatus(true);
+  }
+
+  Future<void> _restoreVpnOnDispose() async {
+    final pause = _vpnPause;
+    if (pause != null) {
+      try {
+        await pause;
+      } catch (_) {
+        return;
+      }
+    }
+    try {
+      await appController.updateStatus(true);
+    } catch (_) {
+      return;
+    }
   }
 
   // Apply a strategy: make it active AND route its failed hosts via VPN by
