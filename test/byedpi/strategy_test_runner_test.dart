@@ -69,6 +69,30 @@ youtube.com
     },
   );
 
+  test('native runner detaches when start throws', () async {
+    NativeStrategyTestProgress? bound;
+    final runner = StrategyTestNativeRunner(
+      bindProgress: (cb) => bound = cb,
+      startNative: (_) => throw StateError('boom'),
+      stopNative: () async {},
+    );
+
+    await expectLater(
+      runner.start(
+        request: const StrategyTestRunRequest(
+          strategies: [ByeDpiStrategy(id: 'a', label: 'A', args: '-a')],
+          sites: ['youtube.com'],
+          requests: 1,
+          timeout: 1,
+          concurrency: 1,
+        ),
+        onProgress: (_) {},
+      ),
+      throwsA(isA<StateError>()),
+    );
+    expect(bound, isNull);
+  });
+
   test('native runner converts progress payloads to typed progress', () async {
     NativeStrategyTestProgress? bound;
     StrategyTestProgress? progress;

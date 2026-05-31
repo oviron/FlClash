@@ -80,7 +80,13 @@ class StrategyTestController extends _$StrategyTestController {
       total: strategies.length,
       results: state.results,
     );
-    final ok = await _runner.start(request: request, onProgress: _onProgress);
+    final bool ok;
+    try {
+      ok = await _runner.start(request: request, onProgress: _onProgress);
+    } catch (_) {
+      await _finish(error: 'failed to start test');
+      return;
+    }
     if (!ok) await _finish(error: 'failed to start test');
   }
 

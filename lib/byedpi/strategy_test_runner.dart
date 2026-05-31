@@ -78,7 +78,13 @@ class StrategyTestNativeRunner {
         return;
       }
     });
-    final ok = await startNative(request.toNativeParams());
+    final bool ok;
+    try {
+      ok = await startNative(request.toNativeParams());
+    } catch (_) {
+      bindProgress(null);
+      rethrow;
+    }
     if (!ok) bindProgress(null);
     return ok;
   }
