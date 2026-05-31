@@ -18,7 +18,27 @@ void main() {
     );
 
     expect(decision.shouldDispatch, isFalse);
+    expect(decision.shouldLog, isFalse);
     expect(decision.message, 'network rules disabled');
+  });
+
+  test('skips unmatched snapshots without logging noise', () {
+    final decision = decideNetworkRuleDispatch(
+      enabled: true,
+      rules: const [
+        NetworkRule(
+          conditions: [AnyCellular()],
+          action: NetworkAction.turnOn,
+          priority: 0,
+        ),
+      ],
+      snapshot: const NetworkSnapshot.wifi(ssid: 'Cafe'),
+      isOn: false,
+    );
+
+    expect(decision.shouldDispatch, isFalse);
+    expect(decision.shouldLog, isFalse);
+    expect(decision.message, contains('no action'));
   });
 
   test('dispatches when desired state differs', () {
@@ -38,6 +58,7 @@ void main() {
     );
 
     expect(decision.shouldDispatch, isTrue);
+    expect(decision.shouldLog, isTrue);
     expect(decision.action, NetworkAction.turnOn);
     expect(decision.message, contains("matched rule 'cell'"));
     expect(decision.message, contains('starting VPN'));
@@ -58,6 +79,7 @@ void main() {
     );
 
     expect(decision.shouldDispatch, isFalse);
+    expect(decision.shouldLog, isTrue);
     expect(decision.message, contains('equals current state'));
   });
 

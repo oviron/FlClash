@@ -72,7 +72,7 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
       );
 
       if (!decision.shouldDispatch) {
-        if (decision.message != 'network rules disabled') {
+        if (decision.shouldLog) {
           _log(decision.message);
         }
         return;
