@@ -129,11 +129,6 @@ extension SetupControllerExt on AppController {
     required SetupState setupState,
     required ClashConfig patchConfig,
   }) async {
-    final profileId = setupState.profileId;
-    if (profileId == null) {
-      return {};
-    }
-    final defaultUA = globalState.packageInfo.ua;
     final networkVM2 = _ref.read(
       networkSettingProvider.select(
         (state) => VM2(state.appendSystemDns, state.routeMode),
@@ -142,37 +137,22 @@ extension SetupControllerExt on AppController {
     final overrideDns = _ref.read(overrideDnsProvider);
     final appendSystemDns = networkVM2.a;
     final routeMode = networkVM2.b;
-    final configMap = await coreController.getConfig(profileId);
-    String? scriptContent;
-    final List<Rule> addedRules = [];
-    if (setupState.overwriteType == OverwriteType.script) {
-      scriptContent = await setupState.script?.content;
-    } else {
-      addedRules.addAll(setupState.addedRules);
-    }
-    final realPatchConfig = patchConfig.copyWith(
-      tun: patchConfig.tun.getRealTun(routeMode),
+    final service = ProfileSetupService(
+      loadRawProfile: coreController.getConfig,
+      evaluateScript: globalState.handleEvaluate,
+      loadScriptContent: (script) => script.content,
     );
-    Map<String, dynamic> rawConfig = configMap;
-    if (scriptContent?.isNotEmpty == true) {
-      rawConfig = await globalState.handleEvaluate(scriptContent!, rawConfig);
-    }
-    final directory = await appPath.profilesPath;
-    final res = makeRealProfileTask(
-      MakeRealProfileState(
-        profilesPath: directory,
-        profileId: profileId,
-        rawConfig: rawConfig,
-        realPatchConfig: realPatchConfig,
+    return service.buildConfig(
+      ProfileSetupRequest(
+        setupState: setupState,
+        patchConfig: patchConfig,
+        routeMode: routeMode,
         overrideDns: overrideDns,
         appendSystemDns: appendSystemDns,
-        addedRules: addedRules,
-        defaultUA: defaultUA,
-        byeDpiSettings: setupState.byeDpiSettings,
-        byeDpiHostList: setupState.byeDpiHostList,
+        profilesPath: await appPath.profilesPath,
+        defaultUserAgent: globalState.packageInfo.ua,
       ),
     );
-    return res;
   }
 
   Future<Map<String, dynamic>> getProfileWithId(int profileId) async {

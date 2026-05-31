@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/manager/effects/vpn_reestablish_effect.dart';
+import 'package:fl_clash/providers/byedpi.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,18 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     ref.listenManual(vpnStateProvider, (prev, next) {
       if (prev != next) _schedule();
     });
+    ref.listenManual(byeDpiSettingsProvider.select((state) => state.enabled), (
+      prev,
+      next,
+    ) {
+      if (shouldReestablishVpnForByeDpiToggle(
+        isStarted: ref.read(isStartProvider),
+        previousEnabled: prev,
+        nextEnabled: next,
+      )) {
+        _schedule();
+      }
+    });
   }
 
   void _schedule() {
@@ -39,9 +53,12 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     _debounce = Timer(_window, _reestablish);
   }
 
-  bool get _dirty =>
-      ref.read(isStartProvider) &&
-      ref.read(vpnStateProvider) != globalState.lastVpnState;
+  bool get _dirty => shouldScheduleVpnReestablish(
+    isStarted: ref.read(isStartProvider),
+    currentVpnState: ref.read(vpnStateProvider),
+    lastVpnState: globalState.lastVpnState,
+    isReestablishing: false,
+  );
 
   Future<void> _reestablish() async {
     if (_reestablishing || !_dirty) return;

@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/manager/effects/network_rule_effect.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/network_rules/engine.dart';
 import 'package:fl_clash/providers/network_rules.dart';
@@ -63,24 +64,24 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
 
       final rules = ref.read(networkRulesStreamProvider).value ?? const [];
       final snap = ref.read(currentNetworkSnapshotProvider);
+      final decision = decideNetworkRuleDispatch(
+        enabled: settings.enabled,
+        rules: rules,
+        snapshot: snap,
+        isOn: ref.read(isStartProvider),
+      );
 
-      final action = evaluate(rules: rules, snapshot: snap);
-      if (action == null) return;
-
-      final desiredOn = action == NetworkAction.turnOn;
-      final isOn = ref.read(isStartProvider);
-      final snapDescr = _describeSnapshot(snap);
-
-      if (desiredOn == isOn) {
-        _log('action ${action.name} equals current state, skip ($snapDescr)');
+      if (!decision.shouldDispatch) {
+        if (decision.message != 'network rules disabled') {
+          _log(decision.message);
+        }
         return;
       }
 
-      final reason = _matchReason(rules, snap);
-      _log(
-        '$reason, action=${action.name} -> '
-        '${desiredOn ? "starting" : "stopping"} VPN',
-      );
+      final action = decision.action;
+      if (action == null) return;
+      final desiredOn = action == NetworkAction.turnOn;
+      _log(decision.message);
 
       try {
         await appController.updateStatus(desiredOn);
@@ -90,34 +91,6 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
       }
     } finally {
       _dispatching = false;
-    }
-  }
-
-  String _matchReason(List<NetworkRule> rules, NetworkSnapshot snap) {
-    final ordered = [...rules]
-      ..sort((a, b) => a.priority.compareTo(b.priority));
-    for (final rule in ordered) {
-      if (!rule.enabled) continue;
-      if (rule.conditions.isEmpty) continue;
-      final allMatch = rule.conditions.every((c) => c.matches(snap));
-      if (allMatch) {
-        final label = (rule.name == null || rule.name!.isEmpty)
-            ? 'anonymous#${rule.id}'
-            : rule.name!;
-        return "matched rule '$label' on ${_describeSnapshot(snap)}";
-      }
-    }
-    return 'no rule matched on ${_describeSnapshot(snap)}';
-  }
-
-  String _describeSnapshot(NetworkSnapshot snap) {
-    switch (snap.type) {
-      case NetworkType.wifi:
-        return snap.ssid != null ? 'wifi:${snap.ssid}' : 'wifi:<unknown>';
-      case NetworkType.cellular:
-        return 'cellular';
-      case NetworkType.none:
-        return 'none';
     }
   }
 

@@ -82,25 +82,15 @@ class _LogsViewState extends ConsumerState<LogsView> {
   }
 
   void updateLogsThrottler() {
-    throttler.call(FunctionTag.logs, () {
-      if (!mounted) {
-        return;
-      }
-      final isEquality = logListEquality.equals(
-        _logs,
-        _logsStateNotifier.value.logs,
-      );
-      if (isEquality) {
-        return;
-      }
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _logsStateNotifier.value = _logsStateNotifier.value.copyWith(
-            logs: _logs,
-          );
-        }
-      });
-    }, duration: commonDuration);
+    scheduleThrottledListMirrorUpdate(
+      tag: FunctionTag.logs,
+      mounted: () => mounted,
+      source: _logs,
+      notifier: _logsStateNotifier,
+      currentList: (state) => state.logs,
+      updateList: (state, logs) => state.copyWith(logs: logs),
+      equals: logListEquality.equals,
+    );
   }
 
   @override

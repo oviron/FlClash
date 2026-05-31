@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:fl_clash/byedpi/host_list.dart';
 import 'package:fl_clash/byedpi/strategy_args.dart';
+import 'package:fl_clash/byedpi/strategy_test_codec.dart';
+import 'package:fl_clash/byedpi/strategy_test_model.dart';
 import 'package:fl_clash/byedpi/test_store.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/plugins/service.dart';
@@ -10,77 +12,6 @@ import 'package:fl_clash/providers/byedpi.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'generated/strategy_test.g.dart';
-
-enum TestPhase { idle, running, done }
-
-class SiteOutcome {
-  final String site;
-  final int ok;
-  final int total;
-
-  const SiteOutcome(this.site, this.ok, this.total);
-}
-
-class StrategyTestResult {
-  final String id;
-  final String label;
-  final int percent;
-  final int success;
-  final int totalRequests;
-  final List<SiteOutcome> sites;
-  final int? testedAt; // epoch ms
-
-  const StrategyTestResult({
-    required this.id,
-    required this.label,
-    required this.percent,
-    required this.success,
-    required this.totalRequests,
-    required this.sites,
-    this.testedAt,
-  });
-
-  List<String> get failedHosts => [
-    for (final s in sites)
-      if (s.ok == 0) s.site,
-  ];
-}
-
-// (byedpiCount, vpnCount) reported back to the UI on apply().
-typedef ApplySplit = ({int byedpi, int vpn});
-
-class StrategyTestState {
-  final TestPhase phase;
-  final int completed;
-  final int total;
-  final String currentLabel;
-  final List<StrategyTestResult> results;
-  final String? error;
-
-  const StrategyTestState({
-    this.phase = TestPhase.idle,
-    this.completed = 0,
-    this.total = 0,
-    this.currentLabel = '',
-    this.results = const [],
-    this.error,
-  });
-
-  StrategyTestState copyWith({
-    TestPhase? phase,
-    int? completed,
-    int? total,
-    String? currentLabel,
-    List<StrategyTestResult>? results,
-  }) => StrategyTestState(
-    phase: phase ?? this.phase,
-    completed: completed ?? this.completed,
-    total: total ?? this.total,
-    currentLabel: currentLabel ?? this.currentLabel,
-    results: results ?? this.results,
-    error: error,
-  );
-}
 
 // In-app strategy auto-test: pauses the VPN, runs byedpi standalone per strategy
 // via native, caches results. Apply selects the id + writes the exclude list
@@ -102,30 +33,16 @@ class StrategyTestController extends _$StrategyTestController {
     final results = <StrategyTestResult>[];
     cache.forEach((id, raw) {
       if (raw is! Map) return;
-      results.add(_resultFromCache(id, Map<String, dynamic>.from(raw)));
+      try {
+        results.add(
+          strategyTestResultFromCache(id, Map<String, dynamic>.from(raw)),
+        );
+      } catch (_) {
+        return;
+      }
     });
     results.sort((a, b) => b.percent.compareTo(a.percent));
     state = StrategyTestState(phase: TestPhase.done, results: results);
-  }
-
-  StrategyTestResult _resultFromCache(String id, Map<String, dynamic> raw) {
-    final sites = [
-      for (final s in (raw['sites'] as List? ?? []))
-        SiteOutcome(
-          (s as Map)['site'].toString(),
-          (s['ok'] as num).toInt(),
-          (s['total'] as num).toInt(),
-        ),
-    ];
-    return StrategyTestResult(
-      id: id,
-      label: (raw['label'] ?? id).toString(),
-      percent: (raw['percent'] as num?)?.toInt() ?? 0,
-      success: sites.fold(0, (a, s) => a + s.ok),
-      totalRequests: sites.fold(0, (a, s) => a + s.total),
-      sites: sites,
-      testedAt: (raw['timestamp'] as num?)?.toInt(),
-    );
   }
 
   // [onlyIds] limits the run to those strategies (re-test one/few); null tests
@@ -183,34 +100,21 @@ class StrategyTestController extends _$StrategyTestController {
   Future<void> testOne(String id) => run(onlyIds: {id});
 
   void _onProgress(String jsonStr) {
-    final Map<String, dynamic> m;
+    final StrategyTestProgress progress;
     try {
-      m = jsonDecode(jsonStr) as Map<String, dynamic>;
+      progress = parseStrategyTestProgress(
+        jsonStr,
+        labelFor: (id) => _labels[id] ?? id,
+      );
     } catch (_) {
       return;
     }
-    if (m['error'] != null) {
-      unawaited(_finish(error: m['error'].toString()));
+    if (progress.error != null) {
+      unawaited(_finish(error: progress.error));
       return;
     }
-    final id = m['id'] as String;
-    final sites = [
-      for (final s in (m['sites'] as List))
-        SiteOutcome(
-          (s as Map)['site'].toString(),
-          (s['ok'] as num).toInt(),
-          (s['total'] as num).toInt(),
-        ),
-    ];
-    final res = StrategyTestResult(
-      id: id,
-      label: _labels[id] ?? id,
-      percent: (m['percent'] as num).toInt(),
-      success: (m['success'] as num).toInt(),
-      totalRequests: (m['totalRequests'] as num).toInt(),
-      sites: sites,
-      testedAt: DateTime.now().millisecondsSinceEpoch,
-    );
+    final res = progress.result;
+    if (res == null) return;
     final results = [...state.results];
     final idx = results.indexWhere((r) => r.id == res.id);
     if (idx >= 0) {
@@ -220,10 +124,10 @@ class StrategyTestController extends _$StrategyTestController {
     }
     state = state.copyWith(
       results: results,
-      completed: (m['index'] as num).toInt() + 1,
+      completed: progress.completed,
       currentLabel: res.label,
     );
-    if (m['done'] == true) unawaited(_finish());
+    if (progress.done) unawaited(_finish());
   }
 
   Future<void> stop() async {
@@ -255,15 +159,7 @@ class StrategyTestController extends _$StrategyTestController {
   Future<void> _persist(List<StrategyTestResult> results) async {
     final cache = await readTestResults();
     for (final r in results) {
-      cache[r.id] = {
-        'label': r.label,
-        'percent': r.percent,
-        'timestamp': r.testedAt,
-        'sites': [
-          for (final s in r.sites)
-            {'site': s.site, 'ok': s.ok, 'total': s.total},
-        ],
-      };
+      cache[r.id] = strategyTestResultToCache(r);
     }
     await writeTestResults(cache);
   }
