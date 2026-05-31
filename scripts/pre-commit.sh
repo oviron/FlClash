@@ -15,9 +15,16 @@ if command -v flutter >/dev/null 2>&1; then
   FLUTTER=flutter
 elif [ -x "$HOME/dev/flutter/bin/flutter" ]; then
   FLUTTER="$HOME/dev/flutter/bin/flutter"
+elif [ -x "$HOME/.flutter-sdk/flutter/bin/flutter" ]; then
+  FLUTTER="$HOME/.flutter-sdk/flutter/bin/flutter"
 else
   echo "pre-commit: flutter not found on PATH; skipping checks" >&2
   exit 0
+fi
+
+DART="$(dirname "$FLUTTER")/dart"
+if [ ! -x "$DART" ]; then
+  DART=dart
 fi
 
 # Only inspect staged, added/modified/copied Dart files.
@@ -40,7 +47,7 @@ if [ "${#filtered[@]}" -eq 0 ]; then
 fi
 
 echo "pre-commit: dart format check (${#filtered[@]} file(s))"
-if ! dart format --output=none --set-exit-if-changed "${filtered[@]}"; then
+if ! "$DART" format --output=none --set-exit-if-changed "${filtered[@]}"; then
   echo "pre-commit: run \`dart format ${filtered[*]}\` and re-stage." >&2
   exit 1
 fi

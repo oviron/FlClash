@@ -114,6 +114,7 @@ class CommonPopupBox extends StatefulWidget {
 
 class _CommonPopupBoxState extends State<CommonPopupBox> {
   bool _isOpen = false;
+  CommonPopupRoute<void>? _route;
   final _targetOffsetValueNotifier = ValueNotifier<Offset>(Offset.zero);
   Offset _offset = Offset.zero;
 
@@ -121,19 +122,18 @@ class _CommonPopupBoxState extends State<CommonPopupBox> {
     _offset = offset;
     _updateOffset();
     _isOpen = true;
-    Navigator.of(context)
-        .push(
-          CommonPopupRoute(
-            barrierLabel: utils.id,
-            builder: (BuildContext context) {
-              return widget.popup;
-            },
-            offsetNotifier: _targetOffsetValueNotifier,
-          ),
-        )
-        .then((_) {
-          _isOpen = false;
-        });
+    final route = CommonPopupRoute<void>(
+      barrierLabel: utils.id,
+      builder: (BuildContext context) {
+        return widget.popup;
+      },
+      offsetNotifier: _targetOffsetValueNotifier,
+    );
+    _route = route;
+    Navigator.of(context).push(route).then((_) {
+      _route = null;
+      _isOpen = false;
+    });
   }
 
   void _updateOffset() {
@@ -147,6 +147,16 @@ class _CommonPopupBoxState extends State<CommonPopupBox> {
           Offset.zero.translate(viewPadding.right, viewPadding.top),
         )
         .translate(_offset.dx, _offset.dy);
+  }
+
+  @override
+  void dispose() {
+    final route = _route;
+    if (route != null && route.isActive) {
+      route.navigator?.removeRoute(route);
+    }
+    _targetOffsetValueNotifier.dispose();
+    super.dispose();
   }
 
   @override

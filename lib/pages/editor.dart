@@ -90,6 +90,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
   @override
   void dispose() {
     _toolbarController.hide(context);
+    _titleController.dispose();
     _findController.dispose();
     _controller.dispose();
     _focusNode.dispose();

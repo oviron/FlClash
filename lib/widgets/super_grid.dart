@@ -553,6 +553,7 @@ class SuperGridState extends State<SuperGrid> with TickerProviderStateMixin {
     _shakeController.dispose();
     _transformController.dispose();
     _dragIndexNotifier.dispose();
+    _dragWidgetSizeNotifier.dispose();
     _animating.dispose();
     _childrenNotifier.dispose();
     super.dispose();

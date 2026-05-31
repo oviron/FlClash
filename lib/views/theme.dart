@@ -528,6 +528,12 @@ class _PaletteDialogState extends State<_PaletteDialog> {
   final _controller = ValueNotifier<ui.Color>(Colors.transparent);
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CommonDialog(
       title: appLocalizations.palette,

@@ -21,16 +21,29 @@ class _ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   );
 
   StreamSubscription<Object?>? _subscription;
+  bool _handled = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _subscription = controller.barcodes.listen(_handleBarcode);
+    _listenBarcodes();
     unawaited(controller.start());
   }
 
+  void _listenBarcodes() {
+    unawaited(_subscription?.cancel());
+    _subscription = controller.barcodes.listen(_handleBarcode);
+  }
+
   void _handleBarcode(BarcodeCapture barcodeCapture) {
+    if (_handled || !mounted || barcodeCapture.barcodes.isEmpty) {
+      return;
+    }
+    _handled = true;
+    unawaited(_subscription?.cancel());
+    _subscription = null;
+    unawaited(controller.stop());
     final barcode = barcodeCapture.barcodes.first;
     if (barcode.type == BarcodeType.url) {
       Navigator.pop<String>(context, barcode.rawValue);
@@ -48,8 +61,8 @@ class _ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
       case AppLifecycleState.paused:
         return;
       case AppLifecycleState.resumed:
-        _subscription = controller.barcodes.listen(_handleBarcode);
-
+        if (_handled) return;
+        _listenBarcodes();
         unawaited(controller.start());
       case AppLifecycleState.inactive:
         unawaited(_subscription?.cancel());
@@ -152,11 +165,11 @@ class _ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
   }
 
   @override
-  Future<void> dispose() async {
+  void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     unawaited(_subscription?.cancel());
     _subscription = null;
-    await controller.dispose();
+    unawaited(controller.dispose());
     super.dispose();
   }
 }

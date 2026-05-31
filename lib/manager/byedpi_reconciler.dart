@@ -78,10 +78,12 @@ class _ByeDpiReconcilerState extends ConsumerState<ByeDpiReconciler> {
       // Engine before core: a port change must have byedpi listening on the new
       // port before mihomo routes there.
       if (engine) await service?.restartByeDpi();
+      if (!mounted) return;
       if (core) appController.applyProfileDebounce(silence: true);
     } finally {
       _flushing = false;
     }
+    if (!mounted) return;
     // Flags raised mid-flush (e.g. during the engine restart) — apply them next.
     if (_pendingCore || _pendingEngine) _debounce = Timer(_window, _flush);
   }
