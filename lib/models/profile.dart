@@ -204,19 +204,22 @@ extension ProfileExtension on Profile {
     final path = await appPath.tempFilePath;
     final tempFile = File(path);
     await tempFile.safeWriteAsBytes(bytes);
-    final message = await coreController
-        .validateConfig(path)
-        .withTimeout(
-          timeout: profileValidationTimeoutDuration,
-          tag: 'validateConfig',
-        );
-    if (message.isNotEmpty) {
-      throw message;
+    try {
+      final message = await coreController
+          .validateConfig(path)
+          .withTimeout(
+            timeout: profileValidationTimeoutDuration,
+            tag: 'validateConfig',
+          );
+      if (message.isNotEmpty) {
+        throw message;
+      }
+      final mFile = await file;
+      await tempFile.copy(mFile.path);
+      return copyWith(lastUpdateDate: DateTime.now());
+    } finally {
+      await tempFile.safeDelete();
     }
-    final mFile = await file;
-    await tempFile.copy(mFile.path);
-    await tempFile.safeDelete();
-    return copyWith(lastUpdateDate: DateTime.now());
   }
 
   Future<Profile> saveFileWithPath(String path) async {

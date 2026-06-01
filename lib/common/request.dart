@@ -66,17 +66,35 @@ class Request {
   }
 
   Future<Response<String>> getTextResponseForUrl(String url) async {
-    final response = await _clashDio
-        .get<String>(
-          url,
-          options: Options(
-            responseType: ResponseType.plain,
-            sendTimeout: profileRequestTimeoutDuration,
-            receiveTimeout: profileRequestTimeoutDuration,
-          ),
-        )
-        .timeout(profileRequestTimeoutDuration);
-    return response;
+    try {
+      return await _clashDio
+          .get<String>(
+            url,
+            options: Options(
+              responseType: ResponseType.plain,
+              sendTimeout: profileRequestTimeoutDuration,
+              receiveTimeout: profileRequestTimeoutDuration,
+            ),
+          )
+          .timeout(profileRequestTimeoutDuration);
+    } catch (e) {
+      commonPrint.log('getTextResponseForUrl error ${e.toString()}');
+      if (e is TimeoutException) {
+        throw appLocalizations.networkException;
+      }
+      if (e is DioException) {
+        if (e.type == DioExceptionType.unknown) {
+          throw appLocalizations.unknownNetworkError;
+        } else if (e.type == DioExceptionType.badResponse ||
+            e.type == DioExceptionType.connectionTimeout ||
+            e.type == DioExceptionType.sendTimeout ||
+            e.type == DioExceptionType.receiveTimeout) {
+          throw appLocalizations.networkException;
+        }
+        rethrow;
+      }
+      throw appLocalizations.unknownNetworkError;
+    }
   }
 
   Future<MemoryImage?> getImage(String url) async {
