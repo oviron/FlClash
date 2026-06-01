@@ -35,6 +35,8 @@ const watchExecution = true;
 final defaultTextScaleFactor =
     WidgetsBinding.instance.platformDispatcher.textScaleFactor;
 const httpTimeoutDuration = Duration(milliseconds: 5000);
+const profileRequestTimeoutDuration = Duration(seconds: 30);
+const profileValidationTimeoutDuration = Duration(seconds: 15);
 const moreDuration = Duration(milliseconds: 100);
 const animateDuration = Duration(milliseconds: 100);
 const midDuration = Duration(milliseconds: 200);

@@ -34,16 +34,29 @@ class Request {
 
   Future<Response<Uint8List>> getFileResponseForUrl(String url) async {
     try {
-      return await _clashDio.get<Uint8List>(
-        url,
-        options: Options(responseType: ResponseType.bytes),
-      );
+      return await _clashDio
+          .get<Uint8List>(
+            url,
+            options: Options(
+              responseType: ResponseType.bytes,
+              sendTimeout: profileRequestTimeoutDuration,
+              receiveTimeout: profileRequestTimeoutDuration,
+            ),
+          )
+          .timeout(profileRequestTimeoutDuration);
     } catch (e) {
       commonPrint.log('getFileResponseForUrl error ${e.toString()}');
+      if (e is TimeoutException) {
+        throw appLocalizations.networkException;
+      }
       if (e is DioException) {
         if (e.type == DioExceptionType.unknown) {
           throw appLocalizations.unknownNetworkError;
         } else if (e.type == DioExceptionType.badResponse) {
+          throw appLocalizations.networkException;
+        } else if (e.type == DioExceptionType.connectionTimeout ||
+            e.type == DioExceptionType.sendTimeout ||
+            e.type == DioExceptionType.receiveTimeout) {
           throw appLocalizations.networkException;
         }
         rethrow;
@@ -53,10 +66,16 @@ class Request {
   }
 
   Future<Response<String>> getTextResponseForUrl(String url) async {
-    final response = await _clashDio.get<String>(
-      url,
-      options: Options(responseType: ResponseType.plain),
-    );
+    final response = await _clashDio
+        .get<String>(
+          url,
+          options: Options(
+            responseType: ResponseType.plain,
+            sendTimeout: profileRequestTimeoutDuration,
+            receiveTimeout: profileRequestTimeoutDuration,
+          ),
+        )
+        .timeout(profileRequestTimeoutDuration);
     return response;
   }
 

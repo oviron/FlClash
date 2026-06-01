@@ -204,7 +204,12 @@ extension ProfileExtension on Profile {
     final path = await appPath.tempFilePath;
     final tempFile = File(path);
     await tempFile.safeWriteAsBytes(bytes);
-    final message = await coreController.validateConfig(path);
+    final message = await coreController
+        .validateConfig(path)
+        .withTimeout(
+          timeout: profileValidationTimeoutDuration,
+          tag: 'validateConfig',
+        );
     if (message.isNotEmpty) {
       throw message;
     }
@@ -215,7 +220,12 @@ extension ProfileExtension on Profile {
   }
 
   Future<Profile> saveFileWithPath(String path) async {
-    final message = await coreController.validateConfig(path);
+    final message = await coreController
+        .validateConfig(path)
+        .withTimeout(
+          timeout: profileValidationTimeoutDuration,
+          tag: 'validateConfig',
+        );
     if (message.isNotEmpty) {
       throw message;
     }
