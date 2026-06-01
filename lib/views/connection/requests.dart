@@ -63,7 +63,7 @@ class _RequestsViewState extends ConsumerState<RequestsView> {
     scheduleThrottledListMirrorUpdate(
       tag: FunctionTag.requests,
       mounted: () => mounted,
-      source: _requests,
+      source: () => _requests,
       notifier: _requestsStateNotifier,
       currentList: (state) => state.trackerInfos,
       updateList: (state, requests) => state.copyWith(trackerInfos: requests),

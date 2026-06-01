@@ -85,7 +85,7 @@ class _LogsViewState extends ConsumerState<LogsView> {
     scheduleThrottledListMirrorUpdate(
       tag: FunctionTag.logs,
       mounted: () => mounted,
-      source: _logs,
+      source: () => _logs,
       notifier: _logsStateNotifier,
       currentList: (state) => state.logs,
       updateList: (state, logs) => state.copyWith(logs: logs),

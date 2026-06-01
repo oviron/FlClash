@@ -68,9 +68,16 @@ class CoreController {
     final path = await appPath.tempFilePath;
     final file = File(path);
     await file.safeWriteAsString(data);
-    final res = await _interface.validateConfig(path);
-    await File(path).safeDelete();
-    return res;
+    try {
+      return await _interface
+          .validateConfig(path)
+          .withTimeout(
+            timeout: profileValidationTimeoutDuration,
+            tag: 'validateConfig',
+          );
+    } finally {
+      await file.safeDelete();
+    }
   }
 
   Future<String> updateConfig(UpdateParams updateParams) async {

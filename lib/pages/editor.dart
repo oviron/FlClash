@@ -152,8 +152,10 @@ class _EditorPageState extends ConsumerState<EditorPage> {
     }
     try {
       final res = await request.getTextResponseForUrl(url);
+      if (!mounted) return;
       _controller.text = res.data ?? '';
     } catch (e) {
+      if (!mounted) return;
       globalState.showNotifier(e.toString());
     }
   }

@@ -106,7 +106,12 @@ class StrategyTestController extends _$StrategyTestController {
       await _finish(error: 'failed to start test');
       return;
     }
-    if (_disposed) return;
+    if (_disposed) {
+      // Disposed mid-start: the dispose path saw _nativeRunStarted=false and
+      // only detached, so stop the now-live native run here.
+      if (ok) await _stopRunnerOnDispose();
+      return;
+    }
     _nativeRunStarted = ok;
     if (!ok) await _finish(error: 'failed to start test');
   }
