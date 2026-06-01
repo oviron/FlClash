@@ -10,7 +10,7 @@ typedef StateListSetter<TState, TList> =
 void scheduleThrottledListMirrorUpdate<TState, TList>({
   required FunctionTag tag,
   required bool Function() mounted,
-  required TList source,
+  required TList Function() source,
   required ValueNotifier<TState> notifier,
   required StateListGetter<TState, TList> currentList,
   required StateListSetter<TState, TList> updateList,
@@ -21,14 +21,17 @@ void scheduleThrottledListMirrorUpdate<TState, TList>({
     if (!mounted()) {
       return;
     }
-    if (equals(source, currentList(notifier.value))) {
+    // Resolve the source at fire time: throttler runs the first call's closure
+    // and drops the rest, so capturing at call time would freeze a stale list.
+    final list = source();
+    if (equals(list, currentList(notifier.value))) {
       return;
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted()) {
         return;
       }
-      notifier.value = updateList(notifier.value, source);
+      notifier.value = updateList(notifier.value, list);
     });
   }, duration: duration);
 }

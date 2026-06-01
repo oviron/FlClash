@@ -31,7 +31,7 @@ void main() {
     scheduleThrottledListMirrorUpdate<_State, List<int>>(
       tag: FunctionTag.logs,
       mounted: () => true,
-      source: const [1, 2],
+      source: () => const [1, 2],
       notifier: notifier,
       currentList: (state) => state.values,
       updateList: (_, values) => _State(values),
@@ -54,7 +54,7 @@ void main() {
     scheduleThrottledListMirrorUpdate<_State, List<int>>(
       tag: FunctionTag.requests,
       mounted: () => mounted,
-      source: const [1],
+      source: () => const [1],
       notifier: notifier,
       currentList: (state) => state.values,
       updateList: (_, values) => _State(values),
@@ -68,5 +68,35 @@ void main() {
     await tester.pump();
 
     expect(notifier.value.values, isEmpty);
+  });
+
+  testWidgets('resolves source at fire time so the newest list in a window '
+      'wins', (tester) async {
+    await tester.pumpWidget(const SizedBox());
+    final notifier = ValueNotifier(const _State([]));
+    var current = const [1, 2];
+
+    void schedule() {
+      scheduleThrottledListMirrorUpdate<_State, List<int>>(
+        tag: FunctionTag.logs,
+        mounted: () => true,
+        source: () => current,
+        notifier: notifier,
+        currentList: (state) => state.values,
+        updateList: (_, values) => _State(values),
+        equals: listEquals,
+        duration: const Duration(milliseconds: 5),
+      );
+    }
+
+    schedule();
+    current = const [3, 4];
+    schedule();
+
+    await tester.pump(const Duration(milliseconds: 6));
+    tester.binding.scheduleFrame();
+    await tester.pump();
+
+    expect(notifier.value.values, [3, 4]);
   });
 }

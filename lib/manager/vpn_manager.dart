@@ -60,7 +60,6 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     forceReestablish: _forceReestablish,
     currentVpnState: ref.read(vpnStateProvider),
     lastVpnState: globalState.lastVpnState,
-    isReestablishing: false,
   );
 
   Future<void> _reestablish() async {
@@ -74,6 +73,7 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     } finally {
       _reestablishing = false;
     }
+    if (!mounted) return;
     // A change that landed mid-reconnect leaves us dirty — apply it next.
     if (_dirty) _schedule();
   }

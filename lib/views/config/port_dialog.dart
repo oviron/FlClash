@@ -122,15 +122,28 @@ class _PortDialogState extends ConsumerState<PortDialog> {
 
   void _handleUpdate() {
     if (_formKey.currentState?.validate() == false) return;
+    final ports = [
+      int.tryParse(_mixedPortController.text),
+      int.tryParse(_portController.text),
+      int.tryParse(_socksPortController.text),
+      int.tryParse(_redirPortController.text),
+      int.tryParse(_tProxyPortController.text),
+    ];
+    // Collapsed advanced fields aren't in the Form tree, so validate() can't
+    // catch them; reveal the section rather than crash on int.parse.
+    if (ports.contains(null)) {
+      if (!_isMore) setState(() => _isMore = true);
+      return;
+    }
     ref
         .read(patchClashConfigProvider.notifier)
         .update(
           (state) => state.copyWith(
-            mixedPort: int.parse(_mixedPortController.text),
-            port: int.parse(_portController.text),
-            socksPort: int.parse(_socksPortController.text),
-            redirPort: int.parse(_redirPortController.text),
-            tproxyPort: int.parse(_tProxyPortController.text),
+            mixedPort: ports[0]!,
+            port: ports[1]!,
+            socksPort: ports[2]!,
+            redirPort: ports[3]!,
+            tproxyPort: ports[4]!,
           ),
         );
     Navigator.of(context).pop();
