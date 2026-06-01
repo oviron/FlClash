@@ -42,9 +42,12 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
     private lateinit var flutterMethodChannel: MethodChannel
     private var appContext: Context? = null
+    @Volatile
+    private var attached = false
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         appContext = flutterPluginBinding.applicationContext
+        attached = true
         flutterMethodChannel = MethodChannel(
             flutterPluginBinding.binaryMessenger, "${Components.PACKAGE_NAME}/service"
         )
@@ -52,7 +55,15 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     }
 
     override fun onDetachedFromEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        attached = false
+        appContext = null
         flutterMethodChannel.setMethodCallHandler(null)
+    }
+
+    private fun launchAttachedMain(action: suspend () -> Unit) {
+        launch(Dispatchers.Main) {
+            if (attached) action()
+        }
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) = when (call.method) {
@@ -79,7 +90,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
             return
         }
         val sink = StrategyTestSink { json ->
-            launch(Dispatchers.Main) {
+            launchAttachedMain {
                 flutterMethodChannel.invokeMethod(ServiceMethod.STRATEGY_TEST_PROGRESS, json)
             }
         }
@@ -96,19 +107,21 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     }
 
     private fun handleStopStrategyTest(result: MethodChannel.Result) {
-        try {
-            Class.forName("com.follow.clash.byedpi.StrategyTester")
-                .getDeclaredMethod("stop")
-                .invoke(null)
-        } catch (_: Throwable) {
+        launch {
+            try {
+                Class.forName("com.follow.clash.byedpi.StrategyTester")
+                    .getDeclaredMethod("stopAndWait")
+                    .invoke(null)
+            } catch (_: Throwable) {
+            }
+            launchAttachedMain { result.success(true) }
         }
-        result.success(true)
     }
 
     private fun handleRestartByeDpi(result: MethodChannel.Result) {
         launch {
             val ok = Service.restartByeDpi()
-            launch(Dispatchers.Main) { result.success(ok) }
+            launchAttachedMain { result.success(ok) }
         }
     }
 
@@ -120,7 +133,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         }
         launch {
             Service.invokeAction(data) {
-                launch(Dispatchers.Main) { result.success(it) }
+                launchAttachedMain { result.success(it) }
             }
         }
     }
@@ -143,7 +156,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     val semaphore = Semaphore(10)
 
     fun handleSendEvent(value: String?) {
-        launch(Dispatchers.Main) {
+        launchAttachedMain {
             semaphore.withPermit {
                 flutterMethodChannel.invokeMethod(ServiceMethod.EVENT, value)
             }
@@ -152,7 +165,9 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
     private fun onServiceDisconnected(message: String) {
         State.runStateFlow.tryEmit(RunState.STOP)
-        flutterMethodChannel.invokeMethodOnMainThread<Any>(ServiceMethod.CRASH, message)
+        if (attached) {
+            flutterMethodChannel.invokeMethodOnMainThread<Any>(ServiceMethod.CRASH, message)
+        }
     }
 
     private fun handleSyncState(call: MethodCall, result: MethodChannel.Result) {
@@ -164,7 +179,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         State.sharedState = Gson().fromJson(data, SharedState::class.java)
         launch {
             State.syncState()
-            launch(Dispatchers.Main) { result.success("") }
+            launchAttachedMain { result.success("") }
         }
     }
 
@@ -175,9 +190,9 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
             Service.setEventListener {
                 handleSendEvent(it)
             }.onSuccess {
-                launch(Dispatchers.Main) { result.success("") }
+                launchAttachedMain { result.success("") }
             }.onFailure {
-                launch(Dispatchers.Main) { result.success(it.message) }
+                launchAttachedMain { result.success(it.message) }
             }
         }
         Service.onServiceDisconnected = ::onServiceDisconnected
@@ -186,7 +201,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     private fun handleGetRunTime(result: MethodChannel.Result) {
         launch {
             State.handleSyncState()
-            launch(Dispatchers.Main) { result.success(State.runTime) }
+            launchAttachedMain { result.success(State.runTime) }
         }
     }
 }

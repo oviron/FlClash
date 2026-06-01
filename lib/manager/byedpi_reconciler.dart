@@ -23,6 +23,7 @@ class ByeDpiReconciler extends ConsumerStatefulWidget {
 
 class _ByeDpiReconcilerState extends ConsumerState<ByeDpiReconciler> {
   static const _window = Duration(milliseconds: 400);
+  static const _engineRestartTimeout = Duration(seconds: 10);
 
   Timer? _debounce;
   bool _pendingCore = false;
@@ -69,7 +70,12 @@ class _ByeDpiReconcilerState extends ConsumerState<ByeDpiReconciler> {
     try {
       // Engine before core: a port change must have byedpi listening on the new
       // port before mihomo routes there.
-      if (engine) await service?.restartByeDpi();
+      if (engine) {
+        await service?.restartByeDpi().timeout(
+          _engineRestartTimeout,
+          onTimeout: () => false,
+        );
+      }
       if (!mounted) return;
       if (core) appController.applyProfileDebounce(silence: true);
     } finally {

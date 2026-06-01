@@ -32,6 +32,32 @@ class Request {
     );
   }
 
+  Never _throwProfileRequestError(String source, Object error) {
+    commonPrint.log('$source error ${error.toString()}');
+
+    if (error is TimeoutException) {
+      throw appLocalizations.networkException;
+    }
+
+    if (error is! DioException) {
+      throw appLocalizations.unknownNetworkError;
+    }
+
+    switch (error.type) {
+      case DioExceptionType.unknown:
+        throw appLocalizations.unknownNetworkError;
+      case DioExceptionType.badResponse:
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        throw appLocalizations.networkException;
+      case DioExceptionType.badCertificate:
+      case DioExceptionType.cancel:
+      case DioExceptionType.connectionError:
+        throw error;
+    }
+  }
+
   Future<Response<Uint8List>> getFileResponseForUrl(String url) async {
     try {
       return await _clashDio
@@ -45,23 +71,7 @@ class Request {
           )
           .timeout(profileRequestTimeoutDuration);
     } catch (e) {
-      commonPrint.log('getFileResponseForUrl error ${e.toString()}');
-      if (e is TimeoutException) {
-        throw appLocalizations.networkException;
-      }
-      if (e is DioException) {
-        if (e.type == DioExceptionType.unknown) {
-          throw appLocalizations.unknownNetworkError;
-        } else if (e.type == DioExceptionType.badResponse) {
-          throw appLocalizations.networkException;
-        } else if (e.type == DioExceptionType.connectionTimeout ||
-            e.type == DioExceptionType.sendTimeout ||
-            e.type == DioExceptionType.receiveTimeout) {
-          throw appLocalizations.networkException;
-        }
-        rethrow;
-      }
-      throw appLocalizations.unknownNetworkError;
+      _throwProfileRequestError('getFileResponseForUrl', e);
     }
   }
 
@@ -78,22 +88,7 @@ class Request {
           )
           .timeout(profileRequestTimeoutDuration);
     } catch (e) {
-      commonPrint.log('getTextResponseForUrl error ${e.toString()}');
-      if (e is TimeoutException) {
-        throw appLocalizations.networkException;
-      }
-      if (e is DioException) {
-        if (e.type == DioExceptionType.unknown) {
-          throw appLocalizations.unknownNetworkError;
-        } else if (e.type == DioExceptionType.badResponse ||
-            e.type == DioExceptionType.connectionTimeout ||
-            e.type == DioExceptionType.sendTimeout ||
-            e.type == DioExceptionType.receiveTimeout) {
-          throw appLocalizations.networkException;
-        }
-        rethrow;
-      }
-      throw appLocalizations.unknownNetworkError;
+      _throwProfileRequestError('getTextResponseForUrl', e);
     }
   }
 

@@ -29,6 +29,7 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
 
   Timer? _debounce;
   bool _dispatching = false;
+  bool _pendingDispatch = false;
 
   @override
   void initState() {
@@ -55,9 +56,13 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
   }
 
   Future<void> _dispatch() async {
-    if (_dispatching) return;
+    if (_dispatching) {
+      _pendingDispatch = true;
+      return;
+    }
     if (!mounted) return;
     _dispatching = true;
+    _pendingDispatch = false;
     try {
       final settings = ref.read(networkRulesSettingsProvider);
       if (!settings.enabled) return;
@@ -91,6 +96,9 @@ class _RuleEngineRunnerState extends ConsumerState<RuleEngineRunner> {
       }
     } finally {
       _dispatching = false;
+      if (mounted && _pendingDispatch) {
+        _debounce = Timer(_debounceWindow, _dispatch);
+      }
     }
   }
 

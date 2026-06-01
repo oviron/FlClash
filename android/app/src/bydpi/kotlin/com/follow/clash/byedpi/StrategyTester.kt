@@ -10,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.coroutineContext
 import org.json.JSONArray
@@ -56,6 +57,15 @@ object StrategyTester {
         job = null
         if (ByeDpi.isLoaded()) {
             scope.launch { safeStopSuspend() }
+        }
+    }
+
+    @JvmStatic
+    fun stopAndWait() {
+        job?.cancel()
+        job = null
+        if (ByeDpi.isLoaded()) {
+            runBlocking { safeStopSuspend() }
         }
     }
 
