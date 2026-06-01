@@ -129,6 +129,9 @@ extension SetupControllerExt on AppController {
     required SetupState setupState,
     required ClashConfig patchConfig,
   }) async {
+    if (setupState.profileId == null) {
+      return {};
+    }
     final networkVM2 = _ref.read(
       networkSettingProvider.select(
         (state) => VM2(state.appendSystemDns, state.routeMode),

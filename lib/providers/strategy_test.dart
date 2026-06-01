@@ -160,16 +160,20 @@ class StrategyTestController extends _$StrategyTestController {
   }
 
   void _disposeRun() {
+    unawaited(_disposeRunAsync());
+  }
+
+  Future<void> _disposeRunAsync() async {
     _disposed = true;
     if (_nativeRunStarted) {
       _nativeRunStarted = false;
-      unawaited(_stopRunnerOnDispose());
+      await _stopRunnerOnDispose();
     } else {
       _runner.detach();
     }
     if (_wasVpnOn) {
       _wasVpnOn = false;
-      unawaited(_restoreVpnOnDispose());
+      await _restoreVpnOnDispose();
     }
   }
 
