@@ -52,15 +52,6 @@ object StrategyTester {
     }
 
     @JvmStatic
-    fun stop() {
-        job?.cancel()
-        job = null
-        if (ByeDpi.isLoaded()) {
-            scope.launch { safeStopSuspend() }
-        }
-    }
-
-    @JvmStatic
     fun stopAndWait() {
         job?.cancel()
         job = null

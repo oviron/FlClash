@@ -11,7 +11,7 @@
 -keep class com.follow.clash.byedpi.ByeDpiModule$Companion { *; }
 
 # StrategyTester loaded reflectively from ServicePlugin (getDeclaredMethod
-# start/stop) in the bydpi flavor; StrategyTestSink is its callback type.
+# start/stopAndWait) in the bydpi flavor; StrategyTestSink is its callback type.
 -keep class com.follow.clash.byedpi.StrategyTester { *; }
 -keep class com.follow.clash.StrategyTestSink { *; }
 
