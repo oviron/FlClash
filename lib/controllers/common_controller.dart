@@ -72,9 +72,6 @@ extension CommonControllerExt on AppController {
     );
   }
 
-  /// Notify-and-continue wrapper. Default swallows into a snackbar.
-  /// Pass `rethrowOnError: true` on critical paths where the caller
-  /// must observe the failure.
   Future<T?> safeRun<T>(
     FutureOr<T> Function() futureFunction, {
     String? title,

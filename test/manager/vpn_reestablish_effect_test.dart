@@ -14,7 +14,7 @@ void main() {
       );
     });
 
-    test('does not schedule while stopped or already reestablishing', () {
+    test('does not schedule while stopped', () {
       expect(
         shouldScheduleVpnReestablish(
           isStarted: false,
@@ -23,12 +23,14 @@ void main() {
         ),
         isFalse,
       );
+    });
+
+    test('does not schedule when state is unchanged', () {
       expect(
         shouldScheduleVpnReestablish(
           isStarted: true,
-          currentVpnState: 'next',
-          lastVpnState: 'prev',
-          isReestablishing: true,
+          currentVpnState: 'same',
+          lastVpnState: 'same',
         ),
         isFalse,
       );
@@ -48,23 +50,13 @@ void main() {
       );
     });
 
-    test('does not run when stopped or already reestablishing', () {
+    test('does not run when stopped', () {
       expect(
         shouldRunVpnReestablish(
           isStarted: false,
           forceReestablish: true,
           currentVpnState: 'same',
           lastVpnState: 'same',
-        ),
-        isFalse,
-      );
-      expect(
-        shouldRunVpnReestablish(
-          isStarted: true,
-          forceReestablish: true,
-          currentVpnState: 'same',
-          lastVpnState: 'same',
-          isReestablishing: true,
         ),
         isFalse,
       );
