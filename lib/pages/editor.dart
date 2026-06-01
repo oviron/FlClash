@@ -150,8 +150,12 @@ class _EditorPageState extends ConsumerState<EditorPage> {
     if (url == null) {
       return;
     }
-    final res = await request.getTextResponseForUrl(url);
-    _controller.text = res.data ?? '';
+    try {
+      final res = await request.getTextResponseForUrl(url);
+      _controller.text = res.data ?? '';
+    } catch (e) {
+      globalState.showNotifier(e.toString());
+    }
   }
 
   @override
