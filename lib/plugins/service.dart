@@ -26,6 +26,10 @@ class Service {
   // finished strategy (bydpi flavor only).
   void Function(String json)? onStrategyTestProgress;
 
+  // While a library hot-swap kills + rebinds :remote, its disconnect arrives as a
+  // crash; suppress it so the swap reads as intentional, not a failure.
+  bool swapInProgress = false;
+
   factory Service() {
     _instance ??= Service._internal();
     return _instance!;
@@ -44,8 +48,10 @@ class Service {
           break;
         case ServiceMethod.crash:
           final message = call.arguments as String? ?? '';
-          for (final listener in _listeners) {
-            listener.onServiceCrash(message);
+          if (!swapInProgress) {
+            for (final listener in _listeners) {
+              listener.onServiceCrash(message);
+            }
           }
           break;
         case ServiceMethod.strategyTestProgress:
@@ -107,6 +113,13 @@ class Service {
     return await methodChannel.invokeMethod<bool>(
           ServiceMethod.restartByeDpi,
         ) ??
+        false;
+  }
+
+  // Kills the :remote process so the next start reloads the core .so from the
+  // active library dir. Caller must stop the VPN first and set swapInProgress.
+  Future<bool> requestStop() async {
+    return await methodChannel.invokeMethod<bool>(ServiceMethod.requestStop) ??
         false;
   }
 

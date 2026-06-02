@@ -2,6 +2,7 @@ package com.follow.clash.byedpi
 
 import android.content.Context
 import com.follow.clash.StrategyTestSink
+import com.follow.clash.common.ActiveLibs
 import io.github.oviron.libbyedpi.ByeDpi
 import io.github.oviron.libbyedpi.ByeDpiConfig
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +34,8 @@ object StrategyTester {
         job?.cancel()
         job = scope.launch {
             try {
-                ByeDpi.load(context.applicationInfo.nativeLibraryDir)
+                val active = ActiveLibs.dirFor(context, ActiveLibs.BYEDPI, ActiveLibs.BYEDPI_SO)
+                ByeDpi.load(active ?: context.applicationInfo.nativeLibraryDir)
                 if (!ByeDpi.isLoaded()) {
                     sink.onProgress(
                         JSONObject().put("error", "byedpi failed to load").toString()

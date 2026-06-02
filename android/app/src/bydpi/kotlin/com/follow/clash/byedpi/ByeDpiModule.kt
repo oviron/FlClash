@@ -1,6 +1,7 @@
 package com.follow.clash.byedpi
 
 import android.content.Context
+import com.follow.clash.common.ActiveLibs
 import com.follow.clash.common.modules.Module
 import io.github.oviron.libbyedpi.ByeDpi
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +22,11 @@ class ByeDpiModule(private val context: Context) : Module() {
 
     override suspend fun onInstallSuspend() {
         currentRef = this
-        ByeDpi.load(context.applicationInfo.nativeLibraryDir)
+        val active = ActiveLibs.dirFor(context, ActiveLibs.BYEDPI, ActiveLibs.BYEDPI_SO)
+        ByeDpi.load(active ?: context.applicationInfo.nativeLibraryDir)
+        if (!ByeDpi.isLoaded() && active != null) {
+            ActiveLibs.setActive(context, ActiveLibs.BYEDPI, null)
+        }
         startByeDpiSuspend()
     }
 

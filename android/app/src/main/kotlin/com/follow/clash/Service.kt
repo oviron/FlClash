@@ -187,5 +187,12 @@ object Service {
         return rc == 1L
     }
 
+    // Library hot-swap: tell :remote to kill itself so the next bind reloads the
+    // (possibly new) core .so. The binder call may die mid-transact as the process
+    // exits, so any DeadObjectException is expected and swallowed.
+    suspend fun requestStop() {
+        runCatching { delegate.useService { it.requestStop() } }
+    }
+
     private const val RESTART_TIMEOUT_MS = 10_000L
 }

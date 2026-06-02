@@ -3,6 +3,7 @@ package com.follow.clash.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.os.Process
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.Logger
 import com.follow.clash.common.ServiceDelegate
@@ -208,6 +209,15 @@ class RemoteService : Service(),
                 }
                 result.onResult(if (ok) 1L else 0L)
             }
+        }
+
+        // Library hot-swap: kill :remote so the next bind reloads the (possibly new) core
+        // .so via a fresh onCreate. The caller stops the VpnService first, so no foreground
+        // tunnel is orphaned. Killing the process is the only reliable cross-OEM way to drop
+        // an already-mapped JNI .so (it cannot be unloaded in-process).
+        override fun requestStop() {
+            GlobalState.log("requestStop: killing :remote for library swap")
+            Process.killProcess(Process.myPid())
         }
     }
 

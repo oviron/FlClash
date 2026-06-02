@@ -33,6 +33,7 @@ private object ServiceMethod {
     const val RESTART_BYEDPI = "restartByeDpi"
     const val START_STRATEGY_TEST = "startStrategyTest"
     const val STOP_STRATEGY_TEST = "stopStrategyTest"
+    const val REQUEST_STOP = "requestStop"
     const val EVENT = "event"
     const val CRASH = "crash"
     const val STRATEGY_TEST_PROGRESS = "strategyTestProgress"
@@ -77,6 +78,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         ServiceMethod.RESTART_BYEDPI -> handleRestartByeDpi(result)
         ServiceMethod.START_STRATEGY_TEST -> handleStartStrategyTest(call, result)
         ServiceMethod.STOP_STRATEGY_TEST -> handleStopStrategyTest(result)
+        ServiceMethod.REQUEST_STOP -> handleRequestStop(result)
         else -> result.notImplemented()
     }
 
@@ -122,6 +124,13 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         launch {
             val ok = Service.restartByeDpi()
             launchAttachedMain { result.success(ok) }
+        }
+    }
+
+    private fun handleRequestStop(result: MethodChannel.Result) {
+        launch {
+            Service.requestStop()
+            launchAttachedMain { result.success(true) }
         }
     }
 

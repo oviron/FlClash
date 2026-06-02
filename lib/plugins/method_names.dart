@@ -12,10 +12,23 @@ abstract final class ServiceMethod {
   static const restartByeDpi = 'restartByeDpi';
   static const startStrategyTest = 'startStrategyTest';
   static const stopStrategyTest = 'stopStrategyTest';
+  static const requestStop = 'requestStop';
   // Inbound (Kotlin → Dart)
   static const event = 'event';
   static const crash = 'crash';
   static const strategyTestProgress = 'strategyTestProgress';
+}
+
+abstract final class LibraryMethod {
+  static const expectedBridgeAbi = 'expectedBridgeAbi';
+  static const bundledVersions = 'bundledVersions';
+  static const deviceAbi = 'deviceAbi';
+  static const listInstalled = 'listInstalled';
+  static const activeDirs = 'activeDirs';
+  static const installFromAar = 'installFromAar';
+  static const setActive = 'setActive';
+  static const clearActive = 'clearActive';
+  static const deleteInstalled = 'deleteInstalled';
 }
 
 abstract final class AppMethod {

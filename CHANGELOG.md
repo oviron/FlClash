@@ -1,3 +1,25 @@
+## v0.14.0
+
+- In-app core version switching (Tools -> Engine -> Library version): list, download, and run any ABI-compatible libmihomo / libbyedpi release without reinstalling the APK. Each downloaded `.aar` is verified on device (SHA-256 + detached GPG signature against the pinned signing key) before its `.so` is extracted to app-internal storage
+
+- Switching recycles the `:remote` process so the new core `.so` is loaded fresh; the VPN reconnects automatically on the new core. Incompatible releases (different bridge ABI) are shown as "requires app update". The APK-bundled core stays as the always-available default and fallback
+
+- The Library version screen shows the bundled core version on the Active row and marks the matching available release as the current/bundled one, so it is clear at a glance whether a newer version exists
+
+- ByeDPI in the version picker is gated by the build flavor: a non-byedpi build neither bundles, lists, downloads, nor installs the byedpi core
+
+- Bundled ByeDPI strategy set expanded to 80: two upstream fake-packet strategies added (long TLS fake, QUIC fake). The remotely-updatable `strategies` release was refreshed to match
+
+## v0.13.15
+
+- Update bundled cores: libmihomo 0.1.3 → 0.1.4 (mihomo v1.19.25 → v1.19.26; a `no_tailscale` build drops the unused Tailscale stack, shrinking `libclash.so` from 46.7 MB to 35.4 MB in the APK), libbyedpi 0.1.0 → 0.1.1
+
+- Both native libraries now ship a `metadata.json` release asset (bundled core version + bridge ABI + SHA-256) and carry the core version in the release title; pins are verified by SHA-256 + GPG signature
+
+## v0.13.14
+
+- Internal refactor (no behavior change): the monolithic `controller.dart` is split into a thin facade-dispatcher plus focused per-area controllers, and the ByeDPI / strategy-test and manager logic is moved onto testable seams; adds ~1175 lines of unit tests
+
 ## v0.13.13
 
 - ByeDPI settings apply live, no manual restart: changing the strategy, port, mode, fallback, or applying a test result now reloads only what is affected (mihomo config and/or the byedpi engine) while the VPN is running. The "Restart ByeDPI" button stays as a manual escape hatch

@@ -14,6 +14,7 @@ import 'package:fl_clash/views/config/scripts.dart';
 import 'package:fl_clash/views/privacy.dart';
 import 'package:fl_clash/views/resources.dart';
 import 'package:fl_clash/views/setting/byedpi.dart';
+import 'package:fl_clash/views/setting/library_version.dart';
 import 'package:fl_clash/views/setting/logging.dart';
 import 'package:fl_clash/views/setting/network_rules.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -80,6 +81,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
       title: Intl.message('Engine', name: 'engine'),
       items: const [
         _CoreItem(),
+        _LibraryItem(),
         _DnsItem(),
         _GeoDatabasesItem(),
         _RoutingRulesItem(),
@@ -274,6 +276,25 @@ class _CoreItem extends StatelessWidget {
         ),
       ),
       delegate: const OpenDelegate(widget: ConfigView()),
+    );
+  }
+}
+
+class _LibraryItem extends StatelessWidget {
+  const _LibraryItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem.open(
+      leading: const Icon(Icons.dataset_outlined),
+      title: Text(Intl.message('Library version', name: 'libraryVersion')),
+      subtitle: Text(
+        Intl.message(
+          'Download and switch the mihomo / ByeDPI core version',
+          name: 'libraryVersionDesc',
+        ),
+      ),
+      delegate: const OpenDelegate(widget: LibraryVersionView()),
     );
   }
 }

@@ -34,3 +34,10 @@
 -keep interface io.github.oviron.libmihomo.InvokeInterface { *; }
 -keep class io.github.oviron.libmihomo.Clash { *; }
 -keep class io.github.oviron.libmihomo.Clash$Companion { *; }
+
+# BouncyCastle OpenPGP (LibraryPlugin on-device .aar signature verify). BC uses
+# internal reflection/service-loading; keep the whole tree and silence references
+# to JDK classes absent on Android. Validate in a release (R8) build.
+-keep class org.bouncycastle.** { *; }
+-dontwarn org.bouncycastle.**
+-dontwarn javax.naming.**
