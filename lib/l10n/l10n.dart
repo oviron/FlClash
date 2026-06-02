@@ -3804,6 +3804,78 @@ class AppLocalizations {
     );
   }
 
+  String get networkRulesConditionAnyEthernet {
+    return Intl.message(
+      'Ethernet',
+      name: 'networkRulesConditionAnyEthernet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get networkRulesDefaultActionTitle {
+    return Intl.message(
+      'When no rule matches',
+      name: 'networkRulesDefaultActionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get networkRulesDefaultLeave {
+    return Intl.message(
+      'Leave unchanged',
+      name: 'networkRulesDefaultLeave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get networkRulesDefaultTurnOn {
+    return Intl.message(
+      'Turn VPN on',
+      name: 'networkRulesDefaultTurnOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get networkRulesDefaultTurnOff {
+    return Intl.message(
+      'Turn VPN off',
+      name: 'networkRulesDefaultTurnOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get networkRulesStatusLabel {
+    return Intl.message(
+      'Current decision',
+      name: 'networkRulesStatusLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get networkRulesOverrideActive {
+    return Intl.message(
+      'Manual choice kept until the network changes',
+      name: 'networkRulesOverrideActive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get networkRulesInvalidRule {
+    return Intl.message(
+      'Unsupported condition, update the app',
+      name: 'networkRulesInvalidRule',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Name (optional)`
   String get ruleNameOptional {
     return Intl.message(

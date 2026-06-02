@@ -89,6 +89,11 @@ enum TunStack { gvisor, system, mixed }
 
 enum AccessControlMode { acceptSelected, rejectSelected }
 
+/// Baseline applied by the network-rules engine when no rule matches the
+/// current network: turn the VPN on, off, or leave whatever the user/last
+/// state had it at.
+enum DefaultNetworkAction { turnOn, turnOff, leaveAsIs }
+
 enum AccessSortType { none, name, time }
 
 enum ProfileType { file, url }

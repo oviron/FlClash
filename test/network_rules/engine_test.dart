@@ -1,3 +1,4 @@
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/network_rules/engine.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -115,6 +116,106 @@ void main() {
       expect(
         evaluate(rules: rules, snapshot: const NetworkSnapshot.cellular()),
         NetworkAction.turnOn,
+      );
+    });
+
+    test('named wifi beats any-wifi regardless of user priority', () {
+      // AnyWifi has the lower (better) priority number but a named-SSID rule
+      // is more specific and must win on a matching network.
+      final rules = [
+        const NetworkRule(
+          name: 'any-wifi-first',
+          conditions: [AnyWifi()],
+          action: NetworkAction.turnOn,
+          priority: 0,
+        ),
+        const NetworkRule(
+          name: 'home',
+          conditions: [WifiNamed('Home')],
+          action: NetworkAction.turnOff,
+          priority: 10,
+        ),
+      ];
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.wifi(ssid: 'Home'),
+        ),
+        NetworkAction.turnOff,
+      );
+    });
+
+    test('AnyEthernet matches ethernet snapshot', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [AnyEthernet()],
+          action: NetworkAction.turnOn,
+          priority: 0,
+        ),
+      ];
+      expect(
+        evaluate(rules: rules, snapshot: const NetworkSnapshot.ethernet()),
+        NetworkAction.turnOn,
+      );
+      expect(
+        evaluate(rules: rules, snapshot: const NetworkSnapshot.cellular()),
+        isNull,
+      );
+    });
+  });
+
+  group('resolveNetworkDecision', () {
+    test('matching rule wins over defaultAction', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [AnyCellular()],
+          action: NetworkAction.turnOn,
+          priority: 0,
+        ),
+      ];
+      expect(
+        resolveNetworkDecision(
+          rules: rules,
+          snapshot: const NetworkSnapshot.cellular(),
+          defaultAction: DefaultNetworkAction.turnOff,
+        ),
+        NetworkDecision.start,
+      );
+    });
+
+    test('no match + leaveAsIs => do nothing', () {
+      expect(
+        resolveNetworkDecision(
+          rules: const [],
+          snapshot: const NetworkSnapshot.cellular(),
+          defaultAction: DefaultNetworkAction.leaveAsIs,
+        ),
+        NetworkDecision.leaveAsIs,
+      );
+    });
+
+    test(
+      'no match + turnOff => stop (baseline protects on unknown network)',
+      () {
+        expect(
+          resolveNetworkDecision(
+            rules: const [],
+            snapshot: const NetworkSnapshot.wifi(ssid: 'Cafe'),
+            defaultAction: DefaultNetworkAction.turnOff,
+          ),
+          NetworkDecision.stop,
+        );
+      },
+    );
+
+    test('no match + turnOn => start', () {
+      expect(
+        resolveNetworkDecision(
+          rules: const [],
+          snapshot: const NetworkSnapshot.cellular(),
+          defaultAction: DefaultNetworkAction.turnOn,
+        ),
+        NetworkDecision.start,
       );
     });
   });

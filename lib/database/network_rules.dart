@@ -42,6 +42,18 @@ class NetworkRulesDao extends DatabaseAccessor<Database>
     return into(networkRules).insertOnConflictUpdate(companion);
   }
 
+  /// Insert a new rule at the bottom of the priority order. The max-priority
+  /// read and the insert share one transaction so two concurrent adds can't
+  /// land on the same priority.
+  Future<int> insertAtEnd(NetworkRule rule) {
+    return transaction(() async {
+      final maxPriority = await currentMaxPriority();
+      return upsert(
+        rule.copyWith(id: 0, priority: maxPriority + 1).toCompanion(),
+      );
+    });
+  }
+
   Future<int> deleteById(int id) {
     return (delete(networkRules)..where((t) => t.id.equals(id))).go();
   }

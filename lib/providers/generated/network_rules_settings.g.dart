@@ -42,7 +42,7 @@ final class NetworkRulesSettingsProvider
 }
 
 String _$networkRulesSettingsHash() =>
-    r'52d55edc030e6f84c3a4fd5f3b9fc650864968fd';
+    r'6bba910ddc954d857e5f61a41df8b7d2fbcebcad';
 
 abstract class _$NetworkRulesSettings extends $Notifier<NetworkRulesProps> {
   NetworkRulesProps build();

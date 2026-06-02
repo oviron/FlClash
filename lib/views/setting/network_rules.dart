@@ -1,9 +1,11 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/network_rules/model.dart';
+import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/network_rules/engine.dart';
 import 'package:fl_clash/views/setting/location_permission_gate.dart';
 import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/network_rules.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';
+import 'package:fl_clash/providers/network_state.dart';
 import 'package:fl_clash/views/setting/widgets/edit_rule_dialog.dart';
 import 'package:fl_clash/views/setting/widgets/rule_card.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -46,6 +48,11 @@ class _NetworkRulesViewState extends ConsumerState<NetworkRulesView> {
           Column(
             children: [
               _MasterToggleCard(enabled: settings.enabled),
+              _DefaultActionCard(
+                enabled: settings.enabled,
+                value: settings.defaultAction,
+              ),
+              const _StatusLine(),
               const Divider(height: 0),
               const _PermissionBanner(),
               Expanded(
@@ -141,6 +148,119 @@ class _MasterToggleCard extends ConsumerWidget {
       onChanged: (value) {
         ref.read(networkRulesSettingsProvider.notifier).setEnabled(value);
       },
+    );
+  }
+}
+
+class _DefaultActionCard extends ConsumerWidget {
+  final bool enabled;
+  final DefaultNetworkAction value;
+
+  const _DefaultActionCard({required this.enabled, required this.value});
+
+  String _label(DefaultNetworkAction action) {
+    switch (action) {
+      case DefaultNetworkAction.leaveAsIs:
+        return appLocalizations.networkRulesDefaultLeave;
+      case DefaultNetworkAction.turnOn:
+        return appLocalizations.networkRulesDefaultTurnOn;
+      case DefaultNetworkAction.turnOff:
+        return appLocalizations.networkRulesDefaultTurnOff;
+    }
+  }
+
+  Future<void> _choose(BuildContext context, WidgetRef ref) async {
+    final picked = await showDialog<DefaultNetworkAction>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: Text(appLocalizations.networkRulesDefaultActionTitle),
+        children: [
+          for (final action in DefaultNetworkAction.values)
+            ListTile(
+              title: Text(_label(action)),
+              trailing: action == value ? const Icon(Icons.check) : null,
+              onTap: () => Navigator.of(dialogContext).pop(action),
+            ),
+        ],
+      ),
+    );
+    if (picked != null) {
+      ref.read(networkRulesSettingsProvider.notifier).setDefaultAction(picked);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Opacity(
+      opacity: enabled ? 1 : 0.5,
+      child: ListTile(
+        enabled: enabled,
+        leading: const Icon(Icons.rule_outlined),
+        title: Text(appLocalizations.networkRulesDefaultActionTitle),
+        subtitle: Text(_label(value)),
+        onTap: enabled ? () => _choose(context, ref) : null,
+      ),
+    );
+  }
+}
+
+class _StatusLine extends ConsumerWidget {
+  const _StatusLine();
+
+  String _decisionLabel(NetworkDecision decision) {
+    switch (decision) {
+      case NetworkDecision.start:
+        return appLocalizations.networkRulesDefaultTurnOn;
+      case NetworkDecision.stop:
+        return appLocalizations.networkRulesDefaultTurnOff;
+      case NetworkDecision.leaveAsIs:
+        return appLocalizations.networkRulesDefaultLeave;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(networkRulesSettingsProvider);
+    if (!settings.enabled) return const SizedBox.shrink();
+    final theme = context.textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    final status = ref.watch(lastNetworkRuleStatusProvider);
+
+    final String text;
+    final bool overridden;
+    if (status != null) {
+      text = status.reason;
+      overridden = status.overridden;
+    } else {
+      // The resident service hasn't reported yet (just enabled / cold start):
+      // show a local preview from the same engine so the line isn't blank.
+      final rules = ref.watch(networkRulesStreamProvider).value ?? const [];
+      final snapshot = ref.watch(currentNetworkSnapshotProvider);
+      final decision = resolveNetworkDecision(
+        rules: rules,
+        snapshot: snapshot,
+        defaultAction: settings.defaultAction,
+      );
+      text = _decisionLabel(decision);
+      overridden = false;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${appLocalizations.networkRulesStatusLabel}: $text',
+            style: theme.bodySmall,
+          ),
+          if (overridden)
+            Text(
+              appLocalizations.networkRulesOverrideActive,
+              style: theme.bodySmall?.copyWith(color: scheme.primary),
+            ),
+        ],
+      ),
     );
   }
 }

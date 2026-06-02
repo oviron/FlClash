@@ -30,4 +30,5 @@ dependencies {
     implementation(libs.androidx.core)
     implementation(libs.gson)
     implementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.junit)
 }

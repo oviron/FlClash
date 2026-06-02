@@ -2042,7 +2042,7 @@ $TextScaleCopyWith<$Res> get textScale {
 /// @nodoc
 mixin _$NetworkRulesProps {
 
- bool get enabled;
+ bool get enabled; DefaultNetworkAction get defaultAction;
 /// Create a copy of NetworkRulesProps
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2055,16 +2055,16 @@ $NetworkRulesPropsCopyWith<NetworkRulesProps> get copyWith => _$NetworkRulesProp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkRulesProps&&(identical(other.enabled, enabled) || other.enabled == enabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkRulesProps&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.defaultAction, defaultAction) || other.defaultAction == defaultAction));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enabled);
+int get hashCode => Object.hash(runtimeType,enabled,defaultAction);
 
 @override
 String toString() {
-  return 'NetworkRulesProps(enabled: $enabled)';
+  return 'NetworkRulesProps(enabled: $enabled, defaultAction: $defaultAction)';
 }
 
 
@@ -2075,7 +2075,7 @@ abstract mixin class $NetworkRulesPropsCopyWith<$Res>  {
   factory $NetworkRulesPropsCopyWith(NetworkRulesProps value, $Res Function(NetworkRulesProps) _then) = _$NetworkRulesPropsCopyWithImpl;
 @useResult
 $Res call({
- bool enabled
+ bool enabled, DefaultNetworkAction defaultAction
 });
 
 
@@ -2092,10 +2092,11 @@ class _$NetworkRulesPropsCopyWithImpl<$Res>
 
 /// Create a copy of NetworkRulesProps
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,Object? defaultAction = null,}) {
   return _then(_self.copyWith(
 enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,defaultAction: null == defaultAction ? _self.defaultAction : defaultAction // ignore: cast_nullable_to_non_nullable
+as DefaultNetworkAction,
   ));
 }
 
@@ -2180,10 +2181,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled,  DefaultNetworkAction defaultAction)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NetworkRulesProps() when $default != null:
-return $default(_that.enabled);case _:
+return $default(_that.enabled,_that.defaultAction);case _:
   return orElse();
 
 }
@@ -2201,10 +2202,10 @@ return $default(_that.enabled);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled,  DefaultNetworkAction defaultAction)  $default,) {final _that = this;
 switch (_that) {
 case _NetworkRulesProps():
-return $default(_that.enabled);case _:
+return $default(_that.enabled,_that.defaultAction);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2221,10 +2222,10 @@ return $default(_that.enabled);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled,  DefaultNetworkAction defaultAction)?  $default,) {final _that = this;
 switch (_that) {
 case _NetworkRulesProps() when $default != null:
-return $default(_that.enabled);case _:
+return $default(_that.enabled,_that.defaultAction);case _:
   return null;
 
 }
@@ -2236,10 +2237,11 @@ return $default(_that.enabled);case _:
 @JsonSerializable()
 
 class _NetworkRulesProps implements NetworkRulesProps {
-  const _NetworkRulesProps({this.enabled = false});
+  const _NetworkRulesProps({this.enabled = false, this.defaultAction = DefaultNetworkAction.leaveAsIs});
   factory _NetworkRulesProps.fromJson(Map<String, dynamic> json) => _$NetworkRulesPropsFromJson(json);
 
 @override@JsonKey() final  bool enabled;
+@override@JsonKey() final  DefaultNetworkAction defaultAction;
 
 /// Create a copy of NetworkRulesProps
 /// with the given fields replaced by the non-null parameter values.
@@ -2254,16 +2256,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkRulesProps&&(identical(other.enabled, enabled) || other.enabled == enabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkRulesProps&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.defaultAction, defaultAction) || other.defaultAction == defaultAction));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,enabled);
+int get hashCode => Object.hash(runtimeType,enabled,defaultAction);
 
 @override
 String toString() {
-  return 'NetworkRulesProps(enabled: $enabled)';
+  return 'NetworkRulesProps(enabled: $enabled, defaultAction: $defaultAction)';
 }
 
 
@@ -2274,7 +2276,7 @@ abstract mixin class _$NetworkRulesPropsCopyWith<$Res> implements $NetworkRulesP
   factory _$NetworkRulesPropsCopyWith(_NetworkRulesProps value, $Res Function(_NetworkRulesProps) _then) = __$NetworkRulesPropsCopyWithImpl;
 @override @useResult
 $Res call({
- bool enabled
+ bool enabled, DefaultNetworkAction defaultAction
 });
 
 
@@ -2291,10 +2293,11 @@ class __$NetworkRulesPropsCopyWithImpl<$Res>
 
 /// Create a copy of NetworkRulesProps
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? enabled = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? enabled = null,Object? defaultAction = null,}) {
   return _then(_NetworkRulesProps(
 enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,defaultAction: null == defaultAction ? _self.defaultAction : defaultAction // ignore: cast_nullable_to_non_nullable
+as DefaultNetworkAction,
   ));
 }
 

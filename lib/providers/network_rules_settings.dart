@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,5 +15,9 @@ class NetworkRulesSettings extends _$NetworkRulesSettings
 
   void setEnabled(bool value) {
     update((s) => s.copyWith(enabled: value));
+  }
+
+  void setDefaultAction(DefaultNetworkAction value) {
+    update((s) => s.copyWith(defaultAction: value));
   }
 }

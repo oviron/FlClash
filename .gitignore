@@ -63,3 +63,5 @@ CLAUDE.md
 /android/app/src/main/jniLibs/
 /env.json
 devtools_options.yaml
+# Transient: byedpi assets stashed out of non-byedpi builds by setup.dart
+.byedpi-asset-stash/

@@ -1,3 +1,13 @@
+## v0.15.0
+
+- Network rules (auto VPN on/off by network) rewritten into a self-contained module. The observer and decision engine now run in a resident foreground service in the default process, so a network change (e.g. Wi-Fi to cellular with the screen off and the UI killed) is still acted on. Previously the logic lived in the UI process and silently stopped working once Android reclaimed it
+
+- Added an explicit baseline: "When no rule matches" can leave the VPN unchanged (default), force it on, or force it off, so leaving a matched network no longer strands the VPN in whatever state it was last left in
+
+- A manual VPN toggle now wins over the rules until the network actually changes, instead of being immediately reverted by the next network event
+
+- Rule precedence is now by specificity (a named-Wi-Fi rule beats a generic "any Wi-Fi" rule regardless of list order); added Ethernet as a matchable network type; rules whose conditions a newer version wrote and this build cannot parse are shown as invalid instead of appearing active but dead
+
 ## v0.14.0
 
 - In-app core version switching (Tools -> Engine -> Library version): list, download, and run any ABI-compatible libmihomo / libbyedpi release without reinstalling the APK. Each downloaded `.aar` is verified on device (SHA-256 + detached GPG signature against the pinned signing key) before its `.so` is extracted to app-internal storage

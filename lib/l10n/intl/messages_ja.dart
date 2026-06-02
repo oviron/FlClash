@@ -500,6 +500,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "このルールを削除しますか?",
     ),
+    "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
+      "イーサネット",
+    ),
+    "networkRulesDefaultActionTitle": MessageLookupByLibrary.simpleMessage(
+      "一致するルールがない場合",
+    ),
+    "networkRulesDefaultLeave": MessageLookupByLibrary.simpleMessage("変更しない"),
+    "networkRulesDefaultTurnOn": MessageLookupByLibrary.simpleMessage(
+      "VPN をオンにする",
+    ),
+    "networkRulesDefaultTurnOff": MessageLookupByLibrary.simpleMessage(
+      "VPN をオフにする",
+    ),
+    "networkRulesStatusLabel": MessageLookupByLibrary.simpleMessage("現在の判定"),
+    "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
+      "ネットワークが変わるまで手動選択を維持します",
+    ),
+    "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
+      "サポートされていない条件です。アプリを更新してください",
+    ),
     "networkRulesDelete": MessageLookupByLibrary.simpleMessage("削除"),
     "networkRulesDisable": MessageLookupByLibrary.simpleMessage("無効にする"),
     "networkRulesEdit": MessageLookupByLibrary.simpleMessage("編集"),

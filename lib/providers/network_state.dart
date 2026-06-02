@@ -1,7 +1,8 @@
-// Holds the latest NetworkSnapshot from the probe. The dispatcher
-// subscribes here.
+// Holds the latest NetworkSnapshot. Fed by the resident service's status push
+// (NetworkRulesPlugin), surfaced for the editor and the SSID suggestions.
 
 import 'package:fl_clash/network_rules/model.dart';
+import 'package:fl_clash/network_rules/plugin.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'recent_ssids.dart';
@@ -23,4 +24,14 @@ class CurrentNetworkSnapshot extends _$CurrentNetworkSnapshot {
       ref.read(recentSsidsProvider.notifier).observe(ssid);
     }
   }
+}
+
+/// Latest decision + reason pushed by the resident service, for the editor's
+/// "current network -> decision" status line.
+@Riverpod(keepAlive: true)
+class LastNetworkRuleStatus extends _$LastNetworkRuleStatus {
+  @override
+  NetworkRuleStatus? build() => null;
+
+  void update(NetworkRuleStatus status) => state = status;
 }

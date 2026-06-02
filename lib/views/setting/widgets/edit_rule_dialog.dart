@@ -7,7 +7,7 @@ import 'package:fl_clash/providers/recent_ssids.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-enum _ConditionKind { wifiNamed, anyWifi, anyCellular }
+enum _ConditionKind { wifiNamed, anyWifi, anyCellular, anyEthernet }
 
 class EditRuleDialog extends ConsumerStatefulWidget {
   final NetworkRule? initial;
@@ -57,6 +57,8 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
         _wifiNamedSsid = firstCondition.ssid;
       } else if (firstCondition is AnyWifi) {
         _conditionKind = _ConditionKind.anyWifi;
+      } else if (firstCondition is AnyEthernet) {
+        _conditionKind = _ConditionKind.anyEthernet;
       } else {
         _conditionKind = _ConditionKind.anyCellular;
       }
@@ -106,6 +108,8 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
         condition = const AnyWifi();
       case _ConditionKind.anyCellular:
         condition = const AnyCellular();
+      case _ConditionKind.anyEthernet:
+        condition = const AnyEthernet();
     }
     final rawName = _nameController.text.trim();
     final initial = widget.initial;
@@ -183,6 +187,13 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
                     contentPadding: EdgeInsets.zero,
                     title: Text(
                       appLocalizations.networkRulesConditionAnyCellular,
+                    ),
+                  ),
+                  RadioListTile<_ConditionKind>(
+                    value: _ConditionKind.anyEthernet,
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      appLocalizations.networkRulesConditionAnyEthernet,
                     ),
                   ),
                 ],

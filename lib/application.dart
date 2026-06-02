@@ -5,8 +5,8 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/manager/manager.dart';
+import 'package:fl_clash/network_rules/bridge.dart';
 import 'package:fl_clash/plugins/app.dart';
-import 'package:fl_clash/providers/network_state.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +75,7 @@ class ApplicationState extends ConsumerState<Application> {
       child: AppStateManager(
         child: CoreManager(
           child: ByeDpiReconciler(
-            child: RuleEngineRunner(
+            child: NetworkRulesBridge(
               child: ConnectivityManager(
                 onConnectivityChanged: (results) async {
                   commonPrint.log('connectivityChanged ${results.toString()}');
@@ -85,11 +85,6 @@ class ApplicationState extends ConsumerState<Application> {
                     appController.addCheckIp();
                   }
                   _preHasVpn = hasVpn;
-                },
-                onNetworkSnapshot: (snap) {
-                  ref
-                      .read(currentNetworkSnapshotProvider.notifier)
-                      .update(snap);
                 },
                 child: child,
               ),

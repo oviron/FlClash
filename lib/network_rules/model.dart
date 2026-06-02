@@ -6,7 +6,7 @@ import 'package:fl_clash/common/common.dart';
 
 enum NetworkAction { turnOn, turnOff }
 
-enum NetworkType { wifi, cellular, none }
+enum NetworkType { wifi, cellular, ethernet, none }
 
 class NetworkSnapshot {
   final NetworkType type;
@@ -19,6 +19,8 @@ class NetworkSnapshot {
   const NetworkSnapshot.wifi({this.ssid}) : type = NetworkType.wifi;
 
   const NetworkSnapshot.cellular() : type = NetworkType.cellular, ssid = null;
+
+  const NetworkSnapshot.ethernet() : type = NetworkType.ethernet, ssid = null;
 
   const NetworkSnapshot.none() : type = NetworkType.none, ssid = null;
 
@@ -42,6 +44,11 @@ sealed class NetworkCondition {
 
   Map<String, dynamic> toJson();
 
+  /// Higher = more specific. A named Wi-Fi (2) wins over a type-level clause
+  /// (1) regardless of user-defined priority, so a `Home` rule is never
+  /// shadowed by an `any wifi` rule. Keep in sync with the Kotlin engine.
+  int get specificity;
+
   static NetworkCondition fromJson(Map<String, dynamic> json) {
     final kind = json['kind'] as String?;
     switch (kind) {
@@ -51,6 +58,8 @@ sealed class NetworkCondition {
         return const AnyWifi();
       case 'any_cellular':
         return const AnyCellular();
+      case 'any_ethernet':
+        return const AnyEthernet();
       default:
         throw FormatException('Unknown NetworkCondition kind: $kind in $json');
     }
@@ -77,6 +86,9 @@ class WifiNamed extends NetworkCondition {
   Map<String, dynamic> toJson() => {'kind': 'wifi_named', 'ssid': ssid};
 
   @override
+  int get specificity => 2;
+
+  @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is WifiNamed && other.ssid.toLowerCase() == ssid.toLowerCase();
@@ -96,6 +108,9 @@ class AnyWifi extends NetworkCondition {
 
   @override
   Map<String, dynamic> toJson() => const {'kind': 'any_wifi'};
+
+  @override
+  int get specificity => 1;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is AnyWifi;
@@ -118,6 +133,9 @@ class AnyCellular extends NetworkCondition {
   Map<String, dynamic> toJson() => const {'kind': 'any_cellular'};
 
   @override
+  int get specificity => 1;
+
+  @override
   bool operator ==(Object other) =>
       identical(this, other) || other is AnyCellular;
 
@@ -126,6 +144,30 @@ class AnyCellular extends NetworkCondition {
 
   @override
   String toString() => 'AnyCellular()';
+}
+
+class AnyEthernet extends NetworkCondition {
+  const AnyEthernet();
+
+  @override
+  bool matches(NetworkSnapshot snapshot) =>
+      snapshot.type == NetworkType.ethernet;
+
+  @override
+  Map<String, dynamic> toJson() => const {'kind': 'any_ethernet'};
+
+  @override
+  int get specificity => 1;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is AnyEthernet;
+
+  @override
+  int get hashCode => 'any_ethernet'.hashCode;
+
+  @override
+  String toString() => 'AnyEthernet()';
 }
 
 class NetworkConditionListCodec {
@@ -240,4 +282,24 @@ bool _conditionsEqual(List<NetworkCondition> a, List<NetworkCondition> b) {
     if (a[i] != b[i]) return false;
   }
   return true;
+}
+
+/// A rule's specificity is its most specific condition (empty => 0).
+int networkRuleSpecificity(NetworkRule rule) {
+  var best = 0;
+  for (final c in rule.conditions) {
+    if (c.specificity > best) best = c.specificity;
+  }
+  return best;
+}
+
+/// Evaluation order: most specific first, then user priority (lower first),
+/// then id. Shared by the engine and the reason builder so the rule the user
+/// is told matched is exactly the one that fired. Mirror in the Kotlin engine.
+int compareNetworkRules(NetworkRule a, NetworkRule b) {
+  final sa = networkRuleSpecificity(a);
+  final sb = networkRuleSpecificity(b);
+  if (sa != sb) return sb.compareTo(sa);
+  if (a.priority != b.priority) return a.priority.compareTo(b.priority);
+  return a.id.compareTo(b.id);
 }

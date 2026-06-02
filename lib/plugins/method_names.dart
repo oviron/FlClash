@@ -31,6 +31,14 @@ abstract final class LibraryMethod {
   static const deleteInstalled = 'deleteInstalled';
 }
 
+abstract final class NetworkRulesMethod {
+  static const setEnabled = 'setEnabled';
+  static const getStatus = 'getStatus';
+  static const reevaluate = 'reevaluate';
+  // Inbound (Kotlin → Dart)
+  static const statusChanged = 'statusChanged';
+}
+
 abstract final class AppMethod {
   static const exit = 'exit';
   static const moveTaskToBack = 'moveTaskToBack';

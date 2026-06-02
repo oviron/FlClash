@@ -10,8 +10,10 @@ coreSplashscreen = "1.0.1"
 gson = "2.13.1"
 kotlin = "2.2.10"
 coroutines = "1.9.0"
+junit = "4.13.2"
 
 [libraries]
+junit = { module = "junit:junit", version.ref = "junit" }
 build-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 annotation-jvm = { module = "androidx.annotation:annotation-jvm", version.ref = "annotationJvm" }

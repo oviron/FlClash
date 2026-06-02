@@ -1,7 +1,7 @@
 name: fl_clash
 description: Android mihomo client. Open source, no ads, no telemetry.
 publish_to: 'none'
-version: 0.14.0+2026060516
+version: 0.15.0+2026060517
 environment:
   sdk: '>=3.8.0 <4.0.0'
 

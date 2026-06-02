@@ -456,6 +456,24 @@ class MessageLookup extends MessageLookupByLibrary {
       "指定 Wi-Fi",
     ),
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage("删除此规则？"),
+    "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
+      "以太网",
+    ),
+    "networkRulesDefaultActionTitle": MessageLookupByLibrary.simpleMessage(
+      "当没有规则匹配时",
+    ),
+    "networkRulesDefaultLeave": MessageLookupByLibrary.simpleMessage("保持不变"),
+    "networkRulesDefaultTurnOn": MessageLookupByLibrary.simpleMessage("开启 VPN"),
+    "networkRulesDefaultTurnOff": MessageLookupByLibrary.simpleMessage(
+      "关闭 VPN",
+    ),
+    "networkRulesStatusLabel": MessageLookupByLibrary.simpleMessage("当前决策"),
+    "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
+      "手动选择将保留至网络变化",
+    ),
+    "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
+      "不支持的条件，请更新应用",
+    ),
     "networkRulesDelete": MessageLookupByLibrary.simpleMessage("删除"),
     "networkRulesDisable": MessageLookupByLibrary.simpleMessage("禁用"),
     "networkRulesEdit": MessageLookupByLibrary.simpleMessage("编辑"),

@@ -48,6 +48,9 @@ class RuleCard extends ConsumerWidget {
     final hasPermission = permissionState == LocationPermissionState.granted;
     final scheme = Theme.of(context).colorScheme;
 
+    // No valid conditions survived decoding (e.g. a rule authored by a newer
+    // version): surface it as invalid instead of a silently-dead "active" row.
+    final isInvalid = rule.conditions.isEmpty;
     final chips = <Widget>[
       for (final c in rule.conditions)
         _ConditionChip(condition: c, hasPermission: hasPermission),
@@ -90,17 +93,35 @@ class RuleCard extends ConsumerWidget {
                           spacing: 6,
                           runSpacing: 4,
                           crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            ...chips,
-                            const Icon(Icons.arrow_right_alt, size: 18),
-                            Text(
-                              _actionLabel(rule.action),
-                              style: context.textTheme.titleSmall?.copyWith(
-                                color: _actionColor(context, rule.action),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
+                          children: isInvalid
+                              ? [
+                                  Chip(
+                                    avatar: Icon(
+                                      Icons.error_outline,
+                                      size: 18,
+                                      color: scheme.error,
+                                    ),
+                                    label: Text(
+                                      appLocalizations.networkRulesInvalidRule,
+                                    ),
+                                    visualDensity: VisualDensity.compact,
+                                  ),
+                                ]
+                              : [
+                                  ...chips,
+                                  const Icon(Icons.arrow_right_alt, size: 18),
+                                  Text(
+                                    _actionLabel(rule.action),
+                                    style: context.textTheme.titleSmall
+                                        ?.copyWith(
+                                          color: _actionColor(
+                                            context,
+                                            rule.action,
+                                          ),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                ],
                         ),
                       ],
                     ),
@@ -181,6 +202,13 @@ class _ConditionChip extends StatelessWidget {
       return Chip(
         avatar: const Icon(Icons.signal_cellular_alt, size: 18),
         label: Text(appLocalizations.networkRulesConditionAnyCellular),
+        visualDensity: VisualDensity.compact,
+      );
+    }
+    if (c is AnyEthernet) {
+      return Chip(
+        avatar: const Icon(Icons.settings_ethernet, size: 18),
+        label: Text(appLocalizations.networkRulesConditionAnyEthernet),
         visualDensity: VisualDensity.compact,
       );
     }

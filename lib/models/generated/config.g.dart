@@ -290,10 +290,27 @@ const _$DynamicSchemeVariantEnumMap = {
 };
 
 _NetworkRulesProps _$NetworkRulesPropsFromJson(Map<String, dynamic> json) =>
-    _NetworkRulesProps(enabled: json['enabled'] as bool? ?? false);
+    _NetworkRulesProps(
+      enabled: json['enabled'] as bool? ?? false,
+      defaultAction:
+          $enumDecodeNullable(
+            _$DefaultNetworkActionEnumMap,
+            json['defaultAction'],
+          ) ??
+          DefaultNetworkAction.leaveAsIs,
+    );
 
 Map<String, dynamic> _$NetworkRulesPropsToJson(_NetworkRulesProps instance) =>
-    <String, dynamic>{'enabled': instance.enabled};
+    <String, dynamic>{
+      'enabled': instance.enabled,
+      'defaultAction': _$DefaultNetworkActionEnumMap[instance.defaultAction]!,
+    };
+
+const _$DefaultNetworkActionEnumMap = {
+  DefaultNetworkAction.turnOn: 'turnOn',
+  DefaultNetworkAction.turnOff: 'turnOff',
+  DefaultNetworkAction.leaveAsIs: 'leaveAsIs',
+};
 
 _Config _$ConfigFromJson(Map<String, dynamic> json) => _Config(
   currentProfileId: (json['currentProfileId'] as num?)?.toInt(),

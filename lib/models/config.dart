@@ -273,8 +273,10 @@ abstract class ThemeProps with _$ThemeProps {
 
 @freezed
 abstract class NetworkRulesProps with _$NetworkRulesProps {
-  const factory NetworkRulesProps({@Default(false) bool enabled}) =
-      _NetworkRulesProps;
+  const factory NetworkRulesProps({
+    @Default(false) bool enabled,
+    @Default(DefaultNetworkAction.leaveAsIs) DefaultNetworkAction defaultAction,
+  }) = _NetworkRulesProps;
 
   factory NetworkRulesProps.fromJson(Map<String, Object?> json) =>
       _$NetworkRulesPropsFromJson(json);

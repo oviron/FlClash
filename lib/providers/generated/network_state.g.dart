@@ -62,3 +62,67 @@ abstract class _$CurrentNetworkSnapshot extends $Notifier<NetworkSnapshot> {
     element.handleValue(ref, created);
   }
 }
+
+/// Latest decision + reason pushed by the resident service, for the editor's
+/// "current network -> decision" status line.
+
+@ProviderFor(LastNetworkRuleStatus)
+const lastNetworkRuleStatusProvider = LastNetworkRuleStatusProvider._();
+
+/// Latest decision + reason pushed by the resident service, for the editor's
+/// "current network -> decision" status line.
+final class LastNetworkRuleStatusProvider
+    extends $NotifierProvider<LastNetworkRuleStatus, NetworkRuleStatus?> {
+  /// Latest decision + reason pushed by the resident service, for the editor's
+  /// "current network -> decision" status line.
+  const LastNetworkRuleStatusProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'lastNetworkRuleStatusProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$lastNetworkRuleStatusHash();
+
+  @$internal
+  @override
+  LastNetworkRuleStatus create() => LastNetworkRuleStatus();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(NetworkRuleStatus? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<NetworkRuleStatus?>(value),
+    );
+  }
+}
+
+String _$lastNetworkRuleStatusHash() =>
+    r'8abc2ae6497d999c1911a9f7fd8ef1a731c153dd';
+
+/// Latest decision + reason pushed by the resident service, for the editor's
+/// "current network -> decision" status line.
+
+abstract class _$LastNetworkRuleStatus extends $Notifier<NetworkRuleStatus?> {
+  NetworkRuleStatus? build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<NetworkRuleStatus?, NetworkRuleStatus?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<NetworkRuleStatus?, NetworkRuleStatus?>,
+              NetworkRuleStatus?,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

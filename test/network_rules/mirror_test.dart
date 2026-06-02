@@ -1,0 +1,80 @@
+import 'dart:convert';
+
+import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/network_rules/engine.dart';
+import 'package:fl_clash/network_rules/mirror.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  group('encodeNetworkRulesMirror', () {
+    test('emits the schema the Kotlin codec expects', () {
+      final json = encodeNetworkRulesMirror(
+        enabled: true,
+        defaultAction: DefaultNetworkAction.turnOff,
+        rules: const [
+          NetworkRule(
+            id: 1,
+            name: 'Home',
+            conditions: [WifiNamed('Home')],
+            action: NetworkAction.turnOff,
+            priority: 0,
+          ),
+        ],
+      );
+      final decoded = jsonDecode(json) as Map<String, dynamic>;
+
+      expect(decoded['version'], networkRulesMirrorVersion);
+      expect(decoded['enabled'], true);
+      expect(decoded['defaultAction'], 'turnOff');
+
+      final rules = decoded['rules'] as List;
+      expect(rules, hasLength(1));
+      final rule = rules.first as Map<String, dynamic>;
+      expect(rule['id'], 1);
+      expect(rule['name'], 'Home');
+      expect(rule['action'], 'turnOff');
+      expect(rule['priority'], 0);
+      expect(rule['enabled'], true);
+
+      final conditions = rule['conditions'] as List;
+      expect(conditions.first, {'kind': 'wifi_named', 'ssid': 'Home'});
+    });
+
+    test('serializes every default action by name', () {
+      for (final action in DefaultNetworkAction.values) {
+        final json = encodeNetworkRulesMirror(
+          enabled: false,
+          defaultAction: action,
+          rules: const [],
+        );
+        expect((jsonDecode(json) as Map)['defaultAction'], action.name);
+      }
+    });
+
+    test('serializes ethernet and cellular conditions', () {
+      final json = encodeNetworkRulesMirror(
+        enabled: true,
+        defaultAction: DefaultNetworkAction.leaveAsIs,
+        rules: const [
+          NetworkRule(
+            conditions: [AnyEthernet()],
+            action: NetworkAction.turnOn,
+            priority: 0,
+          ),
+          NetworkRule(
+            conditions: [AnyCellular()],
+            action: NetworkAction.turnOff,
+            priority: 1,
+          ),
+        ],
+      );
+      final rules = (jsonDecode(json) as Map)['rules'] as List;
+      expect((rules[0] as Map)['conditions'], [
+        {'kind': 'any_ethernet'},
+      ]);
+      expect((rules[1] as Map)['conditions'], [
+        {'kind': 'any_cellular'},
+      ]);
+    });
+  });
+}

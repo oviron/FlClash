@@ -15,6 +15,16 @@ import 'package:yaml/yaml.dart';
 const _signerFpr = '1139C91B6525883E6783DCF04A94DA488A4C5033';
 const _signerPubKeyPath = 'scripts/oviron-signing.pub.asc';
 
+// byedpi-only data assets. pubspec globs the whole assets/data/ directory, so
+// the classic (no-byedpi) flavor would otherwise bundle these. We move them
+// out before `flutter build` for classic and restore after, so a no-byedpi
+// build ships ZERO byedpi files (the native lib is already flavor-gated).
+const _byeDpiAssets = [
+  'assets/data/byedpi-hosts-default.txt',
+  'assets/data/byedpi-strategies.json',
+];
+const _byeDpiAssetStashDir = '.byedpi-asset-stash';
+
 const _libmihomoVersion = '0.1.4';
 const _libmihomoSha256 =
     '4494bf733b94327119c8828a0eea35765e82f763c66e24a1dc4a497215c08868';
@@ -357,21 +367,53 @@ class BuildAndroidCommand extends Command<void> {
         : Build.androidItems.where((e) => e.arch == arch).toList();
     final flutterTargets = items.map((e) => e.flutterTarget).join(',');
 
-    await Build.exec([
-      'flutter',
-      'build',
-      'apk',
-      '--release',
-      '--split-per-abi',
-      '--flavor',
-      flavor,
-      '--target-platform',
-      flutterTargets,
-      '--dart-define-from-file=env.json',
-      '--dart-define=BYDPI=${flavor == 'bydpi'}',
-    ], name: 'flutter build apk ($flavor)');
+    // classic ships zero byedpi: pull the byedpi-only assets out of the bundle
+    // for the build, restore afterwards. Self-heal a leftover stash first.
+    await _restoreByeDpiAssets();
+    final stripByeDpi = flavor != 'bydpi';
+    if (stripByeDpi) await _stashByeDpiAssets();
+    try {
+      await Build.exec([
+        'flutter',
+        'build',
+        'apk',
+        '--release',
+        '--split-per-abi',
+        '--flavor',
+        flavor,
+        '--target-platform',
+        flutterTargets,
+        '--dart-define-from-file=env.json',
+        '--dart-define=BYDPI=${flavor == 'bydpi'}',
+      ], name: 'flutter build apk ($flavor)');
+    } finally {
+      if (stripByeDpi) await _restoreByeDpiAssets();
+    }
 
     await _copyApks(items, flavor);
+  }
+}
+
+// Restore any stashed byedpi assets (also self-heals a prior interrupted run).
+Future<void> _restoreByeDpiAssets() async {
+  final stash = Directory(_byeDpiAssetStashDir);
+  if (!stash.existsSync()) return;
+  for (final assetPath in _byeDpiAssets) {
+    final stashed = File(join(_byeDpiAssetStashDir, basename(assetPath)));
+    if (stashed.existsSync()) {
+      await stashed.rename(assetPath);
+    }
+  }
+  if (stash.listSync().isEmpty) stash.deleteSync();
+}
+
+Future<void> _stashByeDpiAssets() async {
+  Directory(_byeDpiAssetStashDir).createSync();
+  for (final assetPath in _byeDpiAssets) {
+    final f = File(assetPath);
+    if (f.existsSync()) {
+      await f.rename(join(_byeDpiAssetStashDir, basename(assetPath)));
+    }
   }
 }
 

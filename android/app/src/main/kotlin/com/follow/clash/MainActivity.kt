@@ -4,9 +4,9 @@ import android.os.Bundle
 import com.follow.clash.common.GlobalState
 import com.follow.clash.plugins.AppPlugin
 import com.follow.clash.plugins.LibraryPlugin
+import com.follow.clash.plugins.NetworkRulesPlugin
 import com.follow.clash.plugins.ServicePlugin
 import com.follow.clash.plugins.TilePlugin
-import com.follow.clash.plugins.UnderlyingNetworkPlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +26,7 @@ class MainActivity : FlutterActivity(),
         flutterEngine.plugins.add(AppPlugin())
         flutterEngine.plugins.add(ServicePlugin())
         flutterEngine.plugins.add(TilePlugin())
-        flutterEngine.plugins.add(UnderlyingNetworkPlugin())
+        flutterEngine.plugins.add(NetworkRulesPlugin())
         flutterEngine.plugins.add(LibraryPlugin())
         State.flutterEngine = flutterEngine
     }

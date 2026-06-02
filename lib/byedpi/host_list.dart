@@ -24,6 +24,12 @@ Future<void> installDefaultHostList() async {
 Future<String> readHostList() async {
   final path = await hostListPath();
   final f = File(path);
-  if (!f.existsSync()) return rootBundle.loadString(_assetPath);
-  return f.readAsString();
+  if (f.existsSync()) return f.readAsString();
+  // The bundled asset is absent in non-byedpi builds (stripped at build time);
+  // fall back to empty rather than throwing.
+  try {
+    return await rootBundle.loadString(_assetPath);
+  } catch (_) {
+    return '';
+  }
 }

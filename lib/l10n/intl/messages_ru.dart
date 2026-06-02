@@ -654,6 +654,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "Удалить правило?",
     ),
+    "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
+      "Ethernet",
+    ),
+    "networkRulesDefaultActionTitle": MessageLookupByLibrary.simpleMessage(
+      "Когда ни одно правило не совпало",
+    ),
+    "networkRulesDefaultLeave": MessageLookupByLibrary.simpleMessage(
+      "Не трогать",
+    ),
+    "networkRulesDefaultTurnOn": MessageLookupByLibrary.simpleMessage(
+      "Включить VPN",
+    ),
+    "networkRulesDefaultTurnOff": MessageLookupByLibrary.simpleMessage(
+      "Выключить VPN",
+    ),
+    "networkRulesStatusLabel": MessageLookupByLibrary.simpleMessage(
+      "Текущее решение",
+    ),
+    "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
+      "Ручной выбор сохраняется до смены сети",
+    ),
+    "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
+      "Условие не поддерживается, обновите приложение",
+    ),
     "networkRulesDelete": MessageLookupByLibrary.simpleMessage("Удалить"),
     "networkRulesDisable": MessageLookupByLibrary.simpleMessage("Выключить"),
     "networkRulesEdit": MessageLookupByLibrary.simpleMessage("Редактировать"),

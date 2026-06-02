@@ -625,6 +625,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "Delete this rule?",
     ),
+    "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
+      "Ethernet",
+    ),
+    "networkRulesDefaultActionTitle": MessageLookupByLibrary.simpleMessage(
+      "When no rule matches",
+    ),
+    "networkRulesDefaultLeave": MessageLookupByLibrary.simpleMessage(
+      "Leave unchanged",
+    ),
+    "networkRulesDefaultTurnOn": MessageLookupByLibrary.simpleMessage(
+      "Turn VPN on",
+    ),
+    "networkRulesDefaultTurnOff": MessageLookupByLibrary.simpleMessage(
+      "Turn VPN off",
+    ),
+    "networkRulesStatusLabel": MessageLookupByLibrary.simpleMessage(
+      "Current decision",
+    ),
+    "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
+      "Manual choice kept until the network changes",
+    ),
+    "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
+      "Unsupported condition, update the app",
+    ),
     "networkRulesDelete": MessageLookupByLibrary.simpleMessage("Delete"),
     "networkRulesDisable": MessageLookupByLibrary.simpleMessage("Disable"),
     "networkRulesEdit": MessageLookupByLibrary.simpleMessage("Edit"),
