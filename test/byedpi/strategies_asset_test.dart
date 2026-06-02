@@ -17,8 +17,16 @@ void main() {
     expect(list.map((e) => e.id).toSet().length, list.length); // unique ids
 
     for (final s in list) {
-      expect(s.args.contains('"'), isFalse, reason: '${s.id} has a literal quote');
-      expect(s.args.contains('{sni}'), isFalse, reason: '${s.id} has an unresolved {sni}');
+      expect(
+        s.args.contains('"'),
+        isFalse,
+        reason: '${s.id} has a literal quote',
+      );
+      expect(
+        s.args.contains('{sni}'),
+        isFalse,
+        reason: '${s.id} has an unresolved {sni}',
+      );
     }
   });
 }

@@ -39,7 +39,9 @@ class LibraryPlugin {
         await _channel.invokeListMethod<dynamic>(LibraryMethod.listInstalled) ??
         const [];
     return list
-        .map((e) => InstalledLibrary.fromMap((e as Map).cast<String, dynamic>()))
+        .map(
+          (e) => InstalledLibrary.fromMap((e as Map).cast<String, dynamic>()),
+        )
         .toList();
   }
 
@@ -60,19 +62,22 @@ class LibraryPlugin {
     required String label,
     required String version,
   }) async {
-    final dir = await _channel.invokeMethod<String>(LibraryMethod.installFromAar, {
-      'aarPath': aarPath,
-      'ascPath': ascPath,
-      'sha256': sha256,
-      'label': label,
-      'version': version,
-    });
+    final dir = await _channel
+        .invokeMethod<String>(LibraryMethod.installFromAar, {
+          'aarPath': aarPath,
+          'ascPath': ascPath,
+          'sha256': sha256,
+          'label': label,
+          'version': version,
+        });
     if (dir == null) throw StateError('installFromAar returned null');
     return dir;
   }
 
-  Future<void> setActive(String label, String dir) =>
-      _channel.invokeMethod(LibraryMethod.setActive, {'label': label, 'dir': dir});
+  Future<void> setActive(String label, String dir) => _channel.invokeMethod(
+    LibraryMethod.setActive,
+    {'label': label, 'dir': dir},
+  );
 
   Future<void> clearActive(String label) =>
       _channel.invokeMethod(LibraryMethod.clearActive, {'label': label});

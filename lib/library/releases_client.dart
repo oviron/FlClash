@@ -48,7 +48,8 @@ class ReleasesClient {
         meta['browser_download_url'] as String,
         options: Options(responseType: ResponseType.plain),
       );
-      final m = (jsonDecode(metaRes.data ?? '{}') as Map).cast<String, dynamic>();
+      final m = (jsonDecode(metaRes.data ?? '{}') as Map)
+          .cast<String, dynamic>();
       final core = (m['core'] as Map?)?.cast<String, dynamic>() ?? const {};
       final tag = r['tag_name'] as String;
 

@@ -31,13 +31,7 @@ object AarInstaller {
         requiredSo: List<String>,
         dirName: String,
     ): File {
-        val sha = sha256(aar)
-        if (!sha.equals(expectedSha256, ignoreCase = true)) {
-            throw InstallException("SHA-256 mismatch: expected $expectedSha256, got $sha")
-        }
-        if (!verifyDetached(context, aar, asc)) {
-            throw InstallException("GPG signature verification failed")
-        }
+        verify(context, aar, asc, expectedSha256)
         val libsRoot = File(context.filesDir, "libs").apply { mkdirs() }
         val tmp = File(libsRoot, "$dirName.tmp")
         if (tmp.exists()) tmp.deleteRecursively()
@@ -56,6 +50,16 @@ object AarInstaller {
             throw InstallException("failed to finalize ${dest.absolutePath}")
         }
         return dest
+    }
+
+    private fun verify(context: Context, aar: File, asc: File, expectedSha256: String) {
+        val sha = sha256(aar)
+        if (!sha.equals(expectedSha256, ignoreCase = true)) {
+            throw InstallException("SHA-256 mismatch: expected $expectedSha256, got $sha")
+        }
+        if (!verifyDetached(context, aar, asc)) {
+            throw InstallException("GPG signature verification failed")
+        }
     }
 
     private fun sha256(f: File): String {

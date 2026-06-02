@@ -1,18 +1,20 @@
 import 'package:fl_clash/library/model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-LibraryRelease _rel({required int abi, List<String> abis = const ['arm64-v8a']}) =>
-    LibraryRelease(
-      label: kLibMihomo,
-      version: '0.1.4',
-      coreName: 'mihomo',
-      coreVersion: 'v1.19.26',
-      bridgeAbi: abi,
-      abis: abis,
-      aarUrl: 'https://example/a.aar',
-      ascUrl: 'https://example/a.aar.asc',
-      sha256: 'deadbeef',
-    );
+LibraryRelease _rel({
+  required int abi,
+  List<String> abis = const ['arm64-v8a'],
+}) => LibraryRelease(
+  label: kLibMihomo,
+  version: '0.1.4',
+  coreName: 'mihomo',
+  coreVersion: 'v1.19.26',
+  bridgeAbi: abi,
+  abis: abis,
+  aarUrl: 'https://example/a.aar',
+  ascUrl: 'https://example/a.aar.asc',
+  sha256: 'deadbeef',
+);
 
 void main() {
   group('LibraryRelease.compatibleWith', () {
@@ -32,18 +34,25 @@ void main() {
 
     test('device abi absent from release abis is incompatible', () {
       expect(
-        _rel(abi: 1, abis: const ['x86_64'])
-            .compatibleWith(expectedAbi: 1, deviceAbi: 'arm64-v8a'),
+        _rel(
+          abi: 1,
+          abis: const ['x86_64'],
+        ).compatibleWith(expectedAbi: 1, deviceAbi: 'arm64-v8a'),
         isFalse,
       );
     });
 
-    test('null expectedAbi (e.g. byedpi absent in classic) is incompatible', () {
-      expect(
-        _rel(abi: 1).compatibleWith(expectedAbi: null, deviceAbi: 'arm64-v8a'),
-        isFalse,
-      );
-    });
+    test(
+      'null expectedAbi (e.g. byedpi absent in classic) is incompatible',
+      () {
+        expect(
+          _rel(
+            abi: 1,
+          ).compatibleWith(expectedAbi: null, deviceAbi: 'arm64-v8a'),
+          isFalse,
+        );
+      },
+    );
   });
 
   group('InstalledLibrary.fromMap', () {

@@ -19,10 +19,7 @@ class LibraryVersionView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Single source of truth for byedpi presence: the build flavor flag, never
     // native reflection. A non-byedpi build shows zero byedpi here, period.
-    final labels = [
-      kLibMihomo,
-      if (kByeDpiEnabled) kLibByedpi,
-    ];
+    final labels = [kLibMihomo, if (kByeDpiEnabled) kLibByedpi];
     return BaseScaffold(
       title: Intl.message('Library version', name: 'libraryVersion'),
       actions: [
@@ -38,9 +35,7 @@ class LibraryVersionView extends ConsumerWidget {
       ],
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),
-        children: [
-          for (final label in labels) _CoreSection(label: label),
-        ],
+        children: [for (final label in labels) _CoreSection(label: label)],
       ),
     );
   }
@@ -65,7 +60,9 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
       await action();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$e')));
       }
     } finally {
       if (mounted) setState(() => _busy.remove(key));
@@ -90,7 +87,8 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
     final label = widget.label;
     final expected = ref.watch(libraryExpectedAbiProvider).value ?? const {};
     final deviceAbi = ref.watch(libraryDeviceAbiProvider).value ?? '';
-    final active = (ref.watch(activeLibraryDirsProvider).value ?? const {})[label];
+    final active =
+        (ref.watch(activeLibraryDirsProvider).value ?? const {})[label];
     final installed = (ref.watch(installedLibrariesProvider).value ?? const [])
         .where((e) => e.label == label)
         .toList();
@@ -153,7 +151,9 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
           ),
           error: (e, _) => ListTile(
             leading: const Icon(Icons.error_outline),
-            title: Text(Intl.message('Failed to load releases', name: 'libLoadError')),
+            title: Text(
+              Intl.message('Failed to load releases', name: 'libLoadError'),
+            ),
             subtitle: Text('$e'),
           ),
           data: (releases) => Column(
@@ -203,7 +203,8 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
           tooltip: Intl.message('Delete', name: 'libDelete'),
           onPressed: _busy.isNotEmpty
               ? null
-              : () => _guard('del-${lib.version}', () => controller.delete(lib)),
+              : () =>
+                    _guard('del-${lib.version}', () => controller.delete(lib)),
         ),
       ],
     );

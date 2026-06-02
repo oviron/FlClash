@@ -51,7 +51,10 @@ class LibraryController extends Notifier<void> {
     ref.invalidate(installedLibrariesProvider);
   }
 
-  Future<void> switchTo(InstalledLibrary lib, {required bool wasRunning}) async {
+  Future<void> switchTo(
+    InstalledLibrary lib, {
+    required bool wasRunning,
+  }) async {
     await applyLibrarySelection(
       label: lib.label,
       dir: lib.dir,
@@ -63,7 +66,11 @@ class LibraryController extends Notifier<void> {
   }
 
   Future<void> resetToBundled(String label, {required bool wasRunning}) async {
-    await applyLibrarySelection(label: label, dir: null, wasRunning: wasRunning);
+    await applyLibrarySelection(
+      label: label,
+      dir: null,
+      wasRunning: wasRunning,
+    );
     ref.invalidate(activeLibraryDirsProvider);
   }
 

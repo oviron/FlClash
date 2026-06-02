@@ -1,10 +1,9 @@
 const kLibMihomo = 'mihomo';
 const kLibByedpi = 'byedpi';
 
-const kLibLabels = [kLibMihomo, kLibByedpi];
-
-String repoFor(String label) =>
-    label == kLibMihomo ? 'oviron/libmihomo-android' : 'oviron/libbyedpi-android';
+String repoFor(String label) => label == kLibMihomo
+    ? 'oviron/libmihomo-android'
+    : 'oviron/libbyedpi-android';
 
 // A wrapper release as advertised by its metadata.json GitHub release asset.
 class LibraryRelease {
@@ -31,7 +30,9 @@ class LibraryRelease {
   });
 
   bool compatibleWith({required int? expectedAbi, required String deviceAbi}) =>
-      expectedAbi != null && bridgeAbi == expectedAbi && abis.contains(deviceAbi);
+      expectedAbi != null &&
+      bridgeAbi == expectedAbi &&
+      abis.contains(deviceAbi);
 }
 
 class InstalledLibrary {
