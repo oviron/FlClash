@@ -185,7 +185,9 @@ abstract class Tun with _$Tun {
     // -> true). Default true here keeps exported YAML and UI state coherent.
     @JsonKey(name: 'auto-route') @Default(true) bool autoRoute,
     @Default(TunStack.mixed) TunStack stack,
-    @JsonKey(name: 'dns-hijack') @Default(['any:53']) List<String> dnsHijack,
+    @JsonKey(name: 'dns-hijack')
+    @Default(['any:53', 'tcp://any:53'])
+    List<String> dnsHijack,
     @JsonKey(name: 'route-address') @Default([]) List<String> routeAddress,
   }) = _Tun;
 
@@ -225,9 +227,8 @@ abstract class Dns with _$Dns {
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    // Bootstrap layer — resolves DoH/DoT hostnames before the proxy is up.
-    // Must be plain IPs (no scheme): DoT/DoH here is either redundant (same
-    // bare IP) or fails cert validation on IP SAN.
+    // Bootstrap layer — resolves any DoH/DoT hostnames in nameserver. Must be
+    // plain IPs (no scheme): a scheme here would need its own bootstrap (loop).
     @Default(['1.1.1.1', '8.8.8.8', '9.9.9.9'])
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
@@ -256,12 +257,19 @@ abstract class Dns with _$Dns {
     @Default({})
     @JsonKey(name: 'nameserver-policy')
     Map<String, String> nameserverPolicy,
-    @Default([
-      'https://dns.google/dns-query',
-      'https://cloudflare-dns.com/dns-query',
-    ])
+    // IP-literal DoH to censorship-surviving resolvers (Quad9 + AdGuard).
+    // Hostname DoH (dns.google/cloudflare-dns.com) needs poisonable :53
+    // bootstrap and leaks a cleartext SNI that RU/CN DPI resets; both blocked.
+    @Default(['https://9.9.9.9/dns-query', 'https://94.140.14.14/dns-query'])
     List<String> nameserver,
-    @Default(['tls://8.8.8.8:853', 'tls://1.1.1.1:853'])
+    // Resolves the proxy node's own domain. system:// (OS resolver on a
+    // bypass-TUN socket) survives DoT :853 blocking; IP-DoH is the backstop.
+    // DoT-only here strands the whole tunnel where :853 is dropped (RU).
+    @Default([
+      'system://',
+      'https://9.9.9.9/dns-query',
+      'https://1.1.1.1/dns-query',
+    ])
     @JsonKey(name: 'proxy-server-nameserver')
     List<String> proxyServerNameserver,
   }) = _Dns;

@@ -138,7 +138,7 @@ _Tun _$TunFromJson(Map<String, dynamic> json) => _Tun(
       (json['dns-hijack'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['any:53'],
+      const ['any:53', 'tcp://any:53'],
   routeAddress:
       (json['route-address'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -202,15 +202,16 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
       (json['nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const [
-        'https://dns.google/dns-query',
-        'https://cloudflare-dns.com/dns-query',
-      ],
+      const ['https://9.9.9.9/dns-query', 'https://94.140.14.14/dns-query'],
   proxyServerNameserver:
       (json['proxy-server-nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['tls://8.8.8.8:853', 'tls://1.1.1.1:853'],
+      const [
+        'system://',
+        'https://9.9.9.9/dns-query',
+        'https://1.1.1.1/dns-query',
+      ],
 );
 
 Map<String, dynamic> _$DnsToJson(_Dns instance) => <String, dynamic>{

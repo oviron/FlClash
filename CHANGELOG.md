@@ -1,3 +1,11 @@
+## v0.15.2
+
+- DNS robustness for censored networks, made the default instead of an opt-in. The `system://` fallback for `proxy-server-nameserver` (added in v0.15.1) is now injected unconditionally, not only when "Append system DNS" is enabled — the failure it prevents (a domain-named proxy server that can never resolve once the configured DoT/DoH is blocked, stranding the whole tunnel in an endless resolve-retry) is total, so it should never sit behind a toggle that defaults off
+
+- Hardened the built-in DNS defaults against state DPI. `nameserver` now defaults to IP-literal DoH on censorship-surviving resolvers (Quad9 `9.9.9.9`, AdGuard `94.140.14.14`) instead of hostname DoH on Google/Cloudflare: a hostname endpoint needs a poisonable plain-`:53` bootstrap and leaks a cleartext SNI (`dns.google`/`cloudflare-dns.com`) that RU/CN middleboxes reset, and both providers are also IP-blocked in RU. `proxy-server-nameserver` defaults to `[system://, IP-literal DoH]` instead of DoT-only `:853`, a port dropped wholesale on many censored networks. These defaults apply only to imported configs that omit a `dns:` block; profiles that ship their own DNS are untouched
+
+- `dns-hijack` now also captures TCP/53 (`tcp://any:53`), not only UDP, so a DNS query that falls back to TCP (e.g. after UDP `:53` is dropped) is still intercepted instead of leaking past the tunnel
+
 ## v0.15.1
 
 - DNS: "Append system DNS" now also appends the system resolver (`system://`) to `proxy-server-nameserver`, not just `nameserver`. A proxy whose server is a domain (rather than a raw IP) could otherwise never be resolved when the user's configured DoT/DoH was blocked by the network (e.g. RU networks dropping :853), silently stranding the entire tunnel in an endless resolve-retry loop; the system resolver still answers for the proxy host, so the tunnel connects

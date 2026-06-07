@@ -1407,7 +1407,7 @@ return $default(_that.enable,_that.device,_that.autoRoute,_that.stack,_that.dnsH
 @JsonSerializable()
 
 class _Tun implements Tun {
-  const _Tun({this.enable = false, this.device = appName, @JsonKey(name: 'auto-route') this.autoRoute = true, this.stack = TunStack.mixed, @JsonKey(name: 'dns-hijack') final  List<String> dnsHijack = const ['any:53'], @JsonKey(name: 'route-address') final  List<String> routeAddress = const []}): _dnsHijack = dnsHijack,_routeAddress = routeAddress;
+  const _Tun({this.enable = false, this.device = appName, @JsonKey(name: 'auto-route') this.autoRoute = true, this.stack = TunStack.mixed, @JsonKey(name: 'dns-hijack') final  List<String> dnsHijack = const ['any:53', 'tcp://any:53'], @JsonKey(name: 'route-address') final  List<String> routeAddress = const []}): _dnsHijack = dnsHijack,_routeAddress = routeAddress;
   factory _Tun.fromJson(Map<String, dynamic> json) => _$TunFromJson(json);
 
 @override@JsonKey() final  bool enable;
@@ -1500,13 +1500,18 @@ as List<String>,
 /// @nodoc
 mixin _$Dns {
 
- bool get enable; String get listen;@JsonKey(name: 'prefer-h3') bool get preferH3;@JsonKey(name: 'use-hosts') bool get useHosts;@JsonKey(name: 'use-system-hosts') bool get useSystemHosts;@JsonKey(name: 'respect-rules') bool get respectRules; bool get ipv6;// Bootstrap layer — resolves DoH/DoT hostnames before the proxy is up.
-// Must be plain IPs (no scheme): DoT/DoH here is either redundant (same
-// bare IP) or fails cert validation on IP SAN.
+ bool get enable; String get listen;@JsonKey(name: 'prefer-h3') bool get preferH3;@JsonKey(name: 'use-hosts') bool get useHosts;@JsonKey(name: 'use-system-hosts') bool get useSystemHosts;@JsonKey(name: 'respect-rules') bool get respectRules; bool get ipv6;// Bootstrap layer — resolves any DoH/DoT hostnames in nameserver. Must be
+// plain IPs (no scheme): a scheme here would need its own bootstrap (loop).
 @JsonKey(name: 'default-nameserver') List<String> get defaultNameserver;@JsonKey(name: 'enhanced-mode') DnsMode get enhancedMode;@JsonKey(name: 'fake-ip-range') String get fakeIpRange;// Hosts that must resolve to real IPs (not fake-IP) — Android
 // captive-portal probes, Google Update CDN, NTP. Without these the
 // OS marks the network as "no internet" within ~3s.
-@JsonKey(name: 'fake-ip-filter') List<String> get fakeIpFilter;@JsonKey(name: 'nameserver-policy') Map<String, String> get nameserverPolicy; List<String> get nameserver;@JsonKey(name: 'proxy-server-nameserver') List<String> get proxyServerNameserver;
+@JsonKey(name: 'fake-ip-filter') List<String> get fakeIpFilter;@JsonKey(name: 'nameserver-policy') Map<String, String> get nameserverPolicy;// IP-literal DoH to censorship-surviving resolvers (Quad9 + AdGuard).
+// Hostname DoH (dns.google/cloudflare-dns.com) needs poisonable :53
+// bootstrap and leaks a cleartext SNI that RU/CN DPI resets; both blocked.
+ List<String> get nameserver;// Resolves the proxy node's own domain. system:// (OS resolver on a
+// bypass-TUN socket) survives DoT :853 blocking; IP-DoH is the backstop.
+// DoT-only here strands the whole tunnel where :853 is dropped (RU).
+@JsonKey(name: 'proxy-server-nameserver') List<String> get proxyServerNameserver;
 /// Create a copy of Dns
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1713,7 +1718,7 @@ return $default(_that.enable,_that.listen,_that.preferH3,_that.useHosts,_that.us
 @JsonSerializable()
 
 class _Dns implements Dns {
-  const _Dns({this.enable = true, this.listen = '0.0.0.0:1053', @JsonKey(name: 'prefer-h3') this.preferH3 = false, @JsonKey(name: 'use-hosts') this.useHosts = true, @JsonKey(name: 'use-system-hosts') this.useSystemHosts = true, @JsonKey(name: 'respect-rules') this.respectRules = true, this.ipv6 = false, @JsonKey(name: 'default-nameserver') final  List<String> defaultNameserver = const ['1.1.1.1', '8.8.8.8', '9.9.9.9'], @JsonKey(name: 'enhanced-mode') this.enhancedMode = DnsMode.fakeIp, @JsonKey(name: 'fake-ip-range') this.fakeIpRange = '198.18.0.1/16', @JsonKey(name: 'fake-ip-filter') final  List<String> fakeIpFilter = const ['*.lan', '*.local', '*.arpa', 'connectivitycheck.gstatic.com', 'connectivitycheck.android.com', 'www.google.com', '+.gvt1.com', '+.gvt2.com', 'time.android.com'], @JsonKey(name: 'nameserver-policy') final  Map<String, String> nameserverPolicy = const {}, final  List<String> nameserver = const ['https://dns.google/dns-query', 'https://cloudflare-dns.com/dns-query'], @JsonKey(name: 'proxy-server-nameserver') final  List<String> proxyServerNameserver = const ['tls://8.8.8.8:853', 'tls://1.1.1.1:853']}): _defaultNameserver = defaultNameserver,_fakeIpFilter = fakeIpFilter,_nameserverPolicy = nameserverPolicy,_nameserver = nameserver,_proxyServerNameserver = proxyServerNameserver;
+  const _Dns({this.enable = true, this.listen = '0.0.0.0:1053', @JsonKey(name: 'prefer-h3') this.preferH3 = false, @JsonKey(name: 'use-hosts') this.useHosts = true, @JsonKey(name: 'use-system-hosts') this.useSystemHosts = true, @JsonKey(name: 'respect-rules') this.respectRules = true, this.ipv6 = false, @JsonKey(name: 'default-nameserver') final  List<String> defaultNameserver = const ['1.1.1.1', '8.8.8.8', '9.9.9.9'], @JsonKey(name: 'enhanced-mode') this.enhancedMode = DnsMode.fakeIp, @JsonKey(name: 'fake-ip-range') this.fakeIpRange = '198.18.0.1/16', @JsonKey(name: 'fake-ip-filter') final  List<String> fakeIpFilter = const ['*.lan', '*.local', '*.arpa', 'connectivitycheck.gstatic.com', 'connectivitycheck.android.com', 'www.google.com', '+.gvt1.com', '+.gvt2.com', 'time.android.com'], @JsonKey(name: 'nameserver-policy') final  Map<String, String> nameserverPolicy = const {}, final  List<String> nameserver = const ['https://9.9.9.9/dns-query', 'https://94.140.14.14/dns-query'], @JsonKey(name: 'proxy-server-nameserver') final  List<String> proxyServerNameserver = const ['system://', 'https://9.9.9.9/dns-query', 'https://1.1.1.1/dns-query']}): _defaultNameserver = defaultNameserver,_fakeIpFilter = fakeIpFilter,_nameserverPolicy = nameserverPolicy,_nameserver = nameserver,_proxyServerNameserver = proxyServerNameserver;
   factory _Dns.fromJson(Map<String, dynamic> json) => _$DnsFromJson(json);
 
 @override@JsonKey() final  bool enable;
@@ -1723,13 +1728,11 @@ class _Dns implements Dns {
 @override@JsonKey(name: 'use-system-hosts') final  bool useSystemHosts;
 @override@JsonKey(name: 'respect-rules') final  bool respectRules;
 @override@JsonKey() final  bool ipv6;
-// Bootstrap layer — resolves DoH/DoT hostnames before the proxy is up.
-// Must be plain IPs (no scheme): DoT/DoH here is either redundant (same
-// bare IP) or fails cert validation on IP SAN.
+// Bootstrap layer — resolves any DoH/DoT hostnames in nameserver. Must be
+// plain IPs (no scheme): a scheme here would need its own bootstrap (loop).
  final  List<String> _defaultNameserver;
-// Bootstrap layer — resolves DoH/DoT hostnames before the proxy is up.
-// Must be plain IPs (no scheme): DoT/DoH here is either redundant (same
-// bare IP) or fails cert validation on IP SAN.
+// Bootstrap layer — resolves any DoH/DoT hostnames in nameserver. Must be
+// plain IPs (no scheme): a scheme here would need its own bootstrap (loop).
 @override@JsonKey(name: 'default-nameserver') List<String> get defaultNameserver {
   if (_defaultNameserver is EqualUnmodifiableListView) return _defaultNameserver;
   // ignore: implicit_dynamic_type
@@ -1758,14 +1761,26 @@ class _Dns implements Dns {
   return EqualUnmodifiableMapView(_nameserverPolicy);
 }
 
+// IP-literal DoH to censorship-surviving resolvers (Quad9 + AdGuard).
+// Hostname DoH (dns.google/cloudflare-dns.com) needs poisonable :53
+// bootstrap and leaks a cleartext SNI that RU/CN DPI resets; both blocked.
  final  List<String> _nameserver;
+// IP-literal DoH to censorship-surviving resolvers (Quad9 + AdGuard).
+// Hostname DoH (dns.google/cloudflare-dns.com) needs poisonable :53
+// bootstrap and leaks a cleartext SNI that RU/CN DPI resets; both blocked.
 @override@JsonKey() List<String> get nameserver {
   if (_nameserver is EqualUnmodifiableListView) return _nameserver;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_nameserver);
 }
 
+// Resolves the proxy node's own domain. system:// (OS resolver on a
+// bypass-TUN socket) survives DoT :853 blocking; IP-DoH is the backstop.
+// DoT-only here strands the whole tunnel where :853 is dropped (RU).
  final  List<String> _proxyServerNameserver;
+// Resolves the proxy node's own domain. system:// (OS resolver on a
+// bypass-TUN socket) survives DoT :853 blocking; IP-DoH is the backstop.
+// DoT-only here strands the whole tunnel where :853 is dropped (RU).
 @override@JsonKey(name: 'proxy-server-nameserver') List<String> get proxyServerNameserver {
   if (_proxyServerNameserver is EqualUnmodifiableListView) return _proxyServerNameserver;
   // ignore: implicit_dynamic_type

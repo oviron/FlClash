@@ -203,25 +203,24 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
           entry.value.splitByMultipleSeparators;
     }
   }
+  // proxy-server-nameserver resolves the proxy node's own domain. Without a
+  // system:// fallback it strands the whole tunnel when the configured DoT/DoH
+  // is blocked (RU drops :853) — unconditional because that failure is total.
+  final List<String> proxyServerNameserver = List<String>.from(
+    rawConfig['dns']['proxy-server-nameserver'] ?? [],
+  );
+  if (!proxyServerNameserver.contains(systemDns)) {
+    rawConfig['dns']['proxy-server-nameserver'] = [
+      systemDns,
+      ...proxyServerNameserver,
+    ];
+  }
   if (appendSystemDns) {
     final List<String> nameserver = List<String>.from(
       rawConfig['dns']['nameserver'] ?? [],
     );
     if (!nameserver.contains(systemDns)) {
       rawConfig['dns']['nameserver'] = [...nameserver, systemDns];
-    }
-    // proxy-server-nameserver resolves proxy-server domains; without a system
-    // fallback it strands the whole tunnel when the configured DoT/DoH is
-    // blocked (e.g. RU networks dropping :853). Mirror the nameserver append.
-    final List<String> proxyServerNameserver = List<String>.from(
-      rawConfig['dns']['proxy-server-nameserver'] ?? [],
-    );
-    if (proxyServerNameserver.isNotEmpty &&
-        !proxyServerNameserver.contains(systemDns)) {
-      rawConfig['dns']['proxy-server-nameserver'] = [
-        ...proxyServerNameserver,
-        systemDns,
-      ];
     }
   }
   List<String> rules = [];
