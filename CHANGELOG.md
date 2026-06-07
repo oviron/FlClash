@@ -1,3 +1,7 @@
+## v0.15.1
+
+- DNS: "Append system DNS" now also appends the system resolver (`system://`) to `proxy-server-nameserver`, not just `nameserver`. A proxy whose server is a domain (rather than a raw IP) could otherwise never be resolved when the user's configured DoT/DoH was blocked by the network (e.g. RU networks dropping :853), silently stranding the entire tunnel in an endless resolve-retry loop; the system resolver still answers for the proxy host, so the tunnel connects
+
 ## v0.15.0
 
 - Network rules (auto VPN on/off by network) rewritten into a self-contained module. The observer and decision engine now run in a resident foreground service in the default process, so a network change (e.g. Wi-Fi to cellular with the screen off and the UI killed) is still acted on. Previously the logic lived in the UI process and silently stopped working once Android reclaimed it
