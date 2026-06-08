@@ -1,3 +1,7 @@
+## v0.15.3
+
+- Fixed a dead tunnel on devices that are missing an app listed in a profile's per-app allow/deny list. The list (from a profile's `tun.include-package` / `exclude-package`, or the GUI access control) was applied by calling `VpnService.Builder.addAllowedApplication` / `addDisallowedApplication` for each package, and Android throws `NameNotFoundException` for a package that is not installed. That unhandled exception aborted the entire tunnel build before `establish()`, so the VPN switched on but carried no traffic at all: an empty speed graph and nothing loading. It hit shared profiles hardest, since one profile listing apps that exist on one phone but not another (a ReVanced/microG build, Google Meet, or Chrome on a vendor ROM that ships its own browser) bricked the tunnel on whichever phone lacked any single one of them. Each package is now added independently; a missing one is skipped and logged ("VPN allow-list: skipping not-installed app <pkg>") instead of taking the tunnel down with it
+
 ## v0.15.2
 
 - DNS robustness for censored networks, made the default instead of an opt-in. The `system://` fallback for `proxy-server-nameserver` (added in v0.15.1) is now injected unconditionally, not only when "Append system DNS" is enabled — the failure it prevents (a domain-named proxy server that can never resolve once the configured DoT/DoH is blocked, stranding the whole tunnel in an endless resolve-retry) is total, so it should never sit behind a toggle that defaults off

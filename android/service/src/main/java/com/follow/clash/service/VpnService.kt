@@ -2,6 +2,7 @@ package com.follow.clash.service
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.ProxyInfo
 import android.net.wifi.WifiManager
@@ -260,7 +261,16 @@ class VpnService : SystemVpnService(), IBaseService,
                                 accessControl.acceptList - packageName
                             else
                                 accessControl.acceptList + packageName
-                            list.forEach { addAllowedApplication(it) }
+                            // A profile shared across devices may list apps absent
+                            // on this one; an unhandled NameNotFoundException here
+                            // aborts the whole builder before establish() -> dead tunnel.
+                            list.forEach { pkg ->
+                                try {
+                                    addAllowedApplication(pkg)
+                                } catch (_: PackageManager.NameNotFoundException) {
+                                    GlobalState.log("VPN allow-list: skipping not-installed app $pkg")
+                                }
+                            }
                         }
 
                         AccessControlMode.REJECT_SELECTED -> {
@@ -268,7 +278,13 @@ class VpnService : SystemVpnService(), IBaseService,
                                 accessControl.rejectList + packageName
                             else
                                 accessControl.rejectList - packageName
-                            list.forEach { addDisallowedApplication(it) }
+                            list.forEach { pkg ->
+                                try {
+                                    addDisallowedApplication(pkg)
+                                } catch (_: PackageManager.NameNotFoundException) {
+                                    GlobalState.log("VPN deny-list: skipping not-installed app $pkg")
+                                }
+                            }
                         }
                     }
                 } else if (byeDpiActive) {
