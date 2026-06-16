@@ -23,6 +23,7 @@ part 'controllers/profiles_controller.dart';
 part 'controllers/logs_controller.dart';
 part 'controllers/proxies_controller.dart';
 part 'controllers/setup_controller.dart';
+part 'controllers/network_rules_cache_controller.dart';
 part 'controllers/core_controller.dart';
 part 'controllers/system_controller.dart';
 part 'controllers/backup_controller.dart';

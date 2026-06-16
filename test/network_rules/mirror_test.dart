@@ -51,6 +51,53 @@ void main() {
       }
     });
 
+    test('inlines profile-switch action with selectedMap and name', () {
+      final json = encodeNetworkRulesMirror(
+        enabled: true,
+        defaultAction: DefaultNetworkAction.leaveAsIs,
+        rules: const [
+          NetworkRule(
+            id: 3,
+            conditions: [AnyCellular()],
+            action: NetworkAction(vpn: NetworkVpnMode.turnOn, profileId: 7),
+            priority: 0,
+          ),
+        ],
+        selectedMaps: const {
+          7: {'GLOBAL': 'us'},
+        },
+        profileNames: const {7: 'Work'},
+        activeProfileId: 2,
+      );
+      final decoded = jsonDecode(json) as Map<String, dynamic>;
+      expect(decoded['activeProfileId'], 2);
+      final rule = (decoded['rules'] as List).first as Map<String, dynamic>;
+      expect(rule['actionVpn'], 'turnOn');
+      expect(rule['action'], 'turnOn'); // legacy on/off mirror
+      expect(rule['actionProfileId'], 7);
+      expect(rule['actionSelectedMap'], {'GLOBAL': 'us'});
+      expect(rule['actionProfileName'], 'Work');
+    });
+
+    test('omits profile fields for a plain on/off action', () {
+      final json = encodeNetworkRulesMirror(
+        enabled: true,
+        defaultAction: DefaultNetworkAction.leaveAsIs,
+        rules: const [
+          NetworkRule(
+            conditions: [AnyCellular()],
+            action: NetworkAction.turnOff,
+            priority: 0,
+          ),
+        ],
+      );
+      final rule = ((jsonDecode(json) as Map)['rules'] as List).first as Map;
+      expect(rule['actionVpn'], 'turnOff');
+      expect(rule.containsKey('actionProfileId'), false);
+      expect(rule.containsKey('actionSelectedMap'), false);
+      expect((jsonDecode(json) as Map).containsKey('activeProfileId'), false);
+    });
+
     test('serializes ethernet and cellular conditions', () {
       final json = encodeNetworkRulesMirror(
         enabled: true,

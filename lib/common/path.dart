@@ -94,6 +94,16 @@ class AppPath {
     return join(mHomeDirPath, 'shared.json');
   }
 
+  Future<String> get networkRulesCacheDirPath async {
+    final mHomeDirPath = await homeDirPath;
+    return join(mHomeDirPath, 'network-rules-cache');
+  }
+
+  Future<String> networkRulesCachePath(int profileId) async {
+    final dir = await networkRulesCacheDirPath;
+    return join(dir, '$profileId.yaml');
+  }
+
   Future<String> get sharedPreferencesPath async {
     final directory = await dataDir.future;
     return join(directory.path, 'shared_preferences.json');

@@ -6,6 +6,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/network_rules/mirror.dart';
 import 'package:fl_clash/network_rules/plugin.dart';
 import 'package:fl_clash/providers/network_rules.dart';
@@ -62,10 +63,21 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
   Future<void> _writeMirror() async {
     final settings = ref.read(networkRulesSettingsProvider);
     final rules = ref.read(networkRulesStreamProvider).value ?? const [];
+    // Bake the cache (writes <id>.yaml files) BEFORE publishing the mirror that
+    // references them, so the resident never reads a rule whose config is absent.
+    final profileIds = <int>{
+      for (final r in rules)
+        if (r.enabled && r.action.profileId != null) r.action.profileId!,
+    };
+    final entries = await appController.rebuildNetworkRulesCache(profileIds);
     final json = encodeNetworkRulesMirror(
       enabled: settings.enabled,
       defaultAction: settings.defaultAction,
       rules: rules,
+      selectedMaps: {
+        for (final e in entries.entries) e.key: e.value.selectedMap,
+      },
+      profileNames: {for (final e in entries.entries) e.key: e.value.name},
     );
     await writeNetworkRulesMirror(await appPath.homeDirPath, json);
   }
