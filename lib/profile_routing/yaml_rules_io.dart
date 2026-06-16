@@ -5,10 +5,9 @@ import 'package:yaml_edit/yaml_edit.dart';
 
 import 'rule_codec.dart';
 
-/// Reads and rewrites the `rules:` block of a raw mihomo config, preserving
-/// every other part of the document (keys, ordering, comments) through
-/// `yaml_edit`. Comments *inside* the rules block are best-effort: the block
-/// is rewritten as a whole, so only comments on other keys are guaranteed.
+/// Reads/rewrites the `rules:` block of a raw mihomo config via `yaml_edit`,
+/// preserving other keys, ordering, and comments. Comments *inside* the rules
+/// block are best-effort (the block is rewritten whole).
 class ProfileRulesDocument {
   final String raw;
 

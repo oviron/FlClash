@@ -1,7 +1,6 @@
-// Bridges Dart rule state to the resident Kotlin service: writes the rules
-// mirror on every change, starts/stops the service with the master toggle, and
-// feeds the service's pushed status back into providers for the editor. Replaces
-// the old in-UI RuleEngineRunner, which died whenever the UI was backgrounded.
+// Bridges Dart rule state to the resident Kotlin service: writes the mirror on
+// every change, toggles the service with the master switch, and feeds pushed
+// status back into providers for the editor.
 
 import 'dart:async';
 

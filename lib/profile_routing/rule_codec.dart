@@ -2,10 +2,9 @@ library;
 
 import 'package:fl_clash/enum/enum.dart';
 
-/// A single mihomo `rules:` entry. Either parsed into typed fields, or kept
-/// verbatim as [PassthroughRule] when the grammar is beyond the typed model
-/// (logical AND/OR/NOT, SUB-RULE, nested parens, or an unexpected field count).
-/// Round-trips byte-for-byte for the canonical comma-joined form FlClash emits.
+/// A single mihomo `rules:` entry: [TypedRule] when it parses into typed
+/// fields, else [PassthroughRule] (logical/nested/odd grammar kept verbatim).
+/// Round-trips byte-for-byte for the canonical comma-joined form.
 sealed class RoutingRule {
   const RoutingRule();
 

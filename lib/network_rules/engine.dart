@@ -10,10 +10,9 @@ export 'model.dart';
 /// Final outcome the actuator applies: start the VPN, stop it, or do nothing.
 enum NetworkDecision { start, stop, leaveAsIs }
 
-// Empty conditions => no match (not "match everything"), so a half-edited
-// rule cannot hijack the engine. Order is most-specific-first (see
-// [compareNetworkRules]): a named-Wi-Fi rule beats an any-wifi rule even when
-// the latter has a lower user priority.
+// Empty conditions => no match (not "match everything"), so a half-edited rule
+// cannot hijack the engine. Order is most-specific-first ([compareNetworkRules]):
+// a named-Wi-Fi rule beats any-wifi even at lower user priority.
 NetworkAction? evaluate({
   required List<NetworkRule> rules,
   required NetworkSnapshot snapshot,
@@ -37,10 +36,9 @@ NetworkAction? evaluate({
   return null;
 }
 
-/// Resolve the snapshot to a final decision: a matching rule wins; otherwise
+/// Resolve the snapshot to a final decision: a matching rule wins, else
 /// [defaultAction] is the baseline (leaveAsIs => do nothing, the sticky-safe
-/// default). This is the whole engine contract minus the manual-override
-/// window, which is layered on by the stateful runtime.
+/// default). Manual-override is layered on by the stateful runtime.
 NetworkDecision resolveNetworkDecision({
   required List<NetworkRule> rules,
   required NetworkSnapshot snapshot,

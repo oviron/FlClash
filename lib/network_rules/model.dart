@@ -75,9 +75,8 @@ class NetworkSnapshot {
 }
 
 /// Everything a condition may match against: the network snapshot plus the
-/// active profile id (for profile-gate conditions). Network conditions read
-/// only [snapshot]; the profile axis is kept out of [NetworkSnapshot] on
-/// purpose (it is app state, not network state).
+/// active profile id (for profile-gate conditions). The profile axis is kept
+/// out of [NetworkSnapshot] on purpose — it is app state, not network state.
 class NetworkMatchContext {
   final NetworkSnapshot snapshot;
   final int? activeProfileId;
@@ -280,10 +279,9 @@ class AnyEthernet extends NetworkCondition {
   String toString() => 'AnyEthernet()';
 }
 
-/// Matches when the given profile is the active one. Used as an optional gate
-/// on a rule (AND'd with a network condition). Evaluated against the snapshot's
-/// active profile, so it only re-checks when the engine re-evaluates (i.e. on a
-/// network change), not the instant the profile changes.
+/// Matches when the given profile is active. An optional gate AND'd with a
+/// network condition; evaluated against the snapshot's active profile, so it
+/// re-checks only on engine re-evaluation (network change), not on profile switch.
 class ProfileIs extends NetworkCondition {
   final int profileId;
 

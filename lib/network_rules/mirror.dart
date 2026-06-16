@@ -1,7 +1,6 @@
-// The rules mirror: Dart writes the full rule set + settings to a JSON file in
-// the clash home dir (== Android filesDir) atomically on every change; the
-// resident Kotlin service reads it as the single source of truth in the
-// background. Schema mirrored by NetworkRulesCodec.kt.
+// The rules mirror: Dart atomically writes the full rule set + settings to a
+// JSON file in the clash home dir (Android filesDir) on every change; the
+// resident reads it as its source of truth. Schema mirrored by NetworkRulesCodec.kt.
 
 import 'dart:convert';
 import 'dart:io';

@@ -1,7 +1,6 @@
-// Dart side of the network-rules bridge. The resident Kotlin service owns the
-// decision; this just toggles it on/off, pushes rule changes, and surfaces the
-// service's latest status for the editor. Channel name mirrors
-// NetworkRulesPlugin.kt; method names live in lib/plugins/method_names.dart.
+// Dart side of the network-rules bridge: the resident Kotlin service owns the
+// decision; this toggles it, pushes rule changes, and surfaces its status.
+// Channel mirrors NetworkRulesPlugin.kt; methods in lib/plugins/method_names.dart.
 
 import 'package:fl_clash/network_rules/engine.dart';
 import 'package:fl_clash/plugins/method_names.dart';
