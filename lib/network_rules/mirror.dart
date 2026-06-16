@@ -12,23 +12,38 @@ import 'package:path/path.dart';
 import 'model.dart';
 
 const networkRulesMirrorFileName = 'network-rules.json';
-const networkRulesMirrorVersion = 1;
+const networkRulesMirrorVersion = 2;
 
 String encodeNetworkRulesMirror({
   required bool enabled,
   required DefaultNetworkAction defaultAction,
   required List<NetworkRule> rules,
+  Map<int, Map<String, String>> selectedMaps = const {},
+  Map<int, String> profileNames = const {},
+  int? activeProfileId,
 }) {
   return jsonEncode({
     'version': networkRulesMirrorVersion,
     'enabled': enabled,
     'defaultAction': defaultAction.name,
+    if (activeProfileId != null) 'activeProfileId': activeProfileId,
     'rules': [
       for (final r in rules)
         {
           'id': r.id,
           'name': r.name,
-          'action': r.action.name,
+          // Legacy on/off field for a downgraded resident (kept one release).
+          'action': r.action.vpn == NetworkVpnMode.turnOff
+              ? 'turnOff'
+              : 'turnOn',
+          'actionVpn': r.action.vpn.name,
+          if (r.action.profileId != null) 'actionProfileId': r.action.profileId,
+          if (r.action.profileId != null &&
+              selectedMaps[r.action.profileId] != null)
+            'actionSelectedMap': selectedMaps[r.action.profileId],
+          if (r.action.profileId != null &&
+              profileNames[r.action.profileId] != null)
+            'actionProfileName': profileNames[r.action.profileId],
           'priority': r.priority,
           'enabled': r.enabled,
           'conditions': [for (final c in r.conditions) c.toJson()],

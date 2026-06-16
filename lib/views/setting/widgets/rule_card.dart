@@ -24,21 +24,25 @@ class RuleCard extends ConsumerWidget {
   });
 
   String _actionLabel(NetworkAction action) {
-    switch (action) {
-      case NetworkAction.turnOn:
+    switch (action.vpn) {
+      case NetworkVpnMode.turnOn:
         return appLocalizations.networkRulesActionShortOn;
-      case NetworkAction.turnOff:
+      case NetworkVpnMode.turnOff:
         return appLocalizations.networkRulesActionShortOff;
+      case NetworkVpnMode.leave:
+        return appLocalizations.networkRulesActionShortLeave;
     }
   }
 
   Color _actionColor(BuildContext context, NetworkAction action) {
     final scheme = Theme.of(context).colorScheme;
-    switch (action) {
-      case NetworkAction.turnOn:
+    switch (action.vpn) {
+      case NetworkVpnMode.turnOn:
         return scheme.primary;
-      case NetworkAction.turnOff:
+      case NetworkVpnMode.turnOff:
         return scheme.error;
+      case NetworkVpnMode.leave:
+        return scheme.onSurfaceVariant;
     }
   }
 

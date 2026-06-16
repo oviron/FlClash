@@ -12,8 +12,11 @@ class NetworkRules extends Table {
   /// JSON-encoded `List<NetworkCondition>`.
   TextColumn get conditions => text()();
 
-  /// Stored as `NetworkAction.index` (0=turnOn, 1=turnOff).
+  /// VPN mode as `NetworkVpnMode.index` (0=turnOn, 1=turnOff, 2=leave).
   IntColumn get action => integer()();
+
+  /// Target profile id for a profile-switch action; null = leave profile as-is.
+  IntColumn get actionProfileId => integer().nullable()();
 
   IntColumn get priority => integer()();
 
@@ -103,9 +106,12 @@ extension RawNetworkRuleExt on RawNetworkRule {
       id: id,
       name: name,
       conditions: NetworkConditionListCodec.decode(conditions),
-      action: action < NetworkAction.values.length
-          ? NetworkAction.values[action]
-          : NetworkAction.turnOn,
+      action: NetworkAction(
+        vpn: action >= 0 && action < NetworkVpnMode.values.length
+            ? NetworkVpnMode.values[action]
+            : NetworkVpnMode.turnOn,
+        profileId: actionProfileId,
+      ),
       priority: priority,
       enabled: enabled,
     );
@@ -118,7 +124,8 @@ extension NetworkRulesCompanionExt on NetworkRule {
       id: id == 0 ? const Value.absent() : Value(id),
       name: Value(name),
       conditions: Value(NetworkConditionListCodec.encode(conditions)),
-      action: Value(action.index),
+      action: Value(action.vpn.index),
+      actionProfileId: Value(action.profileId),
       priority: Value(priority),
       enabled: Value(enabled),
     );

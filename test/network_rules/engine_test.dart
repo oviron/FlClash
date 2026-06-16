@@ -219,4 +219,51 @@ void main() {
       );
     });
   });
+
+  group('NetworkAction profile-switch', () {
+    test('toJson/fromJson round-trip preserves vpn + profileId', () {
+      const action = NetworkAction(vpn: NetworkVpnMode.leave, profileId: 7);
+      expect(NetworkAction.fromJson(action.toJson()), action);
+      expect(action.profileId, isNotNull);
+    });
+
+    test('fromJson defaults to turnOn and null profile on missing fields', () {
+      expect(NetworkAction.fromJson(const {}), NetworkAction.turnOn);
+      expect(NetworkAction.fromJson(const {}).profileId, isNull);
+    });
+
+    test('evaluate returns the matched action carrying its profileId', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [AnyCellular()],
+          action: NetworkAction(vpn: NetworkVpnMode.turnOn, profileId: 42),
+          priority: 0,
+        ),
+      ];
+      final matched = evaluate(
+        rules: rules,
+        snapshot: const NetworkSnapshot.cellular(),
+      );
+      expect(matched?.profileId, 42);
+      expect(matched?.vpn, NetworkVpnMode.turnOn);
+    });
+
+    test('vpn=leave falls through to the default decision', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [AnyCellular()],
+          action: NetworkAction(vpn: NetworkVpnMode.leave, profileId: 1),
+          priority: 0,
+        ),
+      ];
+      expect(
+        resolveNetworkDecision(
+          rules: rules,
+          snapshot: const NetworkSnapshot.cellular(),
+          defaultAction: DefaultNetworkAction.leaveAsIs,
+        ),
+        NetworkDecision.leaveAsIs,
+      );
+    });
+  });
 }

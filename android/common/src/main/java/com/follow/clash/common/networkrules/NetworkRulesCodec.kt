@@ -17,6 +17,7 @@ object NetworkRulesCodec {
                 enabled = root.optBoolean("enabled", false),
                 defaultAction = parseDefaultAction(root.optString("defaultAction")),
                 rules = parseRules(root.getAsJsonArray("rules")),
+                activeProfileId = root.optIntOrNull("activeProfileId"),
             )
         } catch (_: Exception) {
             disabled
@@ -47,9 +48,13 @@ object NetworkRulesCodec {
             null
         },
         conditions = parseConditions(obj.getAsJsonArray("conditions")),
-        action = parseAction(obj.optString("action")),
+        // Prefer the v2 `actionVpn`; fall back to the legacy on/off `action`.
+        action = parseAction(obj.optString("actionVpn") ?: obj.optString("action")),
         priority = obj.optInt("priority", 0),
         enabled = obj.optBoolean("enabled", true),
+        actionProfileId = obj.optIntOrNull("actionProfileId"),
+        actionSelectedMap = parseStringMap(obj.getAsJsonObjectOrNull("actionSelectedMap")),
+        actionProfileName = obj.optString("actionProfileName"),
     )
 
     private fun parseConditions(array: JsonArray?): List<NetworkCondition> {
@@ -71,8 +76,20 @@ object NetworkRulesCodec {
             else -> null
         }
 
-    private fun parseAction(value: String?): NetworkRuleAction =
-        if (value == "turnOff") NetworkRuleAction.TURN_OFF else NetworkRuleAction.TURN_ON
+    private fun parseAction(value: String?): NetworkRuleAction = when (value) {
+        "turnOff" -> NetworkRuleAction.TURN_OFF
+        "leave" -> NetworkRuleAction.LEAVE
+        else -> NetworkRuleAction.TURN_ON
+    }
+
+    private fun parseStringMap(obj: JsonObject?): Map<String, String> {
+        if (obj == null) return emptyMap()
+        val out = LinkedHashMap<String, String>()
+        for ((key, value) in obj.entrySet()) {
+            if (!value.isJsonNull) out[key] = value.asString
+        }
+        return out
+    }
 
     private fun parseDefaultAction(value: String?): DefaultNetworkAction = when (value) {
         "turnOn" -> DefaultNetworkAction.TURN_ON
@@ -88,4 +105,10 @@ object NetworkRulesCodec {
 
     private fun JsonObject.optInt(key: String, fallback: Int): Int =
         if (has(key) && !get(key).isJsonNull) get(key).asInt else fallback
+
+    private fun JsonObject.optIntOrNull(key: String): Int? =
+        if (has(key) && !get(key).isJsonNull) get(key).asInt else null
+
+    private fun JsonObject.getAsJsonObjectOrNull(key: String): JsonObject? =
+        if (has(key) && get(key).isJsonObject) getAsJsonObject(key) else null
 }

@@ -3744,6 +3744,16 @@ class AppLocalizations {
     );
   }
 
+  /// `KEEP`
+  String get networkRulesActionShortLeave {
+    return Intl.message(
+      'KEEP',
+      name: 'networkRulesActionShortLeave',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Wi-Fi named`
   String get networkRulesConditionWifiNamed {
     return Intl.message(

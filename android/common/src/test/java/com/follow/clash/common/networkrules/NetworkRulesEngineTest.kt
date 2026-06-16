@@ -14,7 +14,10 @@ class NetworkRulesEngineTest {
         enabled: Boolean = true,
         id: Int = 0,
         name: String? = null,
-    ) = NetworkRule(id, name, conditions, action, priority, enabled)
+        profileId: Int? = null,
+        selectedMap: Map<String, String> = emptyMap(),
+        profileName: String? = null,
+    ) = NetworkRule(id, name, conditions, action, priority, enabled, profileId, selectedMap, profileName)
 
     @Test
     fun emptyRulesNoMatch() {
@@ -152,5 +155,56 @@ class NetworkRulesEngineTest {
     fun codecReturnsDisabledOnMalformedJson() {
         val mirror = NetworkRulesCodec.parse("not json at all")
         assertEquals(NetworkRulesCodec.disabled, mirror)
+    }
+
+    @Test
+    fun resolveFullCarriesProfileTarget() {
+        val mirror = RulesMirror(
+            enabled = true,
+            defaultAction = DefaultNetworkAction.LEAVE_AS_IS,
+            rules = listOf(
+                rule(
+                    listOf(NetworkCondition.AnyCellular),
+                    NetworkRuleAction.LEAVE,
+                    profileId = 7,
+                    selectedMap = mapOf("GLOBAL" to "us"),
+                    profileName = "Work",
+                ),
+            ),
+        )
+        val res = NetworkRulesEngine.resolveFull(mirror, NetworkSnapshot(NetworkRuleType.CELLULAR))
+        // vpn=LEAVE + default LEAVE_AS_IS => no VPN change, but the profile switches.
+        assertEquals(NetworkDecision.LEAVE_AS_IS, res.decision)
+        assertEquals(7, res.profileId)
+        assertEquals(mapOf("GLOBAL" to "us"), res.selectedMap)
+        assertEquals("Work", res.profileName)
+    }
+
+    @Test
+    fun resolveFullNoMatchHasNoProfile() {
+        val res = NetworkRulesEngine.resolveFull(
+            RulesMirror(true, DefaultNetworkAction.TURN_OFF, emptyList()),
+            NetworkSnapshot(NetworkRuleType.WIFI, "x"),
+        )
+        assertEquals(NetworkDecision.STOP, res.decision)
+        assertNull(res.profileId)
+    }
+
+    @Test
+    fun codecParsesV2ProfileFields() {
+        val json = """
+            {"version":2,"enabled":true,"defaultAction":"leaveAsIs","activeProfileId":3,
+             "rules":[{"id":1,"actionVpn":"turnOn","action":"turnOn","actionProfileId":7,
+                       "actionSelectedMap":{"GLOBAL":"us"},"actionProfileName":"Work",
+                       "priority":0,"enabled":true,
+                       "conditions":[{"kind":"any_cellular"}]}]}
+        """.trimIndent()
+        val mirror = NetworkRulesCodec.parse(json)
+        assertEquals(3, mirror.activeProfileId)
+        val res = NetworkRulesEngine.resolveFull(mirror, NetworkSnapshot(NetworkRuleType.CELLULAR))
+        assertEquals(NetworkDecision.START, res.decision)
+        assertEquals(7, res.profileId)
+        assertEquals("Work", res.profileName)
+        assertEquals(mapOf("GLOBAL" to "us"), res.selectedMap)
     }
 }

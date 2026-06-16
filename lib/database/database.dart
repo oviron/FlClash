@@ -24,7 +24,7 @@ class Database extends _$Database {
   Database([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -58,6 +58,10 @@ class Database extends _$Database {
         await customStatement(
           'UPDATE network_rules SET action = 0 WHERE action = 2',
         );
+      }
+      // v7: profile-switch action target (null = leave profile as-is).
+      if (from < 7) {
+        await m.addColumn(networkRules, networkRules.actionProfileId);
       }
     },
   );

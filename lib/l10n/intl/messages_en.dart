@@ -535,6 +535,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkException": MessageLookupByLibrary.simpleMessage(
       "Network exception, please check your connection and try again",
     ),
+    "networkRulesActionShortLeave": MessageLookupByLibrary.simpleMessage(
+      "KEEP",
+    ),
     "networkRulesActionShortOff": MessageLookupByLibrary.simpleMessage("OFF"),
     "networkRulesActionShortOn": MessageLookupByLibrary.simpleMessage("ON"),
     "networkRulesActionTurnOff": MessageLookupByLibrary.simpleMessage(

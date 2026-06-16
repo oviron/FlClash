@@ -4,7 +4,45 @@ import 'dart:convert';
 
 import 'package:fl_clash/common/common.dart';
 
-enum NetworkAction { turnOn, turnOff }
+enum NetworkVpnMode { turnOn, turnOff, leave }
+
+/// A rule's action: what to do with the VPN, and optionally which profile to
+/// switch to. [profileId] null = leave the active profile untouched.
+class NetworkAction {
+  final NetworkVpnMode vpn;
+  final int? profileId;
+
+  const NetworkAction({required this.vpn, this.profileId});
+
+  static const turnOn = NetworkAction(vpn: NetworkVpnMode.turnOn);
+  static const turnOff = NetworkAction(vpn: NetworkVpnMode.turnOff);
+
+  Map<String, dynamic> toJson() => {
+    'vpn': vpn.name,
+    if (profileId != null) 'profileId': profileId,
+  };
+
+  factory NetworkAction.fromJson(Map<String, dynamic> json) => NetworkAction(
+    vpn: NetworkVpnMode.values.firstWhere(
+      (m) => m.name == json['vpn'],
+      orElse: () => NetworkVpnMode.turnOn,
+    ),
+    profileId: json['profileId'] as int?,
+  );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NetworkAction &&
+          other.vpn == vpn &&
+          other.profileId == profileId;
+
+  @override
+  int get hashCode => Object.hash(vpn, profileId);
+
+  @override
+  String toString() => 'NetworkAction(vpn: $vpn, profileId: $profileId)';
+}
 
 enum NetworkType { wifi, cellular, ethernet, none }
 

@@ -2,7 +2,7 @@ package com.follow.clash.common.networkrules
 
 enum class NetworkRuleType { WIFI, CELLULAR, ETHERNET, NONE }
 
-enum class NetworkRuleAction { TURN_ON, TURN_OFF }
+enum class NetworkRuleAction { TURN_ON, TURN_OFF, LEAVE }
 
 enum class DefaultNetworkAction { TURN_ON, TURN_OFF, LEAVE_AS_IS }
 
@@ -51,12 +51,25 @@ data class NetworkRule(
     val action: NetworkRuleAction,
     val priority: Int,
     val enabled: Boolean,
+    val actionProfileId: Int? = null,
+    val actionSelectedMap: Map<String, String> = emptyMap(),
+    val actionProfileName: String? = null,
+)
+
+// What the runtime should actuate: the VPN decision plus, when a rule targets a
+// profile, that profile's id / pre-baked selectedMap / display name.
+data class NetworkResolution(
+    val decision: NetworkDecision,
+    val profileId: Int?,
+    val selectedMap: Map<String, String>,
+    val profileName: String?,
 )
 
 data class RulesMirror(
     val enabled: Boolean,
     val defaultAction: DefaultNetworkAction,
     val rules: List<NetworkRule>,
+    val activeProfileId: Int? = null,
 )
 
 fun NetworkRule.specificity(): Int =

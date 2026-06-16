@@ -471,6 +471,7 @@
   "networkRulesActionTurnOff": "Turn VPN off",
   "networkRulesActionShortOn": "ON",
   "networkRulesActionShortOff": "OFF",
+  "networkRulesActionShortLeave": "KEEP",
   "networkRulesConditionWifiNamed": "Wi-Fi named",
   "networkRulesConditionAnyWifi": "Any Wi-Fi",
   "networkRulesConditionAnyCellular": "Cellular",

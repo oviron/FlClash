@@ -40,11 +40,12 @@ NetworkDecision resolveNetworkDecision({
   required DefaultNetworkAction defaultAction,
 }) {
   final matched = evaluate(rules: rules, snapshot: snapshot);
-  switch (matched) {
-    case NetworkAction.turnOn:
+  switch (matched?.vpn) {
+    case NetworkVpnMode.turnOn:
       return NetworkDecision.start;
-    case NetworkAction.turnOff:
+    case NetworkVpnMode.turnOff:
       return NetworkDecision.stop;
+    case NetworkVpnMode.leave:
     case null:
       switch (defaultAction) {
         case DefaultNetworkAction.turnOn:
