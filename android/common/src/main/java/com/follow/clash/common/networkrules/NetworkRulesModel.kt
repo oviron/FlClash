@@ -10,37 +10,48 @@ enum class NetworkDecision { START, STOP, LEAVE_AS_IS }
 
 data class NetworkSnapshot(val type: NetworkRuleType, val ssid: String? = null)
 
+// Snapshot + active profile id; conditions match against this. The profile axis
+// is kept out of NetworkSnapshot (it is app state, not network state). Mirror of
+// the Dart NetworkMatchContext.
+data class MatchContext(val snapshot: NetworkSnapshot, val activeProfileId: Int? = null)
+
 sealed interface NetworkCondition {
     val specificity: Int
 
-    fun matches(snapshot: NetworkSnapshot): Boolean
+    fun matches(ctx: MatchContext): Boolean
 
     // A named Wi-Fi (2) wins over a type-level clause (1) regardless of user
     // priority. Mirror of the Dart NetworkCondition.specificity.
     data class WifiNamed(val ssid: String) : NetworkCondition {
         override val specificity = 2
-        override fun matches(snapshot: NetworkSnapshot) =
-            snapshot.type == NetworkRuleType.WIFI &&
-                snapshot.ssid != null &&
-                snapshot.ssid.equals(ssid, ignoreCase = true)
+        override fun matches(ctx: MatchContext) =
+            ctx.snapshot.type == NetworkRuleType.WIFI &&
+                ctx.snapshot.ssid != null &&
+                ctx.snapshot.ssid.equals(ssid, ignoreCase = true)
     }
 
     data object AnyWifi : NetworkCondition {
         override val specificity = 1
-        override fun matches(snapshot: NetworkSnapshot) =
-            snapshot.type == NetworkRuleType.WIFI
+        override fun matches(ctx: MatchContext) =
+            ctx.snapshot.type == NetworkRuleType.WIFI
     }
 
     data object AnyCellular : NetworkCondition {
         override val specificity = 1
-        override fun matches(snapshot: NetworkSnapshot) =
-            snapshot.type == NetworkRuleType.CELLULAR
+        override fun matches(ctx: MatchContext) =
+            ctx.snapshot.type == NetworkRuleType.CELLULAR
     }
 
     data object AnyEthernet : NetworkCondition {
         override val specificity = 1
-        override fun matches(snapshot: NetworkSnapshot) =
-            snapshot.type == NetworkRuleType.ETHERNET
+        override fun matches(ctx: MatchContext) =
+            ctx.snapshot.type == NetworkRuleType.ETHERNET
+    }
+
+    // Optional profile gate: matches when the active profile is this one.
+    data class ProfileIs(val profileId: Int) : NetworkCondition {
+        override val specificity = 2
+        override fun matches(ctx: MatchContext) = ctx.activeProfileId == profileId
     }
 }
 

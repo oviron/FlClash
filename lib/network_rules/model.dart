@@ -74,11 +74,22 @@ class NetworkSnapshot {
   String toString() => 'NetworkSnapshot(type: $type, ssid: $ssid)';
 }
 
+/// Everything a condition may match against: the network snapshot plus the
+/// active profile id (for profile-gate conditions). Network conditions read
+/// only [snapshot]; the profile axis is kept out of [NetworkSnapshot] on
+/// purpose (it is app state, not network state).
+class NetworkMatchContext {
+  final NetworkSnapshot snapshot;
+  final int? activeProfileId;
+
+  const NetworkMatchContext({required this.snapshot, this.activeProfileId});
+}
+
 /// A single match clause. Multiple conditions on a rule are combined with AND.
 sealed class NetworkCondition {
   const NetworkCondition();
 
-  bool matches(NetworkSnapshot snapshot);
+  bool matches(NetworkMatchContext ctx);
 
   Map<String, dynamic> toJson();
 
@@ -98,6 +109,8 @@ sealed class NetworkCondition {
         return const AnyCellular();
       case 'any_ethernet':
         return const AnyEthernet();
+      case 'profile_is':
+        return ProfileIs(json['profileId'] as int);
       default:
         throw FormatException('Unknown NetworkCondition kind: $kind in $json');
     }
@@ -113,7 +126,8 @@ class WifiNamed extends NetworkCondition {
   const WifiNamed(this.ssid);
 
   @override
-  bool matches(NetworkSnapshot snapshot) {
+  bool matches(NetworkMatchContext ctx) {
+    final snapshot = ctx.snapshot;
     if (snapshot.type != NetworkType.wifi) return false;
     final candidate = snapshot.ssid;
     if (candidate == null) return false;
@@ -142,7 +156,8 @@ class AnyWifi extends NetworkCondition {
   const AnyWifi();
 
   @override
-  bool matches(NetworkSnapshot snapshot) => snapshot.type == NetworkType.wifi;
+  bool matches(NetworkMatchContext ctx) =>
+      ctx.snapshot.type == NetworkType.wifi;
 
   @override
   Map<String, dynamic> toJson() => const {'kind': 'any_wifi'};
@@ -164,8 +179,8 @@ class AnyCellular extends NetworkCondition {
   const AnyCellular();
 
   @override
-  bool matches(NetworkSnapshot snapshot) =>
-      snapshot.type == NetworkType.cellular;
+  bool matches(NetworkMatchContext ctx) =>
+      ctx.snapshot.type == NetworkType.cellular;
 
   @override
   Map<String, dynamic> toJson() => const {'kind': 'any_cellular'};
@@ -188,8 +203,8 @@ class AnyEthernet extends NetworkCondition {
   const AnyEthernet();
 
   @override
-  bool matches(NetworkSnapshot snapshot) =>
-      snapshot.type == NetworkType.ethernet;
+  bool matches(NetworkMatchContext ctx) =>
+      ctx.snapshot.type == NetworkType.ethernet;
 
   @override
   Map<String, dynamic> toJson() => const {'kind': 'any_ethernet'};
@@ -206,6 +221,39 @@ class AnyEthernet extends NetworkCondition {
 
   @override
   String toString() => 'AnyEthernet()';
+}
+
+/// Matches when the given profile is the active one. Used as an optional gate
+/// on a rule (AND'd with a network condition). Evaluated against the snapshot's
+/// active profile, so it only re-checks when the engine re-evaluates (i.e. on a
+/// network change), not the instant the profile changes.
+class ProfileIs extends NetworkCondition {
+  final int profileId;
+
+  const ProfileIs(this.profileId);
+
+  @override
+  bool matches(NetworkMatchContext ctx) => ctx.activeProfileId == profileId;
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'kind': 'profile_is',
+    'profileId': profileId,
+  };
+
+  @override
+  int get specificity => 2;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProfileIs && other.profileId == profileId;
+
+  @override
+  int get hashCode => Object.hash('profile_is', profileId);
+
+  @override
+  String toString() => 'ProfileIs($profileId)';
 }
 
 class NetworkConditionListCodec {

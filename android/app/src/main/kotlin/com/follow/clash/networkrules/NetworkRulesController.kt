@@ -296,7 +296,7 @@ object NetworkRulesController {
         snapshot: NetworkSnapshot,
         decision: NetworkDecision,
     ): String {
-        val matched = NetworkRulesEngine.evaluate(mirror.rules, snapshot)
+        val matched = NetworkRulesEngine.evaluate(mirror.rules, snapshot, mirror.activeProfileId)
         val where = describe(snapshot)
         return if (matched != null) {
             "rule matched on $where -> ${decision.name}"

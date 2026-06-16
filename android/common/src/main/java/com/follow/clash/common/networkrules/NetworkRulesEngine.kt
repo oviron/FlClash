@@ -6,31 +6,40 @@ object NetworkRulesEngine {
 
     // Empty conditions => no match. Most-specific rule wins (see
     // networkRuleComparator), not creation order.
-    fun evaluateRule(rules: List<NetworkRule>, snapshot: NetworkSnapshot): NetworkRule? {
+    fun evaluateRule(
+        rules: List<NetworkRule>,
+        snapshot: NetworkSnapshot,
+        activeProfileId: Int? = null,
+    ): NetworkRule? {
+        val ctx = MatchContext(snapshot, activeProfileId)
         for (rule in rules.sortedWith(networkRuleComparator)) {
             val matches = rule.enabled &&
                 rule.conditions.isNotEmpty() &&
-                rule.conditions.all { it.matches(snapshot) }
+                rule.conditions.all { it.matches(ctx) }
             if (matches) return rule
         }
         return null
     }
 
-    fun evaluate(rules: List<NetworkRule>, snapshot: NetworkSnapshot): NetworkRuleAction? =
-        evaluateRule(rules, snapshot)?.action
+    fun evaluate(
+        rules: List<NetworkRule>,
+        snapshot: NetworkSnapshot,
+        activeProfileId: Int? = null,
+    ): NetworkRuleAction? = evaluateRule(rules, snapshot, activeProfileId)?.action
 
     fun resolve(
         rules: List<NetworkRule>,
         snapshot: NetworkSnapshot,
         defaultAction: DefaultNetworkAction,
-    ): NetworkDecision = vpnDecision(evaluate(rules, snapshot), defaultAction)
+        activeProfileId: Int? = null,
+    ): NetworkDecision = vpnDecision(evaluate(rules, snapshot, activeProfileId), defaultAction)
 
     // Mirror-level entry: a disabled feature is always a no-op.
     fun resolve(mirror: RulesMirror, snapshot: NetworkSnapshot): NetworkDecision =
         if (!mirror.enabled) {
             NetworkDecision.LEAVE_AS_IS
         } else {
-            resolve(mirror.rules, snapshot, mirror.defaultAction)
+            resolve(mirror.rules, snapshot, mirror.defaultAction, mirror.activeProfileId)
         }
 
     // Full resolution incl. the profile-switch target of the matched rule.
@@ -38,7 +47,7 @@ object NetworkRulesEngine {
         if (!mirror.enabled) {
             return NetworkResolution(NetworkDecision.LEAVE_AS_IS, null, emptyMap(), null)
         }
-        val matched = evaluateRule(mirror.rules, snapshot)
+        val matched = evaluateRule(mirror.rules, snapshot, mirror.activeProfileId)
         return NetworkResolution(
             decision = vpnDecision(matched?.action, mirror.defaultAction),
             profileId = matched?.actionProfileId,

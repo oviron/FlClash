@@ -17,13 +17,18 @@ enum NetworkDecision { start, stop, leaveAsIs }
 NetworkAction? evaluate({
   required List<NetworkRule> rules,
   required NetworkSnapshot snapshot,
+  int? activeProfileId,
 }) {
   final ordered = [...rules]..sort(compareNetworkRules);
+  final ctx = NetworkMatchContext(
+    snapshot: snapshot,
+    activeProfileId: activeProfileId,
+  );
 
   for (final rule in ordered) {
     if (!rule.enabled) continue;
     if (rule.conditions.isEmpty) continue;
-    final allMatch = rule.conditions.every((c) => c.matches(snapshot));
+    final allMatch = rule.conditions.every((c) => c.matches(ctx));
     if (allMatch) return rule.action;
   }
 
@@ -38,8 +43,13 @@ NetworkDecision resolveNetworkDecision({
   required List<NetworkRule> rules,
   required NetworkSnapshot snapshot,
   required DefaultNetworkAction defaultAction,
+  int? activeProfileId,
 }) {
-  final matched = evaluate(rules: rules, snapshot: snapshot);
+  final matched = evaluate(
+    rules: rules,
+    snapshot: snapshot,
+    activeProfileId: activeProfileId,
+  );
   switch (matched?.vpn) {
     case NetworkVpnMode.turnOn:
       return NetworkDecision.start;

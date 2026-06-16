@@ -266,4 +266,80 @@ void main() {
       );
     });
   });
+
+  group('ProfileIs condition', () {
+    test('matches only when the active profile equals', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [ProfileIs(5)],
+          action: NetworkAction.turnOff,
+          priority: 0,
+        ),
+      ];
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.cellular(),
+          activeProfileId: 5,
+        ),
+        NetworkAction.turnOff,
+      );
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.cellular(),
+          activeProfileId: 9,
+        ),
+        isNull,
+      );
+      // No active profile at all -> never matches.
+      expect(
+        evaluate(rules: rules, snapshot: const NetworkSnapshot.cellular()),
+        isNull,
+      );
+    });
+
+    test('AND-gates a network condition by profile', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [AnyCellular(), ProfileIs(5)],
+          action: NetworkAction.turnOff,
+          priority: 0,
+        ),
+      ];
+      // cellular + profile 5 -> match
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.cellular(),
+          activeProfileId: 5,
+        ),
+        NetworkAction.turnOff,
+      );
+      // right profile, wrong network -> no match
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.wifi(ssid: 'x'),
+          activeProfileId: 5,
+        ),
+        isNull,
+      );
+      // right network, wrong profile -> no match
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.cellular(),
+          activeProfileId: 9,
+        ),
+        isNull,
+      );
+    });
+
+    test('toJson/fromJson round-trip', () {
+      const condition = ProfileIs(7);
+      expect(NetworkCondition.fromJson(condition.toJson()), condition);
+      expect(condition.specificity, 2);
+    });
+  });
 }

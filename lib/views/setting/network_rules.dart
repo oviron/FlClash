@@ -2,6 +2,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/network_rules/engine.dart';
 import 'package:fl_clash/views/setting/location_permission_gate.dart';
+import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/network_rules.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';
@@ -240,6 +241,7 @@ class _StatusLine extends ConsumerWidget {
         rules: rules,
         snapshot: snapshot,
         defaultAction: settings.defaultAction,
+        activeProfileId: ref.watch(currentProfileIdProvider),
       );
       text = _decisionLabel(decision);
       overridden = false;

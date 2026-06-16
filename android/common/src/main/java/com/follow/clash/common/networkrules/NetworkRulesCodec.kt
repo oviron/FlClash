@@ -73,6 +73,7 @@ object NetworkRulesCodec {
             "any_wifi" -> NetworkCondition.AnyWifi
             "any_cellular" -> NetworkCondition.AnyCellular
             "any_ethernet" -> NetworkCondition.AnyEthernet
+            "profile_is" -> NetworkCondition.ProfileIs(obj.get("profileId").asInt)
             else -> null
         }
 

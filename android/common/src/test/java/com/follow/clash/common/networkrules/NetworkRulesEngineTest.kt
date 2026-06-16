@@ -207,4 +207,50 @@ class NetworkRulesEngineTest {
         assertEquals("Work", res.profileName)
         assertEquals(mapOf("GLOBAL" to "us"), res.selectedMap)
     }
+
+    @Test
+    fun profileGateMatchesOnlyActiveProfile() {
+        val rules = listOf(
+            rule(
+                listOf(NetworkCondition.AnyCellular, NetworkCondition.ProfileIs(5)),
+                NetworkRuleAction.TURN_OFF,
+            ),
+        )
+        // cellular + active profile 5 -> match -> STOP
+        assertEquals(
+            NetworkDecision.STOP,
+            NetworkRulesEngine.resolve(
+                rules,
+                NetworkSnapshot(NetworkRuleType.CELLULAR),
+                DefaultNetworkAction.LEAVE_AS_IS,
+                5,
+            ),
+        )
+        // cellular + active profile 9 -> gate fails -> default LEAVE
+        assertEquals(
+            NetworkDecision.LEAVE_AS_IS,
+            NetworkRulesEngine.resolve(
+                rules,
+                NetworkSnapshot(NetworkRuleType.CELLULAR),
+                DefaultNetworkAction.LEAVE_AS_IS,
+                9,
+            ),
+        )
+    }
+
+    @Test
+    fun codecParsesProfileGate() {
+        val json = """
+            {"version":2,"enabled":true,"defaultAction":"leaveAsIs","activeProfileId":3,
+             "rules":[{"id":1,"actionVpn":"turnOff","priority":0,"enabled":true,
+                       "conditions":[{"kind":"any_cellular"},{"kind":"profile_is","profileId":3}]}]}
+        """.trimIndent()
+        val mirror = NetworkRulesCodec.parse(json)
+        assertEquals(2, mirror.rules[0].conditions.size)
+        // mirror.activeProfileId (3) == gate -> matches -> STOP
+        assertEquals(
+            NetworkDecision.STOP,
+            NetworkRulesEngine.resolve(mirror, NetworkSnapshot(NetworkRuleType.CELLULAR)),
+        )
+    }
 }
