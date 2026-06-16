@@ -4238,6 +4238,21 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Apps`
+  String get appRoutingApps {
+    return Intl.message('Apps', name: 'appRoutingApps', desc: '', args: []);
+  }
+
+  /// `All rules`
+  String get appRoutingAllRules {
+    return Intl.message(
+      'All rules',
+      name: 'appRoutingAllRules',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
