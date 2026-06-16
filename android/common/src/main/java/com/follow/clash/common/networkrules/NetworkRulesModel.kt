@@ -18,6 +18,9 @@ data class NetworkSnapshot(val type: NetworkRuleType, val ssid: String? = null)
 // the Dart NetworkMatchContext.
 data class MatchContext(val snapshot: NetworkSnapshot, val activeProfileId: Int? = null)
 
+// How a WifiNamed SSID is compared. Mirror of the Dart WifiMatch.
+enum class WifiMatch { EXACT, PREFIX, CONTAINS }
+
 sealed interface NetworkCondition {
     val specificity: Int
 
@@ -25,12 +28,19 @@ sealed interface NetworkCondition {
 
     // A named Wi-Fi (2) wins over a type-level clause (1) regardless of user
     // priority. Mirror of the Dart NetworkCondition.specificity.
-    data class WifiNamed(val ssid: String) : NetworkCondition {
+    data class WifiNamed(val ssid: String, val match: WifiMatch = WifiMatch.EXACT) :
+        NetworkCondition {
         override val specificity = 2
-        override fun matches(ctx: MatchContext) =
-            ctx.snapshot.type == NetworkRuleType.WIFI &&
-                ctx.snapshot.ssid != null &&
-                ctx.snapshot.ssid.equals(ssid, ignoreCase = true)
+        override fun matches(ctx: MatchContext): Boolean {
+            if (ctx.snapshot.type != NetworkRuleType.WIFI) return false
+            val candidate = ctx.snapshot.ssid?.lowercase() ?: return false
+            val target = ssid.lowercase()
+            return when (match) {
+                WifiMatch.EXACT -> candidate == target
+                WifiMatch.PREFIX -> candidate.startsWith(target)
+                WifiMatch.CONTAINS -> candidate.contains(target)
+            }
+        }
     }
 
     data object AnyWifi : NetworkCondition {
@@ -55,6 +65,12 @@ sealed interface NetworkCondition {
     data class ProfileIs(val profileId: Int) : NetworkCondition {
         override val specificity = 2
         override fun matches(ctx: MatchContext) = ctx.activeProfileId == profileId
+    }
+
+    // Inverts any condition. Broad by nature, so specificity is low (1).
+    data class Not(val inner: NetworkCondition) : NetworkCondition {
+        override val specificity = 1
+        override fun matches(ctx: MatchContext) = !inner.matches(ctx)
     }
 }
 

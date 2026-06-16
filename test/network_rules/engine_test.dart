@@ -417,4 +417,82 @@ void main() {
       );
     });
   });
+
+  group('WifiNamed match modes + Not', () {
+    test('prefix matches an SSID that starts with the pattern', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [WifiNamed('Airport', match: WifiMatch.prefix)],
+          action: NetworkAction.turnOn,
+          priority: 0,
+        ),
+      ];
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.wifi(ssid: 'Airport Free'),
+        ),
+        NetworkAction.turnOn,
+      );
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.wifi(ssid: 'My Airport'),
+        ),
+        isNull,
+      );
+    });
+
+    test('contains matches an SSID that contains the pattern', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [WifiNamed('starbucks', match: WifiMatch.contains)],
+          action: NetworkAction.turnOff,
+          priority: 0,
+        ),
+      ];
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.wifi(ssid: 'Free Starbucks WiFi'),
+        ),
+        NetworkAction.turnOff,
+      );
+    });
+
+    test('Not inverts the inner condition', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [AnyWifi(), Not(WifiNamed('Home'))],
+          action: NetworkAction.turnOn,
+          priority: 0,
+        ),
+      ];
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.wifi(ssid: 'Cafe'),
+        ),
+        NetworkAction.turnOn,
+      );
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.wifi(ssid: 'Home'),
+        ),
+        isNull,
+      );
+    });
+
+    test('toJson/fromJson round-trip for match mode and Not', () {
+      const wifi = WifiNamed('Airport', match: WifiMatch.prefix);
+      expect(NetworkCondition.fromJson(wifi.toJson()), wifi);
+      const not = Not(WifiNamed('Home'));
+      expect(NetworkCondition.fromJson(not.toJson()), not);
+    });
+
+    test('exact wifi omits match in json (backward compat)', () {
+      expect(const WifiNamed('Home').toJson().containsKey('match'), false);
+    });
+  });
 }

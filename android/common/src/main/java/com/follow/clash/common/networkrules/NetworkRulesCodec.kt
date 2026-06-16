@@ -73,13 +73,25 @@ object NetworkRulesCodec {
 
     private fun parseCondition(obj: JsonObject): NetworkCondition? =
         when (obj.optString("kind")) {
-            "wifi_named" -> NetworkCondition.WifiNamed(obj.get("ssid").asString)
+            "wifi_named" -> NetworkCondition.WifiNamed(
+                obj.get("ssid").asString,
+                parseWifiMatch(obj.optString("match")),
+            )
             "any_wifi" -> NetworkCondition.AnyWifi
             "any_cellular" -> NetworkCondition.AnyCellular
             "any_ethernet" -> NetworkCondition.AnyEthernet
             "profile_is" -> NetworkCondition.ProfileIs(obj.get("profileId").asInt)
+            "not" -> obj.getAsJsonObjectOrNull("condition")
+                ?.let { parseCondition(it) }
+                ?.let { NetworkCondition.Not(it) }
             else -> null
         }
+
+    private fun parseWifiMatch(value: String?): WifiMatch = when (value) {
+        "prefix" -> WifiMatch.PREFIX
+        "contains" -> WifiMatch.CONTAINS
+        else -> WifiMatch.EXACT
+    }
 
     private fun parseAction(value: String?): NetworkRuleAction = when (value) {
         "turnOff" -> NetworkRuleAction.TURN_OFF

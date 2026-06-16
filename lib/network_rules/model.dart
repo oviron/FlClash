@@ -102,7 +102,10 @@ sealed class NetworkCondition {
     final kind = json['kind'] as String?;
     switch (kind) {
       case 'wifi_named':
-        return WifiNamed(json['ssid'] as String);
+        return WifiNamed(
+          json['ssid'] as String,
+          match: _wifiMatchFromName(json['match'] as String?),
+        );
       case 'any_wifi':
         return const AnyWifi();
       case 'any_cellular':
@@ -111,31 +114,56 @@ sealed class NetworkCondition {
         return const AnyEthernet();
       case 'profile_is':
         return ProfileIs(json['profileId'] as int);
+      case 'not':
+        return Not(
+          NetworkCondition.fromJson(json['condition'] as Map<String, dynamic>),
+        );
       default:
         throw FormatException('Unknown NetworkCondition kind: $kind in $json');
     }
   }
 }
 
-/// Matches when the current network is a Wi-Fi with the exact SSID
-/// (case-insensitive). If the snapshot has no SSID (no permission or
-/// Android stub), this condition does NOT match — the engine moves on.
+/// How a [WifiNamed] SSID is compared against the live SSID.
+enum WifiMatch { exact, prefix, contains }
+
+WifiMatch _wifiMatchFromName(String? name) => WifiMatch.values.firstWhere(
+  (m) => m.name == name,
+  orElse: () => WifiMatch.exact,
+);
+
+/// Matches a Wi-Fi by SSID, [exact] (case-insensitive) by default, or by
+/// [prefix]/[contains]. If the snapshot has no SSID (no permission or Android
+/// stub), this condition does NOT match — the engine moves on.
 class WifiNamed extends NetworkCondition {
   final String ssid;
+  final WifiMatch match;
 
-  const WifiNamed(this.ssid);
+  const WifiNamed(this.ssid, {this.match = WifiMatch.exact});
 
   @override
   bool matches(NetworkMatchContext ctx) {
     final snapshot = ctx.snapshot;
     if (snapshot.type != NetworkType.wifi) return false;
-    final candidate = snapshot.ssid;
+    final candidate = snapshot.ssid?.toLowerCase();
     if (candidate == null) return false;
-    return candidate.toLowerCase() == ssid.toLowerCase();
+    final target = ssid.toLowerCase();
+    switch (match) {
+      case WifiMatch.exact:
+        return candidate == target;
+      case WifiMatch.prefix:
+        return candidate.startsWith(target);
+      case WifiMatch.contains:
+        return candidate.contains(target);
+    }
   }
 
   @override
-  Map<String, dynamic> toJson() => {'kind': 'wifi_named', 'ssid': ssid};
+  Map<String, dynamic> toJson() => {
+    'kind': 'wifi_named',
+    'ssid': ssid,
+    if (match != WifiMatch.exact) 'match': match.name,
+  };
 
   @override
   int get specificity => 2;
@@ -143,13 +171,42 @@ class WifiNamed extends NetworkCondition {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WifiNamed && other.ssid.toLowerCase() == ssid.toLowerCase();
+      other is WifiNamed &&
+          other.ssid.toLowerCase() == ssid.toLowerCase() &&
+          other.match == match;
 
   @override
-  int get hashCode => ssid.toLowerCase().hashCode;
+  int get hashCode => Object.hash(ssid.toLowerCase(), match);
 
   @override
-  String toString() => 'WifiNamed($ssid)';
+  String toString() => 'WifiNamed($ssid, $match)';
+}
+
+/// Inverts any condition: matches when [inner] does not. Broad by nature, so
+/// its specificity is low (1); use explicit priority to order it precisely.
+class Not extends NetworkCondition {
+  final NetworkCondition inner;
+
+  const Not(this.inner);
+
+  @override
+  bool matches(NetworkMatchContext ctx) => !inner.matches(ctx);
+
+  @override
+  Map<String, dynamic> toJson() => {'kind': 'not', 'condition': inner.toJson()};
+
+  @override
+  int get specificity => 1;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Not && other.inner == inner;
+
+  @override
+  int get hashCode => Object.hash('not', inner);
+
+  @override
+  String toString() => 'Not($inner)';
 }
 
 class AnyWifi extends NetworkCondition {

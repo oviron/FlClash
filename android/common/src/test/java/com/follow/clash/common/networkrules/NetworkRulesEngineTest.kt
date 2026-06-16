@@ -299,4 +299,63 @@ class NetworkRulesEngineTest {
             NetworkRulesEngine.resolve(mirror, NetworkSnapshot(NetworkRuleType.WIFI, "B")),
         )
     }
+
+    @Test
+    fun wifiPrefixMatches() {
+        val rules = listOf(
+            rule(
+                listOf(NetworkCondition.WifiNamed("Airport", WifiMatch.PREFIX)),
+                NetworkRuleAction.TURN_ON,
+            ),
+        )
+        assertEquals(
+            NetworkRuleAction.TURN_ON,
+            NetworkRulesEngine.evaluate(
+                rules,
+                NetworkSnapshot(NetworkRuleType.WIFI, "Airport Free"),
+            ),
+        )
+        assertNull(
+            NetworkRulesEngine.evaluate(rules, NetworkSnapshot(NetworkRuleType.WIFI, "My Airport")),
+        )
+    }
+
+    @Test
+    fun notInvertsInner() {
+        val rules = listOf(
+            rule(
+                listOf(
+                    NetworkCondition.AnyWifi,
+                    NetworkCondition.Not(NetworkCondition.WifiNamed("Home")),
+                ),
+                NetworkRuleAction.TURN_ON,
+            ),
+        )
+        assertEquals(
+            NetworkRuleAction.TURN_ON,
+            NetworkRulesEngine.evaluate(rules, NetworkSnapshot(NetworkRuleType.WIFI, "Cafe")),
+        )
+        assertNull(
+            NetworkRulesEngine.evaluate(rules, NetworkSnapshot(NetworkRuleType.WIFI, "Home")),
+        )
+    }
+
+    @Test
+    fun codecParsesWifiMatchAndNot() {
+        val json = """
+            {"version":3,"enabled":true,"defaultAction":"leaveAsIs",
+             "rules":[{"id":1,"actionVpn":"turnOn","priority":0,"enabled":true,
+                       "conditions":[{"kind":"any_wifi"},
+                                     {"kind":"not","condition":{"kind":"wifi_named","ssid":"Home"}},
+                                     {"kind":"wifi_named","ssid":"Airport","match":"prefix"}]}]}
+        """.trimIndent()
+        val mirror = NetworkRulesCodec.parse(json)
+        val conditions = mirror.rules[0].conditions
+        assertEquals(3, conditions.size)
+        assertTrue(conditions[1] is NetworkCondition.Not)
+        assertEquals(
+            WifiMatch.PREFIX,
+            (conditions[2] as NetworkCondition.WifiNamed).match,
+        )
+    }
 }
