@@ -17,7 +17,7 @@ const _signerPubKeyPath = 'scripts/oviron-signing.pub.asc';
 
 const _libmihomoVersion = '0.1.4';
 const _libmihomoSha256 =
-    '023b14f22e4dba167f576d83b86db2ba82673bc0b6e3fa1152d012073c77d7a3';
+    '4494bf733b94327119c8828a0eea35765e82f763c66e24a1dc4a497215c08868';
 
 class _PinnedAar {
   final String label;
