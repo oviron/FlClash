@@ -523,5 +523,6 @@
   "recoverySuccess": "Recovery succeeded",
   "remoteRecoveryDesc": "Recover data from WebDAV",
   "localRecoveryDesc": "Recover data from file",
-  "zoom": "Zoom"
+  "zoom": "Zoom",
+  "appRoutingRulesReapplied": "Per-app routing updated: {overlaid} re-added, {conflicts} kept yours"
 }

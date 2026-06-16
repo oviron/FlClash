@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/profile_routing/reapply.dart';
+import 'package:fl_clash/state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'clash_config.dart';
@@ -191,13 +194,41 @@ extension ProfileExtension on Profile {
     final response = await request.getFileResponseForUrl(url);
     final disposition = response.headers.value('content-disposition');
     final userinfo = response.headers.value('subscription-userinfo');
+    final bytes = await _reapplyAppRouting(
+      response.data ?? Uint8List.fromList([]),
+    );
     return await copyWith(
       label: label.takeFirstValid([
         utils.getFileNameForDisposition(disposition),
         id.toString(),
       ]),
       subscriptionInfo: SubscriptionInfo.formHString(userinfo),
-    ).saveFile(response.data ?? Uint8List.fromList([]));
+    ).saveFile(bytes);
+  }
+
+  // Carry the user's per-app routing rules across a subscription refresh
+  // (prefer-user); the raw download would otherwise drop them. Best-effort:
+  // any failure falls back to the untouched download.
+  Future<Uint8List> _reapplyAppRouting(Uint8List freshBytes) async {
+    try {
+      final mFile = await _getFile(false);
+      if (!await mFile.exists()) return freshBytes;
+      final result = reapplyAppRouting(
+        previous: await mFile.readAsString(),
+        fresh: utf8.decode(freshBytes),
+      );
+      if (!result.changed) return freshBytes;
+      globalState.showNotifier(
+        appLocalizations.appRoutingRulesReapplied(
+          result.overlaid,
+          result.conflicts,
+        ),
+      );
+      return Uint8List.fromList(utf8.encode(result.content));
+    } catch (e) {
+      commonPrint.log('reapply app-routing failed: $e');
+      return freshBytes;
+    }
   }
 
   Future<Profile> saveFile(Uint8List bytes) async {

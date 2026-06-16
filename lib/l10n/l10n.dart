@@ -4198,6 +4198,16 @@ class AppLocalizations {
   String get zoom {
     return Intl.message('Zoom', name: 'zoom', desc: '', args: []);
   }
+
+  /// `Per-app routing updated: {overlaid} re-added, {conflicts} kept yours`
+  String appRoutingRulesReapplied(Object overlaid, Object conflicts) {
+    return Intl.message(
+      'Per-app routing updated: $overlaid re-added, $conflicts kept yours',
+      name: 'appRoutingRulesReapplied',
+      desc: '',
+      args: [overlaid, conflicts],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
