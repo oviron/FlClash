@@ -91,4 +91,25 @@ void main() {
     const lines = ['PROCESS-NAME,a,X', 'AND,((DOMAIN,b)),Y', 'MATCH,Z'];
     expect(serializeRoutingRules(parseRoutingRules(lines)), lines);
   });
+
+  test(
+    'editableRuleActions excludes forms that need nested/special syntax',
+    () {
+      // The typed editor authors a flat TYPE,value,target; logical and special
+      // actions cannot be expressed that way and must not be offered.
+      for (final a in const [
+        RuleAction.AND,
+        RuleAction.OR,
+        RuleAction.NOT,
+        RuleAction.MATCH,
+        RuleAction.RULE_SET,
+        RuleAction.SUB_RULE,
+      ]) {
+        expect(editableRuleActions, isNot(contains(a)), reason: a.value);
+      }
+      expect(editableRuleActions, contains(RuleAction.PROCESS_NAME));
+      expect(editableRuleActions, contains(RuleAction.UID));
+      expect(editableRuleActions, contains(RuleAction.DOMAIN_SUFFIX));
+    },
+  );
 }
