@@ -56,6 +56,10 @@ class NetworkRulesPlugin {
 
   void clearHandlers() => _channel.setMethodCallHandler(null);
 
+  /// Visible for testing. Maps the resident's status payload to Dart.
+  static NetworkRuleStatus parseStatus(Map<String, dynamic> map) =>
+      const NetworkRulesPlugin()._parse(map);
+
   NetworkRuleStatus _parse(Map<String, dynamic> map) {
     return NetworkRuleStatus(
       snapshot: _snapshot(map['type'] as String?, map['ssid'] as String?),
