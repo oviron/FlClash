@@ -33,7 +33,11 @@ data class NetworkRulesStatus(
     val overridden: Boolean,
 )
 
-private data class ManualOverride(val networkKey: Long, val running: Boolean)
+private data class ManualOverride(
+    val networkKey: Long,
+    val running: Boolean? = null,
+    val profileId: Int? = null,
+)
 
 // The brain: reads the rules mirror, computes the decision for the current
 // network and actuates the VPN through the same headless seam the boot path
@@ -50,6 +54,10 @@ object NetworkRulesController {
     private var currentKey: Long = NO_NETWORK
     private var override: ManualOverride? = null
     private var lastEngineDesired: Boolean? = null
+    // The profile the engine last applied via the FOREGROUND path; null after a
+    // headless apply (Dart's activeProfileId is then stale and unattributable).
+    // Manual-switch detection only arms while this is non-null.
+    private var lastEngineProfileId: Int? = null
     private var engineGuardUntil: Long = 0
 
     @Volatile
@@ -64,6 +72,12 @@ object NetworkRulesController {
 
     @Volatile
     var statusListener: ((NetworkRulesStatus) -> Unit)? = null
+
+    // Set while the Flutter engine is attached. When present, a profile switch
+    // is routed through Dart (applyProfile) so the UI/providers stay coherent
+    // instead of the resident swapping config.yaml directly.
+    @Volatile
+    var profileSwitchListener: ((Int) -> Unit)? = null
 
     fun start(context: Context) {
         if (observer != null) return
@@ -86,6 +100,7 @@ object NetworkRulesController {
     private fun mutexReset() {
         override = null
         lastEngineDesired = null
+        lastEngineProfileId = null
         currentKey = NO_NETWORK
     }
 
@@ -109,6 +124,13 @@ object NetworkRulesController {
             }
             val mirror = readMirror()
             resolution = NetworkRulesEngine.resolveFull(mirror, snapshot)
+            // A foreground-applied profile is echoed back as activeProfileId; a
+            // divergence (outside the guard window) is the user switching by
+            // hand -> pin the profile so the engine stops fighting on this key.
+            val manualProfile = manualProfileSwitch(mirror.activeProfileId)
+            if (manualProfile != null) {
+                override = ManualOverride(key, override?.running, manualProfile)
+            }
             reason = buildReason(mirror, snapshot, resolution.decision)
             overridden = override?.networkKey == key
         }
@@ -123,19 +145,17 @@ object NetworkRulesController {
     // mutex across State.runLock. The emission that results lands inside the
     // guard window and is classified as engine-initiated, not a manual toggle.
     private suspend fun actuate(resolution: NetworkResolution) {
+        val foreground = profileSwitchListener
         val running = State.runStateFlow.value == RunState.START
-        val profileId = resolution.profileId
+        // A profile target applies only when the core is, or is about to be, up.
+        val profileTarget = resolution.profileId
+            ?.takeIf { running || resolution.decision == NetworkDecision.START }
         var startAction: (suspend () -> Unit)? = null
-        var hotSwap = false
-        var stageBoot = false
         mutex.withLock {
             when (resolution.decision) {
                 NetworkDecision.START -> {
                     lastEngineDesired = true
-                    if (running) {
-                        hotSwap = profileId != null
-                    } else {
-                        stageBoot = profileId != null
+                    if (!running) {
                         engineGuardUntil = SystemClock.elapsedRealtime() + GUARD_MS
                         startAction = State::handleStartServiceAction
                     }
@@ -149,18 +169,50 @@ object NetworkRulesController {
                     }
                 }
 
-                // VPN unchanged; a profile target only applies to a live core.
-                NetworkDecision.LEAVE_AS_IS -> hotSwap = profileId != null && running
+                NetworkDecision.LEAVE_AS_IS -> Unit
+            }
+            if (profileTarget != null) {
+                // Only a foreground apply is attributable to the engine (Dart
+                // echoes it back via activeProfileId); a headless apply is not,
+                // so disarm manual detection until the next foreground apply.
+                lastEngineProfileId = if (foreground != null) profileTarget else null
+                engineGuardUntil = SystemClock.elapsedRealtime() + GUARD_MS
             }
         }
         // File IO + binder calls run OUTSIDE the mutex (never held across State).
-        if (hotSwap && profileId != null) {
-            applyProfileHot(profileId, resolution.selectedMap, resolution.profileName)
-        }
-        if (stageBoot && profileId != null && swapConfig(profileId)) {
-            State.pendingSelectedMap = resolution.selectedMap
+        if (profileTarget != null) {
+            applyResolvedProfile(profileTarget, foreground, running, resolution)
         }
         startAction?.invoke()
+    }
+
+    private suspend fun applyResolvedProfile(
+        profileTarget: Int,
+        foreground: ((Int) -> Unit)?,
+        running: Boolean,
+        resolution: NetworkResolution,
+    ) {
+        when {
+            foreground != null -> foreground(profileTarget)
+            running -> applyProfileHot(
+                profileTarget,
+                resolution.selectedMap,
+                resolution.profileName,
+            )
+            // Cold boot: stage config + selectedMap so quickSetup boots it.
+            swapConfig(profileTarget) -> State.pendingSelectedMap = resolution.selectedMap
+        }
+    }
+
+    // A foreground-applied profile equals activeProfileId; a mismatch outside the
+    // guard window means the user switched by hand. Returns the manual profile id
+    // to pin, or null. Detection arms only while lastEngineProfileId is non-null
+    // (i.e. after a foreground apply), so a stale activeProfileId never misfires.
+    private fun manualProfileSwitch(active: Int?): Int? {
+        if (active == null || lastEngineProfileId == null) return null
+        if (active == lastEngineProfileId) return null
+        if (SystemClock.elapsedRealtime() < engineGuardUntil) return null
+        return active
     }
 
     // Live profile swap: overwrite config.yaml from the pre-baked cache and tell
@@ -219,7 +271,11 @@ object NetworkRulesController {
         mutex.withLock {
             if (SystemClock.elapsedRealtime() < engineGuardUntil) return@withLock
             if (running != lastEngineDesired) {
-                override = ManualOverride(currentKey, running)
+                override = ManualOverride(
+                    currentKey,
+                    running,
+                    override?.takeIf { it.networkKey == currentKey }?.profileId,
+                )
             }
         }
     }

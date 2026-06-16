@@ -33,6 +33,7 @@ abstract final class NetworkRulesMethod {
   static const reevaluate = 'reevaluate';
   // Inbound (Kotlin → Dart)
   static const statusChanged = 'statusChanged';
+  static const switchProfile = 'switchProfile';
 }
 
 abstract final class AppMethod {

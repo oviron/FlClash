@@ -39,17 +39,22 @@ class NetworkRulesPlugin {
     return raw == null ? null : _parse(raw);
   }
 
-  void setStatusHandler(void Function(NetworkRuleStatus status) onStatus) {
+  void setHandlers({
+    required void Function(NetworkRuleStatus status) onStatus,
+    required void Function(int profileId) onSwitchProfile,
+  }) {
     _channel.setMethodCallHandler((call) async {
-      if (call.method == NetworkRulesMethod.statusChanged) {
-        final map = (call.arguments as Map).cast<String, dynamic>();
-        onStatus(_parse(map));
+      switch (call.method) {
+        case NetworkRulesMethod.statusChanged:
+          onStatus(_parse((call.arguments as Map).cast<String, dynamic>()));
+        case NetworkRulesMethod.switchProfile:
+          onSwitchProfile(call.arguments as int);
       }
       return null;
     });
   }
 
-  void clearStatusHandler() => _channel.setMethodCallHandler(null);
+  void clearHandlers() => _channel.setMethodCallHandler(null);
 
   NetworkRuleStatus _parse(Map<String, dynamic> map) {
     return NetworkRuleStatus(

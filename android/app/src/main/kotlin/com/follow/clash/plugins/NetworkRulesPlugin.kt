@@ -19,6 +19,7 @@ private object NetworkRulesMethod {
     const val GET_STATUS = "getStatus"
     const val REEVALUATE = "reevaluate"
     const val STATUS_CHANGED = "statusChanged"
+    const val SWITCH_PROFILE = "switchProfile"
 }
 
 class NetworkRulesPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
@@ -34,10 +35,12 @@ class NetworkRulesPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         )
         channel.setMethodCallHandler(this)
         NetworkRulesController.statusListener = { pushStatus(it) }
+        NetworkRulesController.profileSwitchListener = { pushSwitchProfile(it) }
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         NetworkRulesController.statusListener = null
+        NetworkRulesController.profileSwitchListener = null
         channel.setMethodCallHandler(null)
     }
 
@@ -72,6 +75,16 @@ class NetworkRulesPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                 channel.invokeMethod(NetworkRulesMethod.STATUS_CHANGED, encode(status))
             } catch (e: Throwable) {
                 GlobalState.log("NetworkRulesPlugin push failed: $e")
+            }
+        }
+    }
+
+    private fun pushSwitchProfile(profileId: Int) {
+        mainHandler.post {
+            try {
+                channel.invokeMethod(NetworkRulesMethod.SWITCH_PROFILE, profileId)
+            } catch (e: Throwable) {
+                GlobalState.log("NetworkRulesPlugin switchProfile push failed: $e")
             }
         }
     }

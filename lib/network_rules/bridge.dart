@@ -9,6 +9,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/network_rules/mirror.dart';
 import 'package:fl_clash/network_rules/plugin.dart';
+import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/network_rules.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';
 import 'package:fl_clash/providers/network_state.dart';
@@ -31,12 +32,16 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
   @override
   void initState() {
     super.initState();
-    _plugin.setStatusHandler(_onStatus);
+    _plugin.setHandlers(onStatus: _onStatus, onSwitchProfile: _onSwitchProfile);
     ref.listenManual(networkRulesStreamProvider, (_, _) => _onRulesChanged());
     ref.listenManual(
       networkRulesSettingsProvider,
       (_, _) => _onSettingsChanged(),
     );
+    // Keep activeProfileId fresh in the mirror so the resident can tell a manual
+    // profile switch from its own. No reevaluate: a manual switch must not make
+    // the engine immediately re-apply.
+    ref.listenManual(currentProfileIdProvider, (_, _) => _writeMirror());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       unawaited(_bootstrap());
@@ -45,7 +50,7 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
 
   @override
   void dispose() {
-    _plugin.clearStatusHandler();
+    _plugin.clearHandlers();
     super.dispose();
   }
 
@@ -78,8 +83,18 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
         for (final e in entries.entries) e.key: e.value.selectedMap,
       },
       profileNames: {for (final e in entries.entries) e.key: e.value.name},
+      activeProfileId: ref.read(currentProfileIdProvider),
     );
     await writeNetworkRulesMirror(await appPath.homeDirPath, json);
+  }
+
+  // Engine asked (Flutter alive) for a profile switch: route it through the
+  // app's own machinery so currentProfile + config + UI stay coherent, rather
+  // than the resident swapping config.yaml behind Dart's back.
+  void _onSwitchProfile(int profileId) {
+    if (ref.read(currentProfileIdProvider) == profileId) return;
+    ref.read(currentProfileIdProvider.notifier).value = profileId;
+    appController.applyProfileDebounce(force: true);
   }
 
   Future<void> _onRulesChanged() async {
