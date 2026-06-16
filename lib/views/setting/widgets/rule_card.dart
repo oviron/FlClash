@@ -197,7 +197,9 @@ class _ConditionChip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
-    final c = condition;
+    final negated = condition is Not;
+    final c = negated ? (condition as Not).inner : condition;
+    final prefix = negated ? '¬ ' : '';
     if (c is ProfileIs) {
       final match = ref
           .watch(profilesProvider)
@@ -207,40 +209,51 @@ class _ConditionChip extends ConsumerWidget {
           : '#${c.profileId}';
       return Chip(
         avatar: const Icon(Icons.layers_outlined, size: 18),
-        label: Text('${appLocalizations.networkRulesConditionProfileIs}$name'),
+        label: Text(
+          '$prefix${appLocalizations.networkRulesConditionProfileIs}$name',
+        ),
         visualDensity: VisualDensity.compact,
       );
     }
     if (c is WifiNamed) {
       final showWarning = !hasPermission;
+      final pattern = switch (c.match) {
+        WifiMatch.exact => c.ssid,
+        WifiMatch.prefix => '${c.ssid}…',
+        WifiMatch.contains => '…${c.ssid}…',
+      };
       return Chip(
         avatar: Icon(
           showWarning ? Icons.warning_amber : Icons.wifi,
           size: 18,
           color: showWarning ? scheme.error : null,
         ),
-        label: Text(c.ssid),
+        label: Text('$prefix$pattern'),
         visualDensity: VisualDensity.compact,
       );
     }
     if (c is AnyWifi) {
       return Chip(
         avatar: const Icon(Icons.wifi, size: 18),
-        label: Text(appLocalizations.networkRulesConditionAnyWifi),
+        label: Text('$prefix${appLocalizations.networkRulesConditionAnyWifi}'),
         visualDensity: VisualDensity.compact,
       );
     }
     if (c is AnyCellular) {
       return Chip(
         avatar: const Icon(Icons.signal_cellular_alt, size: 18),
-        label: Text(appLocalizations.networkRulesConditionAnyCellular),
+        label: Text(
+          '$prefix${appLocalizations.networkRulesConditionAnyCellular}',
+        ),
         visualDensity: VisualDensity.compact,
       );
     }
     if (c is AnyEthernet) {
       return Chip(
         avatar: const Icon(Icons.settings_ethernet, size: 18),
-        label: Text(appLocalizations.networkRulesConditionAnyEthernet),
+        label: Text(
+          '$prefix${appLocalizations.networkRulesConditionAnyEthernet}',
+        ),
         visualDensity: VisualDensity.compact,
       );
     }

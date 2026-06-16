@@ -69,10 +69,18 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
 
   bool get _isValid {
     if (_conditions.isEmpty) return false;
-    if (_conditions.any((c) => c is WifiNamed && c.ssid.isEmpty)) return false;
+    for (final c in _conditions) {
+      final inner = c is Not ? c.inner : c;
+      if (inner is WifiNamed && inner.ssid.isEmpty) return false;
+    }
     // A rule that neither changes the VPN nor switches a profile is a no-op.
     if (_vpn == NetworkVpnMode.leave && _profileId == null) return false;
     return true;
+  }
+
+  bool _isWifiCondition(NetworkCondition c) {
+    final inner = c is Not ? c.inner : c;
+    return inner is WifiNamed || inner is AnyWifi;
   }
 
   Future<String?> _pickSsid(String? current) async {
@@ -162,16 +170,115 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
   }
 
   Future<void> _editCondition(int index) async {
-    final c = _conditions[index];
-    if (c is WifiNamed) {
-      final ssid = await _pickSsid(c.ssid);
-      if (ssid != null && ssid.isNotEmpty) {
-        setState(() => _conditions[index] = WifiNamed(ssid));
-      }
-    } else if (c is ProfileIs) {
-      final id = await _pickProfile(c.profileId);
-      if (id != null) setState(() => _conditions[index] = ProfileIs(id));
-    }
+    final original = _conditions[index];
+    final inner = original is Not ? original.inner : original;
+    var negated = original is Not;
+    var wifiSsid = inner is WifiNamed ? inner.ssid : '';
+    var wifiMatch = inner is WifiNamed ? inner.match : WifiMatch.exact;
+    int? profileId = inner is ProfileIs ? inner.profileId : null;
+
+    final result = await showDialog<NetworkCondition>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setLocal) {
+          NetworkCondition build() {
+            final NetworkCondition base;
+            if (inner is WifiNamed) {
+              base = WifiNamed(wifiSsid, match: wifiMatch);
+            } else if (inner is ProfileIs) {
+              base = ProfileIs(profileId ?? 0);
+            } else {
+              base = inner;
+            }
+            return negated ? Not(base) : base;
+          }
+
+          return AlertDialog(
+            title: Text(appLocalizations.networkRulesConditionEdit),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(appLocalizations.networkRulesConditionNegate),
+                  value: negated,
+                  onChanged: (v) => setLocal(() => negated = v),
+                ),
+                if (inner is WifiNamed) ...[
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.wifi),
+                    title: Text(wifiSsid.isEmpty ? 'SSID' : wifiSsid),
+                    trailing: const Icon(Icons.edit),
+                    onTap: () async {
+                      final s = await _pickSsid(wifiSsid);
+                      if (s != null && s.isNotEmpty) {
+                        setLocal(() => wifiSsid = s);
+                      }
+                    },
+                  ),
+                  SegmentedButton<WifiMatch>(
+                    segments: [
+                      ButtonSegment(
+                        value: WifiMatch.exact,
+                        label: Text(
+                          appLocalizations.networkRulesWifiMatchExact,
+                        ),
+                      ),
+                      ButtonSegment(
+                        value: WifiMatch.prefix,
+                        label: Text(
+                          appLocalizations.networkRulesWifiMatchPrefix,
+                        ),
+                      ),
+                      ButtonSegment(
+                        value: WifiMatch.contains,
+                        label: Text(
+                          appLocalizations.networkRulesWifiMatchContains,
+                        ),
+                      ),
+                    ],
+                    selected: {wifiMatch},
+                    onSelectionChanged: (s) =>
+                        setLocal(() => wifiMatch = s.first),
+                  ),
+                ],
+                if (inner is ProfileIs)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.layers_outlined),
+                    title: Text(_profileName(profileId)),
+                    trailing: const Icon(Icons.edit),
+                    onTap: () async {
+                      final id = await _pickProfile(profileId);
+                      if (id != null) setLocal(() => profileId = id);
+                    },
+                  ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: Text(appLocalizations.cancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(build()),
+                child: Text(appLocalizations.save),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+    if (result != null) setState(() => _conditions[index] = result);
+  }
+
+  String _profileName(int? id) {
+    if (id == null) return appLocalizations.networkRulesActionProfile;
+    final match = ref.read(profilesProvider).where((p) => p.id == id);
+    return match.isNotEmpty && match.first.label.isNotEmpty
+        ? match.first.label
+        : '#$id';
   }
 
   Widget _kindOption(BuildContext ctx, _ConditionKind kind, String label) =>
@@ -204,7 +311,17 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
   }
 
   String _conditionLabel(NetworkCondition c, List<Profile> profiles) {
-    if (c is WifiNamed) return c.ssid;
+    if (c is Not) return '¬ ${_conditionLabel(c.inner, profiles)}';
+    if (c is WifiNamed) {
+      switch (c.match) {
+        case WifiMatch.exact:
+          return c.ssid;
+        case WifiMatch.prefix:
+          return '${c.ssid}…';
+        case WifiMatch.contains:
+          return '…${c.ssid}…';
+      }
+    }
     if (c is AnyWifi) return appLocalizations.networkRulesConditionAnyWifi;
     if (c is AnyCellular) {
       return appLocalizations.networkRulesConditionAnyCellular;
@@ -223,11 +340,12 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
   }
 
   IconData _conditionIcon(NetworkCondition c, bool hasPermission) {
-    if (c is WifiNamed || c is AnyWifi) {
+    final inner = c is Not ? c.inner : c;
+    if (inner is WifiNamed || inner is AnyWifi) {
       return hasPermission ? Icons.wifi : Icons.warning_amber;
     }
-    if (c is AnyCellular) return Icons.signal_cellular_alt;
-    if (c is AnyEthernet) return Icons.settings_ethernet;
+    if (inner is AnyCellular) return Icons.signal_cellular_alt;
+    if (inner is AnyEthernet) return Icons.settings_ethernet;
     return Icons.layers_outlined;
   }
 
@@ -259,7 +377,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     final hasPermission = permissionState == LocationPermissionState.granted;
     final scheme = Theme.of(context).colorScheme;
     final profiles = ref.watch(profilesProvider);
-    final needsWifi = _conditions.any((c) => c is WifiNamed || c is AnyWifi);
+    final needsWifi = _conditions.any(_isWifiCondition);
 
     return AlertDialog(
       title: Text(
@@ -307,18 +425,12 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
                     avatar: Icon(
                       _conditionIcon(_conditions[i], hasPermission),
                       size: 18,
-                      color:
-                          _conditions[i] is WifiNamed && !hasPermission ||
-                              _conditions[i] is AnyWifi && !hasPermission
+                      color: _isWifiCondition(_conditions[i]) && !hasPermission
                           ? scheme.error
                           : null,
                     ),
                     label: Text(_conditionLabel(_conditions[i], profiles)),
-                    onPressed:
-                        _conditions[i] is WifiNamed ||
-                            _conditions[i] is ProfileIs
-                        ? () => _editCondition(i)
-                        : null,
+                    onPressed: () => _editCondition(i),
                     onDeleted: () => setState(() => _conditions.removeAt(i)),
                   ),
                 ActionChip(

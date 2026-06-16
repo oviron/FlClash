@@ -569,6 +569,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
       "Any Wi-Fi",
     ),
+    "networkRulesConditionEdit": MessageLookupByLibrary.simpleMessage(
+      "Edit condition",
+    ),
+    "networkRulesConditionNegate": MessageLookupByLibrary.simpleMessage(
+      "Not (invert)",
+    ),
     "networkRulesConditionProfileGate": MessageLookupByLibrary.simpleMessage(
       "Only on profile",
     ),
@@ -620,6 +626,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Current decision",
     ),
     "networkRulesTitle": MessageLookupByLibrary.simpleMessage("Network rules"),
+    "networkRulesWifiMatchContains": MessageLookupByLibrary.simpleMessage(
+      "Contains",
+    ),
+    "networkRulesWifiMatchExact": MessageLookupByLibrary.simpleMessage("Exact"),
+    "networkRulesWifiMatchPrefix": MessageLookupByLibrary.simpleMessage(
+      "Starts with",
+    ),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "networkType": MessageLookupByLibrary.simpleMessage("Network type"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Neutral"),

@@ -3864,6 +3864,56 @@ class AppLocalizations {
     );
   }
 
+  /// `Edit condition`
+  String get networkRulesConditionEdit {
+    return Intl.message(
+      'Edit condition',
+      name: 'networkRulesConditionEdit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not (invert)`
+  String get networkRulesConditionNegate {
+    return Intl.message(
+      'Not (invert)',
+      name: 'networkRulesConditionNegate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exact`
+  String get networkRulesWifiMatchExact {
+    return Intl.message(
+      'Exact',
+      name: 'networkRulesWifiMatchExact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Starts with`
+  String get networkRulesWifiMatchPrefix {
+    return Intl.message(
+      'Starts with',
+      name: 'networkRulesWifiMatchPrefix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contains`
+  String get networkRulesWifiMatchContains {
+    return Intl.message(
+      'Contains',
+      name: 'networkRulesWifiMatchContains',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Match all`
   String get networkRulesMatchAll {
     return Intl.message(
