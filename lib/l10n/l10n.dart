@@ -4253,6 +4253,36 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Outside tunnel`
+  String get appRoutingOutside {
+    return Intl.message(
+      'Outside tunnel',
+      name: 'appRoutingOutside',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tunnel change applies on next VPN restart`
+  String get appRoutingTunnelRestart {
+    return Intl.message(
+      'Tunnel change applies on next VPN restart',
+      name: 'appRoutingTunnelRestart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App is outside the tunnel, so its routing target won't apply`
+  String get appRoutingDeadRule {
+    return Intl.message(
+      'App is outside the tunnel, so its routing target won\'t apply',
+      name: 'appRoutingDeadRule',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

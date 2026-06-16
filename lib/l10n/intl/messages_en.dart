@@ -124,11 +124,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "appRouting": MessageLookupByLibrary.simpleMessage("Per-app routing"),
     "appRoutingAllRules": MessageLookupByLibrary.simpleMessage("All rules"),
     "appRoutingApps": MessageLookupByLibrary.simpleMessage("Apps"),
+    "appRoutingDeadRule": MessageLookupByLibrary.simpleMessage(
+      "App is outside the tunnel, so its routing target won\'t apply",
+    ),
     "appRoutingDefault": MessageLookupByLibrary.simpleMessage("Default"),
+    "appRoutingOutside": MessageLookupByLibrary.simpleMessage("Outside tunnel"),
     "appRoutingProcessOff": MessageLookupByLibrary.simpleMessage(
       "Process matching is off in this profile, per-app routing won\'t apply",
     ),
     "appRoutingRulesReapplied": m0,
+    "appRoutingTunnelRestart": MessageLookupByLibrary.simpleMessage(
+      "Tunnel change applies on next VPN restart",
+    ),
     "appearance": MessageLookupByLibrary.simpleMessage("Appearance"),
     "appendSystemDns": MessageLookupByLibrary.simpleMessage(
       "Append System DNS",

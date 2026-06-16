@@ -529,5 +529,8 @@
   "appRoutingDefault": "Default",
   "appRoutingProcessOff": "Process matching is off in this profile, per-app routing won't apply",
   "appRoutingApps": "Apps",
-  "appRoutingAllRules": "All rules"
+  "appRoutingAllRules": "All rules",
+  "appRoutingOutside": "Outside tunnel",
+  "appRoutingTunnelRestart": "Tunnel change applies on next VPN restart",
+  "appRoutingDeadRule": "App is outside the tunnel, so its routing target won't apply"
 }
