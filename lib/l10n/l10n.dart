@@ -4283,6 +4283,16 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `{count} routing target(s) no longer exist after the update`
+  String appRoutingDanglingTargets(Object count) {
+    return Intl.message(
+      '$count routing target(s) no longer exist after the update',
+      name: 'appRoutingDanglingTargets',
+      desc: '',
+      args: [count],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

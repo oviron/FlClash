@@ -6,6 +6,8 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/profile_routing/reapply.dart';
+import 'package:fl_clash/profile_routing/target_validation.dart';
+import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
 import 'package:fl_clash/state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -197,6 +199,7 @@ extension ProfileExtension on Profile {
     final bytes = await _reapplyAppRouting(
       response.data ?? Uint8List.fromList([]),
     );
+    _notifyDanglingTargets(bytes);
     return await copyWith(
       label: label.takeFirstValid([
         utils.getFileNameForDisposition(disposition),
@@ -204,6 +207,25 @@ extension ProfileExtension on Profile {
       ]),
       subscriptionInfo: SubscriptionInfo.formHString(userinfo),
     ).saveFile(bytes);
+  }
+
+  // A subscription refresh can rename/remove a proxy-group a routing rule
+  // points at; warn (keep the rule, no auto-rewrite) so the user can re-target.
+  void _notifyDanglingTargets(Uint8List bytes) {
+    try {
+      final content = utf8.decode(bytes);
+      final dangling = danglingTargets(
+        ProfileRulesDocument(content).rules,
+        configTargets(content),
+      );
+      if (dangling.isNotEmpty) {
+        globalState.showNotifier(
+          appLocalizations.appRoutingDanglingTargets(dangling.length),
+        );
+      }
+    } catch (e) {
+      commonPrint.log('dangling-target check failed: $e');
+    }
   }
 
   // Carry the user's per-app routing rules across a subscription refresh

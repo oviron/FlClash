@@ -532,5 +532,6 @@
   "appRoutingAllRules": "All rules",
   "appRoutingOutside": "Outside tunnel",
   "appRoutingTunnelRestart": "Tunnel change applies on next VPN restart",
-  "appRoutingDeadRule": "App is outside the tunnel, so its routing target won't apply"
+  "appRoutingDeadRule": "App is outside the tunnel, so its routing target won't apply",
+  "appRoutingDanglingTargets": "{count} routing target(s) no longer exist after the update"
 }
