@@ -3854,6 +3854,46 @@ class AppLocalizations {
     );
   }
 
+  /// `Add condition`
+  String get networkRulesAddCondition {
+    return Intl.message(
+      'Add condition',
+      name: 'networkRulesAddCondition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Match all`
+  String get networkRulesMatchAll {
+    return Intl.message(
+      'Match all',
+      name: 'networkRulesMatchAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Match any`
+  String get networkRulesMatchAny {
+    return Intl.message(
+      'Match any',
+      name: 'networkRulesMatchAny',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AND`
+  String get networkRulesJoinAnd {
+    return Intl.message('AND', name: 'networkRulesJoinAnd', desc: '', args: []);
+  }
+
+  /// `OR`
+  String get networkRulesJoinOr {
+    return Intl.message('OR', name: 'networkRulesJoinOr', desc: '', args: []);
+  }
+
   /// `Delete this rule?`
   String get networkRulesConfirmDelete {
     return Intl.message(

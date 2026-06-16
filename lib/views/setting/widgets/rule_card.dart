@@ -56,9 +56,23 @@ class RuleCard extends ConsumerWidget {
     // No valid conditions survived decoding (e.g. a rule authored by a newer
     // version): surface it as invalid instead of a silently-dead "active" row.
     final isInvalid = rule.conditions.isEmpty;
+    final join = rule.matchMode == NetworkMatchMode.any
+        ? appLocalizations.networkRulesJoinOr
+        : appLocalizations.networkRulesJoinAnd;
     final chips = <Widget>[
-      for (final c in rule.conditions)
-        _ConditionChip(condition: c, hasPermission: hasPermission),
+      for (var i = 0; i < rule.conditions.length; i++) ...[
+        if (i > 0)
+          Text(
+            join,
+            style: context.textTheme.labelSmall?.copyWith(
+              color: scheme.onSurfaceVariant,
+            ),
+          ),
+        _ConditionChip(
+          condition: rule.conditions[i],
+          hasPermission: hasPermission,
+        ),
+      ],
     ];
 
     return Opacity(

@@ -554,6 +554,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Turn VPN on",
     ),
     "networkRulesAdd": MessageLookupByLibrary.simpleMessage("Add rule"),
+    "networkRulesAddCondition": MessageLookupByLibrary.simpleMessage(
+      "Add condition",
+    ),
     "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
       "Cellular",
     ),
@@ -603,6 +606,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
       "Unsupported condition, update the app",
     ),
+    "networkRulesJoinAnd": MessageLookupByLibrary.simpleMessage("AND"),
+    "networkRulesJoinOr": MessageLookupByLibrary.simpleMessage("OR"),
+    "networkRulesMatchAll": MessageLookupByLibrary.simpleMessage("Match all"),
+    "networkRulesMatchAny": MessageLookupByLibrary.simpleMessage("Match any"),
     "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
       "Manual choice kept until the network changes",
     ),
