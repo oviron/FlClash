@@ -4293,6 +4293,26 @@ class AppLocalizations {
       args: [count],
     );
   }
+
+  /// `Search apps`
+  String get appRoutingSearchHint {
+    return Intl.message(
+      'Search apps',
+      name: 'appRoutingSearchHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System apps`
+  String get appRoutingShowSystem {
+    return Intl.message(
+      'System apps',
+      name: 'appRoutingShowSystem',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

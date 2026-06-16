@@ -137,6 +137,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Process matching is off in this profile, per-app routing won\'t apply",
     ),
     "appRoutingRulesReapplied": m1,
+    "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage("Search apps"),
+    "appRoutingShowSystem": MessageLookupByLibrary.simpleMessage("System apps"),
     "appRoutingTunnelRestart": MessageLookupByLibrary.simpleMessage(
       "Tunnel change applies on next VPN restart",
     ),
