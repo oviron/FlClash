@@ -37,7 +37,7 @@ Set<String> configTargets(String yaml) {
 }
 
 /// Targets of typed rules that resolve to neither a builtin policy nor a name
-/// in [valid] — i.e. dangling after a subscription renamed/removed a group.
+/// in [valid], i.e. dangling after a subscription renamed/removed a group.
 /// De-duplicated, order-preserving. Passthrough (logical) rules are skipped.
 List<String> danglingTargets(List<RoutingRule> rules, Set<String> valid) {
   final out = <String>[];

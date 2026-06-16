@@ -76,7 +76,7 @@ class NetworkSnapshot {
 
 /// Everything a condition may match against: the network snapshot plus the
 /// active profile id (for profile-gate conditions). The profile axis is kept
-/// out of [NetworkSnapshot] on purpose — it is app state, not network state.
+/// out of [NetworkSnapshot] on purpose: it is app state, not network state.
 class NetworkMatchContext {
   final NetworkSnapshot snapshot;
   final int? activeProfileId;
@@ -133,7 +133,7 @@ WifiMatch _wifiMatchFromName(String? name) => WifiMatch.values.firstWhere(
 
 /// Matches a Wi-Fi by SSID, [exact] (case-insensitive) by default, or by
 /// [prefix]/[contains]. If the snapshot has no SSID (no permission or Android
-/// stub), this condition does NOT match — the engine moves on.
+/// stub), this condition does NOT match, so the engine moves on.
 class WifiNamed extends NetworkCondition {
   final String ssid;
   final WifiMatch match;
