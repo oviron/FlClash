@@ -3724,6 +3724,36 @@ class AppLocalizations {
     );
   }
 
+  /// `Keep VPN`
+  String get networkRulesActionLeave {
+    return Intl.message(
+      'Keep VPN',
+      name: 'networkRulesActionLeave',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile`
+  String get networkRulesActionProfile {
+    return Intl.message(
+      'Profile',
+      name: 'networkRulesActionProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Don't switch`
+  String get networkRulesActionNoProfile {
+    return Intl.message(
+      'Don\'t switch',
+      name: 'networkRulesActionNoProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `ON`
   String get networkRulesActionShortOn {
     return Intl.message(

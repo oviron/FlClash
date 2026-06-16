@@ -1,7 +1,9 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/views/setting/location_permission_gate.dart';
 import 'package:fl_clash/network_rules/probe.dart';
+import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/recent_ssids.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +38,8 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
 
   late _ConditionKind _conditionKind;
   String? _wifiNamedSsid;
-  late NetworkAction _action;
+  late NetworkVpnMode _vpn;
+  int? _profileId;
 
   @override
   void initState() {
@@ -46,7 +49,8 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     if (initial == null) {
       // New rule: sensible default — cellular triggers VPN on.
       _conditionKind = _ConditionKind.anyCellular;
-      _action = NetworkAction.turnOn;
+      _vpn = NetworkVpnMode.turnOn;
+      _profileId = null;
     } else {
       // Pre-fill from the rule. Conditions are stored as a list for forward
       // compat but the UI treats it as a single condition: take the first
@@ -62,7 +66,8 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
       } else {
         _conditionKind = _ConditionKind.anyCellular;
       }
-      _action = initial.action;
+      _vpn = initial.action.vpn;
+      _profileId = initial.action.profileId;
     }
   }
 
@@ -75,6 +80,10 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
   bool get _isValid {
     if (_conditionKind == _ConditionKind.wifiNamed &&
         (_wifiNamedSsid == null || _wifiNamedSsid!.isEmpty)) {
+      return false;
+    }
+    // A rule that neither changes the VPN nor switches a profile is a no-op.
+    if (_vpn == NetworkVpnMode.leave && _profileId == null) {
       return false;
     }
     return true;
@@ -117,11 +126,40 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
       id: initial?.id ?? 0,
       name: rawName.isEmpty ? null : rawName,
       conditions: [condition],
-      action: _action,
+      action: NetworkAction(vpn: _vpn, profileId: _profileId),
       priority: initial?.priority ?? 0,
       enabled: initial?.enabled ?? true,
     );
     Navigator.of(context).pop(result);
+  }
+
+  // Drop a stale target (profile deleted since the rule was authored) so the
+  // dropdown never asserts on a value absent from its items.
+  int? _validProfileId(List<Profile> profiles) {
+    if (_profileId == null) return null;
+    return profiles.any((p) => p.id == _profileId) ? _profileId : null;
+  }
+
+  String _vpnLabel(NetworkVpnMode mode) {
+    switch (mode) {
+      case NetworkVpnMode.turnOn:
+        return appLocalizations.networkRulesActionTurnOn;
+      case NetworkVpnMode.turnOff:
+        return appLocalizations.networkRulesActionTurnOff;
+      case NetworkVpnMode.leave:
+        return appLocalizations.networkRulesActionLeave;
+    }
+  }
+
+  Color _vpnColor(ColorScheme scheme, NetworkVpnMode mode) {
+    switch (mode) {
+      case NetworkVpnMode.turnOn:
+        return scheme.primaryContainer;
+      case NetworkVpnMode.turnOff:
+        return scheme.errorContainer;
+      case NetworkVpnMode.leave:
+        return scheme.surfaceContainerHighest;
+    }
   }
 
   @override
@@ -129,6 +167,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     final permissionState = ref.watch(locationPermissionProvider);
     final hasPermission = permissionState == LocationPermissionState.granted;
     final scheme = Theme.of(context).colorScheme;
+    final profiles = ref.watch(profilesProvider);
 
     return AlertDialog(
       title: Text(
@@ -200,32 +239,23 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
               ),
             ),
             const SizedBox(height: 16),
-            Row(
+            Wrap(
+              spacing: 8,
               children: [
-                Expanded(
-                  child: ChoiceChip(
-                    selected: _action == NetworkAction.turnOn,
-                    selectedColor: scheme.primaryContainer,
-                    label: Center(
-                      child: Text(appLocalizations.networkRulesActionTurnOn),
-                    ),
-                    onSelected: (_) =>
-                        setState(() => _action = NetworkAction.turnOn),
+                for (final mode in NetworkVpnMode.values)
+                  ChoiceChip(
+                    selected: _vpn == mode,
+                    selectedColor: _vpnColor(scheme, mode),
+                    label: Text(_vpnLabel(mode)),
+                    onSelected: (_) => setState(() => _vpn = mode),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ChoiceChip(
-                    selected: _action == NetworkAction.turnOff,
-                    selectedColor: scheme.errorContainer,
-                    label: Center(
-                      child: Text(appLocalizations.networkRulesActionTurnOff),
-                    ),
-                    onSelected: (_) =>
-                        setState(() => _action = NetworkAction.turnOff),
-                  ),
-                ),
               ],
+            ),
+            const SizedBox(height: 16),
+            _ProfileDropdown(
+              value: _validProfileId(profiles),
+              profiles: profiles,
+              onChanged: (id) => setState(() => _profileId = id),
             ),
           ],
         ),
@@ -353,6 +383,48 @@ class _WifiPickerDialogState extends State<_WifiPickerDialog> {
         FilledButton(
           onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
           child: Text(appLocalizations.save),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileDropdown extends StatelessWidget {
+  final int? value;
+  final List<Profile> profiles;
+  final ValueChanged<int?> onChanged;
+
+  const _ProfileDropdown({
+    required this.value,
+    required this.profiles,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(appLocalizations.networkRulesActionProfile),
+        const SizedBox(width: 12),
+        Expanded(
+          child: DropdownButton<int?>(
+            isExpanded: true,
+            value: value,
+            items: [
+              DropdownMenuItem(
+                value: null,
+                child: Text(appLocalizations.networkRulesActionNoProfile),
+              ),
+              for (final profile in profiles)
+                DropdownMenuItem(
+                  value: profile.id,
+                  child: Text(
+                    profile.label.isNotEmpty ? profile.label : '#${profile.id}',
+                  ),
+                ),
+            ],
+            onChanged: onChanged,
+          ),
         ),
       ],
     );

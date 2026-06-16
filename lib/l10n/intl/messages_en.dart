@@ -535,6 +535,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkException": MessageLookupByLibrary.simpleMessage(
       "Network exception, please check your connection and try again",
     ),
+    "networkRulesActionLeave": MessageLookupByLibrary.simpleMessage("Keep VPN"),
+    "networkRulesActionNoProfile": MessageLookupByLibrary.simpleMessage(
+      "Don\'t switch",
+    ),
+    "networkRulesActionProfile": MessageLookupByLibrary.simpleMessage(
+      "Profile",
+    ),
     "networkRulesActionShortLeave": MessageLookupByLibrary.simpleMessage(
       "KEEP",
     ),
