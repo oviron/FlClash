@@ -284,8 +284,12 @@ class NetworkConditionListCodec {
   }
 }
 
-/// A single network rule: when ALL conditions match the current snapshot,
-/// produce [action]. Lower [priority] runs first.
+/// How a rule's conditions combine: [all] = AND (every condition), [any] = OR
+/// (at least one). Default [all] preserves legacy single/AND rules.
+enum NetworkMatchMode { all, any }
+
+/// A single network rule: when its conditions match (per [matchMode]) the
+/// current context, produce [action]. Lower [priority] runs first.
 class NetworkRule {
   /// Drift-assigned id. 0 means "not yet persisted" and is the marker the
   /// repository uses to switch between insert and update.
@@ -294,6 +298,8 @@ class NetworkRule {
   final String? name;
 
   final List<NetworkCondition> conditions;
+
+  final NetworkMatchMode matchMode;
 
   final NetworkAction action;
 
@@ -306,6 +312,7 @@ class NetworkRule {
     this.id = 0,
     this.name,
     this.conditions = const [],
+    this.matchMode = NetworkMatchMode.all,
     required this.action,
     required this.priority,
     this.enabled = true,
@@ -321,6 +328,7 @@ class NetworkRule {
     int? id,
     String? name,
     List<NetworkCondition>? conditions,
+    NetworkMatchMode? matchMode,
     NetworkAction? action,
     int? priority,
     bool? enabled,
@@ -329,6 +337,7 @@ class NetworkRule {
       id: id ?? this.id,
       name: name ?? this.name,
       conditions: conditions ?? this.conditions,
+      matchMode: matchMode ?? this.matchMode,
       action: action ?? this.action,
       priority: priority ?? this.priority,
       enabled: enabled ?? this.enabled,
@@ -341,6 +350,7 @@ class NetworkRule {
       other is NetworkRule &&
           other.id == id &&
           other.name == name &&
+          other.matchMode == matchMode &&
           other.action == action &&
           other.priority == priority &&
           other.enabled == enabled &&
@@ -350,6 +360,7 @@ class NetworkRule {
   int get hashCode => Object.hash(
     id,
     name,
+    matchMode,
     action,
     priority,
     enabled,
@@ -359,7 +370,8 @@ class NetworkRule {
   @override
   String toString() =>
       'NetworkRule(id: $id, name: $name, conditions: $conditions, '
-      'action: $action, priority: $priority, enabled: $enabled)';
+      'matchMode: $matchMode, action: $action, priority: $priority, '
+      'enabled: $enabled)';
 }
 
 bool _conditionsEqual(List<NetworkCondition> a, List<NetworkCondition> b) {

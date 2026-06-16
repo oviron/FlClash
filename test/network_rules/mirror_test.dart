@@ -32,6 +32,7 @@ void main() {
       final rule = rules.first as Map<String, dynamic>;
       expect(rule['id'], 1);
       expect(rule['name'], 'Home');
+      expect(rule['match'], 'all');
       expect(rule['action'], 'turnOff');
       expect(rule['priority'], 0);
       expect(rule['enabled'], true);

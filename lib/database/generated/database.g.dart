@@ -1698,6 +1698,18 @@ class $NetworkRulesTable extends NetworkRules
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _matchModeMeta = const VerificationMeta(
+    'matchMode',
+  );
+  @override
+  late final GeneratedColumn<int> matchMode = GeneratedColumn<int>(
+    'match_mode',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _actionMeta = const VerificationMeta('action');
   @override
   late final GeneratedColumn<int> action = GeneratedColumn<int>(
@@ -1749,6 +1761,7 @@ class $NetworkRulesTable extends NetworkRules
     id,
     name,
     conditions,
+    matchMode,
     action,
     actionProfileId,
     priority,
@@ -1782,6 +1795,12 @@ class $NetworkRulesTable extends NetworkRules
       );
     } else if (isInserting) {
       context.missing(_conditionsMeta);
+    }
+    if (data.containsKey('match_mode')) {
+      context.handle(
+        _matchModeMeta,
+        matchMode.isAcceptableOrUnknown(data['match_mode']!, _matchModeMeta),
+      );
     }
     if (data.containsKey('action')) {
       context.handle(
@@ -1835,6 +1854,10 @@ class $NetworkRulesTable extends NetworkRules
         DriftSqlType.string,
         data['${effectivePrefix}conditions'],
       )!,
+      matchMode: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}match_mode'],
+      )!,
       action: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}action'],
@@ -1867,6 +1890,9 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
   /// JSON-encoded `List<NetworkCondition>`.
   final String conditions;
 
+  /// How conditions combine as `NetworkMatchMode.index` (0=all/AND, 1=any/OR).
+  final int matchMode;
+
   /// VPN mode as `NetworkVpnMode.index` (0=turnOn, 1=turnOff, 2=leave).
   final int action;
 
@@ -1878,6 +1904,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
     required this.id,
     this.name,
     required this.conditions,
+    required this.matchMode,
     required this.action,
     this.actionProfileId,
     required this.priority,
@@ -1891,6 +1918,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
       map['name'] = Variable<String>(name);
     }
     map['conditions'] = Variable<String>(conditions);
+    map['match_mode'] = Variable<int>(matchMode);
     map['action'] = Variable<int>(action);
     if (!nullToAbsent || actionProfileId != null) {
       map['action_profile_id'] = Variable<int>(actionProfileId);
@@ -1905,6 +1933,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
       id: Value(id),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       conditions: Value(conditions),
+      matchMode: Value(matchMode),
       action: Value(action),
       actionProfileId: actionProfileId == null && nullToAbsent
           ? const Value.absent()
@@ -1923,6 +1952,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String?>(json['name']),
       conditions: serializer.fromJson<String>(json['conditions']),
+      matchMode: serializer.fromJson<int>(json['matchMode']),
       action: serializer.fromJson<int>(json['action']),
       actionProfileId: serializer.fromJson<int?>(json['actionProfileId']),
       priority: serializer.fromJson<int>(json['priority']),
@@ -1936,6 +1966,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String?>(name),
       'conditions': serializer.toJson<String>(conditions),
+      'matchMode': serializer.toJson<int>(matchMode),
       'action': serializer.toJson<int>(action),
       'actionProfileId': serializer.toJson<int?>(actionProfileId),
       'priority': serializer.toJson<int>(priority),
@@ -1947,6 +1978,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
     int? id,
     Value<String?> name = const Value.absent(),
     String? conditions,
+    int? matchMode,
     int? action,
     Value<int?> actionProfileId = const Value.absent(),
     int? priority,
@@ -1955,6 +1987,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
     id: id ?? this.id,
     name: name.present ? name.value : this.name,
     conditions: conditions ?? this.conditions,
+    matchMode: matchMode ?? this.matchMode,
     action: action ?? this.action,
     actionProfileId: actionProfileId.present
         ? actionProfileId.value
@@ -1969,6 +2002,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
       conditions: data.conditions.present
           ? data.conditions.value
           : this.conditions,
+      matchMode: data.matchMode.present ? data.matchMode.value : this.matchMode,
       action: data.action.present ? data.action.value : this.action,
       actionProfileId: data.actionProfileId.present
           ? data.actionProfileId.value
@@ -1984,6 +2018,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('conditions: $conditions, ')
+          ..write('matchMode: $matchMode, ')
           ..write('action: $action, ')
           ..write('actionProfileId: $actionProfileId, ')
           ..write('priority: $priority, ')
@@ -1997,6 +2032,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
     id,
     name,
     conditions,
+    matchMode,
     action,
     actionProfileId,
     priority,
@@ -2009,6 +2045,7 @@ class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
           other.id == this.id &&
           other.name == this.name &&
           other.conditions == this.conditions &&
+          other.matchMode == this.matchMode &&
           other.action == this.action &&
           other.actionProfileId == this.actionProfileId &&
           other.priority == this.priority &&
@@ -2019,6 +2056,7 @@ class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
   final Value<int> id;
   final Value<String?> name;
   final Value<String> conditions;
+  final Value<int> matchMode;
   final Value<int> action;
   final Value<int?> actionProfileId;
   final Value<int> priority;
@@ -2027,6 +2065,7 @@ class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.conditions = const Value.absent(),
+    this.matchMode = const Value.absent(),
     this.action = const Value.absent(),
     this.actionProfileId = const Value.absent(),
     this.priority = const Value.absent(),
@@ -2036,6 +2075,7 @@ class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     required String conditions,
+    this.matchMode = const Value.absent(),
     required int action,
     this.actionProfileId = const Value.absent(),
     required int priority,
@@ -2047,6 +2087,7 @@ class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? conditions,
+    Expression<int>? matchMode,
     Expression<int>? action,
     Expression<int>? actionProfileId,
     Expression<int>? priority,
@@ -2056,6 +2097,7 @@ class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (conditions != null) 'conditions': conditions,
+      if (matchMode != null) 'match_mode': matchMode,
       if (action != null) 'action': action,
       if (actionProfileId != null) 'action_profile_id': actionProfileId,
       if (priority != null) 'priority': priority,
@@ -2067,6 +2109,7 @@ class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
     Value<int>? id,
     Value<String?>? name,
     Value<String>? conditions,
+    Value<int>? matchMode,
     Value<int>? action,
     Value<int?>? actionProfileId,
     Value<int>? priority,
@@ -2076,6 +2119,7 @@ class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
       id: id ?? this.id,
       name: name ?? this.name,
       conditions: conditions ?? this.conditions,
+      matchMode: matchMode ?? this.matchMode,
       action: action ?? this.action,
       actionProfileId: actionProfileId ?? this.actionProfileId,
       priority: priority ?? this.priority,
@@ -2094,6 +2138,9 @@ class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
     }
     if (conditions.present) {
       map['conditions'] = Variable<String>(conditions.value);
+    }
+    if (matchMode.present) {
+      map['match_mode'] = Variable<int>(matchMode.value);
     }
     if (action.present) {
       map['action'] = Variable<int>(action.value);
@@ -2116,6 +2163,7 @@ class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('conditions: $conditions, ')
+          ..write('matchMode: $matchMode, ')
           ..write('action: $action, ')
           ..write('actionProfileId: $actionProfileId, ')
           ..write('priority: $priority, ')
@@ -3481,6 +3529,7 @@ typedef $$NetworkRulesTableCreateCompanionBuilder =
       Value<int> id,
       Value<String?> name,
       required String conditions,
+      Value<int> matchMode,
       required int action,
       Value<int?> actionProfileId,
       required int priority,
@@ -3491,6 +3540,7 @@ typedef $$NetworkRulesTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String?> name,
       Value<String> conditions,
+      Value<int> matchMode,
       Value<int> action,
       Value<int?> actionProfileId,
       Value<int> priority,
@@ -3518,6 +3568,11 @@ class $$NetworkRulesTableFilterComposer
 
   ColumnFilters<String> get conditions => $composableBuilder(
     column: $table.conditions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get matchMode => $composableBuilder(
+    column: $table.matchMode,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3566,6 +3621,11 @@ class $$NetworkRulesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get matchMode => $composableBuilder(
+    column: $table.matchMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get action => $composableBuilder(
     column: $table.action,
     builder: (column) => ColumnOrderings(column),
@@ -3606,6 +3666,9 @@ class $$NetworkRulesTableAnnotationComposer
     column: $table.conditions,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get matchMode =>
+      $composableBuilder(column: $table.matchMode, builder: (column) => column);
 
   GeneratedColumn<int> get action =>
       $composableBuilder(column: $table.action, builder: (column) => column);
@@ -3656,6 +3719,7 @@ class $$NetworkRulesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String?> name = const Value.absent(),
                 Value<String> conditions = const Value.absent(),
+                Value<int> matchMode = const Value.absent(),
                 Value<int> action = const Value.absent(),
                 Value<int?> actionProfileId = const Value.absent(),
                 Value<int> priority = const Value.absent(),
@@ -3664,6 +3728,7 @@ class $$NetworkRulesTableTableManager
                 id: id,
                 name: name,
                 conditions: conditions,
+                matchMode: matchMode,
                 action: action,
                 actionProfileId: actionProfileId,
                 priority: priority,
@@ -3674,6 +3739,7 @@ class $$NetworkRulesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String?> name = const Value.absent(),
                 required String conditions,
+                Value<int> matchMode = const Value.absent(),
                 required int action,
                 Value<int?> actionProfileId = const Value.absent(),
                 required int priority,
@@ -3682,6 +3748,7 @@ class $$NetworkRulesTableTableManager
                 id: id,
                 name: name,
                 conditions: conditions,
+                matchMode: matchMode,
                 action: action,
                 actionProfileId: actionProfileId,
                 priority: priority,

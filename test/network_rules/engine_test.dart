@@ -342,4 +342,79 @@ void main() {
       expect(condition.specificity, 2);
     });
   });
+
+  group('matchMode', () {
+    test('any matches when at least one condition matches', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [WifiNamed('A'), WifiNamed('B')],
+          matchMode: NetworkMatchMode.any,
+          action: NetworkAction.turnOn,
+          priority: 0,
+        ),
+      ];
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.wifi(ssid: 'A'),
+        ),
+        NetworkAction.turnOn,
+      );
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.wifi(ssid: 'B'),
+        ),
+        NetworkAction.turnOn,
+      );
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.wifi(ssid: 'C'),
+        ),
+        isNull,
+      );
+    });
+
+    test('all (default) requires every condition', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [AnyCellular(), ProfileIs(5)],
+          action: NetworkAction.turnOff,
+          priority: 0,
+        ),
+      ];
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.cellular(),
+          activeProfileId: 5,
+        ),
+        NetworkAction.turnOff,
+      );
+      expect(
+        evaluate(
+          rules: rules,
+          snapshot: const NetworkSnapshot.cellular(),
+          activeProfileId: 9,
+        ),
+        isNull,
+      );
+    });
+
+    test('any with empty conditions still does not match', () {
+      final rules = [
+        const NetworkRule(
+          conditions: [],
+          matchMode: NetworkMatchMode.any,
+          action: NetworkAction.turnOn,
+          priority: 0,
+        ),
+      ];
+      expect(
+        evaluate(rules: rules, snapshot: const NetworkSnapshot.cellular()),
+        isNull,
+      );
+    });
+  });
 }

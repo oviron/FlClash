@@ -17,7 +17,10 @@ class NetworkRulesEngineTest {
         profileId: Int? = null,
         selectedMap: Map<String, String> = emptyMap(),
         profileName: String? = null,
-    ) = NetworkRule(id, name, conditions, action, priority, enabled, profileId, selectedMap, profileName)
+        matchMode: NetworkMatchMode = NetworkMatchMode.ALL,
+    ) = NetworkRule(
+        id, name, conditions, action, priority, enabled, profileId, selectedMap, profileName, matchMode,
+    )
 
     @Test
     fun emptyRulesNoMatch() {
@@ -251,6 +254,49 @@ class NetworkRulesEngineTest {
         assertEquals(
             NetworkDecision.STOP,
             NetworkRulesEngine.resolve(mirror, NetworkSnapshot(NetworkRuleType.CELLULAR)),
+        )
+    }
+
+    @Test
+    fun anyModeMatchesAnyCondition() {
+        val rules = listOf(
+            rule(
+                listOf(NetworkCondition.WifiNamed("A"), NetworkCondition.WifiNamed("B")),
+                NetworkRuleAction.TURN_ON,
+                matchMode = NetworkMatchMode.ANY,
+            ),
+        )
+        assertEquals(
+            NetworkRuleAction.TURN_ON,
+            NetworkRulesEngine.evaluate(rules, NetworkSnapshot(NetworkRuleType.WIFI, "B")),
+        )
+        assertNull(NetworkRulesEngine.evaluate(rules, NetworkSnapshot(NetworkRuleType.WIFI, "C")))
+    }
+
+    @Test
+    fun codecDefaultsMatchModeToAll() {
+        val json = """
+            {"version":3,"enabled":true,"defaultAction":"leaveAsIs",
+             "rules":[{"id":1,"actionVpn":"turnOff","priority":0,"enabled":true,
+                       "conditions":[{"kind":"any_cellular"}]}]}
+        """.trimIndent()
+        val mirror = NetworkRulesCodec.parse(json)
+        assertEquals(NetworkMatchMode.ALL, mirror.rules[0].matchMode)
+    }
+
+    @Test
+    fun codecParsesAnyMatchMode() {
+        val json = """
+            {"version":3,"enabled":true,"defaultAction":"leaveAsIs",
+             "rules":[{"id":1,"match":"any","actionVpn":"turnOn","priority":0,"enabled":true,
+                       "conditions":[{"kind":"wifi_named","ssid":"A"},
+                                     {"kind":"wifi_named","ssid":"B"}]}]}
+        """.trimIndent()
+        val mirror = NetworkRulesCodec.parse(json)
+        assertEquals(NetworkMatchMode.ANY, mirror.rules[0].matchMode)
+        assertEquals(
+            NetworkDecision.START,
+            NetworkRulesEngine.resolve(mirror, NetworkSnapshot(NetworkRuleType.WIFI, "B")),
         )
     }
 }

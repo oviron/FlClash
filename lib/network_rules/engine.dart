@@ -28,8 +28,10 @@ NetworkAction? evaluate({
   for (final rule in ordered) {
     if (!rule.enabled) continue;
     if (rule.conditions.isEmpty) continue;
-    final allMatch = rule.conditions.every((c) => c.matches(ctx));
-    if (allMatch) return rule.action;
+    final ok = rule.matchMode == NetworkMatchMode.any
+        ? rule.conditions.any((c) => c.matches(ctx))
+        : rule.conditions.every((c) => c.matches(ctx));
+    if (ok) return rule.action;
   }
 
   return null;

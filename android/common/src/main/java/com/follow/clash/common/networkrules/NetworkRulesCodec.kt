@@ -55,7 +55,11 @@ object NetworkRulesCodec {
         actionProfileId = obj.optIntOrNull("actionProfileId"),
         actionSelectedMap = parseStringMap(obj.getAsJsonObjectOrNull("actionSelectedMap")),
         actionProfileName = obj.optString("actionProfileName"),
+        matchMode = parseMatchMode(obj.optString("match")),
     )
+
+    private fun parseMatchMode(value: String?): NetworkMatchMode =
+        if (value == "any") NetworkMatchMode.ANY else NetworkMatchMode.ALL
 
     private fun parseConditions(array: JsonArray?): List<NetworkCondition> {
         if (array == null) return emptyList()

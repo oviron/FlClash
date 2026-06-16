@@ -12,6 +12,9 @@ class NetworkRules extends Table {
   /// JSON-encoded `List<NetworkCondition>`.
   TextColumn get conditions => text()();
 
+  /// How conditions combine as `NetworkMatchMode.index` (0=all/AND, 1=any/OR).
+  IntColumn get matchMode => integer().withDefault(const Constant(0))();
+
   /// VPN mode as `NetworkVpnMode.index` (0=turnOn, 1=turnOff, 2=leave).
   IntColumn get action => integer()();
 
@@ -106,6 +109,9 @@ extension RawNetworkRuleExt on RawNetworkRule {
       id: id,
       name: name,
       conditions: NetworkConditionListCodec.decode(conditions),
+      matchMode: matchMode >= 0 && matchMode < NetworkMatchMode.values.length
+          ? NetworkMatchMode.values[matchMode]
+          : NetworkMatchMode.all,
       action: NetworkAction(
         vpn: action >= 0 && action < NetworkVpnMode.values.length
             ? NetworkVpnMode.values[action]
@@ -124,6 +130,7 @@ extension NetworkRulesCompanionExt on NetworkRule {
       id: id == 0 ? const Value.absent() : Value(id),
       name: Value(name),
       conditions: Value(NetworkConditionListCodec.encode(conditions)),
+      matchMode: Value(matchMode.index),
       action: Value(action.vpn.index),
       actionProfileId: Value(action.profileId),
       priority: Value(priority),

@@ -13,9 +13,12 @@ object NetworkRulesEngine {
     ): NetworkRule? {
         val ctx = MatchContext(snapshot, activeProfileId)
         for (rule in rules.sortedWith(networkRuleComparator)) {
-            val matches = rule.enabled &&
-                rule.conditions.isNotEmpty() &&
+            if (!rule.enabled || rule.conditions.isEmpty()) continue
+            val matches = if (rule.matchMode == NetworkMatchMode.ANY) {
+                rule.conditions.any { it.matches(ctx) }
+            } else {
                 rule.conditions.all { it.matches(ctx) }
+            }
             if (matches) return rule
         }
         return null

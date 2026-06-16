@@ -12,7 +12,7 @@ import 'package:path/path.dart';
 import 'model.dart';
 
 const networkRulesMirrorFileName = 'network-rules.json';
-const networkRulesMirrorVersion = 2;
+const networkRulesMirrorVersion = 3;
 
 String encodeNetworkRulesMirror({
   required bool enabled,
@@ -32,6 +32,7 @@ String encodeNetworkRulesMirror({
         {
           'id': r.id,
           'name': r.name,
+          'match': r.matchMode.name,
           // Legacy on/off field for a downgraded resident (kept one release).
           'action': r.action.vpn == NetworkVpnMode.turnOff
               ? 'turnOff'

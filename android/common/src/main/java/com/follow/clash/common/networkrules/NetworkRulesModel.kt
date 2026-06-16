@@ -4,6 +4,9 @@ enum class NetworkRuleType { WIFI, CELLULAR, ETHERNET, NONE }
 
 enum class NetworkRuleAction { TURN_ON, TURN_OFF, LEAVE }
 
+// How a rule's conditions combine. Mirror of the Dart NetworkMatchMode.
+enum class NetworkMatchMode { ALL, ANY }
+
 enum class DefaultNetworkAction { TURN_ON, TURN_OFF, LEAVE_AS_IS }
 
 enum class NetworkDecision { START, STOP, LEAVE_AS_IS }
@@ -65,6 +68,7 @@ data class NetworkRule(
     val actionProfileId: Int? = null,
     val actionSelectedMap: Map<String, String> = emptyMap(),
     val actionProfileName: String? = null,
+    val matchMode: NetworkMatchMode = NetworkMatchMode.ALL,
 )
 
 // What the runtime should actuate: the VPN decision plus, when a rule targets a
