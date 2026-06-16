@@ -12,6 +12,7 @@ import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/access.dart';
+import 'package:fl_clash/views/profiles/app_routing.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -338,6 +339,14 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
         title: Text(appLocalizations.profileAppAccess),
         trailing: const Icon(Icons.chevron_right),
         onTap: _handleAppAccess,
+      ),
+      ListItem(
+        title: Text(appLocalizations.appRouting),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => BaseNavigator.push(
+          context,
+          AppRoutingView(profileId: widget.profile.id),
+        ),
       ),
       ValueListenableBuilder<FileInfo?>(
         valueListenable: _fileInfoNotifier,

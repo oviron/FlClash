@@ -524,5 +524,8 @@
   "remoteRecoveryDesc": "Recover data from WebDAV",
   "localRecoveryDesc": "Recover data from file",
   "zoom": "Zoom",
-  "appRoutingRulesReapplied": "Per-app routing updated: {overlaid} re-added, {conflicts} kept yours"
+  "appRoutingRulesReapplied": "Per-app routing updated: {overlaid} re-added, {conflicts} kept yours",
+  "appRouting": "Per-app routing",
+  "appRoutingDefault": "Default",
+  "appRoutingProcessOff": "Process matching is off in this profile, per-app routing won't apply"
 }

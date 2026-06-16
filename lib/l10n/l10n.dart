@@ -4208,6 +4208,36 @@ class AppLocalizations {
       args: [overlaid, conflicts],
     );
   }
+
+  /// `Per-app routing`
+  String get appRouting {
+    return Intl.message(
+      'Per-app routing',
+      name: 'appRouting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default`
+  String get appRoutingDefault {
+    return Intl.message(
+      'Default',
+      name: 'appRoutingDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Process matching is off in this profile, per-app routing won't apply`
+  String get appRoutingProcessOff {
+    return Intl.message(
+      'Process matching is off in this profile, per-app routing won\'t apply',
+      name: 'appRoutingProcessOff',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

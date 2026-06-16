@@ -121,6 +121,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "appAccessControl": MessageLookupByLibrary.simpleMessage(
       "App access control",
     ),
+    "appRouting": MessageLookupByLibrary.simpleMessage("Per-app routing"),
+    "appRoutingDefault": MessageLookupByLibrary.simpleMessage("Default"),
+    "appRoutingProcessOff": MessageLookupByLibrary.simpleMessage(
+      "Process matching is off in this profile, per-app routing won\'t apply",
+    ),
     "appRoutingRulesReapplied": m0,
     "appearance": MessageLookupByLibrary.simpleMessage("Appearance"),
     "appendSystemDns": MessageLookupByLibrary.simpleMessage(
