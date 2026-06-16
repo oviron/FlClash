@@ -9,14 +9,10 @@ abstract final class ServiceMethod {
   static const syncState = 'syncState';
   static const start = 'start';
   static const stop = 'stop';
-  static const restartByeDpi = 'restartByeDpi';
-  static const startStrategyTest = 'startStrategyTest';
-  static const stopStrategyTest = 'stopStrategyTest';
   static const requestStop = 'requestStop';
   // Inbound (Kotlin → Dart)
   static const event = 'event';
   static const crash = 'crash';
-  static const strategyTestProgress = 'strategyTestProgress';
 }
 
 abstract final class LibraryMethod {

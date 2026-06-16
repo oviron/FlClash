@@ -81,8 +81,6 @@ class ProfileSetupService {
         appendSystemDns: request.appendSystemDns,
         addedRules: addedRules,
         defaultUA: request.defaultUserAgent,
-        byeDpiSettings: setupState.byeDpiSettings,
-        byeDpiHostList: setupState.byeDpiHostList,
       ),
     );
   }

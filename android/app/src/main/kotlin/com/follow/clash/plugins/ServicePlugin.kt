@@ -4,7 +4,6 @@ import android.content.Context
 import com.follow.clash.RunState
 import com.follow.clash.Service
 import com.follow.clash.State
-import com.follow.clash.StrategyTestSink
 import com.follow.clash.common.Components
 import com.follow.clash.invokeMethodOnMainThread
 import com.follow.clash.models.SharedState
@@ -30,13 +29,9 @@ private object ServiceMethod {
     const val SYNC_STATE = "syncState"
     const val START = "start"
     const val STOP = "stop"
-    const val RESTART_BYEDPI = "restartByeDpi"
-    const val START_STRATEGY_TEST = "startStrategyTest"
-    const val STOP_STRATEGY_TEST = "stopStrategyTest"
     const val REQUEST_STOP = "requestStop"
     const val EVENT = "event"
     const val CRASH = "crash"
-    const val STRATEGY_TEST_PROGRESS = "strategyTestProgress"
 }
 
 class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
@@ -75,56 +70,8 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         ServiceMethod.SYNC_STATE -> handleSyncState(call, result)
         ServiceMethod.START -> handleStart(result)
         ServiceMethod.STOP -> handleStop(result)
-        ServiceMethod.RESTART_BYEDPI -> handleRestartByeDpi(result)
-        ServiceMethod.START_STRATEGY_TEST -> handleStartStrategyTest(call, result)
-        ServiceMethod.STOP_STRATEGY_TEST -> handleStopStrategyTest(result)
         ServiceMethod.REQUEST_STOP -> handleRequestStop(result)
         else -> result.notImplemented()
-    }
-
-    // bydpi flavor only: StrategyTester is loaded reflectively (classic has no
-    // libbyedpi). Progress streams back over STRATEGY_TEST_PROGRESS.
-    private fun handleStartStrategyTest(call: MethodCall, result: MethodChannel.Result) {
-        val params = call.arguments<String>()
-        val ctx = appContext
-        if (params == null || ctx == null) {
-            result.error("NULL_ARG", "startStrategyTest expects a String payload", null)
-            return
-        }
-        val sink = StrategyTestSink { json ->
-            launchAttachedMain {
-                flutterMethodChannel.invokeMethod(ServiceMethod.STRATEGY_TEST_PROGRESS, json)
-            }
-        }
-        try {
-            Class.forName("com.follow.clash.byedpi.StrategyTester")
-                .getDeclaredMethod(
-                    "start", Context::class.java, String::class.java, StrategyTestSink::class.java
-                )
-                .invoke(null, ctx, params, sink)
-            result.success(true)
-        } catch (e: Throwable) {
-            result.error("TEST", e.message ?: "strategy test unavailable", null)
-        }
-    }
-
-    private fun handleStopStrategyTest(result: MethodChannel.Result) {
-        launch {
-            try {
-                Class.forName("com.follow.clash.byedpi.StrategyTester")
-                    .getDeclaredMethod("stopAndWait")
-                    .invoke(null)
-            } catch (_: Throwable) {
-            }
-            launchAttachedMain { result.success(true) }
-        }
-    }
-
-    private fun handleRestartByeDpi(result: MethodChannel.Result) {
-        launch {
-            val ok = Service.restartByeDpi()
-            launchAttachedMain { result.success(ok) }
-        }
     }
 
     private fun handleRequestStop(result: MethodChannel.Result) {

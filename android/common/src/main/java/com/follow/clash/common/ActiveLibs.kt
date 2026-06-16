@@ -6,15 +6,13 @@ import java.io.File
 
 // Pointer file (filesDir/active-libs.json) naming, per core label, the directory to
 // System.load the core .so from. Written atomically by the main process (LibraryPlugin);
-// read by :remote (mihomo) and the app process (byedpi). An absent/invalid label means
-// the caller falls back to applicationInfo.nativeLibraryDir (the APK-bundled default), so
-// a missing or corrupt pointer can never brick core loading.
+// read by :remote (mihomo). An absent/invalid label means the caller falls back to
+// applicationInfo.nativeLibraryDir (the APK-bundled default), so a missing or corrupt
+// pointer can never brick core loading.
 object ActiveLibs {
     const val MIHOMO = "mihomo"
-    const val BYEDPI = "byedpi"
 
     val MIHOMO_SO = listOf("libclash.so", "libmihomo-jni.so")
-    val BYEDPI_SO = listOf("libbyedpi.so")
 
     private fun file(context: Context) = File(context.filesDir, "active-libs.json")
 

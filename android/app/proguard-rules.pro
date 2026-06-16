@@ -3,18 +3,6 @@
 -keep class com.follow.clash.models.** { *; }
 -keep class com.follow.clash.service.models.** { *; }
 
-# ByeDpiModule loaded reflectively from VpnService (Class.forName + ctor)
-# and via getDeclaredMethod from RemoteService.restartByeDpi. Without keep
-# R8 strips the class and the Class.forName returns ClassNotFoundException
-# in bydpi flavor (where the class IS present).
--keep class com.follow.clash.byedpi.ByeDpiModule { *; }
--keep class com.follow.clash.byedpi.ByeDpiModule$Companion { *; }
-
-# StrategyTester loaded reflectively from ServicePlugin (getDeclaredMethod
-# start/stopAndWait) in the bydpi flavor; StrategyTestSink is its callback type.
--keep class com.follow.clash.byedpi.StrategyTester { *; }
--keep class com.follow.clash.StrategyTestSink { *; }
-
 # Drift uses generated reflective serializers under drift.dart_drift in
 # lib/database/generated/*.g.dart. The codegen keeps its own classes
 # alive, but reflective access to row data classes goes through

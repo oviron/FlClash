@@ -14,7 +14,6 @@ import com.follow.clash.service.RemoteService
 import com.follow.clash.service.models.NotificationParams
 import com.follow.clash.service.models.VpnOptions
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -178,21 +177,10 @@ object Service {
         }.getOrNull() ?: 0L
     }
 
-    suspend fun restartByeDpi(): Boolean {
-        val rc = delegate.useService {
-            withTimeoutOrNull(RESTART_TIMEOUT_MS) {
-                awaitIResultInterface { callback -> it.restartByeDpi(callback) }
-            }
-        }.getOrNull()
-        return rc == 1L
-    }
-
     // Library hot-swap: tell :remote to kill itself so the next bind reloads the
     // (possibly new) core .so. The binder call may die mid-transact as the process
     // exits, so any DeadObjectException is expected and swallowed.
     suspend fun requestStop() {
         runCatching { delegate.useService { it.requestStop() } }
     }
-
-    private const val RESTART_TIMEOUT_MS = 10_000L
 }

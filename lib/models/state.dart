@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/network_rules/model.dart';
@@ -322,8 +321,6 @@ abstract class MakeRealProfileState with _$MakeRealProfileState {
     required bool appendSystemDns,
     required List<Rule> addedRules,
     required String defaultUA,
-    @Default(ByeDpiSettings()) ByeDpiSettings byeDpiSettings,
-    @Default([]) List<String> byeDpiHostList,
   }) = _MakeRealProfileState;
 }
 
@@ -349,8 +346,6 @@ abstract class SetupState with _$SetupState {
     required Script? script,
     required bool overrideDns,
     required Dns dns,
-    @Default(ByeDpiSettings()) ByeDpiSettings byeDpiSettings,
-    @Default([]) List<String> byeDpiHostList,
   }) = _SetupState;
 }
 
@@ -387,15 +382,6 @@ extension SetupStateExt on SetupState {
       return true;
     }
     if (overrideDns == true && dns != lastSetupState.dns) {
-      return true;
-    }
-    if (byeDpiSettings != lastSetupState.byeDpiSettings) {
-      return true;
-    }
-    if (!const ListEquality<String>().equals(
-      byeDpiHostList,
-      lastSetupState.byeDpiHostList,
-    )) {
       return true;
     }
     return false;

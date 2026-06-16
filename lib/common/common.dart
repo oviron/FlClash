@@ -1,6 +1,5 @@
 export 'app_localizations.dart';
 export 'backup_task.dart';
-export 'build_flags.dart';
 export 'cache.dart';
 export 'color.dart';
 export 'compute.dart';

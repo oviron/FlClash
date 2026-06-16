@@ -13,7 +13,6 @@ import 'package:fl_clash/views/config/rules.dart';
 import 'package:fl_clash/views/config/scripts.dart';
 import 'package:fl_clash/views/privacy.dart';
 import 'package:fl_clash/views/resources.dart';
-import 'package:fl_clash/views/setting/byedpi.dart';
 import 'package:fl_clash/views/setting/library_version.dart';
 import 'package:fl_clash/views/setting/logging.dart';
 import 'package:fl_clash/views/setting/network_rules.dart';
@@ -71,7 +70,6 @@ class _ToolViewState extends ConsumerState<ToolsView> {
         const _VpnSettingsItem(),
         const _AccessItem(),
         const _NetworkRulesItem(),
-        if (kByeDpiEnabled) const _ByeDpiItem(),
       ],
     );
   }
@@ -290,7 +288,7 @@ class _LibraryItem extends StatelessWidget {
       title: Text(Intl.message('Library version', name: 'libraryVersion')),
       subtitle: Text(
         Intl.message(
-          'Download and switch the mihomo / ByeDPI core version',
+          'Download and switch the mihomo core version',
           name: 'libraryVersionDesc',
         ),
       ),
@@ -401,20 +399,6 @@ class _SettingItem extends StatelessWidget {
       title: Text(Intl.message('General settings', name: 'generalSettings')),
       subtitle: Text(context.appLocalizations.applicationDesc),
       delegate: const OpenDelegate(widget: ApplicationSettingView()),
-    );
-  }
-}
-
-class _ByeDpiItem extends StatelessWidget {
-  const _ByeDpiItem();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListItem.open(
-      leading: const Icon(Icons.shield_outlined),
-      title: Text(context.appLocalizations.byedpiTitle),
-      subtitle: Text(context.appLocalizations.byedpiDesc),
-      delegate: const OpenDelegate(widget: ByeDpiView()),
     );
   }
 }

@@ -55,7 +55,6 @@ class LibraryPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             LibraryMethod.EXPECTED_BRIDGE_ABI -> result.success(
                 mapOf(
                     ActiveLibs.MIHOMO to Clash.EXPECTED_BRIDGE_ABI,
-                    ActiveLibs.BYEDPI to byedpiExpectedAbi(),
                 )
             )
 
@@ -70,8 +69,6 @@ class LibraryPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
                 mapOf(
                     ActiveLibs.MIHOMO to
                         ActiveLibs.dirFor(applicationContext, ActiveLibs.MIHOMO, ActiveLibs.MIHOMO_SO),
-                    ActiveLibs.BYEDPI to
-                        ActiveLibs.dirFor(applicationContext, ActiveLibs.BYEDPI, ActiveLibs.BYEDPI_SO),
                 )
             )
 
@@ -110,8 +107,7 @@ class LibraryPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         scope.launch {
             try {
                 val abi = Build.SUPPORTED_ABIS.firstOrNull() ?: error("no supported ABI")
-                val requiredSo =
-                    if (label == ActiveLibs.MIHOMO) ActiveLibs.MIHOMO_SO else ActiveLibs.BYEDPI_SO
+                val requiredSo = ActiveLibs.MIHOMO_SO
                 val dir = AarInstaller.install(
                     applicationContext, File(aarPath), File(ascPath), sha, abi, requiredSo,
                     "$label-v$version",
@@ -141,15 +137,5 @@ class LibraryPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
     private fun bundledVersions(): Map<String, String> = buildMap {
         put(ActiveLibs.MIHOMO, BuildConfig.BUNDLED_MIHOMO_VERSION)
-        if (BuildConfig.BUNDLED_BYEDPI_VERSION.isNotEmpty()) {
-            put(ActiveLibs.BYEDPI, BuildConfig.BUNDLED_BYEDPI_VERSION)
-        }
-    }
-
-    private fun byedpiExpectedAbi(): Int? = try {
-        Class.forName("io.github.oviron.libbyedpi.ByeDpi")
-            .getField("EXPECTED_BRIDGE_ABI").getInt(null)
-    } catch (_: Throwable) {
-        null
     }
 }

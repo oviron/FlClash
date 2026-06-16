@@ -1,4 +1,3 @@
-import 'package:fl_clash/byedpi/model.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/services/profile_setup_service.dart';
@@ -18,8 +17,6 @@ void main() {
       script: script,
       overrideDns: false,
       dns: defaultDns,
-      byeDpiSettings: const ByeDpiSettings(enabled: true),
-      byeDpiHostList: const ['yt.test'],
     );
   }
 
@@ -61,8 +58,6 @@ void main() {
       expect(captured.overrideDns, isTrue);
       expect(captured.appendSystemDns, isTrue);
       expect(captured.defaultUA, 'FlClash-test');
-      expect(captured.byeDpiSettings.enabled, isTrue);
-      expect(captured.byeDpiHostList, ['yt.test']);
       expect(captured.realPatchConfig.tun.routeAddress, isNotEmpty);
     },
   );

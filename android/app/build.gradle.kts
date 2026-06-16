@@ -51,35 +51,11 @@ android {
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["appLabel"] = "FlClash"
         buildConfigField(
             "String", "BUNDLED_MIHOMO_VERSION",
             "\"${aarBundledVersion("../core/libs", "libmihomo-android-v")}\"",
         )
-        buildConfigField("String", "BUNDLED_BYEDPI_VERSION", "\"\"")
-    }
-
-    flavorDimensions += "variant"
-    productFlavors {
-        create("classic") {
-            dimension = "variant"
-            manifestPlaceholders["appLabel"] = "FlClash"
-        }
-        create("bydpi") {
-            dimension = "variant"
-            applicationIdSuffix = ".bydpi"
-            versionNameSuffix = "-bydpi"
-            manifestPlaceholders["appLabel"] = "FlClash ByeDPI"
-            buildConfigField(
-                "String", "BUNDLED_BYEDPI_VERSION",
-                "\"${aarBundledVersion("libs", "libbyedpi-android-v")}\"",
-            )
-        }
-    }
-
-    sourceSets {
-        getByName("bydpi") {
-            kotlin.srcDirs("src/bydpi/kotlin")
-        }
     }
 
     signingConfigs {
@@ -133,9 +109,6 @@ flutter {
 }
 
 
-// libbyedpi .aar is pre-fetched by setup.dart into libs/ with SHA-256
-// + GPG verification before Gradle runs. Filename = single source of truth
-// in setup.dart; Gradle picks up whatever .aar landed.
 dependencies {
     implementation(project(":service"))
     implementation(project(":common"))
@@ -145,6 +118,4 @@ dependencies {
     // On-device detached OpenPGP verification of downloaded wrapper .aar (LibraryPlugin).
     implementation("org.bouncycastle:bcpg-jdk18on:1.78.1")
     implementation("org.bouncycastle:bcprov-jdk18on:1.78.1")
-    "bydpiImplementation"(libs.kotlinx.coroutines.android)
-    "bydpiImplementation"(fileTree("libs") { include("libbyedpi-android-v*.aar") })
 }

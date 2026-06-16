@@ -22,10 +22,6 @@ class Service {
   final ObserverList<ServiceListener> _listeners =
       ObserverList<ServiceListener>();
 
-  // Set by the strategy-test controller; receives one JSON progress object per
-  // finished strategy (bydpi flavor only).
-  void Function(String json)? onStrategyTestProgress;
-
   // While a library hot-swap kills + rebinds :remote, its disconnect arrives as a
   // crash; suppress it so the swap reads as intentional, not a failure.
   bool swapInProgress = false;
@@ -53,9 +49,6 @@ class Service {
               listener.onServiceCrash(message);
             }
           }
-          break;
-        case ServiceMethod.strategyTestProgress:
-          onStrategyTestProgress?.call(call.arguments as String? ?? '');
           break;
         default:
           throw MissingPluginException();
@@ -109,32 +102,10 @@ class Service {
     return DateTime.fromMillisecondsSinceEpoch(ms);
   }
 
-  Future<bool> restartByeDpi() async {
-    return await methodChannel.invokeMethod<bool>(
-          ServiceMethod.restartByeDpi,
-        ) ??
-        false;
-  }
-
   // Kills the :remote process so the next start reloads the core .so from the
   // active library dir. Caller must stop the VPN first and set swapInProgress.
   Future<bool> requestStop() async {
     return await methodChannel.invokeMethod<bool>(ServiceMethod.requestStop) ??
-        false;
-  }
-
-  Future<bool> startStrategyTest(String paramsJson) async {
-    return await methodChannel.invokeMethod<bool>(
-          ServiceMethod.startStrategyTest,
-          paramsJson,
-        ) ??
-        false;
-  }
-
-  Future<bool> stopStrategyTest() async {
-    return await methodChannel.invokeMethod<bool>(
-          ServiceMethod.stopStrategyTest,
-        ) ??
         false;
   }
 

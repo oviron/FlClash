@@ -7,7 +7,6 @@ import 'package:fl_clash/widgets/list.dart';
 import 'package:fl_clash/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class AboutView extends StatelessWidget {
   const AboutView({super.key});
@@ -30,26 +29,6 @@ class AboutView extends StatelessWidget {
             globalState.openUrl('https://github.com/$repository');
           },
           trailing: const Icon(Icons.launch),
-        ),
-      ],
-    );
-  }
-
-  List<Widget> _buildNoticesSection(BuildContext context) {
-    if (!kByeDpiEnabled) return [];
-    return generateSection(
-      separated: false,
-      title: Intl.message('Third-party notices', name: 'thirdPartyNotices'),
-      items: [
-        ListItem(
-          title: const Text('byedpi'),
-          subtitle: Text(
-            Intl.message('by hufrea (MIT)', name: 'byedpiAttribution'),
-          ),
-          trailing: const Icon(Icons.launch),
-          onTap: () {
-            globalState.openUrl('https://github.com/hufrea/byedpi');
-          },
         ),
       ],
     );
@@ -132,7 +111,6 @@ class AboutView extends StatelessWidget {
       ),
       const SizedBox(height: 12),
       ..._buildMoreSection(context),
-      ..._buildNoticesSection(context),
       _buildUpstreamNote(context),
     ];
     return BaseScaffold(

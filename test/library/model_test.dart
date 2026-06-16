@@ -42,17 +42,12 @@ void main() {
       );
     });
 
-    test(
-      'null expectedAbi (e.g. byedpi absent in classic) is incompatible',
-      () {
-        expect(
-          _rel(
-            abi: 1,
-          ).compatibleWith(expectedAbi: null, deviceAbi: 'arm64-v8a'),
-          isFalse,
-        );
-      },
-    );
+    test('null expectedAbi is incompatible', () {
+      expect(
+        _rel(abi: 1).compatibleWith(expectedAbi: null, deviceAbi: 'arm64-v8a'),
+        isFalse,
+      );
+    });
   });
 
   group('InstalledLibrary.fromMap', () {

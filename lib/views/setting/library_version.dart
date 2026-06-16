@@ -1,4 +1,3 @@
-import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/library/model.dart';
 import 'package:fl_clash/library/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -8,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-String _coreTitle(String label) => label == kLibMihomo ? 'mihomo' : 'ByeDPI';
+String _coreTitle(String label) => 'mihomo';
 
 String _sizeLabel(int bytes) => '${(bytes / 1048576).toStringAsFixed(1)} MB';
 
@@ -17,9 +16,7 @@ class LibraryVersionView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Single source of truth for byedpi presence: the build flavor flag, never
-    // native reflection. A non-byedpi build shows zero byedpi here, period.
-    final labels = [kLibMihomo, if (kByeDpiEnabled) kLibByedpi];
+    final labels = [kLibMihomo];
     return BaseScaffold(
       title: Intl.message('Library version', name: 'libraryVersion'),
       actions: [

@@ -139,59 +139,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "backupSuccess": MessageLookupByLibrary.simpleMessage("バックアップ成功"),
     "bind": MessageLookupByLibrary.simpleMessage("バインド"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("ブラックリストモード"),
-    "byedpiAttribution": MessageLookupByLibrary.simpleMessage("hufrea 作 (MIT)"),
-    "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLIオプション"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
-      "-o1 -a1 -r-5+se",
-    ),
-    "byedpiDesc": MessageLookupByLibrary.simpleMessage(
-      "ローカル SOCKS5 プロキシ経由でDPIをバイパス",
-    ),
-    "byedpiEnable": MessageLookupByLibrary.simpleMessage("ByeDPIを有効にする"),
-    "byedpiFallback": MessageLookupByLibrary.simpleMessage(
-      "byedpi 失敗時にプロキシグループへフォールバック",
-    ),
-    "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage("フォールバックプロキシ"),
-    "byedpiMode": MessageLookupByLibrary.simpleMessage("モード"),
-    "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("自動"),
-    "byedpiModeManual": MessageLookupByLibrary.simpleMessage("手動"),
-    "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage(
-      "現在のプロファイルにプロキシグループがありません",
-    ),
-    "byedpiPort": MessageLookupByLibrary.simpleMessage("リッスンポート"),
-    "byedpiPreset": MessageLookupByLibrary.simpleMessage("ストラテジー プリセット"),
-    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
-    "byedpiTestTitle": MessageLookupByLibrary.simpleMessage("ストラテジーテスト"),
-    "byedpiTestRun": MessageLookupByLibrary.simpleMessage("テスト実行"),
-    "byedpiTestStop": MessageLookupByLibrary.simpleMessage("停止"),
-    "byedpiTestProgress": MessageLookupByLibrary.simpleMessage("テスト中"),
-    "byedpiTestVpnPaused": MessageLookupByLibrary.simpleMessage(
-      "テスト中はVPNを一時停止",
-    ),
-    "byedpiTestSortName": MessageLookupByLibrary.simpleMessage("名前順"),
-    "byedpiTestSortDate": MessageLookupByLibrary.simpleMessage("日付順"),
-    "byedpiTestFilterAll": MessageLookupByLibrary.simpleMessage("すべて"),
-    "byedpiTestFilterTested": MessageLookupByLibrary.simpleMessage("テスト済み"),
-    "byedpiTestPrune": MessageLookupByLibrary.simpleMessage("40%未満の戦略を削除"),
-    "byedpiTestReset": MessageLookupByLibrary.simpleMessage("既定に戻す"),
-    "byedpiTestRetest": MessageLookupByLibrary.simpleMessage("再テスト"),
-    "byedpiTestRemove": MessageLookupByLibrary.simpleMessage("削除"),
-    "byedpiTestApply": MessageLookupByLibrary.simpleMessage("適用"),
-    "byedpiTestApplied": MessageLookupByLibrary.simpleMessage("ストラテジーを適用しました"),
-    "byedpiTestHint": MessageLookupByLibrary.simpleMessage(
-      "テストを実行して、ネットワークでのテストサイト到達性で戦略をランク付けし、最適なものを適用します。",
-    ),
-    "byedpiUpdateStrategies": MessageLookupByLibrary.simpleMessage("戦略を更新"),
-    "byedpiResetStrategies": MessageLookupByLibrary.simpleMessage("内蔵版に戻す"),
-    "byedpiUpdateOk": MessageLookupByLibrary.simpleMessage("戦略を更新しました"),
-    "byedpiUpdateFail": MessageLookupByLibrary.simpleMessage("更新に失敗しました"),
-    "byedpiStrategiesNever": MessageLookupByLibrary.simpleMessage("未更新"),
-    "byedpiRestart": MessageLookupByLibrary.simpleMessage("ByeDPIを再起動"),
-    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
-      "再起動失敗 (VPN未起動?)",
-    ),
-    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPIを再起動しました"),
-    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("バイパスドメイン"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage("システムプロキシ有効時のみ適用"),
     "cacheCorrupt": MessageLookupByLibrary.simpleMessage(
@@ -491,6 +438,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
       "モバイル通信",
     ),
+    "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
+      "イーサネット",
+    ),
     "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
       "任意のWi-Fi",
     ),
@@ -500,25 +450,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "このルールを削除しますか?",
     ),
-    "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
-      "イーサネット",
-    ),
     "networkRulesDefaultActionTitle": MessageLookupByLibrary.simpleMessage(
       "一致するルールがない場合",
     ),
     "networkRulesDefaultLeave": MessageLookupByLibrary.simpleMessage("変更しない"),
-    "networkRulesDefaultTurnOn": MessageLookupByLibrary.simpleMessage(
-      "VPN をオンにする",
-    ),
     "networkRulesDefaultTurnOff": MessageLookupByLibrary.simpleMessage(
       "VPN をオフにする",
     ),
-    "networkRulesStatusLabel": MessageLookupByLibrary.simpleMessage("現在の判定"),
-    "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
-      "ネットワークが変わるまで手動選択を維持します",
-    ),
-    "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
-      "サポートされていない条件です。アプリを更新してください",
+    "networkRulesDefaultTurnOn": MessageLookupByLibrary.simpleMessage(
+      "VPN をオンにする",
     ),
     "networkRulesDelete": MessageLookupByLibrary.simpleMessage("削除"),
     "networkRulesDisable": MessageLookupByLibrary.simpleMessage("無効にする"),
@@ -528,9 +468,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "ネットワークルールを有効にする",
     ),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("有効にする"),
+    "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
+      "サポートされていない条件です。アプリを更新してください",
+    ),
+    "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
+      "ネットワークが変わるまで手動選択を維持します",
+    ),
     "networkRulesPermissionBanner": MessageLookupByLibrary.simpleMessage(
       "SSIDを照合するため、ネットワークルールにはWi-Fi権限が必要です",
     ),
+    "networkRulesStatusLabel": MessageLookupByLibrary.simpleMessage("現在の判定"),
     "networkRulesTitle": MessageLookupByLibrary.simpleMessage("ネットワークルール"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("ネットワーク速度"),
     "networkType": MessageLookupByLibrary.simpleMessage("ネットワーク種別"),
@@ -760,7 +707,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "themeColor": MessageLookupByLibrary.simpleMessage("テーマカラー"),
     "themeDesc": MessageLookupByLibrary.simpleMessage("ダークモードの設定、色の調整"),
     "themeMode": MessageLookupByLibrary.simpleMessage("テーマモード"),
-    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage("サードパーティの通知"),
     "tight": MessageLookupByLibrary.simpleMessage("密"),
     "time": MessageLookupByLibrary.simpleMessage("時間"),
     "tip": MessageLookupByLibrary.simpleMessage("ヒント"),

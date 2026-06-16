@@ -15,23 +15,9 @@ import 'package:yaml/yaml.dart';
 const _signerFpr = '1139C91B6525883E6783DCF04A94DA488A4C5033';
 const _signerPubKeyPath = 'scripts/oviron-signing.pub.asc';
 
-// byedpi-only data assets. pubspec globs the whole assets/data/ directory, so
-// the classic (no-byedpi) flavor would otherwise bundle these. We move them
-// out before `flutter build` for classic and restore after, so a no-byedpi
-// build ships ZERO byedpi files (the native lib is already flavor-gated).
-const _byeDpiAssets = [
-  'assets/data/byedpi-hosts-default.txt',
-  'assets/data/byedpi-strategies.json',
-];
-const _byeDpiAssetStashDir = '.byedpi-asset-stash';
-
 const _libmihomoVersion = '0.1.4';
 const _libmihomoSha256 =
-    '4494bf733b94327119c8828a0eea35765e82f763c66e24a1dc4a497215c08868';
-
-const _libbyedpiVersion = '0.1.1';
-const _libbyedpiSha256 =
-    '904b1bdb05ad555f3901264c4555c9a024997e2112cfd66eb95ae0a2a2ad4ee7';
+    '023b14f22e4dba167f576d83b86db2ba82673bc0b6e3fa1152d012073c77d7a3';
 
 class _PinnedAar {
   final String label;
@@ -78,13 +64,6 @@ class Build {
       sha256: _libmihomoSha256,
       releaseRepo: 'oviron/libmihomo-android',
       moduleBuildLibsDir: 'android/core/libs',
-    ),
-    _PinnedAar(
-      label: 'byedpi',
-      version: _libbyedpiVersion,
-      sha256: _libbyedpiSha256,
-      releaseRepo: 'oviron/libbyedpi-android',
-      moduleBuildLibsDir: 'android/app/libs',
     ),
   ];
 
@@ -281,12 +260,6 @@ class BuildAndroidCommand extends Command<void> {
       valueHelp: 'pre,stable',
       help: 'APP_ENV value baked into env.json (default: pre)',
     );
-    argParser.addOption(
-      'flavor',
-      allowed: ['classic', 'bydpi'],
-      defaultsTo: 'classic',
-      help: 'Android product flavor',
-    );
   }
 
   @override
@@ -309,7 +282,7 @@ class BuildAndroidCommand extends Command<void> {
     return raw.split('+').first;
   }
 
-  Future<void> _copyApks(List<BuildItem> items, String flavor) async {
+  Future<void> _copyApks(List<BuildItem> items) async {
     final version = _readPubspecVersion();
     final flutterApkDir = Directory(
       join(current, 'build', 'app', 'outputs', 'flutter-apk'),
@@ -319,19 +292,13 @@ class BuildAndroidCommand extends Command<void> {
 
     for (final item in items) {
       final src = File(
-        join(
-          flutterApkDir.path,
-          'app-${_archName(item.arch)}-$flavor-release.apk',
-        ),
+        join(flutterApkDir.path, 'app-${_archName(item.arch)}-release.apk'),
       );
       if (!src.existsSync()) {
         throw 'Missing Flutter APK: ${src.path}';
       }
       final dst = File(
-        join(
-          dist.path,
-          'FlClash-$flavor-$version-android-${_archName(item.arch)}.apk',
-        ),
+        join(dist.path, 'FlClash-$version-android-${_archName(item.arch)}.apk'),
       );
       await src.copy(dst.path);
       print('copied ${src.path} -> ${dst.path}');
@@ -348,7 +315,6 @@ class BuildAndroidCommand extends Command<void> {
   Future<void> run() async {
     final archName = argResults?['arch'] as String?;
     final env = (argResults?['env'] as String?) ?? 'pre';
-    final flavor = argResults?['flavor'] as String? ?? 'classic';
 
     Arch? arch;
     if (archName != null) {
@@ -367,53 +333,18 @@ class BuildAndroidCommand extends Command<void> {
         : Build.androidItems.where((e) => e.arch == arch).toList();
     final flutterTargets = items.map((e) => e.flutterTarget).join(',');
 
-    // classic ships zero byedpi: pull the byedpi-only assets out of the bundle
-    // for the build, restore afterwards. Self-heal a leftover stash first.
-    await _restoreByeDpiAssets();
-    final stripByeDpi = flavor != 'bydpi';
-    if (stripByeDpi) await _stashByeDpiAssets();
-    try {
-      await Build.exec([
-        'flutter',
-        'build',
-        'apk',
-        '--release',
-        '--split-per-abi',
-        '--flavor',
-        flavor,
-        '--target-platform',
-        flutterTargets,
-        '--dart-define-from-file=env.json',
-        '--dart-define=BYDPI=${flavor == 'bydpi'}',
-      ], name: 'flutter build apk ($flavor)');
-    } finally {
-      if (stripByeDpi) await _restoreByeDpiAssets();
-    }
+    await Build.exec([
+      'flutter',
+      'build',
+      'apk',
+      '--release',
+      '--split-per-abi',
+      '--target-platform',
+      flutterTargets,
+      '--dart-define-from-file=env.json',
+    ], name: 'flutter build apk');
 
-    await _copyApks(items, flavor);
-  }
-}
-
-// Restore any stashed byedpi assets (also self-heals a prior interrupted run).
-Future<void> _restoreByeDpiAssets() async {
-  final stash = Directory(_byeDpiAssetStashDir);
-  if (!stash.existsSync()) return;
-  for (final assetPath in _byeDpiAssets) {
-    final stashed = File(join(_byeDpiAssetStashDir, basename(assetPath)));
-    if (stashed.existsSync()) {
-      await stashed.rename(assetPath);
-    }
-  }
-  if (stash.listSync().isEmpty) stash.deleteSync();
-}
-
-Future<void> _stashByeDpiAssets() async {
-  Directory(_byeDpiAssetStashDir).createSync();
-  for (final assetPath in _byeDpiAssets) {
-    final f = File(assetPath);
-    if (f.existsSync()) {
-      await f.rename(join(_byeDpiAssetStashDir, basename(assetPath)));
-    }
+    await _copyApks(items);
   }
 }
 

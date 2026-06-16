@@ -170,75 +170,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "backupSuccess": MessageLookupByLibrary.simpleMessage("Backup success"),
     "bind": MessageLookupByLibrary.simpleMessage("Bind"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("Blacklist mode"),
-    "byedpiAttribution": MessageLookupByLibrary.simpleMessage(
-      "by hufrea (MIT)",
-    ),
-    "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("ByeDPI CLI args"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
-      "-o1 -a1 -r-5+se",
-    ),
-    "byedpiDesc": MessageLookupByLibrary.simpleMessage(
-      "DPI bypass via local SOCKS5 proxy",
-    ),
-    "byedpiEnable": MessageLookupByLibrary.simpleMessage("Enable ByeDPI"),
-    "byedpiFallback": MessageLookupByLibrary.simpleMessage(
-      "Fallback to a proxy group on byedpi failure",
-    ),
-    "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage(
-      "Fallback proxy",
-    ),
-    "byedpiMode": MessageLookupByLibrary.simpleMessage("Mode"),
-    "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("Automatic"),
-    "byedpiModeManual": MessageLookupByLibrary.simpleMessage("Manual"),
-    "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage(
-      "No proxy groups in current profile",
-    ),
-    "byedpiPort": MessageLookupByLibrary.simpleMessage("Listening port"),
-    "byedpiPreset": MessageLookupByLibrary.simpleMessage("Strategy preset"),
-    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Custom"),
-    "byedpiTestTitle": MessageLookupByLibrary.simpleMessage("Strategy test"),
-    "byedpiTestRun": MessageLookupByLibrary.simpleMessage("Run test"),
-    "byedpiTestStop": MessageLookupByLibrary.simpleMessage("Stop"),
-    "byedpiTestProgress": MessageLookupByLibrary.simpleMessage("Testing"),
-    "byedpiTestVpnPaused": MessageLookupByLibrary.simpleMessage(
-      "VPN paused for testing",
-    ),
-    "byedpiTestSortName": MessageLookupByLibrary.simpleMessage("By name"),
-    "byedpiTestSortDate": MessageLookupByLibrary.simpleMessage("By date"),
-    "byedpiTestFilterAll": MessageLookupByLibrary.simpleMessage("All"),
-    "byedpiTestFilterTested": MessageLookupByLibrary.simpleMessage("Tested"),
-    "byedpiTestPrune": MessageLookupByLibrary.simpleMessage(
-      "Remove strategies below 40%",
-    ),
-    "byedpiTestReset": MessageLookupByLibrary.simpleMessage("Reset to default"),
-    "byedpiTestRetest": MessageLookupByLibrary.simpleMessage("Re-test"),
-    "byedpiTestRemove": MessageLookupByLibrary.simpleMessage("Remove"),
-    "byedpiTestApply": MessageLookupByLibrary.simpleMessage("Apply"),
-    "byedpiTestApplied": MessageLookupByLibrary.simpleMessage(
-      "Strategy applied",
-    ),
-    "byedpiTestHint": MessageLookupByLibrary.simpleMessage(
-      "Run the test to rank strategies by how well they reach the test sites on your network, then apply the best.",
-    ),
-    "byedpiUpdateStrategies": MessageLookupByLibrary.simpleMessage(
-      "Update strategies",
-    ),
-    "byedpiResetStrategies": MessageLookupByLibrary.simpleMessage(
-      "Reset to bundled",
-    ),
-    "byedpiUpdateOk": MessageLookupByLibrary.simpleMessage(
-      "Strategies updated",
-    ),
-    "byedpiUpdateFail": MessageLookupByLibrary.simpleMessage("Update failed"),
-    "byedpiStrategiesNever": MessageLookupByLibrary.simpleMessage(
-      "Not updated yet",
-    ),
-    "byedpiRestart": MessageLookupByLibrary.simpleMessage("Restart ByeDPI"),
-    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
-      "Restart failed (VPN not running?)",
-    ),
-    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage("ByeDPI restarted"),
-    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Bypass domain"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "Only takes effect when the system proxy is enabled",
@@ -616,6 +547,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
       "Cellular",
     ),
+    "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
+      "Ethernet",
+    ),
     "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
       "Any Wi-Fi",
     ),
@@ -625,29 +559,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "Delete this rule?",
     ),
-    "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
-      "Ethernet",
-    ),
     "networkRulesDefaultActionTitle": MessageLookupByLibrary.simpleMessage(
       "When no rule matches",
     ),
     "networkRulesDefaultLeave": MessageLookupByLibrary.simpleMessage(
       "Leave unchanged",
     ),
-    "networkRulesDefaultTurnOn": MessageLookupByLibrary.simpleMessage(
-      "Turn VPN on",
-    ),
     "networkRulesDefaultTurnOff": MessageLookupByLibrary.simpleMessage(
       "Turn VPN off",
     ),
-    "networkRulesStatusLabel": MessageLookupByLibrary.simpleMessage(
-      "Current decision",
-    ),
-    "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
-      "Manual choice kept until the network changes",
-    ),
-    "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
-      "Unsupported condition, update the app",
+    "networkRulesDefaultTurnOn": MessageLookupByLibrary.simpleMessage(
+      "Turn VPN on",
     ),
     "networkRulesDelete": MessageLookupByLibrary.simpleMessage("Delete"),
     "networkRulesDisable": MessageLookupByLibrary.simpleMessage("Disable"),
@@ -659,8 +581,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enable network rules",
     ),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("Enable"),
+    "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
+      "Unsupported condition, update the app",
+    ),
+    "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
+      "Manual choice kept until the network changes",
+    ),
     "networkRulesPermissionBanner": MessageLookupByLibrary.simpleMessage(
       "Network rules need Wi-Fi permission to match SSIDs",
+    ),
+    "networkRulesStatusLabel": MessageLookupByLibrary.simpleMessage(
+      "Current decision",
     ),
     "networkRulesTitle": MessageLookupByLibrary.simpleMessage("Network rules"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
@@ -937,9 +868,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Set dark mode,adjust the color",
     ),
     "themeMode": MessageLookupByLibrary.simpleMessage("Theme mode"),
-    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage(
-      "Third-party notices",
-    ),
     "tight": MessageLookupByLibrary.simpleMessage("Tight"),
     "time": MessageLookupByLibrary.simpleMessage("Time"),
     "tip": MessageLookupByLibrary.simpleMessage("tip"),

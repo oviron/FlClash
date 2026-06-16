@@ -19,11 +19,3 @@ bool shouldRunVpnReestablish({
     lastVpnState: lastVpnState,
   );
 }
-
-bool shouldReestablishVpnForByeDpiToggle({
-  required bool isStarted,
-  required bool? previousEnabled,
-  required bool nextEnabled,
-}) {
-  return isStarted && previousEnabled != null && previousEnabled != nextEnabled;
-}

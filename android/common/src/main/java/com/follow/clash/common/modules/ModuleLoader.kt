@@ -16,8 +16,8 @@ interface ModuleLoaderScope {
 interface ModuleLoader {
     /**
      * Awaits all module installs. Callers (VpnService.start, CommonService.start)
-     * MUST NOT proceed to invariant-dependent work (e.g. Clash.startTUN that
-     * relies on the byedpi listener being bound) before this returns.
+     * MUST NOT proceed to invariant-dependent work that relies on a module being
+     * installed before this returns.
      */
     fun load()
 

@@ -22,14 +22,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'byedpi/host_list.dart';
-import 'byedpi/settings_store.dart';
 import 'common/common.dart';
 import 'database/database.dart';
 import 'l10n/l10n.dart';
-import 'providers/byedpi.dart';
 import 'models/models.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 typedef UpdateTasks = List<FutureOr<void> Function()>;
 
@@ -109,25 +105,9 @@ class GlobalState {
     );
     final configOverrides = buildConfigOverrides(config);
     final overrides = <Override>[...appStateOverrides, ...configOverrides];
-    if (kByeDpiEnabled) {
-      final prefs = await SharedPreferences.getInstance();
-      final store = ByeDpiSettingsStore(prefs);
-      final wasLegacy = store.hasLegacyDefaults;
-      final byeDpiSettings = store.read();
-      if (wasLegacy) {
-        await store.write(byeDpiSettings);
-      }
-      overrides.add(
-        byeDpiSettingsProvider.overrideWithBuild((_, _) => byeDpiSettings),
-      );
-      await writeByeDpiRuntime(byeDpiSettings);
-    }
     final container = ProviderContainer(overrides: overrides);
     final profiles = await database.profilesDao.all().get();
     container.read(profilesProvider.notifier).setAndReorder(profiles);
-    if (kByeDpiEnabled) {
-      await installDefaultHostList();
-    }
     await AppLocalizations.load(
       utils.getLocaleForString(config.appSettingProps.locale) ??
           WidgetsBinding.instance.platformDispatcher.locale,

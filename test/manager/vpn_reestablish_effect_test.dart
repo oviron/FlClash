@@ -38,7 +38,7 @@ void main() {
   });
 
   group('shouldRunVpnReestablish', () {
-    test('runs for forced ByeDPI toggle even when vpn state is unchanged', () {
+    test('runs when forced even when vpn state is unchanged', () {
       expect(
         shouldRunVpnReestablish(
           isStarted: true,
@@ -57,38 +57,6 @@ void main() {
           forceReestablish: true,
           currentVpnState: 'same',
           lastVpnState: 'same',
-        ),
-        isFalse,
-      );
-    });
-  });
-
-  group('shouldReestablishVpnForByeDpiToggle', () {
-    test('schedules running VPN when ByeDPI enabled flag changes', () {
-      expect(
-        shouldReestablishVpnForByeDpiToggle(
-          isStarted: true,
-          previousEnabled: false,
-          nextEnabled: true,
-        ),
-        isTrue,
-      );
-    });
-
-    test('ignores initial emission and stopped VPN', () {
-      expect(
-        shouldReestablishVpnForByeDpiToggle(
-          isStarted: true,
-          previousEnabled: null,
-          nextEnabled: true,
-        ),
-        isFalse,
-      );
-      expect(
-        shouldReestablishVpnForByeDpiToggle(
-          isStarted: false,
-          previousEnabled: false,
-          nextEnabled: true,
         ),
         isFalse,
       );

@@ -214,26 +214,6 @@ class AppLocalizations {
     return Intl.message('Coming soon', name: 'comingSoon', desc: '', args: []);
   }
 
-  /// `Third-party notices`
-  String get thirdPartyNotices {
-    return Intl.message(
-      'Third-party notices',
-      name: 'thirdPartyNotices',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `by hufrea (MIT)`
-  String get byedpiAttribution {
-    return Intl.message(
-      'by hufrea (MIT)',
-      name: 'byedpiAttribution',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Not used in Bypass private mode`
   String get routeAddressBypassPrivateHint {
     return Intl.message(
@@ -3794,6 +3774,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Ethernet`
+  String get networkRulesConditionAnyEthernet {
+    return Intl.message(
+      'Ethernet',
+      name: 'networkRulesConditionAnyEthernet',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Delete this rule?`
   String get networkRulesConfirmDelete {
     return Intl.message(
@@ -3804,15 +3794,7 @@ class AppLocalizations {
     );
   }
 
-  String get networkRulesConditionAnyEthernet {
-    return Intl.message(
-      'Ethernet',
-      name: 'networkRulesConditionAnyEthernet',
-      desc: '',
-      args: [],
-    );
-  }
-
+  /// `When no rule matches`
   String get networkRulesDefaultActionTitle {
     return Intl.message(
       'When no rule matches',
@@ -3822,6 +3804,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Leave unchanged`
   String get networkRulesDefaultLeave {
     return Intl.message(
       'Leave unchanged',
@@ -3831,6 +3814,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Turn VPN on`
   String get networkRulesDefaultTurnOn {
     return Intl.message(
       'Turn VPN on',
@@ -3840,6 +3824,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Turn VPN off`
   String get networkRulesDefaultTurnOff {
     return Intl.message(
       'Turn VPN off',
@@ -3849,6 +3834,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Current decision`
   String get networkRulesStatusLabel {
     return Intl.message(
       'Current decision',
@@ -3858,6 +3844,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Manual choice kept until the network changes`
   String get networkRulesOverrideActive {
     return Intl.message(
       'Manual choice kept until the network changes',
@@ -3867,6 +3854,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Unsupported condition, update the app`
   String get networkRulesInvalidRule {
     return Intl.message(
       'Unsupported condition, update the app',
@@ -3881,346 +3869,6 @@ class AppLocalizations {
     return Intl.message(
       'Name (optional)',
       name: 'ruleNameOptional',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ByeDPI`
-  String get byedpiTitle {
-    return Intl.message('ByeDPI', name: 'byedpiTitle', desc: '', args: []);
-  }
-
-  /// `DPI bypass via local SOCKS5 proxy`
-  String get byedpiDesc {
-    return Intl.message(
-      'DPI bypass via local SOCKS5 proxy',
-      name: 'byedpiDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enable ByeDPI`
-  String get byedpiEnable {
-    return Intl.message(
-      'Enable ByeDPI',
-      name: 'byedpiEnable',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ByeDPI CLI args`
-  String get byedpiCliArgs {
-    return Intl.message(
-      'ByeDPI CLI args',
-      name: 'byedpiCliArgs',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `-o1 -a1 -r-5+se`
-  String get byedpiCliArgsHint {
-    return Intl.message(
-      '-o1 -a1 -r-5+se',
-      name: 'byedpiCliArgsHint',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Strategy preset`
-  String get byedpiPreset {
-    return Intl.message(
-      'Strategy preset',
-      name: 'byedpiPreset',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Custom`
-  String get byedpiPresetCustom {
-    return Intl.message(
-      'Custom',
-      name: 'byedpiPresetCustom',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Strategy test`
-  String get byedpiTestTitle {
-    return Intl.message(
-      'Strategy test',
-      name: 'byedpiTestTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Run test`
-  String get byedpiTestRun {
-    return Intl.message('Run test', name: 'byedpiTestRun', desc: '', args: []);
-  }
-
-  /// `Stop`
-  String get byedpiTestStop {
-    return Intl.message('Stop', name: 'byedpiTestStop', desc: '', args: []);
-  }
-
-  /// `Testing`
-  String get byedpiTestProgress {
-    return Intl.message(
-      'Testing',
-      name: 'byedpiTestProgress',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `VPN paused for testing`
-  String get byedpiTestVpnPaused {
-    return Intl.message(
-      'VPN paused for testing',
-      name: 'byedpiTestVpnPaused',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `By name`
-  String get byedpiTestSortName {
-    return Intl.message(
-      'By name',
-      name: 'byedpiTestSortName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `By date`
-  String get byedpiTestSortDate {
-    return Intl.message(
-      'By date',
-      name: 'byedpiTestSortDate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `All`
-  String get byedpiTestFilterAll {
-    return Intl.message('All', name: 'byedpiTestFilterAll', desc: '', args: []);
-  }
-
-  /// `Tested`
-  String get byedpiTestFilterTested {
-    return Intl.message(
-      'Tested',
-      name: 'byedpiTestFilterTested',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remove strategies below 40%`
-  String get byedpiTestPrune {
-    return Intl.message(
-      'Remove strategies below 40%',
-      name: 'byedpiTestPrune',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset to default`
-  String get byedpiTestReset {
-    return Intl.message(
-      'Reset to default',
-      name: 'byedpiTestReset',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Re-test`
-  String get byedpiTestRetest {
-    return Intl.message(
-      'Re-test',
-      name: 'byedpiTestRetest',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remove`
-  String get byedpiTestRemove {
-    return Intl.message('Remove', name: 'byedpiTestRemove', desc: '', args: []);
-  }
-
-  /// `Apply`
-  String get byedpiTestApply {
-    return Intl.message('Apply', name: 'byedpiTestApply', desc: '', args: []);
-  }
-
-  /// `Strategy applied`
-  String get byedpiTestApplied {
-    return Intl.message(
-      'Strategy applied',
-      name: 'byedpiTestApplied',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Run the test to rank strategies by how well they reach the test sites on your network, then apply the best.`
-  String get byedpiTestHint {
-    return Intl.message(
-      'Run the test to rank strategies by how well they reach the test sites on your network, then apply the best.',
-      name: 'byedpiTestHint',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Update strategies`
-  String get byedpiUpdateStrategies {
-    return Intl.message(
-      'Update strategies',
-      name: 'byedpiUpdateStrategies',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Reset to bundled`
-  String get byedpiResetStrategies {
-    return Intl.message(
-      'Reset to bundled',
-      name: 'byedpiResetStrategies',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Strategies updated`
-  String get byedpiUpdateOk {
-    return Intl.message(
-      'Strategies updated',
-      name: 'byedpiUpdateOk',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Update failed`
-  String get byedpiUpdateFail {
-    return Intl.message(
-      'Update failed',
-      name: 'byedpiUpdateFail',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Not updated yet`
-  String get byedpiStrategiesNever {
-    return Intl.message(
-      'Not updated yet',
-      name: 'byedpiStrategiesNever',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Restart ByeDPI`
-  String get byedpiRestart {
-    return Intl.message(
-      'Restart ByeDPI',
-      name: 'byedpiRestart',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ByeDPI restarted`
-  String get byedpiRestartOk {
-    return Intl.message(
-      'ByeDPI restarted',
-      name: 'byedpiRestartOk',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Restart failed (VPN not running?)`
-  String get byedpiRestartFail {
-    return Intl.message(
-      'Restart failed (VPN not running?)',
-      name: 'byedpiRestartFail',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Mode`
-  String get byedpiMode {
-    return Intl.message('Mode', name: 'byedpiMode', desc: '', args: []);
-  }
-
-  /// `Manual`
-  String get byedpiModeManual {
-    return Intl.message('Manual', name: 'byedpiModeManual', desc: '', args: []);
-  }
-
-  /// `Automatic`
-  String get byedpiModeAuto {
-    return Intl.message(
-      'Automatic',
-      name: 'byedpiModeAuto',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Fallback to a proxy group on byedpi failure`
-  String get byedpiFallback {
-    return Intl.message(
-      'Fallback to a proxy group on byedpi failure',
-      name: 'byedpiFallback',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Fallback proxy`
-  String get byedpiFallbackProxy {
-    return Intl.message(
-      'Fallback proxy',
-      name: 'byedpiFallbackProxy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No proxy groups in current profile`
-  String get byedpiNoProxyGroups {
-    return Intl.message(
-      'No proxy groups in current profile',
-      name: 'byedpiNoProxyGroups',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Listening port`
-  String get byedpiPort {
-    return Intl.message(
-      'Listening port',
-      name: 'byedpiPort',
       desc: '',
       args: [],
     );

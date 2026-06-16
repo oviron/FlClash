@@ -197,20 +197,6 @@ class RemoteService : Service(),
             return State.runTime
         }
 
-        override fun restartByeDpi(result: IResultInterface) {
-            launch {
-                val ok = try {
-                    val clazz = Class.forName("com.follow.clash.byedpi.ByeDpiModule")
-                    val m = clazz.getDeclaredMethod("restartCurrent")
-                    (m.invoke(null) as? Boolean) == true
-                } catch (e: Throwable) {
-                    GlobalState.log("restartByeDpi failed: ${e.message}")
-                    false
-                }
-                result.onResult(if (ok) 1L else 0L)
-            }
-        }
-
         // Library hot-swap: kill :remote so the next bind reloads the (possibly new) core
         // .so via a fresh onCreate. The caller stops the VpnService first, so no foreground
         // tunnel is orphaned. Killing the process is the only reliable cross-OEM way to drop

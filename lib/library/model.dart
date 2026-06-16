@@ -1,13 +1,10 @@
 const kLibMihomo = 'mihomo';
-const kLibByedpi = 'byedpi';
 
-String repoFor(String label) => label == kLibMihomo
-    ? 'oviron/libmihomo-android'
-    : 'oviron/libbyedpi-android';
+String repoFor(String label) => 'oviron/libmihomo-android';
 
 // A wrapper release as advertised by its metadata.json GitHub release asset.
 class LibraryRelease {
-  final String label; // mihomo | byedpi (the wrapper repo)
+  final String label; // mihomo (the wrapper repo)
   final String version; // wrapper tag without leading v, e.g. "0.1.4"
   final String coreName;
   final String coreVersion; // bundled core, e.g. v1.19.26

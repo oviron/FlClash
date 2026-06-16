@@ -1,3 +1,7 @@
+## v0.15.4
+
+- Removed the ByeDPI integration entirely: dropped the `bydpi` product flavor and the embedded byedpi DPI-bypass core, along with its settings UI, strategy tester, host list, and the `libbyedpi-android` `.aar` dependency. The app collapses to a single variant (`com.follow.clash`, no suffix) and APK artifacts are now named `FlClash-<version>-android-<abi>.apk` (no `-classic`/`-bydpi`). mihomo remains the only bundled core
+
 ## v0.15.3
 
 - Fixed a dead tunnel on devices that are missing an app listed in a profile's per-app allow/deny list. The list (from a profile's `tun.include-package` / `exclude-package`, or the GUI access control) was applied by calling `VpnService.Builder.addAllowedApplication` / `addDisallowedApplication` for each package, and Android throws `NameNotFoundException` for a package that is not installed. That unhandled exception aborted the entire tunnel build before `establish()`, so the VPN switched on but carried no traffic at all: an empty speed graph and nothing loading. It hit shared profiles hardest, since one profile listing apps that exist on one phone but not another (a ReVanced/microG build, Google Meet, or Chrome on a vendor ROM that ships its own browser) bricked the tunnel on whichever phone lacked any single one of them. Each package is now added independently; a missing one is skipped and logged ("VPN allow-list: skipping not-installed app <pkg>") instead of taking the tunnel down with it

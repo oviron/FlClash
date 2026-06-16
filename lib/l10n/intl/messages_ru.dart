@@ -175,85 +175,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "blacklistMode": MessageLookupByLibrary.simpleMessage(
       "Режим черного списка",
     ),
-    "byedpiAttribution": MessageLookupByLibrary.simpleMessage(
-      "разработка hufrea (MIT)",
-    ),
-    "byedpiCliArgs": MessageLookupByLibrary.simpleMessage("Аргументы ByeDPI"),
-    "byedpiCliArgsHint": MessageLookupByLibrary.simpleMessage(
-      "-o1 -a1 -r-5+se",
-    ),
-    "byedpiDesc": MessageLookupByLibrary.simpleMessage(
-      "Обход DPI через локальный SOCKS5-прокси",
-    ),
-    "byedpiEnable": MessageLookupByLibrary.simpleMessage("Включить ByeDPI"),
-    "byedpiFallback": MessageLookupByLibrary.simpleMessage(
-      "Переключаться на группу при сбое byedpi",
-    ),
-    "byedpiFallbackProxy": MessageLookupByLibrary.simpleMessage(
-      "Запасной прокси",
-    ),
-    "byedpiMode": MessageLookupByLibrary.simpleMessage("Режим"),
-    "byedpiModeAuto": MessageLookupByLibrary.simpleMessage("Автоматический"),
-    "byedpiModeManual": MessageLookupByLibrary.simpleMessage("Ручной"),
-    "byedpiNoProxyGroups": MessageLookupByLibrary.simpleMessage(
-      "В текущем профиле нет прокси-групп",
-    ),
-    "byedpiPort": MessageLookupByLibrary.simpleMessage("Порт прослушивания"),
-    "byedpiPreset": MessageLookupByLibrary.simpleMessage("Пресет стратегии"),
-    "byedpiPresetCustom": MessageLookupByLibrary.simpleMessage("Свой"),
-    "byedpiTestTitle": MessageLookupByLibrary.simpleMessage("Тест стратегий"),
-    "byedpiTestRun": MessageLookupByLibrary.simpleMessage("Запустить тест"),
-    "byedpiTestStop": MessageLookupByLibrary.simpleMessage("Стоп"),
-    "byedpiTestProgress": MessageLookupByLibrary.simpleMessage("Тестируется"),
-    "byedpiTestVpnPaused": MessageLookupByLibrary.simpleMessage(
-      "VPN приостановлен на время теста",
-    ),
-    "byedpiTestSortName": MessageLookupByLibrary.simpleMessage("По имени"),
-    "byedpiTestSortDate": MessageLookupByLibrary.simpleMessage("По дате"),
-    "byedpiTestFilterAll": MessageLookupByLibrary.simpleMessage("Все"),
-    "byedpiTestFilterTested": MessageLookupByLibrary.simpleMessage(
-      "Протестированные",
-    ),
-    "byedpiTestPrune": MessageLookupByLibrary.simpleMessage(
-      "Удалить стратегии ниже 40%",
-    ),
-    "byedpiTestReset": MessageLookupByLibrary.simpleMessage(
-      "Сбросить к стандартным",
-    ),
-    "byedpiTestRetest": MessageLookupByLibrary.simpleMessage("Перетест"),
-    "byedpiTestRemove": MessageLookupByLibrary.simpleMessage("Удалить"),
-    "byedpiTestApply": MessageLookupByLibrary.simpleMessage("Применить"),
-    "byedpiTestApplied": MessageLookupByLibrary.simpleMessage(
-      "Стратегия применена",
-    ),
-    "byedpiTestHint": MessageLookupByLibrary.simpleMessage(
-      "Запустите тест, чтобы отранжировать стратегии по доступности тест-сайтов в вашей сети, затем примените лучшую.",
-    ),
-    "byedpiUpdateStrategies": MessageLookupByLibrary.simpleMessage(
-      "Обновить стратегии",
-    ),
-    "byedpiResetStrategies": MessageLookupByLibrary.simpleMessage(
-      "Сбросить к встроенным",
-    ),
-    "byedpiUpdateOk": MessageLookupByLibrary.simpleMessage(
-      "Стратегии обновлены",
-    ),
-    "byedpiUpdateFail": MessageLookupByLibrary.simpleMessage(
-      "Ошибка обновления",
-    ),
-    "byedpiStrategiesNever": MessageLookupByLibrary.simpleMessage(
-      "Ещё не обновлялось",
-    ),
-    "byedpiRestart": MessageLookupByLibrary.simpleMessage(
-      "Перезапустить ByeDPI",
-    ),
-    "byedpiRestartFail": MessageLookupByLibrary.simpleMessage(
-      "Не удалось (VPN не запущен?)",
-    ),
-    "byedpiRestartOk": MessageLookupByLibrary.simpleMessage(
-      "ByeDPI перезапущен",
-    ),
-    "byedpiTitle": MessageLookupByLibrary.simpleMessage("ByeDPI"),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Обход домена"),
     "bypassDomainDesc": MessageLookupByLibrary.simpleMessage(
       "Действует только при включенном системном прокси",
@@ -645,6 +566,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConditionAnyCellular": MessageLookupByLibrary.simpleMessage(
       "Мобильная сеть",
     ),
+    "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
+      "Ethernet",
+    ),
     "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
       "Любая Wi-Fi",
     ),
@@ -654,29 +578,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "Удалить правило?",
     ),
-    "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
-      "Ethernet",
-    ),
     "networkRulesDefaultActionTitle": MessageLookupByLibrary.simpleMessage(
       "Когда ни одно правило не совпало",
     ),
     "networkRulesDefaultLeave": MessageLookupByLibrary.simpleMessage(
       "Не трогать",
     ),
-    "networkRulesDefaultTurnOn": MessageLookupByLibrary.simpleMessage(
-      "Включить VPN",
-    ),
     "networkRulesDefaultTurnOff": MessageLookupByLibrary.simpleMessage(
       "Выключить VPN",
     ),
-    "networkRulesStatusLabel": MessageLookupByLibrary.simpleMessage(
-      "Текущее решение",
-    ),
-    "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
-      "Ручной выбор сохраняется до смены сети",
-    ),
-    "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
-      "Условие не поддерживается, обновите приложение",
+    "networkRulesDefaultTurnOn": MessageLookupByLibrary.simpleMessage(
+      "Включить VPN",
     ),
     "networkRulesDelete": MessageLookupByLibrary.simpleMessage("Удалить"),
     "networkRulesDisable": MessageLookupByLibrary.simpleMessage("Выключить"),
@@ -688,8 +600,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "Включить правила по сети",
     ),
     "networkRulesEnableShort": MessageLookupByLibrary.simpleMessage("Включить"),
+    "networkRulesInvalidRule": MessageLookupByLibrary.simpleMessage(
+      "Условие не поддерживается, обновите приложение",
+    ),
+    "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
+      "Ручной выбор сохраняется до смены сети",
+    ),
     "networkRulesPermissionBanner": MessageLookupByLibrary.simpleMessage(
       "Сетевым правилам нужно разрешение для определения Wi-Fi-сетей",
+    ),
+    "networkRulesStatusLabel": MessageLookupByLibrary.simpleMessage(
+      "Текущее решение",
     ),
     "networkRulesTitle": MessageLookupByLibrary.simpleMessage(
       "Правила по сети",
@@ -994,9 +915,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Установить темный режим, настроить цвет",
     ),
     "themeMode": MessageLookupByLibrary.simpleMessage("Режим темы"),
-    "thirdPartyNotices": MessageLookupByLibrary.simpleMessage(
-      "Сторонние компоненты",
-    ),
     "tight": MessageLookupByLibrary.simpleMessage("Плотный"),
     "time": MessageLookupByLibrary.simpleMessage("Время"),
     "tip": MessageLookupByLibrary.simpleMessage("Подсказка"),

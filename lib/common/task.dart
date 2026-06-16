@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:fl_clash/byedpi/engine.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
@@ -238,14 +237,6 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   );
   if (!hasUserInnerRule) rules.insert(0, innerBypassRule);
   rawConfig['rules'] = rules;
-  injectByeDpi(
-    rawConfig: rawConfig.cast<String, dynamic>(),
-    settings: data.byeDpiSettings,
-    hosts: data.byeDpiHostList,
-  );
-  rules = rawConfig['rules'] != null
-      ? List<String>.from(rawConfig['rules'])
-      : rules;
   if (addedRules.isNotEmpty) {
     final parsedNewRules = addedRules
         .map((item) => ParsedRule.parseString(item.value))

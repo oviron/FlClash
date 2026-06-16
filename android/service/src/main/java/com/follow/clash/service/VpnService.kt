@@ -16,7 +16,6 @@ import androidx.core.content.getSystemService
 import com.follow.clash.common.AccessControlMode
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.Logger
-import com.follow.clash.common.modules.Module
 import com.follow.clash.common.modules.moduleLoader
 import com.follow.clash.service.models.VpnOptions
 import com.follow.clash.service.models.getIpv4RouteAddress
@@ -45,19 +44,6 @@ class VpnService : SystemVpnService(), IBaseService,
         install(NetworkObserveModule(self))
         install(NotificationModule(self))
         install(SuspendModule(self))
-        tryByeDpiModule(self)?.let { install(it) }
-    }
-
-    private fun tryByeDpiModule(ctx: Context): Module? = try {
-        Class.forName("com.follow.clash.byedpi.ByeDpiModule")
-            .getConstructor(Context::class.java)
-            .newInstance(ctx) as Module
-    } catch (_: ClassNotFoundException) {
-        null
-    } catch (e: Throwable) {
-        Logger.e("VpnService", "tryByeDpiModule failed: $e")
-        GlobalState.log("ByeDpi module load failed: ${e.message}")
-        null
     }
 
     private var wakeLock: PowerManager.WakeLock? = null
@@ -247,24 +233,14 @@ class VpnService : SystemVpnService(), IBaseService,
                 addDnsServer(DNS6)
             }
             setMtu(9000)
-            // bydpi-flavor only — the embedded byedpi proxy listens on 127.0.0.1
-            // and would loop through mihomo if FlClash's own UID stayed in tun.
-            // Tracks the bydpi product flavor's applicationIdSuffix in
-            // android/app/build.gradle.kts. Update both if it ever changes.
-            val byeDpiActive = packageName.endsWith(".bydpi") ||
-                packageName.contains(".bydpi.")
             options.accessControlProps.let { accessControl ->
                 if (accessControl.enable) {
                     when (accessControl.mode) {
                         AccessControlMode.ACCEPT_SELECTED -> {
-                            val list = if (byeDpiActive)
-                                accessControl.acceptList - packageName
-                            else
-                                accessControl.acceptList + packageName
                             // A profile shared across devices may list apps absent
                             // on this one; an unhandled NameNotFoundException here
                             // aborts the whole builder before establish() -> dead tunnel.
-                            list.forEach { pkg ->
+                            (accessControl.acceptList + packageName).forEach { pkg ->
                                 try {
                                     addAllowedApplication(pkg)
                                 } catch (_: PackageManager.NameNotFoundException) {
@@ -274,11 +250,7 @@ class VpnService : SystemVpnService(), IBaseService,
                         }
 
                         AccessControlMode.REJECT_SELECTED -> {
-                            val list = if (byeDpiActive)
-                                accessControl.rejectList + packageName
-                            else
-                                accessControl.rejectList - packageName
-                            list.forEach { pkg ->
+                            (accessControl.rejectList - packageName).forEach { pkg ->
                                 try {
                                     addDisallowedApplication(pkg)
                                 } catch (_: PackageManager.NameNotFoundException) {
@@ -287,9 +259,6 @@ class VpnService : SystemVpnService(), IBaseService,
                             }
                         }
                     }
-                } else if (byeDpiActive) {
-                    // Invariant: own UID must skip TUN, else byedpi loops via mihomo.
-                    addDisallowedApplication(packageName)
                 }
             }
             setSession("FlClash")
