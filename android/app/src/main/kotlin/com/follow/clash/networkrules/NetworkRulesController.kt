@@ -3,14 +3,18 @@ package com.follow.clash.networkrules
 import android.content.Context
 import android.os.SystemClock
 import com.follow.clash.RunState
+import com.follow.clash.Service
 import com.follow.clash.State
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.networkrules.NetworkDecision
+import com.follow.clash.common.networkrules.NetworkResolution
 import com.follow.clash.common.networkrules.NetworkRulesCodec
 import com.follow.clash.common.networkrules.NetworkRulesEngine
 import com.follow.clash.common.networkrules.NetworkRuleType
 import com.follow.clash.common.networkrules.NetworkSnapshot
 import com.follow.clash.common.networkrules.RulesMirror
+import com.follow.clash.service.models.NotificationParams
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -95,7 +99,7 @@ object NetworkRulesController {
     private suspend fun onSnapshot(snapshot: NetworkSnapshot, key: Long) {
         lastSnapshot = snapshot
         lastSnapshotKey = key
-        val decision: NetworkDecision
+        val resolution: NetworkResolution
         val reason: String
         val overridden: Boolean
         mutex.withLock {
@@ -104,28 +108,36 @@ object NetworkRulesController {
                 currentKey = key
             }
             val mirror = readMirror()
-            decision = NetworkRulesEngine.resolve(mirror, snapshot)
-            reason = buildReason(mirror, snapshot, decision)
+            resolution = NetworkRulesEngine.resolveFull(mirror, snapshot)
+            reason = buildReason(mirror, snapshot, resolution.decision)
             overridden = override?.networkKey == key
         }
-        publish(NetworkRulesStatus(snapshot.type, snapshot.ssid, decision, reason, overridden))
-        if (!overridden) actuate(decision)
+        publish(
+            NetworkRulesStatus(snapshot.type, snapshot.ssid, resolution.decision, reason, overridden),
+        )
+        if (!overridden) actuate(resolution)
     }
 
     // Sets lastEngineDesired + the guard window atomically under the mutex, then
     // performs the (suspending) State call OUTSIDE the lock so we never hold our
     // mutex across State.runLock. The emission that results lands inside the
     // guard window and is classified as engine-initiated, not a manual toggle.
-    private suspend fun actuate(decision: NetworkDecision) {
+    private suspend fun actuate(resolution: NetworkResolution) {
         val running = State.runStateFlow.value == RunState.START
-        var action: (suspend () -> Unit)? = null
+        val profileId = resolution.profileId
+        var startAction: (suspend () -> Unit)? = null
+        var hotSwap = false
+        var stageBoot = false
         mutex.withLock {
-            when (decision) {
+            when (resolution.decision) {
                 NetworkDecision.START -> {
                     lastEngineDesired = true
-                    if (!running) {
+                    if (running) {
+                        hotSwap = profileId != null
+                    } else {
+                        stageBoot = profileId != null
                         engineGuardUntil = SystemClock.elapsedRealtime() + GUARD_MS
-                        action = State::handleStartServiceAction
+                        startAction = State::handleStartServiceAction
                     }
                 }
 
@@ -133,14 +145,68 @@ object NetworkRulesController {
                     lastEngineDesired = false
                     if (running) {
                         engineGuardUntil = SystemClock.elapsedRealtime() + GUARD_MS
-                        action = State::handleStopServiceAction
+                        startAction = State::handleStopServiceAction
                     }
                 }
 
-                NetworkDecision.LEAVE_AS_IS -> Unit
+                // VPN unchanged; a profile target only applies to a live core.
+                NetworkDecision.LEAVE_AS_IS -> hotSwap = profileId != null && running
             }
         }
-        action?.invoke()
+        // File IO + binder calls run OUTSIDE the mutex (never held across State).
+        if (hotSwap && profileId != null) {
+            applyProfileHot(profileId, resolution.selectedMap, resolution.profileName)
+        }
+        if (stageBoot && profileId != null && swapConfig(profileId)) {
+            State.pendingSelectedMap = resolution.selectedMap
+        }
+        startAction?.invoke()
+    }
+
+    // Live profile swap: overwrite config.yaml from the pre-baked cache and tell
+    // the running core to re-apply. applyConfig re-reads config.yaml without
+    // touching the TUN fd, so the VPN never drops.
+    private suspend fun applyProfileHot(
+        profileId: Int,
+        selectedMap: Map<String, String>,
+        profileName: String?,
+    ) {
+        if (!swapConfig(profileId)) return
+        val data = Gson().toJson(mapOf("selected-map" to selectedMap))
+        val envelope = Gson().toJson(
+            mapOf("id" to "nr-$profileId", "method" to "setupConfig", "data" to data),
+        )
+        Service.invokeAction(envelope, null)
+        if (profileName != null) {
+            Service.updateNotificationParams(
+                NotificationParams(title = profileName, stopText = State.sharedState.stopText),
+            )
+        }
+    }
+
+    // Atomically replace config.yaml with the cached profile config. Returns
+    // false on a cache miss (deleted/never-baked profile) so the caller leaves
+    // the profile dimension untouched and never boots into a missing config.
+    private fun swapConfig(profileId: Int): Boolean {
+        val filesDir = GlobalState.application.filesDir
+        val cache = File(filesDir, "$CACHE_DIR/$profileId.yaml")
+        if (!cache.exists()) {
+            GlobalState.log("network-rules: cache miss for profile $profileId, leaving profile")
+            return false
+        }
+        return try {
+            val target = File(filesDir, CONFIG_FILE)
+            val tmp = File(filesDir, "$CONFIG_FILE.tmp")
+            cache.copyTo(tmp, overwrite = true)
+            if (!tmp.renameTo(target)) {
+                tmp.copyTo(target, overwrite = true)
+                tmp.delete()
+            }
+            true
+        } catch (e: Throwable) {
+            GlobalState.log("network-rules: config swap failed for $profileId: $e")
+            false
+        }
     }
 
     // A run-state flip outside the engine's own guard window AND differing from
@@ -196,6 +262,8 @@ object NetworkRulesController {
     }
 
     private const val MIRROR_FILE = "network-rules.json"
+    private const val CACHE_DIR = "network-rules-cache"
+    private const val CONFIG_FILE = "config.yaml"
     private const val GUARD_MS = 6000L
     private const val NO_NETWORK = Long.MIN_VALUE
 }

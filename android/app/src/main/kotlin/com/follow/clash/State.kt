@@ -26,6 +26,11 @@ object State {
 
     var sharedState: SharedState = SharedState()
 
+    // Staged by NetworkRulesController before a headless start so a cold boot
+    // picks up the target profile's proxy selections, not the last profile's.
+    @Volatile
+    var pendingSelectedMap: Map<String, String>? = null
+
     val runStateFlow: MutableStateFlow<RunState> = MutableStateFlow(RunState.STOP)
 
     var flutterEngine: FlutterEngine? = null
@@ -132,7 +137,15 @@ object State {
         initParams["home-dir"] = GlobalState.application.filesDir.path
         initParams["version"] = android.os.Build.VERSION.SDK_INT
         val initParamsString = Gson().toJson(initParams)
-        val setupParamsString = Gson().toJson(sharedState.setupParams)
+        val params = sharedState.setupParams
+        val pending = pendingSelectedMap
+        pendingSelectedMap = null
+        val effectiveParams = if (pending != null && params != null) {
+            params.copy(selectedMap = pending)
+        } else {
+            params
+        }
+        val setupParamsString = Gson().toJson(effectiveParams)
         Service.quickSetup(
             initParamsString,
             setupParamsString,
