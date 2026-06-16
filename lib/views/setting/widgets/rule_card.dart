@@ -3,6 +3,7 @@
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
+import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/location_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -173,16 +174,29 @@ class RuleCard extends ConsumerWidget {
 
 enum _RuleMenu { edit, toggle, delete }
 
-class _ConditionChip extends StatelessWidget {
+class _ConditionChip extends ConsumerWidget {
   final NetworkCondition condition;
   final bool hasPermission;
 
   const _ConditionChip({required this.condition, required this.hasPermission});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     final c = condition;
+    if (c is ProfileIs) {
+      final match = ref
+          .watch(profilesProvider)
+          .where((p) => p.id == c.profileId);
+      final name = match.isNotEmpty && match.first.label.isNotEmpty
+          ? match.first.label
+          : '#${c.profileId}';
+      return Chip(
+        avatar: const Icon(Icons.layers_outlined, size: 18),
+        label: Text('${appLocalizations.networkRulesConditionProfileIs}$name'),
+        visualDensity: VisualDensity.compact,
+      );
+    }
     if (c is WifiNamed) {
       final showWarning = !hasPermission;
       return Chip(

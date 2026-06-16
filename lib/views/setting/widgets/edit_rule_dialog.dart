@@ -40,6 +40,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
   String? _wifiNamedSsid;
   late NetworkVpnMode _vpn;
   int? _profileId;
+  int? _gateProfileId;
 
   @override
   void initState() {
@@ -68,6 +69,8 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
       }
       _vpn = initial.action.vpn;
       _profileId = initial.action.profileId;
+      final gate = initial.conditions.whereType<ProfileIs>();
+      _gateProfileId = gate.isEmpty ? null : gate.first.profileId;
     }
   }
 
@@ -125,7 +128,10 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     final result = NetworkRule(
       id: initial?.id ?? 0,
       name: rawName.isEmpty ? null : rawName,
-      conditions: [condition],
+      conditions: [
+        condition,
+        if (_gateProfileId != null) ProfileIs(_gateProfileId!),
+      ],
       action: NetworkAction(vpn: _vpn, profileId: _profileId),
       priority: initial?.priority ?? 0,
       enabled: initial?.enabled ?? true,
@@ -135,9 +141,9 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
 
   // Drop a stale target (profile deleted since the rule was authored) so the
   // dropdown never asserts on a value absent from its items.
-  int? _validProfileId(List<Profile> profiles) {
-    if (_profileId == null) return null;
-    return profiles.any((p) => p.id == _profileId) ? _profileId : null;
+  int? _validProfileId(int? id, List<Profile> profiles) {
+    if (id == null) return null;
+    return profiles.any((p) => p.id == id) ? id : null;
   }
 
   String _vpnLabel(NetworkVpnMode mode) {
@@ -238,7 +244,16 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
+            // Optional profile gate: AND the rule with "active profile == X".
+            _ProfileDropdown(
+              label: appLocalizations.networkRulesConditionProfileGate,
+              noneLabel: appLocalizations.networkRulesConditionAnyProfile,
+              value: _validProfileId(_gateProfileId, profiles),
+              profiles: profiles,
+              onChanged: (id) => setState(() => _gateProfileId = id),
+            ),
+            const Divider(height: 24),
             Wrap(
               spacing: 8,
               children: [
@@ -253,7 +268,9 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
             ),
             const SizedBox(height: 16),
             _ProfileDropdown(
-              value: _validProfileId(profiles),
+              label: appLocalizations.networkRulesActionProfile,
+              noneLabel: appLocalizations.networkRulesActionNoProfile,
+              value: _validProfileId(_profileId, profiles),
               profiles: profiles,
               onChanged: (id) => setState(() => _profileId = id),
             ),
@@ -390,11 +407,15 @@ class _WifiPickerDialogState extends State<_WifiPickerDialog> {
 }
 
 class _ProfileDropdown extends StatelessWidget {
+  final String label;
+  final String noneLabel;
   final int? value;
   final List<Profile> profiles;
   final ValueChanged<int?> onChanged;
 
   const _ProfileDropdown({
+    required this.label,
+    required this.noneLabel,
     required this.value,
     required this.profiles,
     required this.onChanged,
@@ -404,17 +425,14 @@ class _ProfileDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(appLocalizations.networkRulesActionProfile),
+        Text(label),
         const SizedBox(width: 12),
         Expanded(
           child: DropdownButton<int?>(
             isExpanded: true,
             value: value,
             items: [
-              DropdownMenuItem(
-                value: null,
-                child: Text(appLocalizations.networkRulesActionNoProfile),
-              ),
+              DropdownMenuItem(value: null, child: Text(noneLabel)),
               for (final profile in profiles)
                 DropdownMenuItem(
                   value: profile.id,

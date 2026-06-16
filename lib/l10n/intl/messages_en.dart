@@ -560,8 +560,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConditionAnyEthernet": MessageLookupByLibrary.simpleMessage(
       "Ethernet",
     ),
+    "networkRulesConditionAnyProfile": MessageLookupByLibrary.simpleMessage(
+      "Any profile",
+    ),
     "networkRulesConditionAnyWifi": MessageLookupByLibrary.simpleMessage(
       "Any Wi-Fi",
+    ),
+    "networkRulesConditionProfileGate": MessageLookupByLibrary.simpleMessage(
+      "Only on profile",
+    ),
+    "networkRulesConditionProfileIs": MessageLookupByLibrary.simpleMessage(
+      "Profile: ",
     ),
     "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
       "Wi-Fi named",

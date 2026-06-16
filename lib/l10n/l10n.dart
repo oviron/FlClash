@@ -3824,6 +3824,36 @@ class AppLocalizations {
     );
   }
 
+  /// `Only on profile`
+  String get networkRulesConditionProfileGate {
+    return Intl.message(
+      'Only on profile',
+      name: 'networkRulesConditionProfileGate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Any profile`
+  String get networkRulesConditionAnyProfile {
+    return Intl.message(
+      'Any profile',
+      name: 'networkRulesConditionAnyProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile: `
+  String get networkRulesConditionProfileIs {
+    return Intl.message(
+      'Profile: ',
+      name: 'networkRulesConditionProfileIs',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Delete this rule?`
   String get networkRulesConfirmDelete {
     return Intl.message(
