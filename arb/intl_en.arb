@@ -540,5 +540,11 @@
   "appRoutingDanglingTargets": "{count} routing target(s) no longer exist after the update",
   "appRoutingSearchHint": "Search apps",
   "appRoutingShowSystem": "System apps",
-  "appRoutingSubRule": "Sub-rule"
+  "appRoutingSubRule": "Sub-rule",
+  "subRules": "Sub-rules",
+  "subRuleNew": "New sub-rule",
+  "subRuleRename": "Rename sub-rule",
+  "subRuleNameExists": "A sub-rule with this name already exists",
+  "subRuleDeleteConfirm": "Delete this sub-rule?",
+  "subRuleRuleCount": "{count} rules"
 }

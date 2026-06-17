@@ -63,9 +63,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m16(count) => "${count} items have been selected";
 
-  static String m17(label) => "${label} must be a url";
+  static String m17(count) => "${count} rules";
 
-  static String m18(count) =>
+  static String m18(label) => "${label} must be a url";
+
+  static String m19(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -918,6 +920,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "stopVpn": MessageLookupByLibrary.simpleMessage("Stopping VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("Style"),
     "subRule": MessageLookupByLibrary.simpleMessage("Sub rule"),
+    "subRuleDeleteConfirm": MessageLookupByLibrary.simpleMessage(
+      "Delete this sub-rule?",
+    ),
+    "subRuleNameExists": MessageLookupByLibrary.simpleMessage(
+      "A sub-rule with this name already exists",
+    ),
+    "subRuleNew": MessageLookupByLibrary.simpleMessage("New sub-rule"),
+    "subRuleRename": MessageLookupByLibrary.simpleMessage("Rename sub-rule"),
+    "subRuleRuleCount": m17,
+    "subRules": MessageLookupByLibrary.simpleMessage("Sub-rules"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
     "system": MessageLookupByLibrary.simpleMessage("System"),
@@ -969,7 +981,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m17,
+    "urlTip": m18,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
@@ -992,7 +1004,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "years": MessageLookupByLibrary.simpleMessage("Years"),
-    "yearsAgo": m18,
+    "yearsAgo": m19,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
     "zoom": MessageLookupByLibrary.simpleMessage("Zoom"),
   };

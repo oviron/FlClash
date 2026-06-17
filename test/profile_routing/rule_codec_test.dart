@@ -148,7 +148,6 @@ void main() {
         RuleAction.OR,
         RuleAction.NOT,
         RuleAction.MATCH,
-        RuleAction.RULE_SET,
         RuleAction.SUB_RULE,
       ]) {
         expect(editableRuleActions, isNot(contains(a)), reason: a.value);
@@ -156,6 +155,8 @@ void main() {
       expect(editableRuleActions, contains(RuleAction.PROCESS_NAME));
       expect(editableRuleActions, contains(RuleAction.UID));
       expect(editableRuleActions, contains(RuleAction.DOMAIN_SUFFIX));
+      // RULE-SET is flat, so it is offered (common inside sub-rules).
+      expect(editableRuleActions, contains(RuleAction.RULE_SET));
     },
   );
 }

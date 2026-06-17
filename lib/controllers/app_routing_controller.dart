@@ -44,6 +44,28 @@ extension AppRoutingController on AppController {
     return ProfileRulesDocument(await file.readAsString()).subRuleNames;
   }
 
+  Future<Map<String, List<RoutingRule>>> readSubRules(int profileId) async {
+    final file = File(await appPath.getProfilePath(profileId.toString()));
+    if (!await file.exists()) return const {};
+    return ProfileRulesDocument(await file.readAsString()).subRules;
+  }
+
+  /// Live-mirrors the whole `sub-rules:` block. An empty map removes the key.
+  Future<String?> writeSubRules(
+    int profileId,
+    Map<String, List<RoutingRule>> subRules,
+  ) async {
+    final file = File(await appPath.getProfilePath(profileId.toString()));
+    final raw = await file.exists() ? await file.readAsString() : 'rules: []\n';
+    final String next;
+    try {
+      next = ProfileRulesDocument(raw).withSubRules(subRules);
+    } on ProfileRulesWriteException catch (e) {
+      return e.message;
+    }
+    return _writeValidatedApply(file, profileId, next);
+  }
+
   /// Whitelist (tun.include-package present) vs blacklist (the default) for a
   /// profile, derived from which package key the file carries.
   Future<AccessControlMode> readTunnelMode(int profileId) async {

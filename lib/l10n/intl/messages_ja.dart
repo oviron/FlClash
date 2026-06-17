@@ -48,9 +48,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m16(count) => "${count} 項目が選択されています";
 
-  static String m17(label) => "${label}はURLである必要があります";
+  static String m18(label) => "${label}はURLである必要があります";
 
-  static String m18(count) => "${count}年前";
+  static String m19(count) => "${count}年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -727,7 +727,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL経由でプロファイルを取得"),
-    "urlTip": m17,
+    "urlTip": m18,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
     "userInterface": MessageLookupByLibrary.simpleMessage("ユーザーインターフェース"),
@@ -746,7 +746,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m18,
+    "yearsAgo": m19,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
     "zoom": MessageLookupByLibrary.simpleMessage("ズーム"),
   };

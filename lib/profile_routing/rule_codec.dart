@@ -115,10 +115,12 @@ final class AppToSubRuleRoute extends RoutingRule {
 }
 
 /// Rule actions authorable in the typed editor as a flat `TYPE,value,target`.
-/// Drops the logical forms (AND/OR/NOT need nested rules) on top of the
-/// MATCH/RULE-SET/SUB-RULE that [RuleAction.addedRuleActions] already excludes.
-List<RuleAction> get editableRuleActions =>
-    RuleAction.addedRuleActions.where((a) => !_logical.contains(a)).toList();
+/// Drops the logical forms (AND/OR/NOT need nested rules); RULE-SET is flat
+/// (`RULE-SET,<set>,<target>`) so it is offered back (it is common in sub-rules).
+List<RuleAction> get editableRuleActions => [
+  ...RuleAction.addedRuleActions.where((a) => !_logical.contains(a)),
+  RuleAction.RULE_SET,
+];
 
 List<RoutingRule> parseRoutingRules(List<String> lines) =>
     lines.map(RoutingRule.parse).toList();

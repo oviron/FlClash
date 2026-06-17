@@ -63,6 +63,46 @@ class ProfileRulesDocument {
     return node.keys.map((e) => e.toString()).toList();
   }
 
+  /// Each `sub-rules:` entry parsed into its rule list (preserving order);
+  /// empty map when absent or malformed.
+  Map<String, List<RoutingRule>> get subRules {
+    final Object? doc;
+    try {
+      doc = loadYaml(raw);
+    } on YamlException {
+      return const {};
+    }
+    final node = doc is YamlMap ? doc['sub-rules'] : null;
+    if (node is! YamlMap) return const {};
+    final out = <String, List<RoutingRule>>{};
+    for (final entry in node.entries) {
+      final value = entry.value;
+      out[entry.key.toString()] = value is YamlList
+          ? parseRoutingRules(value.map((e) => e.toString()).toList())
+          : const [];
+    }
+    return out;
+  }
+
+  /// New document with `sub-rules:` replaced by [subRules] (an empty map removes
+  /// the key). Insertion order is kept; other keys/comments are preserved.
+  String withSubRules(Map<String, List<RoutingRule>> subRules) {
+    final editor = YamlEditor(raw);
+    final root = editor.parseAt([]);
+    if (root is! YamlMap) {
+      throw const ProfileRulesWriteException('config root is not a YAML map');
+    }
+    if (subRules.isEmpty) {
+      if (root.containsKey('sub-rules')) editor.remove(['sub-rules']);
+      return editor.toString();
+    }
+    editor.update(
+      ['sub-rules'],
+      {for (final e in subRules.entries) e.key: serializeRoutingRules(e.value)},
+    );
+    return editor.toString();
+  }
+
   List<String> _tunPackages(String key) {
     final Object? doc;
     try {

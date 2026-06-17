@@ -4363,6 +4363,56 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Sub-rules`
+  String get subRules {
+    return Intl.message('Sub-rules', name: 'subRules', desc: '', args: []);
+  }
+
+  /// `New sub-rule`
+  String get subRuleNew {
+    return Intl.message('New sub-rule', name: 'subRuleNew', desc: '', args: []);
+  }
+
+  /// `Rename sub-rule`
+  String get subRuleRename {
+    return Intl.message(
+      'Rename sub-rule',
+      name: 'subRuleRename',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A sub-rule with this name already exists`
+  String get subRuleNameExists {
+    return Intl.message(
+      'A sub-rule with this name already exists',
+      name: 'subRuleNameExists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete this sub-rule?`
+  String get subRuleDeleteConfirm {
+    return Intl.message(
+      'Delete this sub-rule?',
+      name: 'subRuleDeleteConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} rules`
+  String subRuleRuleCount(Object count) {
+    return Intl.message(
+      '$count rules',
+      name: 'subRuleRuleCount',
+      desc: '',
+      args: [count],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

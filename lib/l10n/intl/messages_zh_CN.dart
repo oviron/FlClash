@@ -48,9 +48,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m16(count) => "已选择 ${count} 项";
 
-  static String m17(label) => "${label}必须为URL";
+  static String m18(label) => "${label}必须为URL";
 
-  static String m18(count) => "${count} 年前";
+  static String m19(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -661,7 +661,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m17,
+    "urlTip": m18,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系统Hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("用户界面"),
@@ -680,7 +680,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m18,
+    "yearsAgo": m19,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
     "zoom": MessageLookupByLibrary.simpleMessage("缩放"),
   };

@@ -30,6 +30,39 @@ void main() {
     expect(const ProfileRulesDocument(_sample).subRuleNames, isEmpty);
   });
 
+  test('subRules parses each entry into a rule list', () {
+    const doc =
+        'sub-rules:\n  vpn:\n    - PROCESS-NAME,com.a,VPN\n    - MATCH,VPN\n';
+    final sub = const ProfileRulesDocument(doc).subRules;
+    expect(sub.keys, ['vpn']);
+    expect(sub['vpn']!.map((r) => r.serialize()).toList(), [
+      'PROCESS-NAME,com.a,VPN',
+      'MATCH,VPN',
+    ]);
+  });
+
+  test('withSubRules round-trips and preserves other keys', () {
+    const doc = '# top\nmode: rule\n';
+    final out = const ProfileRulesDocument(doc).withSubRules({
+      'browser': [
+        RoutingRule.parse('RULE-SET,ru,DIRECT'),
+        RoutingRule.parse('MATCH,VPN'),
+      ],
+    });
+    expect(out, contains('# top'));
+    final back = ProfileRulesDocument(out).subRules;
+    expect(back['browser']!.map((r) => r.serialize()).toList(), [
+      'RULE-SET,ru,DIRECT',
+      'MATCH,VPN',
+    ]);
+  });
+
+  test('empty map removes the sub-rules key', () {
+    const doc = 'sub-rules:\n  x:\n    - MATCH,VPN\n';
+    final out = const ProfileRulesDocument(doc).withSubRules({});
+    expect(ProfileRulesDocument(out).subRules, isEmpty);
+  });
+
   test('reads the rules block', () {
     const doc = ProfileRulesDocument(_sample);
     final rules = doc.rules;
