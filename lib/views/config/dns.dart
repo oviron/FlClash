@@ -189,6 +189,15 @@ class FakeIpRangeItem extends ConsumerWidget {
   }
 }
 
+String? _dnsServerTag(String value) {
+  final v = value.toLowerCase();
+  if (v.startsWith('https://') || v.startsWith('http3://')) return 'DoH';
+  if (v.startsWith('tls://')) return 'DoT';
+  if (v.startsWith('quic://')) return 'DoQ';
+  if (v.startsWith('system')) return 'SYS';
+  return null;
+}
+
 class FakeIpFilterItem extends ConsumerWidget {
   const FakeIpFilterItem({super.key});
 
@@ -200,10 +209,9 @@ class FakeIpFilterItem extends ConsumerWidget {
     return ListItem.open(
       title: Text(appLocalizations.fakeipFilter),
       delegate: OpenDelegate(
-        widget: ListInputPage(
+        widget: ListEditorPage(
           title: appLocalizations.fakeipFilter,
           items: fakeIpFilter,
-          titleBuilder: (item) => Text(item),
         ),
         onChanged: (items) {
           ref
@@ -229,10 +237,10 @@ class DefaultNameserverItem extends ConsumerWidget {
       title: Text(appLocalizations.defaultNameserver),
       subtitle: Text(appLocalizations.defaultNameserverDesc),
       delegate: OpenDelegate(
-        widget: ListInputPage(
+        widget: ListEditorPage(
           title: appLocalizations.defaultNameserver,
           items: defaultNameserver,
-          titleBuilder: (item) => Text(item),
+          tagBuilder: _dnsServerTag,
         ),
         onChanged: (items) {
           ref
@@ -259,10 +267,10 @@ class NameserverItem extends ConsumerWidget {
       title: Text(appLocalizations.nameserver),
       subtitle: Text(appLocalizations.nameserverDesc),
       delegate: OpenDelegate(
-        widget: ListInputPage(
+        widget: ListEditorPage(
           title: appLocalizations.nameserver,
           items: nameserver,
-          titleBuilder: (item) => Text(item),
+          tagBuilder: _dnsServerTag,
         ),
         onChanged: (items) {
           ref
@@ -332,11 +340,9 @@ class NameserverPolicyItem extends ConsumerWidget {
       title: Text(appLocalizations.nameserverPolicy),
       subtitle: Text(appLocalizations.nameserverPolicyDesc),
       delegate: OpenDelegate(
-        widget: MapInputPage(
+        widget: MapEditorPage(
           title: appLocalizations.nameserverPolicy,
           map: nameserverPolicy,
-          titleBuilder: (item) => Text(item.key),
-          subtitleBuilder: (item) => Text(item.value),
         ),
         onChanged: (value) {
           ref
@@ -362,10 +368,10 @@ class ProxyServerNameserverItem extends ConsumerWidget {
       title: Text(appLocalizations.proxyNameserver),
       subtitle: Text(appLocalizations.proxyNameserverDesc),
       delegate: OpenDelegate(
-        widget: ListInputPage(
+        widget: ListEditorPage(
           title: appLocalizations.proxyNameserver,
           items: proxyServerNameserver,
-          titleBuilder: (item) => Text(item),
+          tagBuilder: _dnsServerTag,
         ),
         onChanged: (items) {
           ref

@@ -83,12 +83,7 @@ class HostsItem extends ConsumerWidget {
       title: Text(hostsLabel),
       subtitle: Text(appLocalizations.hostsDesc),
       delegate: OpenDelegate(
-        widget: MapInputPage(
-          title: hostsLabel,
-          map: hosts,
-          titleBuilder: (item) => Text(item.key),
-          subtitleBuilder: (item) => Text(item.value),
-        ),
+        widget: MapEditorPage(title: hostsLabel, map: hosts),
         onChanged: (value) {
           ref
               .read(patchClashConfigProvider.notifier)

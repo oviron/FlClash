@@ -20,6 +20,7 @@ export 'keep_scope.dart';
 export 'latency_badge.dart';
 export 'line_chart.dart';
 export 'list.dart';
+export 'list_map_editor.dart';
 export 'loading.dart';
 export 'notification.dart';
 export 'null_status.dart';
