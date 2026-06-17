@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/widgets/quota_bar.dart';
 import 'package:flutter/material.dart';
 
 class SubscriptionInfoView extends StatelessWidget {
@@ -9,39 +10,20 @@ class SubscriptionInfoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (subscriptionInfo == null) {
+    final info = subscriptionInfo;
+    if (info == null || info.total == 0) {
       return Container();
     }
-    if (subscriptionInfo?.total == 0) {
-      return Container();
-    }
-    final use = subscriptionInfo!.upload + subscriptionInfo!.download;
-    final total = subscriptionInfo!.total;
-    final progress = use / total;
-
-    final useShow = use.traffic.show;
-    final totalShow = total.traffic.show;
-    final expireShow =
-        subscriptionInfo?.expire != null && subscriptionInfo!.expire != 0
-        ? DateTime.fromMillisecondsSinceEpoch(
-            subscriptionInfo!.expire * 1000,
-          ).show
+    final use = info.upload + info.download;
+    final expireShow = info.expire != 0
+        ? DateTime.fromMillisecondsSinceEpoch(info.expire * 1000).show
         : appLocalizations.infiniteTime;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        LinearProgressIndicator(
-          minHeight: 6,
-          value: progress,
-          backgroundColor: context.colorScheme.primary.opacity15,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          '$useShow / $totalShow · $expireShow',
-          style: context.textTheme.labelMedium?.toLight,
-        ),
-        const SizedBox(height: 4),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: QuotaBar(
+        value: use / info.total,
+        label: '${use.traffic.show} / ${info.total.traffic.show} · $expireShow',
+      ),
     );
   }
 }
