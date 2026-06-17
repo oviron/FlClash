@@ -114,6 +114,95 @@ final class AppToSubRuleRoute extends RoutingRule {
   int get hashCode => Object.hash(packageName, subRuleName);
 }
 
+/// One clause inside a [LogicalRule]: a non-logical condition type plus its raw
+/// remaining params, kept verbatim so an unedited clause re-serializes exactly.
+final class LogicalClause {
+  final RuleAction action;
+  final String
+  params; // everything after the type, e.g. "a.com" or "CN,no-resolve"
+
+  const LogicalClause({required this.action, required this.params});
+
+  String serialize() =>
+      params.isEmpty ? action.value : '${action.value},$params';
+
+  @override
+  bool operator ==(Object other) =>
+      other is LogicalClause &&
+      other.action == action &&
+      other.params == params;
+
+  @override
+  int get hashCode => Object.hash(action, params);
+}
+
+/// A flat-clause logical rule: `AND`/`OR`/`NOT` over parenthesized clauses, e.g.
+/// `AND,((DOMAIN,a.com),(NETWORK,UDP)),REJECT`. Editable in the block builder
+/// and round-trips byte-for-byte. A clause that is itself logical or nested
+/// keeps the whole rule as [PassthroughRule] (deep nesting is not modeled).
+final class LogicalRule extends RoutingRule {
+  final RuleAction op; // AND, OR, or NOT
+  final List<LogicalClause> clauses;
+  final String target;
+  final bool noResolve;
+  final bool src;
+
+  const LogicalRule({
+    required this.op,
+    required this.clauses,
+    required this.target,
+    this.noResolve = false,
+    this.src = false,
+  });
+
+  LogicalRule copyWith({
+    RuleAction? op,
+    List<LogicalClause>? clauses,
+    String? target,
+    bool? noResolve,
+    bool? src,
+  }) => LogicalRule(
+    op: op ?? this.op,
+    clauses: clauses ?? this.clauses,
+    target: target ?? this.target,
+    noResolve: noResolve ?? this.noResolve,
+    src: src ?? this.src,
+  );
+
+  @override
+  String serialize() {
+    final body = clauses.map((c) => '(${c.serialize()})').join(',');
+    return [
+      op.value,
+      '($body)',
+      target,
+      if (src) 'src',
+      if (noResolve) 'no-resolve',
+    ].join(',');
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is LogicalRule &&
+      other.op == op &&
+      other.target == target &&
+      other.noResolve == noResolve &&
+      other.src == src &&
+      _listEq(other.clauses, clauses);
+
+  @override
+  int get hashCode =>
+      Object.hash(op, target, noResolve, src, Object.hashAll(clauses));
+
+  static bool _listEq(List<LogicalClause> a, List<LogicalClause> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
+}
+
 /// Rule actions authorable in the typed editor as a flat `TYPE,value,target`.
 /// Drops the logical forms (AND/OR/NOT need nested rules); RULE-SET is flat
 /// (`RULE-SET,<set>,<target>`) so it is offered back (it is common in sub-rules).
@@ -160,6 +249,12 @@ RoutingRule _parse(String line) {
   if (action == RuleAction.SUB_RULE && !src && !noResolve) {
     return _parseAppSubRule(core) ?? PassthroughRule(line);
   }
+  if (action == RuleAction.AND ||
+      action == RuleAction.OR ||
+      action == RuleAction.NOT) {
+    return _parseLogical(action!, core, src: src, noResolve: noResolve) ??
+        PassthroughRule(line);
+  }
   if (action == null || _logical.contains(action)) {
     return PassthroughRule(line);
   }
@@ -201,6 +296,50 @@ AppToSubRuleRoute? _parseAppSubRule(List<String> core) {
   if (_actionOf(parts[0]) != RuleAction.PROCESS_NAME) return null;
   if (parts[1].isEmpty || core[2].isEmpty) return null;
   return AppToSubRuleRoute(packageName: parts[1], subRuleName: core[2]);
+}
+
+// Recognizes `AND`/`OR`/`NOT,(<clauses>),<target>` where each clause is a flat
+// `(TYPE,params)`. Returns null (-> Passthrough) on nested logical clauses, a
+// NOT with other than one clause, or any malformed shape, so deep nesting and
+// odd grammar are never lossily reshaped.
+LogicalRule? _parseLogical(
+  RuleAction op,
+  List<String> core, {
+  required bool src,
+  required bool noResolve,
+}) {
+  if (core.length != 3) return null;
+  final payload = core[1];
+  if (!payload.startsWith('(') || !payload.endsWith(')')) return null;
+  final target = core[2];
+  if (target.isEmpty) return null;
+  final parts = _splitTopLevel(payload.substring(1, payload.length - 1));
+  if (parts.isEmpty) return null;
+  if (op == RuleAction.NOT && parts.length != 1) return null;
+  final clauses = <LogicalClause>[];
+  for (final part in parts) {
+    if (!part.startsWith('(') || !part.endsWith(')')) return null;
+    final clause = _parseClause(part.substring(1, part.length - 1));
+    if (clause == null) return null;
+    clauses.add(clause);
+  }
+  return LogicalRule(
+    op: op,
+    clauses: clauses,
+    target: target,
+    src: src,
+    noResolve: noResolve,
+  );
+}
+
+// One flat clause body, e.g. `DOMAIN,a.com` or `GEOIP,CN,no-resolve`. Nested
+// parens or a logical type yield null so the parent rule stays Passthrough.
+LogicalClause? _parseClause(String body) {
+  if (body.contains('(') || body.contains(')')) return null;
+  final fields = _splitTopLevel(body);
+  final action = fields.isEmpty ? null : _actionOf(fields.first);
+  if (action == null || _logical.contains(action)) return null;
+  return LogicalClause(action: action, params: fields.sublist(1).join(','));
 }
 
 // Split on commas at paren-depth 0 only; preserves bytes (no trimming) so a

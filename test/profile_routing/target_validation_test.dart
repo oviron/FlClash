@@ -41,9 +41,9 @@ void main() {
       'PROCESS-NAME,com.b,Gone', // dangling
       'PROCESS-NAME,com.c,DIRECT', // builtin
       'UID,1,REJECT', // builtin
-      'AND,((DOMAIN,x)),Whatever', // passthrough -> skipped
+      'AND,((DOMAIN,x)),Whatever', // logical: its target is validated too
     ]);
-    expect(danglingTargets(rules, {'Auto', 'Manual'}), ['Gone']);
+    expect(danglingTargets(rules, {'Auto', 'Manual'}), ['Gone', 'Whatever']);
   });
 
   test('dedups repeated dangling targets', () {

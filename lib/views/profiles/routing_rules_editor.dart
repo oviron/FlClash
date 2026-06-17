@@ -2,6 +2,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/profile_routing/rule_codec.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/views/profiles/rule_block_builder.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,7 +58,13 @@ class _RoutingRulesEditorState extends ConsumerState<RoutingRulesEditor> {
   }
 
   bool _editable(RoutingRule r) =>
-      r is TypedRule && r.action != RuleAction.MATCH;
+      (r is TypedRule && r.action != RuleAction.MATCH) || r is LogicalRule;
+
+  IconData _leadingIcon(RoutingRule r) {
+    if (r is LogicalRule) return Icons.account_tree_outlined;
+    if (_editable(r)) return Icons.tune;
+    return Icons.lock_outline;
+  }
 
   Future<void> _commit(List<_Row> next) async {
     final prev = _rows;
@@ -70,13 +77,44 @@ class _RoutingRulesEditorState extends ConsumerState<RoutingRulesEditor> {
   }
 
   Future<void> _add() async {
-    final result = await _editSheet(null);
+    final advanced = await _pickAddKind();
+    if (advanced == null) return;
+    final result = advanced ? await _blockSheet(null) : await _editSheet(null);
     if (result == null) return;
     await _commit([_Row(_nextId++, result), ..._rows]);
   }
 
+  /// Offers both flat-typed and logical/advanced rule creation. Returns true for
+  /// advanced (block builder), false for flat, null if dismissed.
+  Future<bool?> _pickAddKind() => showSheet<bool>(
+    context: context,
+    props: const SheetProps(isScrollControlled: true),
+    builder: (_, type) => AdaptiveSheetScaffold(
+      type: type,
+      title: appLocalizations.addRule,
+      body: ListView(
+        shrinkWrap: true,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.tune),
+            title: Text(appLocalizations.addRule),
+            onTap: () => Navigator.of(context).pop(false),
+          ),
+          ListTile(
+            leading: const Icon(Icons.account_tree_outlined),
+            title: Text(appLocalizations.addLogicalRule),
+            onTap: () => Navigator.of(context).pop(true),
+          ),
+        ],
+      ),
+    ),
+  );
+
   Future<void> _edit(int index) async {
-    final result = await _editSheet(_rows[index].rule as TypedRule);
+    final rule = _rows[index].rule;
+    final result = rule is LogicalRule
+        ? await _blockSheet(rule)
+        : await _editSheet(rule as TypedRule);
     if (result == null) return;
     final next = [..._rows];
     next[index] = _Row(_rows[index].id, result);
@@ -104,6 +142,17 @@ class _RoutingRulesEditorState extends ConsumerState<RoutingRulesEditor> {
       pickTarget: _showTargetSheet,
     ),
   );
+
+  Future<LogicalRule?> _blockSheet(LogicalRule? initial) =>
+      showSheet<LogicalRule>(
+        context: context,
+        props: const SheetProps(isScrollControlled: true),
+        builder: (_, type) => RuleBlockBuilder(
+          type: type,
+          initial: initial ?? defaultLogicalRule(_kDirect),
+          pickTarget: _showTargetSheet,
+        ),
+      );
 
   Future<String?> _showTargetSheet(String current) {
     final groups = ref.read(currentGroupsStateProvider).value;
@@ -164,9 +213,7 @@ class _RoutingRulesEditorState extends ConsumerState<RoutingRulesEditor> {
                     final editable = _editable(row.rule);
                     return ListTile(
                       key: ValueKey(row.id),
-                      leading: editable
-                          ? const Icon(Icons.tune, size: 18)
-                          : const Icon(Icons.lock_outline, size: 18),
+                      leading: Icon(_leadingIcon(row.rule), size: 18),
                       title: Text(row.rule.serialize(), style: mono),
                       onTap: editable ? () => _edit(index) : null,
                       trailing: IconButton(

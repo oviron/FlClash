@@ -69,12 +69,9 @@ void main() {
     expect(rules.length, 4);
     expect(rules.first, isA<TypedRule>());
     expect((rules.first as TypedRule).action, RuleAction.PROCESS_NAME);
-    // The logical rule survives read as Passthrough.
-    expect(rules[2], isA<PassthroughRule>());
-    expect(
-      (rules[2] as PassthroughRule).raw,
-      'AND,((DOMAIN,x.com),(NETWORK,UDP)),REJECT',
-    );
+    // The logical rule reads as a LogicalRule and round-trips verbatim.
+    expect(rules[2], isA<LogicalRule>());
+    expect(rules[2].serialize(), 'AND,((DOMAIN,x.com),(NETWORK,UDP)),REJECT');
   });
 
   test('rewrite preserves other keys and comments', () {
@@ -110,11 +107,11 @@ void main() {
 
   test('removing a rule works', () {
     const doc = ProfileRulesDocument(_sample);
-    final kept = doc.rules.where((r) => r is! PassthroughRule).toList();
+    final kept = doc.rules.where((r) => r is! LogicalRule).toList();
     final out = doc.withRules(kept);
     final reread = ProfileRulesDocument(out).rules;
     expect(reread.length, 3);
-    expect(reread.any((r) => r is PassthroughRule), false);
+    expect(reread.any((r) => r is LogicalRule), false);
   });
 
   test('missing rules key is created', () {

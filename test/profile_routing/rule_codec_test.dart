@@ -87,15 +87,64 @@ void main() {
     expect(r.isAppRouting, false);
   });
 
-  test('logical rules stay Passthrough', () {
+  test('flat AND/OR/NOT parse as LogicalRule and round-trip', () {
+    final and =
+        RoutingRule.parse('AND,((DOMAIN,a),(NETWORK,UDP)),REJECT')
+            as LogicalRule;
+    expect(and.op, RuleAction.AND);
+    expect(and.clauses.length, 2);
+    expect(and.clauses.first.action, RuleAction.DOMAIN);
+    expect(and.clauses.first.params, 'a');
+    expect(and.target, 'REJECT');
+    expect(and.serialize(), 'AND,((DOMAIN,a),(NETWORK,UDP)),REJECT');
+    expect(RoutingRule.parse('NOT,((DOMAIN,a)),Proxy'), isA<LogicalRule>());
+  });
+
+  test('a logical clause keeps its raw params (flags stay inside)', () {
+    final r =
+        RoutingRule.parse('AND,((GEOIP,CN,no-resolve),(NETWORK,UDP)),DIRECT')
+            as LogicalRule;
+    expect(r.clauses.first.action, RuleAction.GEOIP);
+    expect(r.clauses.first.params, 'CN,no-resolve');
+    expect(r.serialize(), 'AND,((GEOIP,CN,no-resolve),(NETWORK,UDP)),DIRECT');
+  });
+
+  test('a logical rule trailing flag round-trips', () {
+    const line = 'AND,((DOMAIN,a)),DIRECT,no-resolve';
+    final r = RoutingRule.parse(line) as LogicalRule;
+    expect(r.noResolve, isTrue);
+    expect(r.serialize(), line);
+  });
+
+  test('nested logical, bad NOT arity, or SUB-RULE stay Passthrough', () {
     expect(
-      RoutingRule.parse('AND,((DOMAIN,a)),REJECT'),
+      RoutingRule.parse('AND,((AND,((DOMAIN,a))),(NETWORK,UDP)),X'),
       isA<PassthroughRule>(),
     );
-    expect(RoutingRule.parse('NOT,((DOMAIN,a)),Proxy'), isA<PassthroughRule>());
+    expect(
+      RoutingRule.parse('NOT,((DOMAIN,a),(NETWORK,UDP)),X'),
+      isA<PassthroughRule>(),
+    );
     expect(
       RoutingRule.parse('SUB-RULE,(NETWORK,UDP),s'),
       isA<PassthroughRule>(),
+    );
+  });
+
+  test('editing a logical clause reserializes canonically', () {
+    final r =
+        RoutingRule.parse('AND,((DOMAIN,a),(NETWORK,UDP)),REJECT')
+            as LogicalRule;
+    final edited = r.copyWith(
+      clauses: [
+        const LogicalClause(action: RuleAction.DOMAIN_SUFFIX, params: 'b.com'),
+        r.clauses[1],
+      ],
+      target: 'Proxy',
+    );
+    expect(
+      edited.serialize(),
+      'AND,((DOMAIN-SUFFIX,b.com),(NETWORK,UDP)),Proxy',
     );
   });
 

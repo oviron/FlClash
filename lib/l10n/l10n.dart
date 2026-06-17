@@ -2544,6 +2544,176 @@ class AppLocalizations {
     return Intl.message('No resolve IP', name: 'noResolve', desc: '', args: []);
   }
 
+  /// `Add logical rule`
+  String get addLogicalRule {
+    return Intl.message(
+      'Add logical rule',
+      name: 'addLogicalRule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logical rule`
+  String get ruleBlockTitle {
+    return Intl.message(
+      'Logical rule',
+      name: 'ruleBlockTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Operator`
+  String get ruleBlockOperator {
+    return Intl.message(
+      'Operator',
+      name: 'ruleBlockOperator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add at least one condition and a target`
+  String get ruleBlockInvalid {
+    return Intl.message(
+      'Add at least one condition and a target',
+      name: 'ruleBlockInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AND`
+  String get ruleOpAnd {
+    return Intl.message('AND', name: 'ruleOpAnd', desc: '', args: []);
+  }
+
+  /// `OR`
+  String get ruleOpOr {
+    return Intl.message('OR', name: 'ruleOpOr', desc: '', args: []);
+  }
+
+  /// `NOT`
+  String get ruleOpNot {
+    return Intl.message('NOT', name: 'ruleOpNot', desc: '', args: []);
+  }
+
+  /// `Conditions`
+  String get ruleConditions {
+    return Intl.message(
+      'Conditions',
+      name: 'ruleConditions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Condition`
+  String get ruleConditionType {
+    return Intl.message(
+      'Condition',
+      name: 'ruleConditionType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Parameters`
+  String get ruleConditionParams {
+    return Intl.message(
+      'Parameters',
+      name: 'ruleConditionParams',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add condition`
+  String get ruleAddClause {
+    return Intl.message(
+      'Add condition',
+      name: 'ruleAddClause',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick target`
+  String get ruleTargetPick {
+    return Intl.message(
+      'Pick target',
+      name: 'ruleTargetPick',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Members by filter`
+  String get groupFilterMembers {
+    return Intl.message(
+      'Members by filter',
+      name: 'groupFilterMembers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter (regex)`
+  String get groupFilterRegex {
+    return Intl.message(
+      'Filter (regex)',
+      name: 'groupFilterRegex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Members are matched from all proxies by this regex`
+  String get groupFilterHint {
+    return Intl.message(
+      'Members are matched from all proxies by this regex',
+      name: 'groupFilterHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set members manually`
+  String get groupMembersManual {
+    return Intl.message(
+      'Set members manually',
+      name: 'groupMembersManual',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Advanced (core keys)`
+  String get groupAdvancedKeys {
+    return Intl.message(
+      'Advanced (core keys)',
+      name: 'groupAdvancedKeys',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add key`
+  String get groupAddKey {
+    return Intl.message('Add key', name: 'groupAddKey', desc: '', args: []);
+  }
+
+  /// `Open as YAML`
+  String get groupOpenYaml {
+    return Intl.message(
+      'Open as YAML',
+      name: 'groupOpenYaml',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Do you want to save the changes?`
   String get saveChanges {
     return Intl.message(

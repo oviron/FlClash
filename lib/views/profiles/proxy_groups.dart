@@ -1,6 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/profile_routing/group_spec.dart';
+import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +9,61 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 const _types = ['select', 'url-test', 'fallback', 'load-balance', 'relay'];
 const _builtins = ['DIRECT', 'REJECT', 'GLOBAL'];
 
+const _typeIcons = {
+  'select': Icons.touch_app_outlined,
+  'url-test': Icons.bolt_outlined,
+  'fallback': Icons.shield_outlined,
+  'load-balance': Icons.balance_outlined,
+  'relay': Icons.link_outlined,
+};
+
+const _filterKey = 'filter';
+
 bool _isHealthType(String type) =>
     type == 'url-test' || type == 'fallback' || type == 'load-balance';
+
+/// Pure group-editor reducer: applies the edited fields onto [base], preserving
+/// every unmodeled key not surfaced by the editor. Health fields apply only to
+/// health-check types; `filter` is set/cleared by [filterMode]; [extras] carry
+/// the edited unknown key/values. Lossless: keys outside this set survive.
+GroupSpec buildGroupSpec({
+  required GroupSpec base,
+  required String name,
+  required String type,
+  required List<String> members,
+  required bool filterMode,
+  required String filter,
+  required Map<String, String> extras,
+  String url = '',
+  String interval = '',
+  bool lazy = false,
+}) {
+  var spec = base.copyWith(name: name.trim(), type: type, proxies: members);
+  if (_isHealthType(type)) {
+    spec = spec.copyWith(
+      url: url.trim().isEmpty ? null : url.trim(),
+      interval: interval.trim().isEmpty ? null : int.tryParse(interval.trim()),
+      lazy: lazy,
+    );
+  }
+  spec = _withExtraKey(
+    spec,
+    _filterKey,
+    filterMode && filter.trim().isNotEmpty ? filter.trim() : null,
+  );
+  for (final e in extras.entries) {
+    spec = _withExtraKey(spec, e.key, e.value);
+  }
+  return spec;
+}
+
+/// Set/remove one unmodeled key on a [GroupSpec], preserving the rest. Kept here
+/// (not on GroupSpec) so the lossless codec type stays untouched.
+GroupSpec _withExtraKey(GroupSpec g, String key, String? value) {
+  final m = Map<String, dynamic>.of(g.raw);
+  value == null ? m.remove(key) : m[key] = value;
+  return GroupSpec(m);
+}
 
 /// Lists and edits a profile's `proxy-groups:`. Each group's unknown keys
 /// (strategy, filter, ...) are preserved on write; see [GroupSpec].
@@ -102,9 +156,12 @@ class _ProxyGroupsViewState extends ConsumerState<ProxyGroupsView> {
       ..._builtins,
       ..._candidates.where((c) => c != group.name),
     ];
+    final delays = {
+      for (final c in candidates) c: ref.read(getDelayProvider(proxyName: c)),
+    };
     return BaseNavigator.push<GroupSpec>(
       context,
-      _GroupEditorView(initial: group, candidates: candidates),
+      _GroupEditorView(initial: group, candidates: candidates, delays: delays),
     );
   }
 
@@ -166,8 +223,13 @@ class _ProxyGroupsViewState extends ConsumerState<ProxyGroupsView> {
 class _GroupEditorView extends StatefulWidget {
   final GroupSpec initial;
   final List<String> candidates;
+  final Map<String, int?> delays;
 
-  const _GroupEditorView({required this.initial, required this.candidates});
+  const _GroupEditorView({
+    required this.initial,
+    required this.candidates,
+    required this.delays,
+  });
 
   @override
   State<_GroupEditorView> createState() => _GroupEditorViewState();
@@ -177,9 +239,12 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
   late final TextEditingController _name;
   late final TextEditingController _url;
   late final TextEditingController _interval;
+  late final TextEditingController _filter;
   late String _type;
   late List<String> _members;
   late bool _lazy;
+  late Map<String, String> _extras; // unmodeled keys minus `filter`
+  late bool _filterMode;
 
   @override
   void initState() {
@@ -194,6 +259,13 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
       text: widget.initial.interval?.toString() ?? '',
     );
     _lazy = widget.initial.lazy;
+    final raw = widget.initial.raw;
+    _filterMode = raw.containsKey(_filterKey);
+    _filter = TextEditingController(text: raw[_filterKey]?.toString() ?? '');
+    _extras = {
+      for (final k in widget.initial.extraKeys)
+        if (k != _filterKey) k: raw[k]?.toString() ?? '',
+    };
   }
 
   @override
@@ -201,56 +273,103 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
     _name.dispose();
     _url.dispose();
     _interval.dispose();
+    _filter.dispose();
     super.dispose();
   }
 
-  GroupSpec _build() {
-    final base = widget.initial.copyWith(
-      name: _name.text.trim(),
-      type: _type,
-      proxies: _members,
-    );
-    if (!_isHealthType(_type)) return base;
-    return base.copyWith(
-      url: _url.text.trim().isEmpty ? null : _url.text.trim(),
-      interval: _interval.text.trim().isEmpty
-          ? null
-          : int.tryParse(_interval.text.trim()),
-      lazy: _lazy,
-    );
-  }
+  GroupSpec _build() => buildGroupSpec(
+    base: widget.initial,
+    name: _name.text,
+    type: _type,
+    members: _members,
+    filterMode: _filterMode,
+    filter: _filter.text,
+    extras: _extras,
+    url: _url.text,
+    interval: _interval.text,
+    lazy: _lazy,
+  );
 
   Future<void> _addMember() async {
     final pool = widget.candidates.where((c) => !_members.contains(c)).toList();
     if (pool.isEmpty) return;
-    final picked = await showSheet<String>(
+    final picked = await showSheet<List<String>>(
+      context: context,
+      props: const SheetProps(isScrollControlled: true),
+      builder: (_, type) =>
+          _MemberPickerSheet(type: type, pool: pool, delays: widget.delays),
+    );
+    if (picked != null && picked.isNotEmpty) {
+      setState(() => _members = [..._members, ...picked]);
+    }
+  }
+
+  Future<void> _addExtraKey() async {
+    final key = await _promptKey();
+    if (key == null || key.isEmpty || !mounted) return;
+    if (key == _filterKey || _extras.containsKey(key)) return;
+    setState(() => _extras = {..._extras, key: ''});
+  }
+
+  Future<String?> _promptKey() {
+    final controller = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(appLocalizations.groupAddKey),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
+            labelText: appLocalizations.key,
+          ),
+          onSubmitted: (v) => Navigator.of(context).pop(v.trim()),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(appLocalizations.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(controller.text.trim()),
+            child: Text(appLocalizations.confirm),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showYaml() {
+    final yaml = const GroupSpecYamlPreview().render(_build());
+    showSheet<void>(
       context: context,
       props: const SheetProps(isScrollControlled: true),
       builder: (_, type) => AdaptiveSheetScaffold(
         type: type,
-        title: appLocalizations.groupAddMember,
-        body: ListView(
-          shrinkWrap: true,
-          children: [
-            for (final c in pool)
-              ListTile(
-                title: Text(c),
-                onTap: () => Navigator.of(context).pop(c),
-              ),
-          ],
+        title: appLocalizations.groupOpenYaml,
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: SelectableText(
+            yaml,
+            style: context.textTheme.bodyMedium?.toJetBrainsMono,
+          ),
         ),
       ),
     );
-    if (picked != null) setState(() => _members = [..._members, picked]);
   }
 
   @override
   Widget build(BuildContext context) {
     final health = _isHealthType(_type);
-    final extras = widget.initial.extraKeys;
     return CommonScaffold(
       title: _name.text.isEmpty ? appLocalizations.groupNew : _name.text,
       actions: [
+        IconButton(
+          tooltip: appLocalizations.groupOpenYaml,
+          icon: const Icon(Icons.code),
+          onPressed: _showYaml,
+        ),
         IconButton(
           icon: const Icon(Icons.check),
           onPressed: () => Navigator.of(context).pop(_build()),
@@ -268,17 +387,20 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
             onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            initialValue: _type,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: appLocalizations.groupType,
-            ),
-            items: [
+          Text(appLocalizations.groupType, style: context.textTheme.titleSmall),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
               for (final t in _types)
-                DropdownMenuItem(value: t, child: Text(t)),
+                ChoiceChip(
+                  avatar: Icon(_typeIcons[t], size: 18),
+                  label: Text(t),
+                  selected: _type == t,
+                  onSelected: (_) => setState(() => _type = t),
+                ),
             ],
-            onChanged: (v) => setState(() => _type = v ?? _type),
           ),
           if (health) ...[
             const SizedBox(height: 16),
@@ -307,61 +429,215 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
             ),
           ],
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Text(
-                appLocalizations.groupMembers,
-                style: context.textTheme.titleSmall,
-              ),
-              const Spacer(),
-              TextButton.icon(
-                onPressed: _addMember,
-                icon: const Icon(Icons.add),
-                label: Text(appLocalizations.groupAddMember),
-              ),
-            ],
-          ),
-          if (_members.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Text(
-                appLocalizations.nullTip(appLocalizations.groupMembers),
-                style: context.textTheme.bodySmall,
-              ),
-            )
-          else
-            ReorderableListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              onReorder: (oldIndex, newIndex) => setState(() {
-                final adjusted = newIndex > oldIndex ? newIndex - 1 : newIndex;
-                _members.insert(adjusted, _members.removeAt(oldIndex));
-              }),
-              children: [
-                for (final m in _members)
-                  ListTile(
-                    key: ValueKey(m),
-                    dense: true,
-                    title: Text(m),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.close, size: 18),
-                      onPressed: () =>
-                          setState(() => _members = [..._members]..remove(m)),
-                    ),
-                  ),
-              ],
-            ),
-          if (extras.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Text(
-              appLocalizations.groupExtraKeys(extras.join(', ')),
-              style: context.textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
+          _filterSection(context),
+          const SizedBox(height: 8),
+          _extrasSection(context),
         ],
       ),
     );
+  }
+
+  Widget _filterSection(BuildContext context) {
+    if (_filterMode) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            appLocalizations.groupFilterMembers,
+            style: context.textTheme.titleSmall,
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _filter,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: appLocalizations.groupFilterRegex,
+              helperText: appLocalizations.groupFilterHint,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () => setState(() => _filterMode = false),
+              icon: const Icon(Icons.list),
+              label: Text(appLocalizations.groupMembersManual),
+            ),
+          ),
+        ],
+      );
+    }
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              appLocalizations.groupMembers,
+              style: context.textTheme.titleSmall,
+            ),
+            const Spacer(),
+            TextButton.icon(
+              onPressed: _addMember,
+              icon: const Icon(Icons.add),
+              label: Text(appLocalizations.groupAddMember),
+            ),
+          ],
+        ),
+        if (_members.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              appLocalizations.nullTip(appLocalizations.groupMembers),
+              style: context.textTheme.bodySmall,
+            ),
+          )
+        else
+          ReorderableListView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            onReorder: (oldIndex, newIndex) => setState(() {
+              final adjusted = newIndex > oldIndex ? newIndex - 1 : newIndex;
+              _members.insert(adjusted, _members.removeAt(oldIndex));
+            }),
+            children: [
+              for (final m in _members)
+                ListTile(
+                  key: ValueKey(m),
+                  dense: true,
+                  title: Text(m),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LatencyBadge(widget.delays[m]),
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 18),
+                        onPressed: () =>
+                            setState(() => _members = [..._members]..remove(m)),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  Widget _extrasSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              appLocalizations.groupAdvancedKeys,
+              style: context.textTheme.titleSmall,
+            ),
+            const Spacer(),
+            TextButton.icon(
+              onPressed: _addExtraKey,
+              icon: const Icon(Icons.add),
+              label: Text(appLocalizations.groupAddKey),
+            ),
+          ],
+        ),
+        for (final key in _extras.keys.toList())
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    initialValue: _extras[key],
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: key,
+                    ),
+                    onChanged: (v) => _extras[key] = v,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 18),
+                  onPressed: () =>
+                      setState(() => _extras = {..._extras}..remove(key)),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _MemberPickerSheet extends StatefulWidget {
+  final SheetType type;
+  final List<String> pool;
+  final Map<String, int?> delays;
+
+  const _MemberPickerSheet({
+    required this.type,
+    required this.pool,
+    required this.delays,
+  });
+
+  @override
+  State<_MemberPickerSheet> createState() => _MemberPickerSheetState();
+}
+
+class _MemberPickerSheetState extends State<_MemberPickerSheet> {
+  final Set<String> _selected = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return AdaptiveSheetScaffold(
+      type: widget.type,
+      title: appLocalizations.groupAddMember,
+      actions: [
+        TextButton(
+          onPressed: _selected.isEmpty
+              ? null
+              : () => Navigator.of(context).pop(_selected.toList()),
+          child: Text(appLocalizations.confirm),
+        ),
+      ],
+      body: ListView(
+        shrinkWrap: true,
+        children: [
+          for (final c in widget.pool)
+            CheckboxListTile(
+              dense: true,
+              value: _selected.contains(c),
+              title: Text(c),
+              secondary: LatencyBadge(widget.delays[c]),
+              onChanged: (v) => setState(() {
+                v == true ? _selected.add(c) : _selected.remove(c);
+              }),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Minimal flow-YAML preview of a single group's `raw` map for the read-only
+/// "open as YAML" fallback. Scalars only; nested maps/lists print inline.
+class GroupSpecYamlPreview {
+  const GroupSpecYamlPreview();
+
+  String render(GroupSpec g) {
+    final out = StringBuffer();
+    g.raw.forEach((k, v) => out.writeln('$k: ${_inline(v)}'));
+    return out.toString();
+  }
+
+  String _inline(Object? v) {
+    if (v is List) return '[${v.map(_inline).join(', ')}]';
+    if (v is Map) {
+      final body = v.entries
+          .map((e) => '${e.key}: ${_inline(e.value)}')
+          .join(', ');
+      return '{$body}';
+    }
+    return '$v';
   }
 }

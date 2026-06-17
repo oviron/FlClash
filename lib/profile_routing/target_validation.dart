@@ -42,9 +42,9 @@ Set<String> configTargets(String yaml) {
   return names;
 }
 
-/// Targets of typed rules that resolve to neither a builtin policy nor a name
-/// in [valid], i.e. dangling after a subscription renamed/removed a group.
-/// De-duplicated, order-preserving. Passthrough (logical) rules are skipped.
+/// Targets of typed and logical rules that resolve to neither a builtin policy
+/// nor a name in [valid], i.e. dangling after a subscription renamed/removed a
+/// group. De-duplicated, order-preserving. Passthrough rules are skipped.
 List<String> danglingTargets(List<RoutingRule> rules, Set<String> valid) {
   final out = <String>[];
   void check(String target) {
@@ -56,6 +56,8 @@ List<String> danglingTargets(List<RoutingRule> rules, Set<String> valid) {
   for (final r in rules) {
     switch (r) {
       case TypedRule():
+        check(r.target);
+      case LogicalRule():
         check(r.target);
       case AppToSubRuleRoute():
         check(r.subRuleName);

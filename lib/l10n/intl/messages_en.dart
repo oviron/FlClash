@@ -118,6 +118,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "action_tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "action_view": MessageLookupByLibrary.simpleMessage("Show/Hide"),
     "add": MessageLookupByLibrary.simpleMessage("Add"),
+    "addLogicalRule": MessageLookupByLibrary.simpleMessage("Add logical rule"),
     "addProfile": MessageLookupByLibrary.simpleMessage("Add Profile"),
     "addRule": MessageLookupByLibrary.simpleMessage("Add rule"),
     "addedRules": MessageLookupByLibrary.simpleMessage("Added rules"),
@@ -455,11 +456,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "Go to configure script",
     ),
     "group": MessageLookupByLibrary.simpleMessage("group"),
+    "groupAddKey": MessageLookupByLibrary.simpleMessage("Add key"),
     "groupAddMember": MessageLookupByLibrary.simpleMessage("Add"),
+    "groupAdvancedKeys": MessageLookupByLibrary.simpleMessage(
+      "Advanced (core keys)",
+    ),
     "groupDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "Delete this group?",
     ),
     "groupExtraKeys": m11,
+    "groupFilterHint": MessageLookupByLibrary.simpleMessage(
+      "Members are matched from all proxies by this regex",
+    ),
+    "groupFilterMembers": MessageLookupByLibrary.simpleMessage(
+      "Members by filter",
+    ),
+    "groupFilterRegex": MessageLookupByLibrary.simpleMessage("Filter (regex)"),
     "groupHealthInterval": MessageLookupByLibrary.simpleMessage(
       "Interval (seconds)",
     ),
@@ -469,10 +481,14 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "groupMemberCount": m12,
     "groupMembers": MessageLookupByLibrary.simpleMessage("Members"),
+    "groupMembersManual": MessageLookupByLibrary.simpleMessage(
+      "Set members manually",
+    ),
     "groupNameExists": MessageLookupByLibrary.simpleMessage(
       "A group with this name already exists",
     ),
     "groupNew": MessageLookupByLibrary.simpleMessage("New group"),
+    "groupOpenYaml": MessageLookupByLibrary.simpleMessage("Open as YAML"),
     "groupType": MessageLookupByLibrary.simpleMessage("Type"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Do you want to cache the changes?",
@@ -996,10 +1012,23 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingRules": MessageLookupByLibrary.simpleMessage("Routing rules"),
     "ru": MessageLookupByLibrary.simpleMessage("Russian"),
     "rule": MessageLookupByLibrary.simpleMessage("Rule"),
+    "ruleAddClause": MessageLookupByLibrary.simpleMessage("Add condition"),
+    "ruleBlockInvalid": MessageLookupByLibrary.simpleMessage(
+      "Add at least one condition and a target",
+    ),
+    "ruleBlockOperator": MessageLookupByLibrary.simpleMessage("Operator"),
+    "ruleBlockTitle": MessageLookupByLibrary.simpleMessage("Logical rule"),
+    "ruleConditionParams": MessageLookupByLibrary.simpleMessage("Parameters"),
+    "ruleConditionType": MessageLookupByLibrary.simpleMessage("Condition"),
+    "ruleConditions": MessageLookupByLibrary.simpleMessage("Conditions"),
     "ruleName": MessageLookupByLibrary.simpleMessage("Rule name"),
     "ruleNameOptional": MessageLookupByLibrary.simpleMessage("Name (optional)"),
+    "ruleOpAnd": MessageLookupByLibrary.simpleMessage("AND"),
+    "ruleOpNot": MessageLookupByLibrary.simpleMessage("NOT"),
+    "ruleOpOr": MessageLookupByLibrary.simpleMessage("OR"),
     "ruleProviders": MessageLookupByLibrary.simpleMessage("Rule providers"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Rule target"),
+    "ruleTargetPick": MessageLookupByLibrary.simpleMessage("Pick target"),
     "save": MessageLookupByLibrary.simpleMessage("Save"),
     "saveChanges": MessageLookupByLibrary.simpleMessage(
       "Do you want to save the changes?",

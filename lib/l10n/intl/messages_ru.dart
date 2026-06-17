@@ -117,6 +117,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "action_tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "action_view": MessageLookupByLibrary.simpleMessage("Показать/Скрыть"),
     "add": MessageLookupByLibrary.simpleMessage("Добавить"),
+    "addLogicalRule": MessageLookupByLibrary.simpleMessage(
+      "Добавить логическое правило",
+    ),
     "addProfile": MessageLookupByLibrary.simpleMessage("Добавить профиль"),
     "addRule": MessageLookupByLibrary.simpleMessage("Добавить правило"),
     "addedRules": MessageLookupByLibrary.simpleMessage("Добавленные правила"),
@@ -476,11 +479,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "Перейти к настройке скрипта",
     ),
     "group": MessageLookupByLibrary.simpleMessage("Группа"),
+    "groupAddKey": MessageLookupByLibrary.simpleMessage("Добавить ключ"),
     "groupAddMember": MessageLookupByLibrary.simpleMessage("Добавить"),
+    "groupAdvancedKeys": MessageLookupByLibrary.simpleMessage(
+      "Дополнительно (ключи ядра)",
+    ),
     "groupDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "Удалить эту группу?",
     ),
     "groupExtraKeys": m11,
+    "groupFilterHint": MessageLookupByLibrary.simpleMessage(
+      "Участники подбираются из всех прокси по этому regex",
+    ),
+    "groupFilterMembers": MessageLookupByLibrary.simpleMessage(
+      "Участники по фильтру",
+    ),
+    "groupFilterRegex": MessageLookupByLibrary.simpleMessage("Фильтр (regex)"),
     "groupHealthInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал (секунды)",
     ),
@@ -492,10 +506,14 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "groupMemberCount": m12,
     "groupMembers": MessageLookupByLibrary.simpleMessage("Участники"),
+    "groupMembersManual": MessageLookupByLibrary.simpleMessage(
+      "Задать участников вручную",
+    ),
     "groupNameExists": MessageLookupByLibrary.simpleMessage(
       "Группа с таким именем уже существует",
     ),
     "groupNew": MessageLookupByLibrary.simpleMessage("Новая группа"),
+    "groupOpenYaml": MessageLookupByLibrary.simpleMessage("Открыть как YAML"),
     "groupType": MessageLookupByLibrary.simpleMessage("Тип"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Хотите сохранить изменения в кэше?",
@@ -1016,12 +1034,27 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "ru": MessageLookupByLibrary.simpleMessage("Русский"),
     "rule": MessageLookupByLibrary.simpleMessage("Правило"),
+    "ruleAddClause": MessageLookupByLibrary.simpleMessage("Добавить условие"),
+    "ruleBlockInvalid": MessageLookupByLibrary.simpleMessage(
+      "Добавьте хотя бы одно условие и цель",
+    ),
+    "ruleBlockOperator": MessageLookupByLibrary.simpleMessage("Оператор"),
+    "ruleBlockTitle": MessageLookupByLibrary.simpleMessage(
+      "Логическое правило",
+    ),
+    "ruleConditionParams": MessageLookupByLibrary.simpleMessage("Параметры"),
+    "ruleConditionType": MessageLookupByLibrary.simpleMessage("Условие"),
+    "ruleConditions": MessageLookupByLibrary.simpleMessage("Условия"),
     "ruleName": MessageLookupByLibrary.simpleMessage("Название правила"),
     "ruleNameOptional": MessageLookupByLibrary.simpleMessage(
       "Название (необязательно)",
     ),
+    "ruleOpAnd": MessageLookupByLibrary.simpleMessage("И"),
+    "ruleOpNot": MessageLookupByLibrary.simpleMessage("НЕ"),
+    "ruleOpOr": MessageLookupByLibrary.simpleMessage("ИЛИ"),
     "ruleProviders": MessageLookupByLibrary.simpleMessage("Провайдеры правил"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Цель правила"),
+    "ruleTargetPick": MessageLookupByLibrary.simpleMessage("Выбрать цель"),
     "save": MessageLookupByLibrary.simpleMessage("Сохранить"),
     "saveChanges": MessageLookupByLibrary.simpleMessage("Сохранить изменения?"),
     "script": MessageLookupByLibrary.simpleMessage("Скрипт"),
