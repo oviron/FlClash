@@ -38,6 +38,12 @@ extension AppRoutingController on AppController {
     return ProfileRulesDocument(await file.readAsString()).includedPackages;
   }
 
+  Future<List<String>> readSubRuleNames(int profileId) async {
+    final file = File(await appPath.getProfilePath(profileId.toString()));
+    if (!await file.exists()) return const [];
+    return ProfileRulesDocument(await file.readAsString()).subRuleNames;
+  }
+
   /// Whitelist (tun.include-package present) vs blacklist (the default) for a
   /// profile, derived from which package key the file carries.
   Future<AccessControlMode> readTunnelMode(int profileId) async {
@@ -51,13 +57,16 @@ extension AppRoutingController on AppController {
         : AccessControlMode.acceptSelected;
   }
 
-  /// Sets an app's routing target as a flat `PROCESS-NAME,<pkg>,<target>` rule
-  /// (replacing any existing one for [packageName]); a null/empty [target]
-  /// drops the rule. Hot-applies.
+  /// Sets an app's routing target, replacing any existing app rule for
+  /// [packageName]. When [isSubRule] the target is a sub-rule name and the rule
+  /// is written as `SUB-RULE,(PROCESS-NAME,<pkg>),<target>`; otherwise it is a
+  /// proxy/group and the rule is a flat `PROCESS-NAME,<pkg>,<target>`. A
+  /// null/empty [target] drops the rule. Hot-applies.
   Future<String?> setAppTarget(
     int profileId,
     String packageName, {
     String? target,
+    bool isSubRule = false,
   }) async {
     final file = File(await appPath.getProfilePath(profileId.toString()));
     final raw = await file.exists() ? await file.readAsString() : 'rules: []\n';
@@ -66,11 +75,13 @@ extension AppRoutingController on AppController {
     if (target != null && target.isNotEmpty) {
       rules.insert(
         0,
-        TypedRule(
-          action: RuleAction.PROCESS_NAME,
-          value: packageName,
-          target: target,
-        ),
+        isSubRule
+            ? AppToSubRuleRoute(packageName: packageName, subRuleName: target)
+            : TypedRule(
+                action: RuleAction.PROCESS_NAME,
+                value: packageName,
+                target: target,
+              ),
       );
     }
     final String next;
@@ -141,9 +152,10 @@ extension AppRoutingController on AppController {
   }
 
   bool _isAppRule(RoutingRule r, String packageName) =>
-      r is TypedRule &&
-      r.action == RuleAction.PROCESS_NAME &&
-      r.value == packageName;
+      (r is TypedRule &&
+          r.action == RuleAction.PROCESS_NAME &&
+          r.value == packageName) ||
+      (r is AppToSubRuleRoute && r.packageName == packageName);
 
   Future<String?> _writeValidatedApply(
     File file,

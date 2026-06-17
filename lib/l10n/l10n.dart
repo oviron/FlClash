@@ -4353,6 +4353,16 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Sub-rule`
+  String get appRoutingSubRule {
+    return Intl.message(
+      'Sub-rule',
+      name: 'appRoutingSubRule',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

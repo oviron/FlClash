@@ -49,6 +49,20 @@ class ProfileRulesDocument {
   /// whitelist vs blacklist mode for a profile.
   List<String> get includedPackages => _tunPackages('include-package');
 
+  /// Names under `sub-rules:` (each is its own named rule list); empty when
+  /// absent. These are valid routing targets for app->sub-rule rules.
+  List<String> get subRuleNames {
+    final Object? doc;
+    try {
+      doc = loadYaml(raw);
+    } on YamlException {
+      return const [];
+    }
+    final node = doc is YamlMap ? doc['sub-rules'] : null;
+    if (node is! YamlMap) return const [];
+    return node.keys.map((e) => e.toString()).toList();
+  }
+
   List<String> _tunPackages(String key) {
     final Object? doc;
     try {

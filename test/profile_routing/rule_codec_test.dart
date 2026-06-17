@@ -26,6 +26,52 @@ void main() {
     }
   });
 
+  group('app-to-sub-rule routing', () {
+    test('single PROCESS-NAME clause parses as AppToSubRuleRoute', () {
+      final r = RoutingRule.parse(
+        'SUB-RULE,(PROCESS-NAME,app.morphe.android.youtube),vpn-app-route',
+      );
+      expect(r, isA<AppToSubRuleRoute>());
+      r as AppToSubRuleRoute;
+      expect(r.packageName, 'app.morphe.android.youtube');
+      expect(r.subRuleName, 'vpn-app-route');
+    });
+
+    test('round-trips byte-for-byte', () {
+      const line = 'SUB-RULE,(PROCESS-NAME,com.x),browser-route';
+      expect(RoutingRule.parse(line).serialize(), line);
+    });
+
+    test('constructed route serializes to the canonical form', () {
+      expect(
+        const AppToSubRuleRoute(
+          packageName: 'com.y',
+          subRuleName: 'route',
+        ).serialize(),
+        'SUB-RULE,(PROCESS-NAME,com.y),route',
+      );
+    });
+
+    test('non-PROCESS-NAME clause stays Passthrough', () {
+      final r = RoutingRule.parse('SUB-RULE,(NETWORK,UDP),sub-name');
+      expect(r, isA<PassthroughRule>());
+    });
+
+    test('multi-clause AND payload stays Passthrough', () {
+      const line = 'SUB-RULE,((PROCESS-NAME,com.a),(NETWORK,TCP)),route';
+      final r = RoutingRule.parse(line);
+      expect(r, isA<PassthroughRule>());
+      expect(r.serialize(), line);
+    });
+
+    test('SUB-RULE with a trailing flag stays Passthrough', () {
+      const line = 'SUB-RULE,(PROCESS-NAME,com.a),route,no-resolve';
+      final r = RoutingRule.parse(line);
+      expect(r, isA<PassthroughRule>());
+      expect(r.serialize(), line);
+    });
+  });
+
   test('process rules parse as TypedRule and flag isAppRouting', () {
     final r = RoutingRule.parse('PROCESS-NAME,com.foo,Grp');
     expect(r, isA<TypedRule>());

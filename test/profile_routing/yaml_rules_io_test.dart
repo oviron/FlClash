@@ -20,6 +20,16 @@ rules:
 ''';
 
 void main() {
+  test('subRuleNames lists the sub-rules: keys, empty when absent', () {
+    const withSub =
+        'sub-rules:\n  vpn-app-route:\n    - MATCH,VPN\n  browser-route:\n    - MATCH,DIRECT\n';
+    expect(const ProfileRulesDocument(withSub).subRuleNames, [
+      'vpn-app-route',
+      'browser-route',
+    ]);
+    expect(const ProfileRulesDocument(_sample).subRuleNames, isEmpty);
+  });
+
   test('reads the rules block', () {
     const doc = ProfileRulesDocument(_sample);
     final rules = doc.rules;

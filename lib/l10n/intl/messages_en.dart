@@ -150,6 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "appRoutingRulesReapplied": m2,
     "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage("Search apps"),
     "appRoutingShowSystem": MessageLookupByLibrary.simpleMessage("System apps"),
+    "appRoutingSubRule": MessageLookupByLibrary.simpleMessage("Sub-rule"),
     "appRoutingTunnelRestart": MessageLookupByLibrary.simpleMessage(
       "Tunnel change applies on next VPN restart",
     ),

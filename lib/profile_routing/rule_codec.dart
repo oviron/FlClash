@@ -88,6 +88,32 @@ final class PassthroughRule extends RoutingRule {
   int get hashCode => raw.hashCode;
 }
 
+/// The single-clause `SUB-RULE,(PROCESS-NAME,<pkg>),<name>` shape: routes one
+/// app into a named sub-rule. Modeled separately from [TypedRule] because a
+/// plain PROCESS-NAME rule cannot target a sub-rule. Multi-clause SUB-RULEs
+/// (AND/OR payloads) stay [PassthroughRule].
+final class AppToSubRuleRoute extends RoutingRule {
+  final String packageName;
+  final String subRuleName;
+
+  const AppToSubRuleRoute({
+    required this.packageName,
+    required this.subRuleName,
+  });
+
+  @override
+  String serialize() => 'SUB-RULE,(PROCESS-NAME,$packageName),$subRuleName';
+
+  @override
+  bool operator ==(Object other) =>
+      other is AppToSubRuleRoute &&
+      other.packageName == packageName &&
+      other.subRuleName == subRuleName;
+
+  @override
+  int get hashCode => Object.hash(packageName, subRuleName);
+}
+
 /// Rule actions authorable in the typed editor as a flat `TYPE,value,target`.
 /// Drops the logical forms (AND/OR/NOT need nested rules) on top of the
 /// MATCH/RULE-SET/SUB-RULE that [RuleAction.addedRuleActions] already excludes.
@@ -129,6 +155,9 @@ RoutingRule _parse(String line) {
   final core = fields.sublist(0, end);
 
   final action = core.isEmpty ? null : _actionOf(core.first);
+  if (action == RuleAction.SUB_RULE && !src && !noResolve) {
+    return _parseAppSubRule(core) ?? PassthroughRule(line);
+  }
   if (action == null || _logical.contains(action)) {
     return PassthroughRule(line);
   }
@@ -155,6 +184,21 @@ RoutingRule _parse(String line) {
     src: src,
     noResolve: noResolve,
   );
+}
+
+// Recognizes `SUB-RULE,(PROCESS-NAME,<pkg>),<name>` (one PROCESS-NAME clause).
+// Returns null for any other SUB-RULE payload, which stays Passthrough.
+AppToSubRuleRoute? _parseAppSubRule(List<String> core) {
+  if (core.length != 3) return null;
+  final clause = core[1];
+  if (!clause.startsWith('(') || !clause.endsWith(')')) return null;
+  final inner = clause.substring(1, clause.length - 1);
+  if (inner.contains('(') || inner.contains(')')) return null;
+  final parts = inner.split(',');
+  if (parts.length != 2) return null;
+  if (_actionOf(parts[0]) != RuleAction.PROCESS_NAME) return null;
+  if (parts[1].isEmpty || core[2].isEmpty) return null;
+  return AppToSubRuleRoute(packageName: parts[1], subRuleName: core[2]);
 }
 
 // Split on commas at paren-depth 0 only; preserves bytes (no trimming) so a

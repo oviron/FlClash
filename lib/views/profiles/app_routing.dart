@@ -43,6 +43,7 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
   List<_IdRule> _rows = const [];
   Set<String> _excluded = const {};
   Set<String> _included = const {};
+  List<String> _subRuleNames = const [];
   AccessControlMode _mode = AccessControlMode.rejectSelected;
   int _nextId = 0;
   bool _loading = true;
@@ -64,12 +65,14 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
     final rules = await appController.readRoutingRules(widget.profileId);
     final excluded = await appController.readExcludedPackages(widget.profileId);
     final included = await appController.readIncludedPackages(widget.profileId);
+    final subRuleNames = await appController.readSubRuleNames(widget.profileId);
     final mode = await appController.readTunnelMode(widget.profileId);
     if (!mounted) return;
     setState(() {
       _rows = [for (final r in rules) _IdRule(_nextId++, r)];
       _excluded = excluded.toSet();
       _included = included.toSet();
+      _subRuleNames = subRuleNames;
       _mode = mode;
       _loading = false;
     });
@@ -85,11 +88,15 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
 
   List<RoutingRule> get _rules => [for (final e in _rows) e.rule];
 
-  Map<String, TypedRule> get _byPackage {
-    final map = <String, TypedRule>{};
+  /// Per-package routing target, recognizing both a flat `PROCESS-NAME` rule
+  /// (a proxy/group) and the `SUB-RULE,(PROCESS-NAME,...)` form (a sub-rule).
+  Map<String, ({String value, bool isSubRule})> get _byPackage {
+    final map = <String, ({String value, bool isSubRule})>{};
     for (final r in _rules) {
       if (r is TypedRule && r.action == RuleAction.PROCESS_NAME) {
-        map[r.value] = r;
+        map[r.value] = (value: r.target, isSubRule: false);
+      } else if (r is AppToSubRuleRoute) {
+        map[r.packageName] = (value: r.subRuleName, isSubRule: true);
       }
     }
     return map;
@@ -110,21 +117,66 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
 
   Future<void> _pickTarget(Package package) async {
     final pkg = package.packageName;
-    final current = _byPackage[pkg]?.target ?? _kDefault;
-    final picked = await _showTargetSheet(
+    final current = _byPackage[pkg]?.value ?? _kDefault;
+    final picked = await _showAppTargetSheet(
       title: package.label,
       current: current,
-      includeDefault: true,
     );
-    if (picked == null || picked == current) return;
+    if (picked == null || picked.value == current) return;
     final error = await appController.setAppTarget(
       widget.profileId,
       pkg,
-      target: picked == _kDefault ? null : picked,
+      target: picked.value == _kDefault ? null : picked.value,
+      isSubRule: picked.isSubRule,
     );
     if (!mounted) return;
     if (error != null) context.showNotifier(error);
     await _load();
+  }
+
+  /// App-routing target picker: profile rules (default), builtins, proxy
+  /// groups, and the profile's sub-rules (which a flat rule cannot target).
+  Future<({String value, bool isSubRule})?> _showAppTargetSheet({
+    required String title,
+    required String current,
+  }) {
+    final groups = ref.read(currentGroupsStateProvider).value;
+    final d = appLocalizations.appRoutingDefault;
+    final options = <({String value, String label, bool isSubRule})>[
+      (value: _kDefault, label: d, isSubRule: false),
+      (value: _kDirect, label: _kDirect, isSubRule: false),
+      (value: _kReject, label: _kReject, isSubRule: false),
+      (value: _kGlobal, label: _kGlobal, isSubRule: false),
+      for (final g in groups) (value: g.name, label: g.name, isSubRule: false),
+      for (final n in _subRuleNames) (value: n, label: n, isSubRule: true),
+    ];
+    return showSheet<({String value, bool isSubRule})>(
+      context: context,
+      props: const SheetProps(isScrollControlled: true),
+      builder: (_, type) => AdaptiveSheetScaffold(
+        type: type,
+        title: title,
+        body: ListView(
+          shrinkWrap: true,
+          children: [
+            for (final o in options)
+              ListTile(
+                leading: o.isSubRule
+                    ? const Icon(Icons.alt_route, size: 20)
+                    : null,
+                title: Text(o.label),
+                subtitle: o.isSubRule
+                    ? Text(appLocalizations.appRoutingSubRule)
+                    : null,
+                trailing: o.value == current ? const Icon(Icons.check) : null,
+                onTap: () => Navigator.of(
+                  context,
+                ).pop((value: o.value, isSubRule: o.isSubRule)),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _toggleMembership(Package package) async {
@@ -143,12 +195,9 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
   Future<String?> _showTargetSheet({
     required String title,
     required String current,
-    required bool includeDefault,
   }) {
     final groups = ref.read(currentGroupsStateProvider).value;
     final options = <({String value, String label})>[
-      if (includeDefault)
-        (value: _kDefault, label: appLocalizations.appRoutingDefault),
       (value: _kDirect, label: _kDirect),
       (value: _kReject, label: _kReject),
       (value: _kGlobal, label: _kGlobal),
@@ -190,7 +239,6 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
         pickTarget: (current) => _showTargetSheet(
           title: appLocalizations.ruleTarget,
           current: current,
-          includeDefault: false,
         ),
       ),
     );
@@ -210,7 +258,6 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
         pickTarget: (current) => _showTargetSheet(
           title: appLocalizations.ruleTarget,
           current: current,
-          includeDefault: false,
         ),
       ),
     );
@@ -393,7 +440,7 @@ class _ModeBanner extends StatelessWidget {
 }
 
 class _AppsList extends ConsumerWidget {
-  final Map<String, TypedRule> byPackage;
+  final Map<String, ({String value, bool isSubRule})> byPackage;
   final AccessControlMode mode;
   final Set<String> included;
   final Set<String> excluded;
@@ -437,7 +484,7 @@ class _AppsList extends ConsumerWidget {
         final inTunnel = _inTunnel(pkg);
         final rule = byPackage[pkg];
         final deadRule = !inTunnel && rule != null;
-        final targetLabel = rule?.target ?? appLocalizations.appRoutingDefault;
+        final targetLabel = rule?.value ?? appLocalizations.appRoutingDefault;
         return ListTile(
           leading: SizedBox(
             width: 44,
@@ -486,6 +533,9 @@ class _AppsList extends ConsumerWidget {
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 120),
                 child: ActionChip(
+                  avatar: rule?.isSubRule == true
+                      ? const Icon(Icons.alt_route, size: 16)
+                      : null,
                   label: Text(
                     targetLabel,
                     maxLines: 1,
