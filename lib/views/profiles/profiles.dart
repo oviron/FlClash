@@ -7,6 +7,8 @@ import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/profiles/overwrite.dart';
+import 'package:fl_clash/views/profiles/profile_card_state.dart';
+import 'package:fl_clash/views/profiles/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -226,15 +228,25 @@ class ProfileItem extends StatelessWidget {
   }
 
   List<Widget> _buildUrlProfileInfo(BuildContext context) {
-    final subscriptionInfo = profile.subscriptionInfo;
+    final state = resolveProfileCardState(
+      ProfileType.url,
+      profile.subscriptionInfo,
+    );
+    final updated = Text(
+      profile.lastUpdateDate?.lastUpdateTimeDesc ?? '',
+      style: context.textTheme.labelMedium?.toLighter,
+    );
+    if (state == ProfileCardState.subscriptionQuota) {
+      return [
+        const SizedBox(height: 8),
+        SubscriptionInfoView(subscriptionInfo: profile.subscriptionInfo),
+        updated,
+      ];
+    }
     return [
       const SizedBox(height: 8),
-      if (subscriptionInfo != null)
-        SubscriptionInfoView(subscriptionInfo: subscriptionInfo),
-      Text(
-        profile.lastUpdateDate?.lastUpdateTimeDesc ?? '',
-        style: context.textTheme.labelMedium?.toLighter,
-      ),
+      updated,
+      _ProfileStatLine(profileId: profile.id, showProvidersLink: true),
     ];
   }
 
@@ -245,6 +257,7 @@ class ProfileItem extends StatelessWidget {
         profile.lastUpdateDate?.lastUpdateTimeDesc ?? '',
         style: context.textTheme.labelMedium?.toLight,
       ),
+      _ProfileStatLine(profileId: profile.id, showProvidersLink: false),
     ];
   }
 
@@ -410,6 +423,113 @@ class ProfileItem extends StatelessWidget {
         ),
         tileTitleAlignment: ListTileTitleAlignment.titleHeight,
       ),
+    );
+  }
+}
+
+/// Group/node stats for a card without a profile-level quota; the providers
+/// link (URL profiles) jumps to where per-provider limits live.
+class _ProfileStatLine extends StatelessWidget {
+  final int profileId;
+  final bool showProvidersLink;
+
+  const _ProfileStatLine({
+    required this.profileId,
+    required this.showProvidersLink,
+  });
+
+  void _openProviders(BuildContext context) {
+    showExtend(
+      context,
+      builder: (_, type) => AdaptiveSheetScaffold(
+        type: type,
+        title: appLocalizations.providers,
+        body: ProfileProvidersView(profileId: profileId),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<({int groups, int nodes, int providers})>(
+      future: appController.readProfileStats(profileId),
+      builder: (context, snapshot) {
+        final stats = snapshot.data;
+        if (stats == null || (stats.groups == 0 && stats.nodes == 0)) {
+          return const SizedBox.shrink();
+        }
+        final labelStyle = context.textTheme.labelMedium?.toLight;
+        return Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.lan_outlined,
+                    size: 15,
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    appLocalizations.profileGroupCount(stats.groups),
+                    style: labelStyle,
+                  ),
+                  const SizedBox(width: 14),
+                  Icon(
+                    Icons.dns_outlined,
+                    size: 15,
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    appLocalizations.profileNodeCount(stats.nodes),
+                    style: labelStyle,
+                  ),
+                ],
+              ),
+              if (showProvidersLink && stats.providers > 0) ...[
+                const SizedBox(height: 8),
+                InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () => _openProviders(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 11,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.primary.opacity15,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.cloud_sync_outlined,
+                          size: 15,
+                          color: context.colorScheme.primary,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          appLocalizations.profileProvidersLimits(
+                            stats.providers,
+                          ),
+                          style: context.textTheme.labelMedium?.copyWith(
+                            color: context.colorScheme.primary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 }

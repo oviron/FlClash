@@ -4523,6 +4523,181 @@ class AppLocalizations {
       args: [count],
     );
   }
+
+  /// `New provider`
+  String get providerNew {
+    return Intl.message(
+      'New provider',
+      name: 'providerNew',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A provider with this name already exists`
+  String get providerNameExists {
+    return Intl.message(
+      'A provider with this name already exists',
+      name: 'providerNameExists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete this provider?`
+  String get providerDeleteConfirm {
+    return Intl.message(
+      'Delete this provider?',
+      name: 'providerDeleteConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source`
+  String get providerSource {
+    return Intl.message('Source', name: 'providerSource', desc: '', args: []);
+  }
+
+  /// `Subscription`
+  String get providerSourceHttp {
+    return Intl.message(
+      'Subscription',
+      name: 'providerSourceHttp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `File`
+  String get providerSourceFile {
+    return Intl.message('File', name: 'providerSourceFile', desc: '', args: []);
+  }
+
+  /// `Inline`
+  String get providerSourceInline {
+    return Intl.message(
+      'Inline',
+      name: 'providerSourceInline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription URL`
+  String get providerSubscriptionUrl {
+    return Intl.message(
+      'Subscription URL',
+      name: 'providerSubscriptionUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Path`
+  String get providerPath {
+    return Intl.message('Path', name: 'providerPath', desc: '', args: []);
+  }
+
+  /// `Behavior`
+  String get providerBehavior {
+    return Intl.message(
+      'Behavior',
+      name: 'providerBehavior',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Format`
+  String get providerFormat {
+    return Intl.message('Format', name: 'providerFormat', desc: '', args: []);
+  }
+
+  /// `Health-check`
+  String get providerHealthCheck {
+    return Intl.message(
+      'Health-check',
+      name: 'providerHealthCheck',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check availability`
+  String get providerHealthCheckEnable {
+    return Intl.message(
+      'Check availability',
+      name: 'providerHealthCheckEnable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `every {n}s`
+  String providerEveryN(Object n) {
+    return Intl.message(
+      'every ${n}s',
+      name: 'providerEveryN',
+      desc: '',
+      args: [n],
+    );
+  }
+
+  /// `Domains`
+  String get behaviorDomain {
+    return Intl.message('Domains', name: 'behaviorDomain', desc: '', args: []);
+  }
+
+  /// `IP addresses`
+  String get behaviorIpcidr {
+    return Intl.message(
+      'IP addresses',
+      name: 'behaviorIpcidr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Classical`
+  String get behaviorClassical {
+    return Intl.message(
+      'Classical',
+      name: 'behaviorClassical',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} groups`
+  String profileGroupCount(Object count) {
+    return Intl.message(
+      '$count groups',
+      name: 'profileGroupCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count} nodes`
+  String profileNodeCount(Object count) {
+    return Intl.message(
+      '$count nodes',
+      name: 'profileNodeCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count} providers · limits`
+  String profileProvidersLimits(Object count) {
+    return Intl.message(
+      '$count providers · limits',
+      name: 'profileProvidersLimits',
+      desc: '',
+      args: [count],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

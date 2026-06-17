@@ -57,13 +57,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m17(label) => "${label} 必须在 1024 到 49151 之间";
 
-  static String m18(count) => "已选择 ${count} 项";
+  static String m18(count) => "${count} 个分组";
 
-  static String m19(count) => "${count} 条规则";
+  static String m19(count) => "${count} 个节点";
 
-  static String m20(label) => "${label}必须为URL";
+  static String m20(count) => "${count} 个提供者 · 限额";
 
-  static String m21(count) => "${count} 年前";
+  static String m21(n) => "每 ${n} 秒";
+
+  static String m22(count) => "已选择 ${count} 项";
+
+  static String m23(count) => "${count} 条规则";
+
+  static String m24(label) => "${label}必须为URL";
+
+  static String m25(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -169,6 +177,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "通过WebDAV或者文件同步数据",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage("备份成功"),
+    "behaviorClassical": MessageLookupByLibrary.simpleMessage("经典"),
+    "behaviorDomain": MessageLookupByLibrary.simpleMessage("域名"),
+    "behaviorIpcidr": MessageLookupByLibrary.simpleMessage("IP 地址"),
     "bind": MessageLookupByLibrary.simpleMessage("绑定"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("黑名单模式"),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("排除域名"),
@@ -549,12 +560,15 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("请输入有效间隔时间格式"),
     "profileAutoUpdateIntervalNullValidationDesc":
         MessageLookupByLibrary.simpleMessage("请输入自动更新间隔时间"),
+    "profileGroupCount": m18,
     "profileHasUpdate": MessageLookupByLibrary.simpleMessage(
       "配置文件已经修改,是否关闭自动更新 ",
     ),
     "profileNameNullValidationDesc": MessageLookupByLibrary.simpleMessage(
       "请输入配置名称",
     ),
+    "profileNodeCount": m19,
+    "profileProvidersLimits": m20,
     "profileUrlInvalidValidationDesc": MessageLookupByLibrary.simpleMessage(
       "请输入有效配置URL",
     ),
@@ -564,6 +578,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "profiles": MessageLookupByLibrary.simpleMessage("配置"),
     "profilesSort": MessageLookupByLibrary.simpleMessage("配置排序"),
     "project": MessageLookupByLibrary.simpleMessage("项目"),
+    "providerBehavior": MessageLookupByLibrary.simpleMessage("行为"),
+    "providerDeleteConfirm": MessageLookupByLibrary.simpleMessage("删除此提供者？"),
+    "providerEveryN": m21,
+    "providerFormat": MessageLookupByLibrary.simpleMessage("格式"),
+    "providerHealthCheck": MessageLookupByLibrary.simpleMessage("健康检查"),
+    "providerHealthCheckEnable": MessageLookupByLibrary.simpleMessage("检查可用性"),
+    "providerNameExists": MessageLookupByLibrary.simpleMessage("已存在同名提供者"),
+    "providerNew": MessageLookupByLibrary.simpleMessage("新建提供者"),
+    "providerPath": MessageLookupByLibrary.simpleMessage("路径"),
+    "providerSource": MessageLookupByLibrary.simpleMessage("来源"),
+    "providerSourceFile": MessageLookupByLibrary.simpleMessage("文件"),
+    "providerSourceHttp": MessageLookupByLibrary.simpleMessage("订阅"),
+    "providerSourceInline": MessageLookupByLibrary.simpleMessage("内联"),
+    "providerSubscriptionUrl": MessageLookupByLibrary.simpleMessage("订阅 URL"),
     "providers": MessageLookupByLibrary.simpleMessage("提供者"),
     "proxies": MessageLookupByLibrary.simpleMessage("代理"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("代理链"),
@@ -651,7 +679,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
     "selectAll": MessageLookupByLibrary.simpleMessage("全选"),
     "selected": MessageLookupByLibrary.simpleMessage("已选择"),
-    "selectedCountTitle": m18,
+    "selectedCountTitle": m22,
     "settings": MessageLookupByLibrary.simpleMessage("设置"),
     "show": MessageLookupByLibrary.simpleMessage("显示"),
     "shrink": MessageLookupByLibrary.simpleMessage("紧凑"),
@@ -680,7 +708,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subRuleNameExists": MessageLookupByLibrary.simpleMessage("同名子规则已存在"),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("新建子规则"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("重命名子规则"),
-    "subRuleRuleCount": m19,
+    "subRuleRuleCount": m23,
     "subRules": MessageLookupByLibrary.simpleMessage("子规则"),
     "submit": MessageLookupByLibrary.simpleMessage("提交"),
     "sync": MessageLookupByLibrary.simpleMessage("同步"),
@@ -721,7 +749,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m20,
+    "urlTip": m24,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系统Hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("用户界面"),
@@ -740,7 +768,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m21,
+    "yearsAgo": m25,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
     "zoom": MessageLookupByLibrary.simpleMessage("缩放"),
   };

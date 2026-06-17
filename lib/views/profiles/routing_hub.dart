@@ -1,6 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/views/profiles/app_routing.dart';
+import 'package:fl_clash/views/profiles/providers.dart';
 import 'package:fl_clash/views/profiles/proxy_groups.dart';
 import 'package:fl_clash/views/profiles/sub_rules.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -40,6 +41,14 @@ class RoutingHubView extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () =>
                 BaseNavigator.push(context, SubRulesView(profileId: profileId)),
+          ),
+          ListItem(
+            title: Text(appLocalizations.providers),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => BaseNavigator.push(
+              context,
+              ProfileProvidersView(profileId: profileId),
+            ),
           ),
           ListItem(
             title: Text(appLocalizations.proxies),

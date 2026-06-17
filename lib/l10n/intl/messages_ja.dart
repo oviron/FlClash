@@ -57,13 +57,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m17(label) => "${label} は 1024 から 49151 の間でなければなりません";
 
-  static String m18(count) => "${count} 項目が選択されています";
+  static String m18(count) => "${count} グループ";
 
-  static String m19(count) => "${count} 個のルール";
+  static String m19(count) => "${count} ノード";
 
-  static String m20(label) => "${label}はURLである必要があります";
+  static String m20(count) => "${count} プロバイダー · 制限";
 
-  static String m21(count) => "${count}年前";
+  static String m21(n) => "${n} 秒ごと";
+
+  static String m22(count) => "${count} 項目が選択されています";
+
+  static String m23(count) => "${count} 個のルール";
+
+  static String m24(label) => "${label}はURLである必要があります";
+
+  static String m25(count) => "${count}年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -177,6 +185,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "WebDAVまたはファイルを介してデータを同期する",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage("バックアップ成功"),
+    "behaviorClassical": MessageLookupByLibrary.simpleMessage("クラシカル"),
+    "behaviorDomain": MessageLookupByLibrary.simpleMessage("ドメイン"),
+    "behaviorIpcidr": MessageLookupByLibrary.simpleMessage("IP アドレス"),
     "bind": MessageLookupByLibrary.simpleMessage("バインド"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("ブラックリストモード"),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("バイパスドメイン"),
@@ -605,12 +616,15 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("有効な間隔形式を入力してください"),
     "profileAutoUpdateIntervalNullValidationDesc":
         MessageLookupByLibrary.simpleMessage("自動更新間隔を入力してください"),
+    "profileGroupCount": m18,
     "profileHasUpdate": MessageLookupByLibrary.simpleMessage(
       "プロファイルが変更されました。自動更新を無効化しますか？",
     ),
     "profileNameNullValidationDesc": MessageLookupByLibrary.simpleMessage(
       "プロファイル名を入力してください",
     ),
+    "profileNodeCount": m19,
+    "profileProvidersLimits": m20,
     "profileUrlInvalidValidationDesc": MessageLookupByLibrary.simpleMessage(
       "有効なプロファイルURLを入力してください",
     ),
@@ -620,6 +634,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "profiles": MessageLookupByLibrary.simpleMessage("プロファイル一覧"),
     "profilesSort": MessageLookupByLibrary.simpleMessage("プロファイルの並び替え"),
     "project": MessageLookupByLibrary.simpleMessage("プロジェクト"),
+    "providerBehavior": MessageLookupByLibrary.simpleMessage("動作"),
+    "providerDeleteConfirm": MessageLookupByLibrary.simpleMessage(
+      "このプロバイダーを削除しますか？",
+    ),
+    "providerEveryN": m21,
+    "providerFormat": MessageLookupByLibrary.simpleMessage("形式"),
+    "providerHealthCheck": MessageLookupByLibrary.simpleMessage("ヘルスチェック"),
+    "providerHealthCheckEnable": MessageLookupByLibrary.simpleMessage("可用性を確認"),
+    "providerNameExists": MessageLookupByLibrary.simpleMessage(
+      "この名前のプロバイダーは既に存在します",
+    ),
+    "providerNew": MessageLookupByLibrary.simpleMessage("新しいプロバイダー"),
+    "providerPath": MessageLookupByLibrary.simpleMessage("パス"),
+    "providerSource": MessageLookupByLibrary.simpleMessage("ソース"),
+    "providerSourceFile": MessageLookupByLibrary.simpleMessage("ファイル"),
+    "providerSourceHttp": MessageLookupByLibrary.simpleMessage("サブスクリプション"),
+    "providerSourceInline": MessageLookupByLibrary.simpleMessage("インライン"),
+    "providerSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプション URL",
+    ),
     "providers": MessageLookupByLibrary.simpleMessage("プロバイダー"),
     "proxies": MessageLookupByLibrary.simpleMessage("プロキシ"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("プロキシチェーン"),
@@ -719,7 +753,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
     "selectAll": MessageLookupByLibrary.simpleMessage("すべて選択"),
     "selected": MessageLookupByLibrary.simpleMessage("選択済み"),
-    "selectedCountTitle": m18,
+    "selectedCountTitle": m22,
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("表示"),
     "shrink": MessageLookupByLibrary.simpleMessage("縮小"),
@@ -752,7 +786,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("新しいサブルール"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("サブルールの名前を変更"),
-    "subRuleRuleCount": m19,
+    "subRuleRuleCount": m23,
     "subRules": MessageLookupByLibrary.simpleMessage("サブルール"),
     "submit": MessageLookupByLibrary.simpleMessage("送信"),
     "sync": MessageLookupByLibrary.simpleMessage("同期"),
@@ -795,7 +829,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL経由でプロファイルを取得"),
-    "urlTip": m20,
+    "urlTip": m24,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
     "userInterface": MessageLookupByLibrary.simpleMessage("ユーザーインターフェース"),
@@ -814,7 +848,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m21,
+    "yearsAgo": m25,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
     "zoom": MessageLookupByLibrary.simpleMessage("ズーム"),
   };

@@ -65,13 +65,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m17(label) => "${label} must be between 1024 and 49151";
 
-  static String m18(count) => "${count} items have been selected";
+  static String m18(count) => "${count} groups";
 
-  static String m19(count) => "${count} rules";
+  static String m19(count) => "${count} nodes";
 
-  static String m20(label) => "${label} must be a url";
+  static String m20(count) => "${count} providers · limits";
 
-  static String m21(count) =>
+  static String m21(n) => "every ${n}s";
+
+  static String m22(count) => "${count} items have been selected";
+
+  static String m23(count) => "${count} rules";
+
+  static String m24(label) => "${label} must be a url";
+
+  static String m25(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -210,6 +218,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sync data via WebDAV or files",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage("Backup success"),
+    "behaviorClassical": MessageLookupByLibrary.simpleMessage("Classical"),
+    "behaviorDomain": MessageLookupByLibrary.simpleMessage("Domains"),
+    "behaviorIpcidr": MessageLookupByLibrary.simpleMessage("IP addresses"),
     "bind": MessageLookupByLibrary.simpleMessage("Bind"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage("Blacklist mode"),
     "bypassDomain": MessageLookupByLibrary.simpleMessage("Bypass domain"),
@@ -781,12 +792,15 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Please enter the auto update interval time",
         ),
+    "profileGroupCount": m18,
     "profileHasUpdate": MessageLookupByLibrary.simpleMessage(
       "The profile has been modified. Do you want to disable auto update?",
     ),
     "profileNameNullValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Please input the profile name",
     ),
+    "profileNodeCount": m19,
+    "profileProvidersLimits": m20,
     "profileUrlInvalidValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Please input a valid profile URL",
     ),
@@ -796,6 +810,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "profiles": MessageLookupByLibrary.simpleMessage("Profiles"),
     "profilesSort": MessageLookupByLibrary.simpleMessage("Profiles sort"),
     "project": MessageLookupByLibrary.simpleMessage("Project"),
+    "providerBehavior": MessageLookupByLibrary.simpleMessage("Behavior"),
+    "providerDeleteConfirm": MessageLookupByLibrary.simpleMessage(
+      "Delete this provider?",
+    ),
+    "providerEveryN": m21,
+    "providerFormat": MessageLookupByLibrary.simpleMessage("Format"),
+    "providerHealthCheck": MessageLookupByLibrary.simpleMessage("Health-check"),
+    "providerHealthCheckEnable": MessageLookupByLibrary.simpleMessage(
+      "Check availability",
+    ),
+    "providerNameExists": MessageLookupByLibrary.simpleMessage(
+      "A provider with this name already exists",
+    ),
+    "providerNew": MessageLookupByLibrary.simpleMessage("New provider"),
+    "providerPath": MessageLookupByLibrary.simpleMessage("Path"),
+    "providerSource": MessageLookupByLibrary.simpleMessage("Source"),
+    "providerSourceFile": MessageLookupByLibrary.simpleMessage("File"),
+    "providerSourceHttp": MessageLookupByLibrary.simpleMessage("Subscription"),
+    "providerSourceInline": MessageLookupByLibrary.simpleMessage("Inline"),
+    "providerSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "Subscription URL",
+    ),
     "providers": MessageLookupByLibrary.simpleMessage("Providers"),
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Proxy chains"),
@@ -919,7 +955,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Seconds"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m18,
+    "selectedCountTitle": m22,
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
@@ -954,7 +990,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("New sub-rule"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("Rename sub-rule"),
-    "subRuleRuleCount": m19,
+    "subRuleRuleCount": m23,
     "subRules": MessageLookupByLibrary.simpleMessage("Sub-rules"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
@@ -1007,7 +1043,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m20,
+    "urlTip": m24,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
@@ -1030,7 +1066,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "years": MessageLookupByLibrary.simpleMessage("Years"),
-    "yearsAgo": m21,
+    "yearsAgo": m25,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
     "zoom": MessageLookupByLibrary.simpleMessage("Zoom"),
   };

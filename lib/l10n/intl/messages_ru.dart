@@ -64,13 +64,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m17(label) => "${label} должен быть числом от 1024 до 49151";
 
-  static String m18(count) => "Выбрано ${count} элементов";
+  static String m18(count) => "${count} групп";
 
-  static String m19(count) => "${count} правил";
+  static String m19(count) => "${count} узлов";
 
-  static String m20(label) => "${label} должен быть URL";
+  static String m20(count) => "${count} провайдеров · лимиты";
 
-  static String m21(count) =>
+  static String m21(n) => "каждые ${n} с";
+
+  static String m22(count) => "Выбрано ${count} элементов";
+
+  static String m23(count) => "${count} правил";
+
+  static String m24(label) => "${label} должен быть URL";
+
+  static String m25(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -221,6 +229,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "backupSuccess": MessageLookupByLibrary.simpleMessage(
       "Резервное копирование успешно",
     ),
+    "behaviorClassical": MessageLookupByLibrary.simpleMessage("Классические"),
+    "behaviorDomain": MessageLookupByLibrary.simpleMessage("Домены"),
+    "behaviorIpcidr": MessageLookupByLibrary.simpleMessage("IP-адреса"),
     "bind": MessageLookupByLibrary.simpleMessage("Привязать"),
     "blacklistMode": MessageLookupByLibrary.simpleMessage(
       "Режим черного списка",
@@ -781,12 +792,15 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Пожалуйста, введите интервал времени для автообновления",
         ),
+    "profileGroupCount": m18,
     "profileHasUpdate": MessageLookupByLibrary.simpleMessage(
       "Профиль был изменен. Хотите отключить автообновление?",
     ),
     "profileNameNullValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, введите имя профиля",
     ),
+    "profileNodeCount": m19,
+    "profileProvidersLimits": m20,
     "profileUrlInvalidValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, введите действительный URL профиля",
     ),
@@ -796,6 +810,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "profiles": MessageLookupByLibrary.simpleMessage("Профили"),
     "profilesSort": MessageLookupByLibrary.simpleMessage("Сортировка профилей"),
     "project": MessageLookupByLibrary.simpleMessage("Проект"),
+    "providerBehavior": MessageLookupByLibrary.simpleMessage("Поведение"),
+    "providerDeleteConfirm": MessageLookupByLibrary.simpleMessage(
+      "Удалить этого провайдера?",
+    ),
+    "providerEveryN": m21,
+    "providerFormat": MessageLookupByLibrary.simpleMessage("Формат"),
+    "providerHealthCheck": MessageLookupByLibrary.simpleMessage(
+      "Проверка доступности",
+    ),
+    "providerHealthCheckEnable": MessageLookupByLibrary.simpleMessage(
+      "Проверять доступность",
+    ),
+    "providerNameExists": MessageLookupByLibrary.simpleMessage(
+      "Провайдер с таким именем уже существует",
+    ),
+    "providerNew": MessageLookupByLibrary.simpleMessage("Новый провайдер"),
+    "providerPath": MessageLookupByLibrary.simpleMessage("Путь"),
+    "providerSource": MessageLookupByLibrary.simpleMessage("Источник"),
+    "providerSourceFile": MessageLookupByLibrary.simpleMessage("Файл"),
+    "providerSourceHttp": MessageLookupByLibrary.simpleMessage("Подписка"),
+    "providerSourceInline": MessageLookupByLibrary.simpleMessage("Inline"),
+    "providerSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "URL подписки",
+    ),
     "providers": MessageLookupByLibrary.simpleMessage("Провайдеры"),
     "proxies": MessageLookupByLibrary.simpleMessage("Прокси"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Цепочки прокси"),
@@ -935,7 +973,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Секунд"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать все"),
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
-    "selectedCountTitle": m18,
+    "selectedCountTitle": m22,
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
@@ -974,7 +1012,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subRuleRename": MessageLookupByLibrary.simpleMessage(
       "Переименовать подправило",
     ),
-    "subRuleRuleCount": m19,
+    "subRuleRuleCount": m23,
     "subRules": MessageLookupByLibrary.simpleMessage("Подправила"),
     "submit": MessageLookupByLibrary.simpleMessage("Отправить"),
     "sync": MessageLookupByLibrary.simpleMessage("Синхронизация"),
@@ -1029,7 +1067,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Получить профиль через URL",
     ),
-    "urlTip": m20,
+    "urlTip": m24,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
@@ -1056,7 +1094,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Режим белого списка",
     ),
     "years": MessageLookupByLibrary.simpleMessage("Лет"),
-    "yearsAgo": m21,
+    "yearsAgo": m25,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
     "zoom": MessageLookupByLibrary.simpleMessage("Масштаб"),
   };

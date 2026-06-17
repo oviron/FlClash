@@ -4,6 +4,7 @@ import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
 import 'group_spec.dart';
+import 'provider_spec.dart';
 import 'rule_codec.dart';
 
 /// Reads/rewrites the `rules:` block of a raw mihomo config via `yaml_edit`,
@@ -149,6 +150,55 @@ class ProfileRulesDocument {
       throw const ProfileRulesWriteException('config root is not a YAML map');
     }
     editor.update(['proxy-groups'], [for (final g in groups) g.raw]);
+    return editor.toString();
+  }
+
+  /// Each `proxy-providers:` entry (a name->config map) as a lossless
+  /// [ProviderSpec]; empty when absent.
+  Map<String, ProviderSpec> get proxyProviders => _providers('proxy-providers');
+
+  /// Each `rule-providers:` entry as a lossless [ProviderSpec]; empty when
+  /// absent.
+  Map<String, ProviderSpec> get ruleProviders => _providers('rule-providers');
+
+  Map<String, ProviderSpec> _providers(String key) {
+    final node = _root?[key];
+    if (node is! YamlMap) return const {};
+    final out = <String, ProviderSpec>{};
+    for (final e in node.entries) {
+      final value = e.value;
+      if (value is YamlMap) {
+        out[e.key.toString()] = ProviderSpec.fromYaml(value);
+      }
+    }
+    return out;
+  }
+
+  /// New document with `proxy-providers:` replaced by [providers] (an empty map
+  /// removes the key); unknown keys per provider preserved. Other keys/comments
+  /// are kept.
+  String withProxyProviders(Map<String, ProviderSpec> providers) =>
+      _withProviders('proxy-providers', providers);
+
+  /// New document with `rule-providers:` replaced by [providers]; same
+  /// preservation/removal semantics as [withProxyProviders].
+  String withRuleProviders(Map<String, ProviderSpec> providers) =>
+      _withProviders('rule-providers', providers);
+
+  String _withProviders(String key, Map<String, ProviderSpec> providers) {
+    final editor = YamlEditor(raw);
+    final root = editor.parseAt([]);
+    if (root is! YamlMap) {
+      throw const ProfileRulesWriteException('config root is not a YAML map');
+    }
+    if (providers.isEmpty) {
+      if (root.containsKey(key)) editor.remove([key]);
+      return editor.toString();
+    }
+    editor.update(
+      [key],
+      {for (final e in providers.entries) e.key: e.value.raw},
+    );
     return editor.toString();
   }
 
