@@ -106,5 +106,53 @@ void main() {
       expect(back.raw['filter'], '(?i)hk|sg');
       expect(back.raw['icon'], 'https://x/icon.png');
     });
+
+    test('non-string extra keys survive an unrelated edit (lossless)', () {
+      const base = GroupSpec({
+        'name': 'VPN',
+        'type': 'select',
+        'proxies': ['A'],
+        'disable-udp': true,
+        'max-failed-times': 5,
+        'use': ['prov1'],
+      });
+      // The editor surfaces extras via toString(); here only the name changes.
+      final extras = {
+        for (final k in const ['disable-udp', 'max-failed-times', 'use'])
+          k: base.raw[k].toString(),
+      };
+      final out = buildGroupSpec(
+        base: base,
+        name: 'VPN2',
+        type: 'select',
+        members: ['A'],
+        filterMode: false,
+        filter: '',
+        extras: extras,
+      );
+      expect(out.raw['disable-udp'], isTrue);
+      expect(out.raw['max-failed-times'], 5);
+      expect(out.raw['use'], ['prov1']);
+      expect(out.name, 'VPN2');
+    });
+
+    test('editing an extra value re-infers its YAML type', () {
+      const base = GroupSpec({
+        'name': 'G',
+        'type': 'select',
+        'proxies': <String>[],
+        'disable-udp': true,
+      });
+      final out = buildGroupSpec(
+        base: base,
+        name: 'G',
+        type: 'select',
+        members: const [],
+        filterMode: false,
+        filter: '',
+        extras: {'disable-udp': 'false'},
+      );
+      expect(out.raw['disable-udp'], isFalse);
+    });
   });
 }

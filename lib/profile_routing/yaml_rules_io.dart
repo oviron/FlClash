@@ -33,11 +33,7 @@ class ProfileRulesDocument {
   /// New document string with the `rules:` list replaced by [rules]. Throws
   /// [ProfileRulesWriteException] when the root is not a YAML map.
   String withRules(List<RoutingRule> rules) {
-    final editor = YamlEditor(raw);
-    final root = editor.parseAt([]);
-    if (root is! YamlMap) {
-      throw const ProfileRulesWriteException('config root is not a YAML map');
-    }
+    final editor = _mapEditor();
     editor.update(['rules'], serializeRoutingRules(rules));
     return editor.toString();
   }
@@ -89,11 +85,8 @@ class ProfileRulesDocument {
   /// New document with `sub-rules:` replaced by [subRules] (an empty map removes
   /// the key). Insertion order is kept; other keys/comments are preserved.
   String withSubRules(Map<String, List<RoutingRule>> subRules) {
-    final editor = YamlEditor(raw);
-    final root = editor.parseAt([]);
-    if (root is! YamlMap) {
-      throw const ProfileRulesWriteException('config root is not a YAML map');
-    }
+    final editor = _mapEditor();
+    final root = editor.parseAt([]) as YamlMap;
     if (subRules.isEmpty) {
       if (root.containsKey('sub-rules')) editor.remove(['sub-rules']);
       return editor.toString();
@@ -144,11 +137,7 @@ class ProfileRulesDocument {
   /// New document with `proxy-groups:` replaced by [groups] (each group's
   /// unknown keys preserved verbatim). Other keys/comments are preserved.
   String withProxyGroups(List<GroupSpec> groups) {
-    final editor = YamlEditor(raw);
-    final root = editor.parseAt([]);
-    if (root is! YamlMap) {
-      throw const ProfileRulesWriteException('config root is not a YAML map');
-    }
+    final editor = _mapEditor();
     editor.update(['proxy-groups'], [for (final g in groups) g.raw]);
     return editor.toString();
   }
@@ -186,11 +175,8 @@ class ProfileRulesDocument {
       _withProviders('rule-providers', providers);
 
   String _withProviders(String key, Map<String, ProviderSpec> providers) {
-    final editor = YamlEditor(raw);
-    final root = editor.parseAt([]);
-    if (root is! YamlMap) {
-      throw const ProfileRulesWriteException('config root is not a YAML map');
-    }
+    final editor = _mapEditor();
+    final root = editor.parseAt([]) as YamlMap;
     if (providers.isEmpty) {
       if (root.containsKey(key)) editor.remove([key]);
       return editor.toString();
@@ -200,6 +186,26 @@ class ProfileRulesDocument {
       {for (final e in providers.entries) e.key: e.value.raw},
     );
     return editor.toString();
+  }
+
+  // A YamlEditor over a map-rooted config, or a ProfileRulesWriteException the
+  // controller already catches — so a malformed file surfaces as a message
+  // instead of an uncaught YamlException from the editor constructor.
+  YamlEditor _mapEditor() {
+    final YamlEditor editor;
+    final Object? root;
+    try {
+      editor = YamlEditor(raw);
+      root = editor.parseAt([]);
+    } on YamlException catch (e) {
+      throw ProfileRulesWriteException(
+        'config is not valid YAML: ${e.message}',
+      );
+    }
+    if (root is! YamlMap) {
+      throw const ProfileRulesWriteException('config root is not a YAML map');
+    }
+    return editor;
   }
 
   YamlMap? get _root {
@@ -237,11 +243,8 @@ class ProfileRulesDocument {
       _withTunPackages('include-package', packages);
 
   String _withTunPackages(String key, List<String> packages) {
-    final editor = YamlEditor(raw);
-    final root = editor.parseAt([]);
-    if (root is! YamlMap) {
-      throw const ProfileRulesWriteException('config root is not a YAML map');
-    }
+    final editor = _mapEditor();
+    final root = editor.parseAt([]) as YamlMap;
     final tun = root['tun'];
     if (packages.isEmpty) {
       if (tun is YamlMap && tun.containsKey(key)) {

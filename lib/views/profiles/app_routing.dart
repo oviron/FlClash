@@ -110,9 +110,9 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
       if (!mounted) return;
       if (error != null) {
         context.showNotifier(error);
-      } else {
-        context.showNotifier(appLocalizations.appRoutingTunnelRestart);
+        return; // don't write a target onto a failed membership change
       }
+      context.showNotifier(appLocalizations.appRoutingTunnelRestart);
     }
     if (picked.inTunnel && picked.target.value != current) {
       final error = await appController.setAppTarget(

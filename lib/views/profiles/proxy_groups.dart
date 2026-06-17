@@ -5,6 +5,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:yaml/yaml.dart';
 
 const _types = ['select', 'url-test', 'fallback', 'load-balance', 'relay'];
 const _builtins = ['DIRECT', 'REJECT', 'GLOBAL'];
@@ -52,17 +53,45 @@ GroupSpec buildGroupSpec({
     filterMode && filter.trim().isNotEmpty ? filter.trim() : null,
   );
   for (final e in extras.entries) {
-    spec = _withExtraKey(spec, e.key, e.value);
+    final original = base.raw[e.key];
+    // Untouched keys keep their original typed value; edited ones re-infer
+    // their YAML type, so a bool/int/list is never coerced to a string.
+    final value = original != null && original.toString() == e.value
+        ? original
+        : _inferYaml(e.value);
+    spec = _withExtraKey(spec, e.key, value);
   }
   return spec;
 }
 
 /// Set/remove one unmodeled key on a [GroupSpec], preserving the rest. Kept here
 /// (not on GroupSpec) so the lossless codec type stays untouched.
-GroupSpec _withExtraKey(GroupSpec g, String key, String? value) {
+GroupSpec _withExtraKey(GroupSpec g, String key, Object? value) {
   final m = Map<String, dynamic>.of(g.raw);
   value == null ? m.remove(key) : m[key] = value;
   return GroupSpec(m);
+}
+
+/// Parses an edited extra-key string back to its YAML type (bool/int/list/map),
+/// so `true`/`5`/`[a, b]` are not written as quoted strings. Falls back to the
+/// raw string when it is not valid YAML.
+Object? _inferYaml(String value) {
+  try {
+    return _plainYaml(loadYaml(value));
+  } on YamlException {
+    return value;
+  }
+}
+
+Object? _plainYaml(Object? node) {
+  if (node is YamlMap) {
+    return {
+      for (final e in node.entries) e.key.toString(): _plainYaml(e.value),
+    };
+  }
+  if (node is YamlList) return node.map(_plainYaml).toList();
+  if (node is YamlScalar) return node.value;
+  return node;
 }
 
 /// Lists and edits a profile's `proxy-groups:`. Each group's unknown keys

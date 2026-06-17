@@ -82,7 +82,9 @@ class _RuleBlockBuilderState extends State<RuleBlockBuilder> {
   bool get _valid =>
       _target.isNotEmpty &&
       _clauses.isNotEmpty &&
-      (_op != RuleAction.NOT || _clauses.length == 1);
+      (_op != RuleAction.NOT || _clauses.length == 1) &&
+      // Parens in a clause param would re-parse as Passthrough (uneditable).
+      _params.every((c) => !c.text.contains('(') && !c.text.contains(')'));
 
   void _setOp(RuleAction op) {
     setState(() {

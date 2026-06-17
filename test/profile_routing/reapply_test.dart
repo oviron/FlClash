@@ -74,4 +74,31 @@ void main() {
     expect(rules.contains('PROCESS-NAME,com.a,GrpA'), true);
     expect(rules.contains('PROCESS-NAME,com.b,GrpB'), true);
   });
+
+  test('app->sub-rule route is re-added when fresh lacks it', () {
+    final previous = _doc([
+      'SUB-RULE,(PROCESS-NAME,com.app),vpn-route',
+      'MATCH,DIRECT',
+    ]);
+    final fresh = _doc(['MATCH,DIRECT']);
+    final r = reapplyAppRouting(previous: previous, fresh: fresh);
+    expect(r.overlaid, 1);
+    expect(
+      _rulesOf(r.content),
+      contains('SUB-RULE,(PROCESS-NAME,com.app),vpn-route'),
+    );
+  });
+
+  test('app->sub-rule route conflict prefers the user route', () {
+    final previous = _doc([
+      'SUB-RULE,(PROCESS-NAME,com.app),vpn-route',
+      'MATCH,DIRECT',
+    ]);
+    final fresh = _doc(['PROCESS-NAME,com.app,DIRECT', 'MATCH,DIRECT']);
+    final r = reapplyAppRouting(previous: previous, fresh: fresh);
+    expect(r.conflicts, 1);
+    final rules = _rulesOf(r.content);
+    expect(rules.contains('SUB-RULE,(PROCESS-NAME,com.app),vpn-route'), true);
+    expect(rules.contains('PROCESS-NAME,com.app,DIRECT'), false);
+  });
 }
