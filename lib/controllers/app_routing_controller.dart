@@ -173,6 +173,38 @@ extension AppRoutingController on AppController {
     return acl.currentList.length;
   }
 
+  Future<List<GroupSpec>> readProxyGroups(int profileId) async {
+    final file = File(await appPath.getProfilePath(profileId.toString()));
+    if (!await file.exists()) return const [];
+    return ProfileRulesDocument(await file.readAsString()).proxyGroups;
+  }
+
+  /// Live-mirrors the whole `proxy-groups:` block; each group's unknown keys are
+  /// preserved (see [GroupSpec]).
+  Future<String?> writeProxyGroups(
+    int profileId,
+    List<GroupSpec> groups,
+  ) async {
+    final file = File(await appPath.getProfilePath(profileId.toString()));
+    final raw = await file.exists() ? await file.readAsString() : 'rules: []\n';
+    final String next;
+    try {
+      next = ProfileRulesDocument(raw).withProxyGroups(groups);
+    } on ProfileRulesWriteException catch (e) {
+      return e.message;
+    }
+    return _writeValidatedApply(file, profileId, next);
+  }
+
+  /// Names a proxy group may legitimately list as members: every declared proxy
+  /// plus every other group name.
+  Future<List<String>> readGroupMemberCandidates(int profileId) async {
+    final file = File(await appPath.getProfilePath(profileId.toString()));
+    if (!await file.exists()) return const [];
+    final doc = ProfileRulesDocument(await file.readAsString());
+    return [...doc.proxyNames, for (final g in doc.proxyGroups) g.name];
+  }
+
   bool _isAppRule(RoutingRule r, String packageName) =>
       (r is TypedRule &&
           r.action == RuleAction.PROCESS_NAME &&

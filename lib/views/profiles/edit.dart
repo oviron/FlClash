@@ -11,6 +11,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/profiles/app_routing.dart';
+import 'package:fl_clash/views/profiles/proxy_groups.dart';
 import 'package:fl_clash/views/profiles/sub_rules.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -303,6 +304,14 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
         onTap: () => BaseNavigator.push(
           context,
           SubRulesView(profileId: widget.profile.id),
+        ),
+      ),
+      ListItem(
+        title: Text(appLocalizations.proxyGroups),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => BaseNavigator.push(
+          context,
+          ProxyGroupsView(profileId: widget.profile.id),
         ),
       ),
       ValueListenableBuilder<FileInfo?>(

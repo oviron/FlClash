@@ -34,23 +34,23 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(upstream) => "Fork of ${upstream}";
 
-  static String m10(count) => "${count}時間前";
+  static String m12(count) => "${count}時間前";
 
-  static String m11(count) => "${count}分前";
+  static String m13(count) => "${count}分前";
 
-  static String m12(count) => "${count}ヶ月前";
+  static String m14(count) => "${count}ヶ月前";
 
-  static String m13(label) => "まだ${label}はありません";
+  static String m15(label) => "まだ${label}はありません";
 
-  static String m14(label) => "${label}は数字でなければなりません";
+  static String m16(label) => "${label}は数字でなければなりません";
 
-  static String m15(label) => "${label} は 1024 から 49151 の間でなければなりません";
+  static String m17(label) => "${label} は 1024 から 49151 の間でなければなりません";
 
-  static String m16(count) => "${count} 項目が選択されています";
+  static String m18(count) => "${count} 項目が選択されています";
 
-  static String m18(label) => "${label}はURLである必要があります";
+  static String m20(label) => "${label}はURLである必要があります";
 
-  static String m19(count) => "${count}年前";
+  static String m21(count) => "${count}年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -303,7 +303,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "キーボードでアプリを制御",
     ),
     "hours": MessageLookupByLibrary.simpleMessage("時間"),
-    "hoursAgo": m10,
+    "hoursAgo": m12,
     "icon": MessageLookupByLibrary.simpleMessage("アイコン"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("アイコンスタイル"),
     "import": MessageLookupByLibrary.simpleMessage("インポート"),
@@ -410,12 +410,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Back button sends the app to background instead of closing it",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("分"),
-    "minutesAgo": m11,
+    "minutesAgo": m13,
     "mixedPort": MessageLookupByLibrary.simpleMessage("混合ポート"),
     "mode": MessageLookupByLibrary.simpleMessage("モード"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("モノクローム"),
     "months": MessageLookupByLibrary.simpleMessage("月"),
-    "monthsAgo": m12,
+    "monthsAgo": m14,
     "more": MessageLookupByLibrary.simpleMessage("詳細"),
     "name": MessageLookupByLibrary.simpleMessage("名前"),
     "nameserver": MessageLookupByLibrary.simpleMessage("ネームサーバー"),
@@ -495,8 +495,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "プロファイルがありません。追加してください",
     ),
-    "nullTip": m13,
-    "numberTip": m14,
+    "nullTip": m15,
+    "numberTip": m16,
     "onlyIcon": MessageLookupByLibrary.simpleMessage("アイコンのみ"),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage(
       "Only statistics proxy",
@@ -536,7 +536,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "port": MessageLookupByLibrary.simpleMessage("ポート"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("別のポートを入力してください"),
-    "portTip": m15,
+    "portTip": m17,
     "preferH3": MessageLookupByLibrary.simpleMessage("Prefer H3"),
     "preferH3Desc": MessageLookupByLibrary.simpleMessage("DOHのHTTP/3を優先使用"),
     "pressKeyboard": MessageLookupByLibrary.simpleMessage("キーボードを押してください"),
@@ -661,7 +661,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
     "selectAll": MessageLookupByLibrary.simpleMessage("すべて選択"),
     "selected": MessageLookupByLibrary.simpleMessage("選択済み"),
-    "selectedCountTitle": m16,
+    "selectedCountTitle": m18,
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("表示"),
     "shrink": MessageLookupByLibrary.simpleMessage("縮小"),
@@ -727,7 +727,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL経由でプロファイルを取得"),
-    "urlTip": m18,
+    "urlTip": m20,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
     "userInterface": MessageLookupByLibrary.simpleMessage("ユーザーインターフェース"),
@@ -746,7 +746,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m19,
+    "yearsAgo": m21,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
     "zoom": MessageLookupByLibrary.simpleMessage("ズーム"),
   };

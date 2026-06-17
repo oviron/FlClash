@@ -4413,6 +4413,111 @@ class AppLocalizations {
       args: [count],
     );
   }
+
+  /// `Proxy groups`
+  String get proxyGroups {
+    return Intl.message(
+      'Proxy groups',
+      name: 'proxyGroups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `group`
+  String get group {
+    return Intl.message('group', name: 'group', desc: '', args: []);
+  }
+
+  /// `New group`
+  String get groupNew {
+    return Intl.message('New group', name: 'groupNew', desc: '', args: []);
+  }
+
+  /// `Type`
+  String get groupType {
+    return Intl.message('Type', name: 'groupType', desc: '', args: []);
+  }
+
+  /// `Members`
+  String get groupMembers {
+    return Intl.message('Members', name: 'groupMembers', desc: '', args: []);
+  }
+
+  /// `Add`
+  String get groupAddMember {
+    return Intl.message('Add', name: 'groupAddMember', desc: '', args: []);
+  }
+
+  /// `Health-check URL`
+  String get groupHealthUrl {
+    return Intl.message(
+      'Health-check URL',
+      name: 'groupHealthUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Interval (seconds)`
+  String get groupHealthInterval {
+    return Intl.message(
+      'Interval (seconds)',
+      name: 'groupHealthInterval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lazy (test only when selected)`
+  String get groupLazy {
+    return Intl.message(
+      'Lazy (test only when selected)',
+      name: 'groupLazy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A group with this name already exists`
+  String get groupNameExists {
+    return Intl.message(
+      'A group with this name already exists',
+      name: 'groupNameExists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete this group?`
+  String get groupDeleteConfirm {
+    return Intl.message(
+      'Delete this group?',
+      name: 'groupDeleteConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Preserved as-is: {keys}`
+  String groupExtraKeys(Object keys) {
+    return Intl.message(
+      'Preserved as-is: $keys',
+      name: 'groupExtraKeys',
+      desc: '',
+      args: [keys],
+    );
+  }
+
+  /// `{count} members`
+  String groupMemberCount(Object count) {
+    return Intl.message(
+      '$count members',
+      name: 'groupMemberCount',
+      desc: '',
+      args: [count],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

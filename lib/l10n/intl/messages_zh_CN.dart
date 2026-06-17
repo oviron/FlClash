@@ -34,23 +34,23 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(upstream) => "Fork of ${upstream}";
 
-  static String m10(count) => "${count} 小时前";
+  static String m12(count) => "${count} 小时前";
 
-  static String m11(count) => "${count} 分钟前";
+  static String m13(count) => "${count} 分钟前";
 
-  static String m12(count) => "${count} 个月前";
+  static String m14(count) => "${count} 个月前";
 
-  static String m13(label) => "暂无${label}";
+  static String m15(label) => "暂无${label}";
 
-  static String m14(label) => "${label}必须为数字";
+  static String m16(label) => "${label}必须为数字";
 
-  static String m15(label) => "${label} 必须在 1024 到 49151 之间";
+  static String m17(label) => "${label} 必须在 1024 到 49151 之间";
 
-  static String m16(count) => "已选择 ${count} 项";
+  static String m18(count) => "已选择 ${count} 项";
 
-  static String m18(label) => "${label}必须为URL";
+  static String m20(label) => "${label}必须为URL";
 
-  static String m19(count) => "${count} 年前";
+  static String m21(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -275,7 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "hotkeyManagement": MessageLookupByLibrary.simpleMessage("快捷键管理"),
     "hotkeyManagementDesc": MessageLookupByLibrary.simpleMessage("使用键盘控制应用程序"),
     "hours": MessageLookupByLibrary.simpleMessage("小时"),
-    "hoursAgo": m10,
+    "hoursAgo": m12,
     "icon": MessageLookupByLibrary.simpleMessage("图片"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("图标样式"),
     "import": MessageLookupByLibrary.simpleMessage("导入"),
@@ -378,12 +378,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Back button sends the app to background instead of closing it",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("分钟"),
-    "minutesAgo": m11,
+    "minutesAgo": m13,
     "mixedPort": MessageLookupByLibrary.simpleMessage("混合端口"),
     "mode": MessageLookupByLibrary.simpleMessage("模式"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("单色"),
     "months": MessageLookupByLibrary.simpleMessage("月"),
-    "monthsAgo": m12,
+    "monthsAgo": m14,
     "more": MessageLookupByLibrary.simpleMessage("更多"),
     "name": MessageLookupByLibrary.simpleMessage("名称"),
     "nameserver": MessageLookupByLibrary.simpleMessage("域名服务器"),
@@ -449,8 +449,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "none": MessageLookupByLibrary.simpleMessage("无"),
     "notSelectedTip": MessageLookupByLibrary.simpleMessage("当前代理组无法选中"),
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage("没有配置文件,请先添加配置文件"),
-    "nullTip": m13,
-    "numberTip": m14,
+    "nullTip": m15,
+    "numberTip": m16,
     "onlyIcon": MessageLookupByLibrary.simpleMessage("仅图标"),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage(
       "Only statistics proxy",
@@ -484,7 +484,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "port": MessageLookupByLibrary.simpleMessage("端口"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("请输入不同的端口"),
-    "portTip": m15,
+    "portTip": m17,
     "preferH3": MessageLookupByLibrary.simpleMessage("Prefer H3"),
     "preferH3Desc": MessageLookupByLibrary.simpleMessage("优先使用DOH的http/3"),
     "pressKeyboard": MessageLookupByLibrary.simpleMessage("请按下按键"),
@@ -597,7 +597,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
     "selectAll": MessageLookupByLibrary.simpleMessage("全选"),
     "selected": MessageLookupByLibrary.simpleMessage("已选择"),
-    "selectedCountTitle": m16,
+    "selectedCountTitle": m18,
     "settings": MessageLookupByLibrary.simpleMessage("设置"),
     "show": MessageLookupByLibrary.simpleMessage("显示"),
     "shrink": MessageLookupByLibrary.simpleMessage("紧凑"),
@@ -661,7 +661,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m18,
+    "urlTip": m20,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系统Hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("用户界面"),
@@ -680,7 +680,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m19,
+    "yearsAgo": m21,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
     "zoom": MessageLookupByLibrary.simpleMessage("缩放"),
   };

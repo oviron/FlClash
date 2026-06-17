@@ -36,26 +36,26 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(upstream) => "Форк ${upstream}";
 
-  static String m10(count) =>
+  static String m12(count) =>
       "${Intl.plural(count, one: '${count} час назад', few: '${count} часа назад', many: '${count} часов назад', other: '${count} часа назад')}";
 
-  static String m11(count) =>
+  static String m13(count) =>
       "${Intl.plural(count, one: '${count} минута назад', few: '${count} минуты назад', many: '${count} минут назад', other: '${count} минуты назад')}";
 
-  static String m12(count) =>
+  static String m14(count) =>
       "${Intl.plural(count, one: '${count} месяц назад', few: '${count} месяца назад', many: '${count} месяцев назад', other: '${count} месяца назад')}";
 
-  static String m13(label) => "${label} пока отсутствуют";
+  static String m15(label) => "${label} пока отсутствуют";
 
-  static String m14(label) => "${label} должно быть числом";
+  static String m16(label) => "${label} должно быть числом";
 
-  static String m15(label) => "${label} должен быть числом от 1024 до 49151";
+  static String m17(label) => "${label} должен быть числом от 1024 до 49151";
 
-  static String m16(count) => "Выбрано ${count} элементов";
+  static String m18(count) => "Выбрано ${count} элементов";
 
-  static String m18(label) => "${label} должен быть URL";
+  static String m20(label) => "${label} должен быть URL";
 
-  static String m19(count) =>
+  static String m21(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -377,7 +377,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Использование клавиатуры для управления приложением",
     ),
     "hours": MessageLookupByLibrary.simpleMessage("Часов"),
-    "hoursAgo": m10,
+    "hoursAgo": m12,
     "icon": MessageLookupByLibrary.simpleMessage("Иконка"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("Стиль иконки"),
     "import": MessageLookupByLibrary.simpleMessage("Импорт"),
@@ -526,12 +526,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "По кнопке «Назад» приложение уходит в фон, а не закрывается",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("Минут"),
-    "minutesAgo": m11,
+    "minutesAgo": m13,
     "mixedPort": MessageLookupByLibrary.simpleMessage("Смешанный порт"),
     "mode": MessageLookupByLibrary.simpleMessage("Режим"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Монохром"),
     "months": MessageLookupByLibrary.simpleMessage("Месяцев"),
-    "monthsAgo": m12,
+    "monthsAgo": m14,
     "more": MessageLookupByLibrary.simpleMessage("Еще"),
     "name": MessageLookupByLibrary.simpleMessage("Имя"),
     "nameserver": MessageLookupByLibrary.simpleMessage("Сервер имен"),
@@ -631,8 +631,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "Нет профиля, пожалуйста, добавьте профиль",
     ),
-    "nullTip": m13,
-    "numberTip": m14,
+    "nullTip": m15,
+    "numberTip": m16,
     "onlyIcon": MessageLookupByLibrary.simpleMessage("Только иконка"),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage(
       "Only statistics proxy",
@@ -684,7 +684,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Введите другой порт",
     ),
-    "portTip": m15,
+    "portTip": m17,
     "preferH3": MessageLookupByLibrary.simpleMessage("Prefer H3"),
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Приоритетное использование HTTP/3 для DOH",
@@ -861,7 +861,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Секунд"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать все"),
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
-    "selectedCountTitle": m16,
+    "selectedCountTitle": m18,
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
@@ -943,7 +943,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Получить профиль через URL",
     ),
-    "urlTip": m18,
+    "urlTip": m20,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
@@ -970,7 +970,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Режим белого списка",
     ),
     "years": MessageLookupByLibrary.simpleMessage("Лет"),
-    "yearsAgo": m19,
+    "yearsAgo": m21,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
     "zoom": MessageLookupByLibrary.simpleMessage("Масштаб"),
   };

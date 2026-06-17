@@ -5,6 +5,7 @@ import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';
+import 'package:fl_clash/profile_routing/group_spec.dart';
 import 'package:fl_clash/profile_routing/rule_codec.dart';
 import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
 import 'package:fl_clash/providers/providers.dart';

@@ -546,5 +546,18 @@
   "subRuleRename": "Rename sub-rule",
   "subRuleNameExists": "A sub-rule with this name already exists",
   "subRuleDeleteConfirm": "Delete this sub-rule?",
-  "subRuleRuleCount": "{count} rules"
+  "subRuleRuleCount": "{count} rules",
+  "proxyGroups": "Proxy groups",
+  "group": "group",
+  "groupNew": "New group",
+  "groupType": "Type",
+  "groupMembers": "Members",
+  "groupAddMember": "Add",
+  "groupHealthUrl": "Health-check URL",
+  "groupHealthInterval": "Interval (seconds)",
+  "groupLazy": "Lazy (test only when selected)",
+  "groupNameExists": "A group with this name already exists",
+  "groupDeleteConfirm": "Delete this group?",
+  "groupExtraKeys": "Preserved as-is: {keys}",
+  "groupMemberCount": "{count} members"
 }

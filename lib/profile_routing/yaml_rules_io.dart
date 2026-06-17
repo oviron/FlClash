@@ -3,6 +3,7 @@ library;
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
+import 'group_spec.dart';
 import 'rule_codec.dart';
 
 /// Reads/rewrites the `rules:` block of a raw mihomo config via `yaml_edit`,
@@ -101,6 +102,49 @@ class ProfileRulesDocument {
       {for (final e in subRules.entries) e.key: serializeRoutingRules(e.value)},
     );
     return editor.toString();
+  }
+
+  /// Names declared under `proxies:`; empty when absent. Candidate members for
+  /// a proxy group, distinct from group names.
+  List<String> get proxyNames {
+    final node = _root?['proxies'];
+    if (node is! YamlList) return const [];
+    return [
+      for (final p in node)
+        if (p is YamlMap && p['name'] != null) p['name'].toString(),
+    ];
+  }
+
+  /// Each `proxy-groups:` entry as a lossless [GroupSpec]; empty when absent.
+  List<GroupSpec> get proxyGroups {
+    final node = _root?['proxy-groups'];
+    if (node is! YamlList) return const [];
+    return [
+      for (final g in node)
+        if (g is YamlMap) GroupSpec.fromYaml(g),
+    ];
+  }
+
+  /// New document with `proxy-groups:` replaced by [groups] (each group's
+  /// unknown keys preserved verbatim). Other keys/comments are preserved.
+  String withProxyGroups(List<GroupSpec> groups) {
+    final editor = YamlEditor(raw);
+    final root = editor.parseAt([]);
+    if (root is! YamlMap) {
+      throw const ProfileRulesWriteException('config root is not a YAML map');
+    }
+    editor.update(['proxy-groups'], [for (final g in groups) g.raw]);
+    return editor.toString();
+  }
+
+  YamlMap? get _root {
+    final Object? doc;
+    try {
+      doc = loadYaml(raw);
+    } on YamlException {
+      return null;
+    }
+    return doc is YamlMap ? doc : null;
   }
 
   List<String> _tunPackages(String key) {

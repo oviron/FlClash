@@ -46,28 +46,32 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(upstream) => "Fork of ${upstream}";
 
-  static String m10(count) =>
-      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
+  static String m10(keys) => "Preserved as-is: ${keys}";
 
-  static String m11(count) =>
-      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
+  static String m11(count) => "${count} members";
 
   static String m12(count) =>
+      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
+
+  static String m13(count) =>
+      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
+
+  static String m14(count) =>
       "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
 
-  static String m13(label) => "No ${label} yet";
+  static String m15(label) => "No ${label} yet";
 
-  static String m14(label) => "${label} must be a number";
+  static String m16(label) => "${label} must be a number";
 
-  static String m15(label) => "${label} must be between 1024 and 49151";
+  static String m17(label) => "${label} must be between 1024 and 49151";
 
-  static String m16(count) => "${count} items have been selected";
+  static String m18(count) => "${count} items have been selected";
 
-  static String m17(count) => "${count} rules";
+  static String m19(count) => "${count} rules";
 
-  static String m18(label) => "${label} must be a url";
+  static String m20(label) => "${label} must be a url";
 
-  static String m19(count) =>
+  static String m21(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -382,6 +386,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage(
       "Go to configure script",
     ),
+    "group": MessageLookupByLibrary.simpleMessage("group"),
+    "groupAddMember": MessageLookupByLibrary.simpleMessage("Add"),
+    "groupDeleteConfirm": MessageLookupByLibrary.simpleMessage(
+      "Delete this group?",
+    ),
+    "groupExtraKeys": m10,
+    "groupHealthInterval": MessageLookupByLibrary.simpleMessage(
+      "Interval (seconds)",
+    ),
+    "groupHealthUrl": MessageLookupByLibrary.simpleMessage("Health-check URL"),
+    "groupLazy": MessageLookupByLibrary.simpleMessage(
+      "Lazy (test only when selected)",
+    ),
+    "groupMemberCount": m11,
+    "groupMembers": MessageLookupByLibrary.simpleMessage("Members"),
+    "groupNameExists": MessageLookupByLibrary.simpleMessage(
+      "A group with this name already exists",
+    ),
+    "groupNew": MessageLookupByLibrary.simpleMessage("New group"),
+    "groupType": MessageLookupByLibrary.simpleMessage("Type"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Do you want to cache the changes?",
     ),
@@ -402,7 +426,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Use keyboard to control applications",
     ),
     "hours": MessageLookupByLibrary.simpleMessage("Hours"),
-    "hoursAgo": m10,
+    "hoursAgo": m12,
     "icon": MessageLookupByLibrary.simpleMessage("Icon"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("Icon style"),
     "import": MessageLookupByLibrary.simpleMessage("Import"),
@@ -545,12 +569,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Back button sends the app to background instead of closing it",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("Minutes"),
-    "minutesAgo": m11,
+    "minutesAgo": m13,
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed Port"),
     "mode": MessageLookupByLibrary.simpleMessage("Mode"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
     "months": MessageLookupByLibrary.simpleMessage("Months"),
-    "monthsAgo": m12,
+    "monthsAgo": m14,
     "more": MessageLookupByLibrary.simpleMessage("More"),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
     "nameserver": MessageLookupByLibrary.simpleMessage("Nameserver"),
@@ -687,8 +711,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "No profile, Please add a profile",
     ),
-    "nullTip": m13,
-    "numberTip": m14,
+    "nullTip": m15,
+    "numberTip": m16,
     "onlyIcon": MessageLookupByLibrary.simpleMessage("Icon"),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage(
       "Only statistics proxy",
@@ -734,7 +758,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Please enter a different port",
     ),
-    "portTip": m15,
+    "portTip": m17,
     "preferH3": MessageLookupByLibrary.simpleMessage("Prefer H3"),
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Prioritize the use of DOH\'s http/3",
@@ -776,6 +800,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxies": MessageLookupByLibrary.simpleMessage("Proxies"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Proxy chains"),
     "proxyGroup": MessageLookupByLibrary.simpleMessage("Proxy group"),
+    "proxyGroups": MessageLookupByLibrary.simpleMessage("Proxy groups"),
     "proxyNameserver": MessageLookupByLibrary.simpleMessage("Proxy nameserver"),
     "proxyNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "Domain for resolving proxy nodes",
@@ -893,7 +918,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Seconds"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m16,
+    "selectedCountTitle": m18,
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
@@ -928,7 +953,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("New sub-rule"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("Rename sub-rule"),
-    "subRuleRuleCount": m17,
+    "subRuleRuleCount": m19,
     "subRules": MessageLookupByLibrary.simpleMessage("Sub-rules"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
@@ -981,7 +1006,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m18,
+    "urlTip": m20,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
@@ -1004,7 +1029,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "years": MessageLookupByLibrary.simpleMessage("Years"),
-    "yearsAgo": m19,
+    "yearsAgo": m21,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
     "zoom": MessageLookupByLibrary.simpleMessage("Zoom"),
   };
