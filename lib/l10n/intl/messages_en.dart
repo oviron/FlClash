@@ -899,6 +899,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Bypass private route address",
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("Use config"),
+    "routing": MessageLookupByLibrary.simpleMessage("Routing"),
     "routingRules": MessageLookupByLibrary.simpleMessage("Routing rules"),
     "ru": MessageLookupByLibrary.simpleMessage("Russian"),
     "rule": MessageLookupByLibrary.simpleMessage("Rule"),

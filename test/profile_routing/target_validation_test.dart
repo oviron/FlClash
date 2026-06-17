@@ -22,6 +22,19 @@ void main() {
     expect(configTargets(':\n bad: ['), isEmpty);
   });
 
+  test('configTargets includes sub-rule names', () {
+    const cfg = 'sub-rules:\n  vpn-app-route:\n    - MATCH,VPN\n';
+    expect(configTargets(cfg), contains('vpn-app-route'));
+  });
+
+  test('app->sub-rule route is dangling when the sub-rule is gone', () {
+    final rules = [
+      RoutingRule.parse('SUB-RULE,(PROCESS-NAME,com.a),present'),
+      RoutingRule.parse('SUB-RULE,(PROCESS-NAME,com.b),gone'),
+    ];
+    expect(danglingTargets(rules, {'present'}), ['gone']);
+  });
+
   test('flags only targets absent from valid set and builtins', () {
     final rules = parseRoutingRules([
       'PROCESS-NAME,com.a,Auto', // valid group

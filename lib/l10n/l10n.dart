@@ -4414,6 +4414,11 @@ class AppLocalizations {
     );
   }
 
+  /// `Routing`
+  String get routing {
+    return Intl.message('Routing', name: 'routing', desc: '', args: []);
+  }
+
   /// `Proxy groups`
   String get proxyGroups {
     return Intl.message(

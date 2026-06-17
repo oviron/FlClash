@@ -547,6 +547,7 @@
   "subRuleNameExists": "A sub-rule with this name already exists",
   "subRuleDeleteConfirm": "Delete this sub-rule?",
   "subRuleRuleCount": "{count} rules",
+  "routing": "Routing",
   "proxyGroups": "Proxy groups",
   "group": "group",
   "groupNew": "New group",

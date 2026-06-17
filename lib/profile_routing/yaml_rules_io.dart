@@ -115,6 +115,21 @@ class ProfileRulesDocument {
     ];
   }
 
+  /// `proxies:` entries as (name, type, server) for a read-only listing.
+  List<({String name, String type, String? server})> get proxyInfos {
+    final node = _root?['proxies'];
+    if (node is! YamlList) return const [];
+    return [
+      for (final p in node)
+        if (p is YamlMap && p['name'] != null)
+          (
+            name: p['name'].toString(),
+            type: (p['type'] ?? '').toString(),
+            server: p['server']?.toString(),
+          ),
+    ];
+  }
+
   /// Each `proxy-groups:` entry as a lossless [GroupSpec]; empty when absent.
   List<GroupSpec> get proxyGroups {
     final node = _root?['proxy-groups'];

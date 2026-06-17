@@ -33,6 +33,12 @@ Set<String> configTargets(String yaml) {
       }
     }
   }
+  final subRules = doc['sub-rules'];
+  if (subRules is YamlMap) {
+    for (final key in subRules.keys) {
+      names.add(key.toString());
+    }
+  }
   return names;
 }
 
@@ -41,12 +47,21 @@ Set<String> configTargets(String yaml) {
 /// De-duplicated, order-preserving. Passthrough (logical) rules are skipped.
 List<String> danglingTargets(List<RoutingRule> rules, Set<String> valid) {
   final out = <String>[];
-  for (final r in rules) {
-    if (r is! TypedRule) continue;
-    final target = r.target;
-    if (target.isEmpty) continue;
-    if (_builtinTargets.contains(target) || valid.contains(target)) continue;
+  void check(String target) {
+    if (target.isEmpty) return;
+    if (_builtinTargets.contains(target) || valid.contains(target)) return;
     if (!out.contains(target)) out.add(target);
+  }
+
+  for (final r in rules) {
+    switch (r) {
+      case TypedRule():
+        check(r.target);
+      case AppToSubRuleRoute():
+        check(r.subRuleName);
+      case PassthroughRule():
+        break;
+    }
   }
   return out;
 }

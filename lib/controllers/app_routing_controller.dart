@@ -196,6 +196,14 @@ extension AppRoutingController on AppController {
     return _writeValidatedApply(file, profileId, next);
   }
 
+  Future<List<({String name, String type, String? server})>> readProxyInfos(
+    int profileId,
+  ) async {
+    final file = File(await appPath.getProfilePath(profileId.toString()));
+    if (!await file.exists()) return const [];
+    return ProfileRulesDocument(await file.readAsString()).proxyInfos;
+  }
+
   /// Names a proxy group may legitimately list as members: every declared proxy
   /// plus every other group name.
   Future<List<String>> readGroupMemberCandidates(int profileId) async {
