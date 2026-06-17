@@ -20,6 +20,15 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ru';
 
+  static String m0(count) =>
+      "${count} целей маршрутизации больше не существует после обновления";
+
+  static String m1(count) =>
+      "Перенесено ${count} приложений из «Доступа приложений» в профиль";
+
+  static String m2(overlaid, conflicts) =>
+      "Маршрутизация приложений обновлена: ${overlaid} восстановлено, ${conflicts} оставлено ваших";
+
   static String m3(count) =>
       "${Intl.plural(count, one: '${count} день назад', few: '${count} дня назад', many: '${count} дней назад', other: '${count} дня назад')}";
 
@@ -35,6 +44,10 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m8(label) => "Текущий ${label} уже существует";
 
   static String m9(upstream) => "Форк ${upstream}";
+
+  static String m10(keys) => "Сохранены как есть: ${keys}";
+
+  static String m11(count) => "${count} участников";
 
   static String m12(count) =>
       "${Intl.plural(count, one: '${count} час назад', few: '${count} часа назад', many: '${count} часов назад', other: '${count} часа назад')}";
@@ -52,6 +65,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m17(label) => "${label} должен быть числом от 1024 до 49151";
 
   static String m18(count) => "Выбрано ${count} элементов";
+
+  static String m19(count) => "${count} правил";
 
   static String m20(label) => "${label} должен быть URL";
 
@@ -114,6 +129,41 @@ class MessageLookup extends MessageLookupByLibrary {
     "app": MessageLookupByLibrary.simpleMessage("Приложение"),
     "appAccessControl": MessageLookupByLibrary.simpleMessage(
       "Контроль доступа приложений",
+    ),
+    "appRouting": MessageLookupByLibrary.simpleMessage(
+      "Маршрутизация приложений",
+    ),
+    "appRoutingAllRules": MessageLookupByLibrary.simpleMessage("Все правила"),
+    "appRoutingApps": MessageLookupByLibrary.simpleMessage("Приложения"),
+    "appRoutingDanglingTargets": m0,
+    "appRoutingDeadRule": MessageLookupByLibrary.simpleMessage(
+      "Приложение вне туннеля, поэтому цель маршрутизации не применится",
+    ),
+    "appRoutingDefault": MessageLookupByLibrary.simpleMessage(
+      "Правила профиля",
+    ),
+    "appRoutingInTunnel": MessageLookupByLibrary.simpleMessage("В туннеле"),
+    "appRoutingMigrated": m1,
+    "appRoutingModeBlacklist": MessageLookupByLibrary.simpleMessage(
+      "Чёрный список: отмеченные приложения идут мимо VPN, остальные через него",
+    ),
+    "appRoutingModeWhitelist": MessageLookupByLibrary.simpleMessage(
+      "Белый список: только отмеченные приложения идут через VPN",
+    ),
+    "appRoutingOutside": MessageLookupByLibrary.simpleMessage("Вне туннеля"),
+    "appRoutingProcessOff": MessageLookupByLibrary.simpleMessage(
+      "Сопоставление процессов выключено в этом профиле, маршрутизация приложений не применится",
+    ),
+    "appRoutingRulesReapplied": m2,
+    "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage(
+      "Поиск приложений",
+    ),
+    "appRoutingShowSystem": MessageLookupByLibrary.simpleMessage(
+      "Системные приложения",
+    ),
+    "appRoutingSubRule": MessageLookupByLibrary.simpleMessage("Подправило"),
+    "appRoutingTunnelRestart": MessageLookupByLibrary.simpleMessage(
+      "Изменение туннеля применится после перезапуска VPN",
     ),
     "appearance": MessageLookupByLibrary.simpleMessage("Внешний вид"),
     "appendSystemDns": MessageLookupByLibrary.simpleMessage(
@@ -355,6 +405,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage(
       "Перейти к настройке скрипта",
     ),
+    "group": MessageLookupByLibrary.simpleMessage("Группа"),
+    "groupAddMember": MessageLookupByLibrary.simpleMessage("Добавить"),
+    "groupDeleteConfirm": MessageLookupByLibrary.simpleMessage(
+      "Удалить эту группу?",
+    ),
+    "groupExtraKeys": m10,
+    "groupHealthInterval": MessageLookupByLibrary.simpleMessage(
+      "Интервал (секунды)",
+    ),
+    "groupHealthUrl": MessageLookupByLibrary.simpleMessage(
+      "URL проверки доступности",
+    ),
+    "groupLazy": MessageLookupByLibrary.simpleMessage(
+      "Лениво (проверять только при выборе)",
+    ),
+    "groupMemberCount": m11,
+    "groupMembers": MessageLookupByLibrary.simpleMessage("Участники"),
+    "groupNameExists": MessageLookupByLibrary.simpleMessage(
+      "Группа с таким именем уже существует",
+    ),
+    "groupNew": MessageLookupByLibrary.simpleMessage("Новая группа"),
+    "groupType": MessageLookupByLibrary.simpleMessage("Тип"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Хотите сохранить изменения в кэше?",
     ),
@@ -728,6 +800,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxies": MessageLookupByLibrary.simpleMessage("Прокси"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("Цепочки прокси"),
     "proxyGroup": MessageLookupByLibrary.simpleMessage("Группа прокси"),
+    "proxyGroups": MessageLookupByLibrary.simpleMessage("Группы прокси"),
     "proxyNameserver": MessageLookupByLibrary.simpleMessage(
       "Прокси-сервер имен",
     ),
@@ -840,6 +913,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeMode_config": MessageLookupByLibrary.simpleMessage(
       "Использовать конфигурацию",
     ),
+    "routing": MessageLookupByLibrary.simpleMessage("Маршрутизация"),
     "routingRules": MessageLookupByLibrary.simpleMessage(
       "Правила маршрутизации",
     ),
@@ -890,6 +964,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "stopVpn": MessageLookupByLibrary.simpleMessage("Остановка VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("Стиль"),
     "subRule": MessageLookupByLibrary.simpleMessage("Подправило"),
+    "subRuleDeleteConfirm": MessageLookupByLibrary.simpleMessage(
+      "Удалить это подправило?",
+    ),
+    "subRuleNameExists": MessageLookupByLibrary.simpleMessage(
+      "Подправило с таким именем уже существует",
+    ),
+    "subRuleNew": MessageLookupByLibrary.simpleMessage("Новое подправило"),
+    "subRuleRename": MessageLookupByLibrary.simpleMessage(
+      "Переименовать подправило",
+    ),
+    "subRuleRuleCount": m19,
+    "subRules": MessageLookupByLibrary.simpleMessage("Подправила"),
     "submit": MessageLookupByLibrary.simpleMessage("Отправить"),
     "sync": MessageLookupByLibrary.simpleMessage("Синхронизация"),
     "system": MessageLookupByLibrary.simpleMessage("Система"),

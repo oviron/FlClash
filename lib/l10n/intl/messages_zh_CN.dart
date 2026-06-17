@@ -20,6 +20,13 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_CN';
 
+  static String m0(count) => "更新后有 ${count} 个路由目标已不存在";
+
+  static String m1(count) => "已将 ${count} 个应用从“应用访问”迁移到配置";
+
+  static String m2(overlaid, conflicts) =>
+      "按应用路由已更新：重新添加 ${overlaid} 条，保留你的 ${conflicts} 条";
+
   static String m3(count) => "${count} 天前";
 
   static String m4(label) => "确定删除选中的${label}吗？";
@@ -34,6 +41,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(upstream) => "Fork of ${upstream}";
 
+  static String m10(keys) => "原样保留：${keys}";
+
+  static String m11(count) => "${count} 个成员";
+
   static String m12(count) => "${count} 小时前";
 
   static String m13(count) => "${count} 分钟前";
@@ -47,6 +58,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m17(label) => "${label} 必须在 1024 到 49151 之间";
 
   static String m18(count) => "已选择 ${count} 项";
+
+  static String m19(count) => "${count} 条规则";
 
   static String m20(label) => "${label}必须为URL";
 
@@ -93,6 +106,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "allowLanDesc": MessageLookupByLibrary.simpleMessage("允许通过局域网访问代理"),
     "app": MessageLookupByLibrary.simpleMessage("应用"),
     "appAccessControl": MessageLookupByLibrary.simpleMessage("应用访问控制"),
+    "appRouting": MessageLookupByLibrary.simpleMessage("按应用路由"),
+    "appRoutingAllRules": MessageLookupByLibrary.simpleMessage("所有规则"),
+    "appRoutingApps": MessageLookupByLibrary.simpleMessage("应用"),
+    "appRoutingDanglingTargets": m0,
+    "appRoutingDeadRule": MessageLookupByLibrary.simpleMessage(
+      "应用在隧道之外，其路由目标不会生效",
+    ),
+    "appRoutingDefault": MessageLookupByLibrary.simpleMessage("配置规则"),
+    "appRoutingInTunnel": MessageLookupByLibrary.simpleMessage("隧道内"),
+    "appRoutingMigrated": m1,
+    "appRoutingModeBlacklist": MessageLookupByLibrary.simpleMessage(
+      "黑名单：勾选的应用绕过 VPN，其余走 VPN",
+    ),
+    "appRoutingModeWhitelist": MessageLookupByLibrary.simpleMessage(
+      "白名单：仅勾选进入隧道的应用走 VPN",
+    ),
+    "appRoutingOutside": MessageLookupByLibrary.simpleMessage("隧道外"),
+    "appRoutingProcessOff": MessageLookupByLibrary.simpleMessage(
+      "此配置已关闭进程匹配，按应用路由不会生效",
+    ),
+    "appRoutingRulesReapplied": m2,
+    "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage("搜索应用"),
+    "appRoutingShowSystem": MessageLookupByLibrary.simpleMessage("系统应用"),
+    "appRoutingSubRule": MessageLookupByLibrary.simpleMessage("子规则"),
+    "appRoutingTunnelRestart": MessageLookupByLibrary.simpleMessage(
+      "隧道更改将在下次 VPN 重启时生效",
+    ),
     "appearance": MessageLookupByLibrary.simpleMessage("外观"),
     "appendSystemDns": MessageLookupByLibrary.simpleMessage("追加系统DNS"),
     "appendSystemDnsTip": MessageLookupByLibrary.simpleMessage("强制为配置附加系统DNS"),
@@ -261,6 +301,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("全局"),
     "go": MessageLookupByLibrary.simpleMessage("前往"),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage("前往配置脚本"),
+    "group": MessageLookupByLibrary.simpleMessage("分组"),
+    "groupAddMember": MessageLookupByLibrary.simpleMessage("添加"),
+    "groupDeleteConfirm": MessageLookupByLibrary.simpleMessage("删除此分组？"),
+    "groupExtraKeys": m10,
+    "groupHealthInterval": MessageLookupByLibrary.simpleMessage("间隔（秒）"),
+    "groupHealthUrl": MessageLookupByLibrary.simpleMessage("健康检查 URL"),
+    "groupLazy": MessageLookupByLibrary.simpleMessage("惰性（仅在选中时测试）"),
+    "groupMemberCount": m11,
+    "groupMembers": MessageLookupByLibrary.simpleMessage("成员"),
+    "groupNameExists": MessageLookupByLibrary.simpleMessage("同名分组已存在"),
+    "groupNew": MessageLookupByLibrary.simpleMessage("新建分组"),
+    "groupType": MessageLookupByLibrary.simpleMessage("类型"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("是否缓存修改"),
     "hideFromRecents": MessageLookupByLibrary.simpleMessage(
       "Hide from recents",
@@ -516,6 +568,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxies": MessageLookupByLibrary.simpleMessage("代理"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("代理链"),
     "proxyGroup": MessageLookupByLibrary.simpleMessage("代理组"),
+    "proxyGroups": MessageLookupByLibrary.simpleMessage("代理组"),
     "proxyNameserver": MessageLookupByLibrary.simpleMessage("代理域名服务器"),
     "proxyNameserverDesc": MessageLookupByLibrary.simpleMessage("用于解析代理节点的域名"),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("代理提供者"),
@@ -580,6 +633,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeMode": MessageLookupByLibrary.simpleMessage("路由模式"),
     "routeMode_bypassPrivate": MessageLookupByLibrary.simpleMessage("绕过私有路由地址"),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("使用配置"),
+    "routing": MessageLookupByLibrary.simpleMessage("路由"),
     "routingRules": MessageLookupByLibrary.simpleMessage("路由规则"),
     "ru": MessageLookupByLibrary.simpleMessage("俄语"),
     "rule": MessageLookupByLibrary.simpleMessage("规则"),
@@ -622,6 +676,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "stopVpn": MessageLookupByLibrary.simpleMessage("正在停止VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("风格"),
     "subRule": MessageLookupByLibrary.simpleMessage("子规则"),
+    "subRuleDeleteConfirm": MessageLookupByLibrary.simpleMessage("删除此子规则？"),
+    "subRuleNameExists": MessageLookupByLibrary.simpleMessage("同名子规则已存在"),
+    "subRuleNew": MessageLookupByLibrary.simpleMessage("新建子规则"),
+    "subRuleRename": MessageLookupByLibrary.simpleMessage("重命名子规则"),
+    "subRuleRuleCount": m19,
+    "subRules": MessageLookupByLibrary.simpleMessage("子规则"),
     "submit": MessageLookupByLibrary.simpleMessage("提交"),
     "sync": MessageLookupByLibrary.simpleMessage("同步"),
     "system": MessageLookupByLibrary.simpleMessage("系统"),

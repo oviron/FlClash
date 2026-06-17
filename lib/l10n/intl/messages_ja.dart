@@ -20,6 +20,13 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja';
 
+  static String m0(count) => "更新後、${count} 個のルーティング先が存在しません";
+
+  static String m1(count) => "${count} 個のアプリを「アプリアクセス」からプロファイルに移行しました";
+
+  static String m2(overlaid, conflicts) =>
+      "アプリ別ルーティングを更新しました: ${overlaid} 件を再追加、${conflicts} 件はユーザー設定を維持";
+
   static String m3(count) => "${count}日前";
 
   static String m4(label) => "選択された${label}を削除してもよろしいですか？";
@@ -34,6 +41,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(upstream) => "Fork of ${upstream}";
 
+  static String m10(keys) => "そのまま保持: ${keys}";
+
+  static String m11(count) => "${count} 個のメンバー";
+
   static String m12(count) => "${count}時間前";
 
   static String m13(count) => "${count}分前";
@@ -47,6 +58,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m17(label) => "${label} は 1024 から 49151 の間でなければなりません";
 
   static String m18(count) => "${count} 項目が選択されています";
+
+  static String m19(count) => "${count} 個のルール";
 
   static String m20(label) => "${label}はURLである必要があります";
 
@@ -99,6 +112,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "allowLanDesc": MessageLookupByLibrary.simpleMessage("LAN経由でのプロキシアクセスを許可"),
     "app": MessageLookupByLibrary.simpleMessage("アプリ"),
     "appAccessControl": MessageLookupByLibrary.simpleMessage("アプリアクセス制御"),
+    "appRouting": MessageLookupByLibrary.simpleMessage("アプリ別ルーティング"),
+    "appRoutingAllRules": MessageLookupByLibrary.simpleMessage("すべてのルール"),
+    "appRoutingApps": MessageLookupByLibrary.simpleMessage("アプリ"),
+    "appRoutingDanglingTargets": m0,
+    "appRoutingDeadRule": MessageLookupByLibrary.simpleMessage(
+      "アプリはトンネル外のため、ルーティング先は適用されません",
+    ),
+    "appRoutingDefault": MessageLookupByLibrary.simpleMessage("プロファイルのルール"),
+    "appRoutingInTunnel": MessageLookupByLibrary.simpleMessage("トンネル内"),
+    "appRoutingMigrated": m1,
+    "appRoutingModeBlacklist": MessageLookupByLibrary.simpleMessage(
+      "ブラックリスト: 選択したアプリはVPNを経由せず、その他は経由します",
+    ),
+    "appRoutingModeWhitelist": MessageLookupByLibrary.simpleMessage(
+      "ホワイトリスト: トンネル内に指定したアプリのみVPNを経由します",
+    ),
+    "appRoutingOutside": MessageLookupByLibrary.simpleMessage("トンネル外"),
+    "appRoutingProcessOff": MessageLookupByLibrary.simpleMessage(
+      "このプロファイルではプロセス照合が無効のため、アプリ別ルーティングは適用されません",
+    ),
+    "appRoutingRulesReapplied": m2,
+    "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage("アプリを検索"),
+    "appRoutingShowSystem": MessageLookupByLibrary.simpleMessage("システムアプリ"),
+    "appRoutingSubRule": MessageLookupByLibrary.simpleMessage("サブルール"),
+    "appRoutingTunnelRestart": MessageLookupByLibrary.simpleMessage(
+      "トンネルの変更は次回のVPN再起動時に適用されます",
+    ),
     "appearance": MessageLookupByLibrary.simpleMessage("外観"),
     "appendSystemDns": MessageLookupByLibrary.simpleMessage("システムDNSを追加"),
     "appendSystemDnsTip": MessageLookupByLibrary.simpleMessage(
@@ -287,6 +327,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("グローバル"),
     "go": MessageLookupByLibrary.simpleMessage("移動"),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage("スクリプト設定に移動"),
+    "group": MessageLookupByLibrary.simpleMessage("グループ"),
+    "groupAddMember": MessageLookupByLibrary.simpleMessage("追加"),
+    "groupDeleteConfirm": MessageLookupByLibrary.simpleMessage(
+      "このグループを削除しますか？",
+    ),
+    "groupExtraKeys": m10,
+    "groupHealthInterval": MessageLookupByLibrary.simpleMessage("間隔（秒）"),
+    "groupHealthUrl": MessageLookupByLibrary.simpleMessage("ヘルスチェックURL"),
+    "groupLazy": MessageLookupByLibrary.simpleMessage("遅延（選択時のみテスト）"),
+    "groupMemberCount": m11,
+    "groupMembers": MessageLookupByLibrary.simpleMessage("メンバー"),
+    "groupNameExists": MessageLookupByLibrary.simpleMessage(
+      "この名前のグループは既に存在します",
+    ),
+    "groupNew": MessageLookupByLibrary.simpleMessage("新しいグループ"),
+    "groupType": MessageLookupByLibrary.simpleMessage("タイプ"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("変更をキャッシュしますか？"),
     "hideFromRecents": MessageLookupByLibrary.simpleMessage(
       "Hide from recents",
@@ -568,6 +624,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxies": MessageLookupByLibrary.simpleMessage("プロキシ"),
     "proxyChains": MessageLookupByLibrary.simpleMessage("プロキシチェーン"),
     "proxyGroup": MessageLookupByLibrary.simpleMessage("プロキシグループ"),
+    "proxyGroups": MessageLookupByLibrary.simpleMessage("プロキシグループ"),
     "proxyNameserver": MessageLookupByLibrary.simpleMessage("プロキシネームサーバー"),
     "proxyNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "プロキシノード解決用ドメイン",
@@ -644,6 +701,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "プライベートルートをバイパス",
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("設定を使用"),
+    "routing": MessageLookupByLibrary.simpleMessage("ルーティング"),
     "routingRules": MessageLookupByLibrary.simpleMessage("ルーティングルール"),
     "ru": MessageLookupByLibrary.simpleMessage("ロシア語"),
     "rule": MessageLookupByLibrary.simpleMessage("ルール"),
@@ -686,6 +744,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "stopVpn": MessageLookupByLibrary.simpleMessage("VPNを停止中..."),
     "style": MessageLookupByLibrary.simpleMessage("スタイル"),
     "subRule": MessageLookupByLibrary.simpleMessage("サブルール"),
+    "subRuleDeleteConfirm": MessageLookupByLibrary.simpleMessage(
+      "このサブルールを削除しますか？",
+    ),
+    "subRuleNameExists": MessageLookupByLibrary.simpleMessage(
+      "この名前のサブルールは既に存在します",
+    ),
+    "subRuleNew": MessageLookupByLibrary.simpleMessage("新しいサブルール"),
+    "subRuleRename": MessageLookupByLibrary.simpleMessage("サブルールの名前を変更"),
+    "subRuleRuleCount": m19,
+    "subRules": MessageLookupByLibrary.simpleMessage("サブルール"),
     "submit": MessageLookupByLibrary.simpleMessage("送信"),
     "sync": MessageLookupByLibrary.simpleMessage("同期"),
     "system": MessageLookupByLibrary.simpleMessage("システム"),
