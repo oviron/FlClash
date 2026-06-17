@@ -15,7 +15,6 @@ const _kDefault = '';
 const _kDirect = 'DIRECT';
 const _kReject = 'REJECT';
 const _kGlobal = 'GLOBAL';
-const _kOutside = '\u0000outside';
 
 enum _View { apps, rules }
 
@@ -43,6 +42,8 @@ class AppRoutingView extends ConsumerStatefulWidget {
 class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
   List<_IdRule> _rows = const [];
   Set<String> _excluded = const {};
+  Set<String> _included = const {};
+  AccessControlMode _mode = AccessControlMode.rejectSelected;
   int _nextId = 0;
   bool _loading = true;
   _View _view = _View.apps;
@@ -57,15 +58,30 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
   }
 
   Future<void> _load() async {
+    final migrated = await appController.migrateAccessControlToYaml(
+      widget.profileId,
+    );
     final rules = await appController.readRoutingRules(widget.profileId);
     final excluded = await appController.readExcludedPackages(widget.profileId);
+    final included = await appController.readIncludedPackages(widget.profileId);
+    final mode = await appController.readTunnelMode(widget.profileId);
     if (!mounted) return;
     setState(() {
       _rows = [for (final r in rules) _IdRule(_nextId++, r)];
       _excluded = excluded.toSet();
+      _included = included.toSet();
+      _mode = mode;
       _loading = false;
     });
+    if (migrated != null && mounted) {
+      context.showNotifier(appLocalizations.appRoutingMigrated(migrated));
+    }
   }
+
+  /// Whether [pkg] currently routes into the tunnel, per the active mode.
+  bool _inTunnel(String pkg) => _mode == AccessControlMode.acceptSelected
+      ? _included.contains(pkg)
+      : !_excluded.contains(pkg);
 
   List<RoutingRule> get _rules => [for (final e in _rows) e.rule];
 
@@ -94,27 +110,33 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
 
   Future<void> _pickTarget(Package package) async {
     final pkg = package.packageName;
-    final current = _excluded.contains(pkg)
-        ? _kOutside
-        : (_byPackage[pkg]?.target ?? _kDefault);
+    final current = _byPackage[pkg]?.target ?? _kDefault;
     final picked = await _showTargetSheet(
       title: package.label,
       current: current,
       includeDefault: true,
     );
     if (picked == null || picked == current) return;
-    final error = await appController.setAppRouting(
+    final error = await appController.setAppTarget(
       widget.profileId,
       pkg,
-      target: (picked == _kDefault || picked == _kOutside) ? null : picked,
-      outOfTunnel: picked == _kOutside,
+      target: picked == _kDefault ? null : picked,
     );
     if (!mounted) return;
-    if (error != null) {
-      context.showNotifier(error);
-    } else if ((picked == _kOutside) != (current == _kOutside)) {
-      context.showNotifier(appLocalizations.appRoutingTunnelRestart);
-    }
+    if (error != null) context.showNotifier(error);
+    await _load();
+  }
+
+  Future<void> _toggleMembership(Package package) async {
+    final pkg = package.packageName;
+    final error = await appController.setAppMembership(
+      widget.profileId,
+      pkg,
+      mode: _mode,
+      inTunnel: !_inTunnel(pkg),
+    );
+    if (!mounted) return;
+    context.showNotifier(error ?? appLocalizations.appRoutingTunnelRestart);
     await _load();
   }
 
@@ -125,10 +147,8 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
   }) {
     final groups = ref.read(currentGroupsStateProvider).value;
     final options = <({String value, String label})>[
-      if (includeDefault) ...[
+      if (includeDefault)
         (value: _kDefault, label: appLocalizations.appRoutingDefault),
-        (value: _kOutside, label: appLocalizations.appRoutingOutside),
-      ],
       (value: _kDirect, label: _kDirect),
       (value: _kReject, label: _kReject),
       (value: _kGlobal, label: _kGlobal),
@@ -260,7 +280,8 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
                     onSelectionChanged: (s) => setState(() => _view = s.first),
                   ),
                 ),
-                if (_view == _View.apps)
+                if (_view == _View.apps) ...[
+                  _ModeBanner(mode: _mode),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                     child: Row(
@@ -285,14 +306,18 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
                       ],
                     ),
                   ),
+                ],
                 Expanded(
                   child: _view == _View.apps
                       ? _AppsList(
                           byPackage: _byPackage,
+                          mode: _mode,
+                          included: _included,
                           excluded: _excluded,
                           query: _query,
                           showSystem: _showSystem,
-                          onTap: _pickTarget,
+                          onPickTarget: _pickTarget,
+                          onToggleMembership: _toggleMembership,
                         )
                       : _buildRulesTable(context),
                 ),
@@ -330,20 +355,67 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
   }
 }
 
+/// Read-only banner stating the profile's tunnel mode (whitelist vs blacklist),
+/// so "in tunnel" / "outside" read correctly against the active semantics.
+class _ModeBanner extends StatelessWidget {
+  final AccessControlMode mode;
+
+  const _ModeBanner({required this.mode});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final whitelist = mode == AccessControlMode.acceptSelected;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Row(
+        children: [
+          Icon(
+            whitelist ? Icons.check_circle_outline : Icons.block_outlined,
+            size: 16,
+            color: scheme.primary,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              whitelist
+                  ? appLocalizations.appRoutingModeWhitelist
+                  : appLocalizations.appRoutingModeBlacklist,
+              style: context.textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _AppsList extends ConsumerWidget {
   final Map<String, TypedRule> byPackage;
+  final AccessControlMode mode;
+  final Set<String> included;
   final Set<String> excluded;
   final String query;
   final bool showSystem;
-  final Future<void> Function(Package) onTap;
+  final Future<void> Function(Package) onPickTarget;
+  final Future<void> Function(Package) onToggleMembership;
 
   const _AppsList({
     required this.byPackage,
+    required this.mode,
+    required this.included,
     required this.excluded,
     required this.query,
     required this.showSystem,
-    required this.onTap,
+    required this.onPickTarget,
+    required this.onToggleMembership,
   });
+
+  bool _inTunnel(String pkg) => mode == AccessControlMode.acceptSelected
+      ? included.contains(pkg)
+      : !excluded.contains(pkg);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -362,12 +434,10 @@ class _AppsList extends ConsumerWidget {
       itemBuilder: (_, index) {
         final package = packages[index];
         final pkg = package.packageName;
-        final outside = excluded.contains(pkg);
+        final inTunnel = _inTunnel(pkg);
         final rule = byPackage[pkg];
-        final deadRule = outside && rule != null;
-        final label = outside
-            ? appLocalizations.appRoutingOutside
-            : (rule?.target ?? appLocalizations.appRoutingDefault);
+        final deadRule = !inTunnel && rule != null;
+        final targetLabel = rule?.target ?? appLocalizations.appRoutingDefault;
         return ListTile(
           leading: SizedBox(
             width: 44,
@@ -401,14 +471,32 @@ class _AppsList extends ConsumerWidget {
                     color: scheme.error,
                   ),
                 ),
-              Chip(
-                avatar: outside ? const Icon(Icons.block, size: 16) : null,
-                label: Text(label),
+              IconButton(
                 visualDensity: VisualDensity.compact,
+                tooltip: inTunnel
+                    ? appLocalizations.appRoutingInTunnel
+                    : appLocalizations.appRoutingOutside,
+                icon: Icon(
+                  inTunnel ? Icons.vpn_key : Icons.block,
+                  size: 18,
+                  color: inTunnel ? scheme.primary : scheme.outline,
+                ),
+                onPressed: () => onToggleMembership(package),
+              ),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 120),
+                child: ActionChip(
+                  label: Text(
+                    targetLabel,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => onPickTarget(package),
+                ),
               ),
             ],
           ),
-          onTap: () => onTap(package),
         );
       },
     );

@@ -54,4 +54,53 @@ void main() {
     expect(out, contains('stack: system'));
     expect(ProfileRulesDocument(out).excludedPackages, ['com.z']);
   });
+
+  test('reads tun.include-package', () {
+    const doc =
+        'tun:\n  enable: true\n  include-package:\n    - com.a\n    - com.b\n';
+    expect(const ProfileRulesDocument(doc).includedPackages, [
+      'com.a',
+      'com.b',
+    ]);
+  });
+
+  test('absent include-package yields empty list', () {
+    expect(
+      const ProfileRulesDocument('tun:\n  enable: true\n').includedPackages,
+      isEmpty,
+    );
+  });
+
+  test('writes include-package, round-trips, preserves rest', () {
+    const doc = '# top\nmode: rule\n';
+    final out = const ProfileRulesDocument(doc).withIncludedPackages(['com.x']);
+    expect(ProfileRulesDocument(out).includedPackages, ['com.x']);
+    expect(out, contains('# top'));
+    expect(out, contains('mode: rule'));
+  });
+
+  test('written include is read by aclFromTunYaml as an accept-list', () {
+    const doc = 'tun:\n  enable: true\n';
+    final out = const ProfileRulesDocument(doc).withIncludedPackages(['com.y']);
+    final acl = aclFromTunYaml(_asMap(out));
+    expect(acl, isNotNull);
+    expect(acl!.mode, AccessControlMode.acceptSelected);
+    expect(acl.acceptList, contains('com.y'));
+  });
+
+  test('empty list removes the include-package key', () {
+    const doc = 'tun:\n  include-package:\n    - com.a\n';
+    final out = const ProfileRulesDocument(doc).withIncludedPackages([]);
+    expect(ProfileRulesDocument(out).includedPackages, isEmpty);
+  });
+
+  test('writing include leaves a sibling exclude untouched', () {
+    const doc = 'tun:\n  enable: true\n  exclude-package:\n    - com.keep\n';
+    final out = const ProfileRulesDocument(
+      doc,
+    ).withIncludedPackages(['com.in']);
+    final back = ProfileRulesDocument(out);
+    expect(back.includedPackages, ['com.in']);
+    expect(back.excludedPackages, ['com.keep']);
+  });
 }

@@ -9,9 +9,7 @@ import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
-import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/state.dart';
-import 'package:fl_clash/views/access.dart';
 import 'package:fl_clash/views/profiles/app_routing.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -110,51 +108,6 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     setState(() {
       _autoUpdate = value;
     });
-  }
-
-  Future<void> _handleAppAccess() async {
-    final profile =
-        ref.read(profilesProvider).getProfile(widget.profile.id) ??
-        widget.profile;
-
-    AccessControlProps? yamlAcl;
-    try {
-      final raw = await coreController.getConfig(profile.id);
-      yamlAcl = aclFromTunYaml(raw);
-    } catch (e) {
-      commonPrint.log('profile App Access: yaml read failed: $e');
-    }
-    if (!mounted) return;
-
-    final profileAcl = profile.accessControlProps;
-    final overrideActive = profileAcl != null && profileAcl.enable;
-    final initial = overrideActive
-        ? profileAcl
-        : (yamlAcl?.copyWith(enable: false) ??
-              profileAcl ??
-              const AccessControlProps());
-
-    final canResetToYaml = yamlAcl != null;
-
-    await BaseNavigator.push(
-      context,
-      AccessView.forProfile(
-        initial: initial,
-        onResetToYaml: canResetToYaml
-            ? () {
-                final reset = profile.copyWith(accessControlProps: null);
-                appController.putProfile(reset);
-                if (mounted) Navigator.of(context).pop();
-              }
-            : null,
-        onSave: (acl) async {
-          final updated = profile.copyWith(
-            accessControlProps: acl.enable ? acl : null,
-          );
-          appController.putProfile(updated);
-        },
-      ),
-    );
   }
 
   Future<void> _handleSaveEdit(BuildContext context, String data) async {
@@ -335,11 +288,6 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
             ),
           ),
       ],
-      ListItem(
-        title: Text(appLocalizations.profileAppAccess),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: _handleAppAccess,
-      ),
       ListItem(
         title: Text(appLocalizations.appRouting),
         trailing: const Icon(Icons.chevron_right),

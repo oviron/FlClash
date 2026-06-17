@@ -40,10 +40,16 @@ class ProfileRulesDocument {
     return editor.toString();
   }
 
-  /// Packages under `tun.exclude-package` (the out-of-tunnel deny-list); empty
-  /// when absent. Managing only exclude-package is correct in both modes:
-  /// aclFromTunYaml computes the effective allow-list as include \ exclude.
-  List<String> get excludedPackages {
+  /// Packages under `tun.exclude-package` (the blacklist: these bypass the
+  /// tunnel); empty when absent.
+  List<String> get excludedPackages => _tunPackages('exclude-package');
+
+  /// Packages under `tun.include-package` (the whitelist: only these enter the
+  /// tunnel); empty when absent. Its presence is how the screen derives
+  /// whitelist vs blacklist mode for a profile.
+  List<String> get includedPackages => _tunPackages('include-package');
+
+  List<String> _tunPackages(String key) {
     final Object? doc;
     try {
       doc = loadYaml(raw);
@@ -51,7 +57,7 @@ class ProfileRulesDocument {
       return const [];
     }
     final tun = doc is YamlMap ? doc['tun'] : null;
-    final node = tun is YamlMap ? tun['exclude-package'] : null;
+    final node = tun is YamlMap ? tun[key] : null;
     if (node is! YamlList) return const [];
     return node.whereType<String>().toList();
   }
@@ -59,7 +65,15 @@ class ProfileRulesDocument {
   /// New document with `tun.exclude-package` set to [packages] (creates `tun`
   /// or the key when absent; an empty list removes the key). Other tun fields
   /// and document parts are preserved.
-  String withExcludedPackages(List<String> packages) {
+  String withExcludedPackages(List<String> packages) =>
+      _withTunPackages('exclude-package', packages);
+
+  /// New document with `tun.include-package` set to [packages]; same
+  /// preservation/removal semantics as [withExcludedPackages].
+  String withIncludedPackages(List<String> packages) =>
+      _withTunPackages('include-package', packages);
+
+  String _withTunPackages(String key, List<String> packages) {
     final editor = YamlEditor(raw);
     final root = editor.parseAt([]);
     if (root is! YamlMap) {
@@ -67,15 +81,15 @@ class ProfileRulesDocument {
     }
     final tun = root['tun'];
     if (packages.isEmpty) {
-      if (tun is YamlMap && tun.containsKey('exclude-package')) {
-        editor.remove(['tun', 'exclude-package']);
+      if (tun is YamlMap && tun.containsKey(key)) {
+        editor.remove(['tun', key]);
       }
       return editor.toString();
     }
     if (tun is YamlMap) {
-      editor.update(['tun', 'exclude-package'], packages);
+      editor.update(['tun', key], packages);
     } else {
-      editor.update(['tun'], {'exclude-package': packages});
+      editor.update(['tun'], {key: packages});
     }
     return editor.toString();
   }

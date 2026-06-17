@@ -4219,10 +4219,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Default`
+  /// `Profile rules`
   String get appRoutingDefault {
     return Intl.message(
-      'Default',
+      'Profile rules',
       name: 'appRoutingDefault',
       desc: '',
       args: [],
@@ -4261,6 +4261,46 @@ class AppLocalizations {
       name: 'appRoutingOutside',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `In tunnel`
+  String get appRoutingInTunnel {
+    return Intl.message(
+      'In tunnel',
+      name: 'appRoutingInTunnel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Whitelist: only apps marked in-tunnel go through the VPN`
+  String get appRoutingModeWhitelist {
+    return Intl.message(
+      'Whitelist: only apps marked in-tunnel go through the VPN',
+      name: 'appRoutingModeWhitelist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Blacklist: marked apps bypass the VPN, the rest go through`
+  String get appRoutingModeBlacklist {
+    return Intl.message(
+      'Blacklist: marked apps bypass the VPN, the rest go through',
+      name: 'appRoutingModeBlacklist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Moved {count} apps from App access into the profile`
+  String appRoutingMigrated(Object count) {
+    return Intl.message(
+      'Moved $count apps from App access into the profile',
+      name: 'appRoutingMigrated',
+      desc: '',
+      args: [count],
     );
   }
 
