@@ -1,5 +1,5 @@
 import 'package:fl_clash/models/models.dart';
-import 'package:fl_clash/views/profiles/app_routing.dart';
+import 'package:fl_clash/views/profiles/app_routing_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Package _pkg(String name, String label, {bool system = false}) => Package(

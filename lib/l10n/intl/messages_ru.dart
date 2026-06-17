@@ -26,59 +26,62 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(count) =>
       "Перенесено ${count} приложений из «Доступа приложений» в профиль";
 
-  static String m2(overlaid, conflicts) =>
+  static String m2(count, fallback) =>
+      "Ещё ${count} приложений — по умолчанию ${fallback}";
+
+  static String m3(overlaid, conflicts) =>
       "Маршрутизация приложений обновлена: ${overlaid} восстановлено, ${conflicts} оставлено ваших";
 
-  static String m3(count) =>
+  static String m4(count) =>
       "${Intl.plural(count, one: '${count} день назад', few: '${count} дня назад', many: '${count} дней назад', other: '${count} дня назад')}";
 
-  static String m4(label) =>
+  static String m5(label) =>
       "Вы уверены, что хотите удалить выбранные ${label}?";
 
-  static String m5(label) => "Вы уверены, что хотите удалить текущий ${label}?";
+  static String m6(label) => "Вы уверены, что хотите удалить текущий ${label}?";
 
-  static String m6(label) => "Детали {}";
+  static String m7(label) => "Детали {}";
 
-  static String m7(label) => "${label} не может быть пустым";
+  static String m8(label) => "${label} не может быть пустым";
 
-  static String m8(label) => "Текущий ${label} уже существует";
+  static String m9(label) => "Текущий ${label} уже существует";
 
-  static String m9(upstream) => "Форк ${upstream}";
+  static String m10(upstream) => "Форк ${upstream}";
 
-  static String m10(keys) => "Сохранены как есть: ${keys}";
+  static String m11(keys) => "Сохранены как есть: ${keys}";
 
-  static String m11(count) => "${count} участников";
-
-  static String m12(count) =>
-      "${Intl.plural(count, one: '${count} час назад', few: '${count} часа назад', many: '${count} часов назад', other: '${count} часа назад')}";
+  static String m12(count) => "${count} участников";
 
   static String m13(count) =>
-      "${Intl.plural(count, one: '${count} минута назад', few: '${count} минуты назад', many: '${count} минут назад', other: '${count} минуты назад')}";
+      "${Intl.plural(count, one: '${count} час назад', few: '${count} часа назад', many: '${count} часов назад', other: '${count} часа назад')}";
 
   static String m14(count) =>
+      "${Intl.plural(count, one: '${count} минута назад', few: '${count} минуты назад', many: '${count} минут назад', other: '${count} минуты назад')}";
+
+  static String m15(count) =>
       "${Intl.plural(count, one: '${count} месяц назад', few: '${count} месяца назад', many: '${count} месяцев назад', other: '${count} месяца назад')}";
 
-  static String m15(label) => "${label} пока отсутствуют";
+  static String m16(label) => "${label} пока отсутствуют";
 
-  static String m16(label) => "${label} должно быть числом";
+  static String m17(label) => "${label} должно быть числом";
 
-  static String m17(label) => "${label} должен быть числом от 1024 до 49151";
+  static String m18(label) => "${label} должен быть числом от 1024 до 49151";
 
-  static String m18(count) => "${count} групп";
+  static String m19(count) => "${count} групп";
 
-  static String m19(count) => "${count} узлов";
+  static String m20(count) => "${count} узлов";
 
-  static String m20(count) => "${count} провайдеров · лимиты";
+  static String m21(count) => "${count} провайдеров · лимиты";
 
-  static String m21(n) => "каждые ${n} с";
+  static String m22(n) => "каждые ${n} с";
 
-  static String m22(count) => "Выбрано ${count} элементов";
+  static String m23(count) => "Выбрано ${count} элементов";
 
-  static String m23(count) => "${count} правил";
+  static String m24(count) => "${count} правил";
 
-  static String m24(label) => "${label} должен быть URL";
+  static String m25(label) => "${label} должен быть URL";
 
-  static String m25(count) =>
+  static String m26(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -143,6 +146,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "appRoutingAllRules": MessageLookupByLibrary.simpleMessage("Все правила"),
     "appRoutingApps": MessageLookupByLibrary.simpleMessage("Приложения"),
+    "appRoutingBypassChip": MessageLookupByLibrary.simpleMessage("мимо"),
+    "appRoutingBypassDirect": MessageLookupByLibrary.simpleMessage("Мимо"),
+    "appRoutingBypassSection": MessageLookupByLibrary.simpleMessage(
+      "Мимо туннеля · напрямую",
+    ),
     "appRoutingDanglingTargets": m0,
     "appRoutingDeadRule": MessageLookupByLibrary.simpleMessage(
       "Приложение вне туннеля, поэтому цель маршрутизации не применится",
@@ -150,7 +158,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "appRoutingDefault": MessageLookupByLibrary.simpleMessage(
       "Правила профиля",
     ),
+    "appRoutingDefaultBypass": MessageLookupByLibrary.simpleMessage("мимо"),
+    "appRoutingDefaultTunnel": MessageLookupByLibrary.simpleMessage(
+      "в туннель",
+    ),
+    "appRoutingDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "внутри mihomo, но напрямую",
+    ),
     "appRoutingInTunnel": MessageLookupByLibrary.simpleMessage("В туннеле"),
+    "appRoutingInTunnelSection": MessageLookupByLibrary.simpleMessage(
+      "В туннеле · через mihomo",
+    ),
+    "appRoutingListMode": MessageLookupByLibrary.simpleMessage("Режим списка"),
     "appRoutingMigrated": m1,
     "appRoutingModeBlacklist": MessageLookupByLibrary.simpleMessage(
       "Чёрный список: отмеченные приложения идут мимо VPN, остальные через него",
@@ -159,15 +178,55 @@ class MessageLookup extends MessageLookupByLibrary {
       "Белый список: только отмеченные приложения идут через VPN",
     ),
     "appRoutingOutside": MessageLookupByLibrary.simpleMessage("Вне туннеля"),
+    "appRoutingProcessMatch": MessageLookupByLibrary.simpleMessage(
+      "Сопоставление процессов",
+    ),
+    "appRoutingProcessMatchDesc": MessageLookupByLibrary.simpleMessage(
+      "нужно, чтобы правила по приложениям работали",
+    ),
     "appRoutingProcessOff": MessageLookupByLibrary.simpleMessage(
       "Сопоставление процессов выключено в этом профиле, маршрутизация приложений не применится",
     ),
-    "appRoutingRulesReapplied": m2,
+    "appRoutingProfileRulesDesc": MessageLookupByLibrary.simpleMessage(
+      "решает профиль",
+    ),
+    "appRoutingRemaining": m2,
+    "appRoutingRulesReapplied": m3,
     "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage(
       "Поиск приложений",
     ),
+    "appRoutingSectionFast": MessageLookupByLibrary.simpleMessage("Быстро"),
+    "appRoutingSectionGroup": MessageLookupByLibrary.simpleMessage(
+      "Через группу",
+    ),
+    "appRoutingSectionGroupHint": MessageLookupByLibrary.simpleMessage(
+      "один выход на весь трафик",
+    ),
+    "appRoutingSectionScenario": MessageLookupByLibrary.simpleMessage(
+      "По сценарию",
+    ),
+    "appRoutingSectionScenarioHint": MessageLookupByLibrary.simpleMessage(
+      "через набор правил",
+    ),
+    "appRoutingSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "Настройки маршрутизации",
+    ),
     "appRoutingShowSystem": MessageLookupByLibrary.simpleMessage(
       "Системные приложения",
+    ),
+    "appRoutingShowSystemDesc": MessageLookupByLibrary.simpleMessage(
+      "в списке приложений",
+    ),
+    "appRoutingSortConfigured": MessageLookupByLibrary.simpleMessage(
+      "Сначала настроенные",
+    ),
+    "appRoutingSortName": MessageLookupByLibrary.simpleMessage("По имени"),
+    "appRoutingStep1": MessageLookupByLibrary.simpleMessage("Входит в mihomo?"),
+    "appRoutingStep1Hint": MessageLookupByLibrary.simpleMessage(
+      "в туннеле — трафик попадает в mihomo и идёт по правилам ниже",
+    ),
+    "appRoutingStep2": MessageLookupByLibrary.simpleMessage(
+      "Маршрут внутри mihomo",
     ),
     "appRoutingSubRule": MessageLookupByLibrary.simpleMessage("Подправило"),
     "appRoutingTunnelRestart": MessageLookupByLibrary.simpleMessage(
@@ -302,7 +361,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark": MessageLookupByLibrary.simpleMessage("Темный"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Панель управления"),
     "days": MessageLookupByLibrary.simpleMessage("Дней"),
-    "daysAgo": m3,
+    "daysAgo": m4,
     "defaultNameserver": MessageLookupByLibrary.simpleMessage(
       "Сервер имен по умолчанию",
     ),
@@ -313,8 +372,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "delay": MessageLookupByLibrary.simpleMessage("Задержка"),
     "delayTest": MessageLookupByLibrary.simpleMessage("Тест задержки"),
     "delete": MessageLookupByLibrary.simpleMessage("Удалить"),
-    "deleteMultipTip": m4,
-    "deleteTip": m5,
+    "deleteMultipTip": m5,
+    "deleteTip": m6,
     "desc": MessageLookupByLibrary.simpleMessage(
       "Многоплатформенный прокси-клиент на основе ClashMeta, простой и удобный в использовании, с открытым исходным кодом и без рекламы.",
     ),
@@ -323,7 +382,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Геолокация назначения",
     ),
     "destinationIPASN": MessageLookupByLibrary.simpleMessage("ASN назначения"),
-    "details": m6,
+    "details": m7,
     "detailsSection": MessageLookupByLibrary.simpleMessage("Подробности"),
     "detectionRejected": MessageLookupByLibrary.simpleMessage("REJECT"),
     "detectionTimeout": MessageLookupByLibrary.simpleMessage("timeout"),
@@ -366,11 +425,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Редактировать глобальные правила",
     ),
     "editRule": MessageLookupByLibrary.simpleMessage("Редактировать правило"),
-    "emptyTip": m7,
+    "emptyTip": m8,
     "en": MessageLookupByLibrary.simpleMessage("Английский"),
     "engine": MessageLookupByLibrary.simpleMessage("Движок"),
     "entries": MessageLookupByLibrary.simpleMessage(" записей"),
-    "existsTip": m8,
+    "existsTip": m9,
     "exit": MessageLookupByLibrary.simpleMessage("Выход"),
     "expand": MessageLookupByLibrary.simpleMessage("Стандартный"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Экспорт файла"),
@@ -397,7 +456,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "Вы уверены, что хотите принудительно перезапустить ядро?",
     ),
-    "forkOf": m9,
+    "forkOf": m10,
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("Фруктовый микс"),
     "general": MessageLookupByLibrary.simpleMessage("Общие"),
     "generalSettings": MessageLookupByLibrary.simpleMessage("Общие настройки"),
@@ -421,7 +480,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "groupDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "Удалить эту группу?",
     ),
-    "groupExtraKeys": m10,
+    "groupExtraKeys": m11,
     "groupHealthInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал (секунды)",
     ),
@@ -431,7 +490,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "groupLazy": MessageLookupByLibrary.simpleMessage(
       "Лениво (проверять только при выборе)",
     ),
-    "groupMemberCount": m11,
+    "groupMemberCount": m12,
     "groupMembers": MessageLookupByLibrary.simpleMessage("Участники"),
     "groupNameExists": MessageLookupByLibrary.simpleMessage(
       "Группа с таким именем уже существует",
@@ -460,7 +519,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Использование клавиатуры для управления приложением",
     ),
     "hours": MessageLookupByLibrary.simpleMessage("Часов"),
-    "hoursAgo": m12,
+    "hoursAgo": m13,
     "icon": MessageLookupByLibrary.simpleMessage("Иконка"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("Стиль иконки"),
     "import": MessageLookupByLibrary.simpleMessage("Импорт"),
@@ -609,12 +668,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "По кнопке «Назад» приложение уходит в фон, а не закрывается",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("Минут"),
-    "minutesAgo": m13,
+    "minutesAgo": m14,
     "mixedPort": MessageLookupByLibrary.simpleMessage("Смешанный порт"),
     "mode": MessageLookupByLibrary.simpleMessage("Режим"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Монохром"),
     "months": MessageLookupByLibrary.simpleMessage("Месяцев"),
-    "monthsAgo": m14,
+    "monthsAgo": m15,
     "more": MessageLookupByLibrary.simpleMessage("Еще"),
     "name": MessageLookupByLibrary.simpleMessage("Имя"),
     "nameserver": MessageLookupByLibrary.simpleMessage("Сервер имен"),
@@ -714,8 +773,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "Нет профиля, пожалуйста, добавьте профиль",
     ),
-    "nullTip": m15,
-    "numberTip": m16,
+    "nullTip": m16,
+    "numberTip": m17,
     "onlyIcon": MessageLookupByLibrary.simpleMessage("Только иконка"),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage(
       "Only statistics proxy",
@@ -767,7 +826,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Введите другой порт",
     ),
-    "portTip": m17,
+    "portTip": m18,
     "preferH3": MessageLookupByLibrary.simpleMessage("Prefer H3"),
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Приоритетное использование HTTP/3 для DOH",
@@ -792,15 +851,15 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Пожалуйста, введите интервал времени для автообновления",
         ),
-    "profileGroupCount": m18,
+    "profileGroupCount": m19,
     "profileHasUpdate": MessageLookupByLibrary.simpleMessage(
       "Профиль был изменен. Хотите отключить автообновление?",
     ),
     "profileNameNullValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, введите имя профиля",
     ),
-    "profileNodeCount": m19,
-    "profileProvidersLimits": m20,
+    "profileNodeCount": m20,
+    "profileProvidersLimits": m21,
     "profileUrlInvalidValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, введите действительный URL профиля",
     ),
@@ -814,7 +873,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "providerDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "Удалить этого провайдера?",
     ),
-    "providerEveryN": m21,
+    "providerEveryN": m22,
     "providerFormat": MessageLookupByLibrary.simpleMessage("Формат"),
     "providerHealthCheck": MessageLookupByLibrary.simpleMessage(
       "Проверка доступности",
@@ -973,7 +1032,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Секунд"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать все"),
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
-    "selectedCountTitle": m22,
+    "selectedCountTitle": m23,
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
@@ -1012,7 +1071,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subRuleRename": MessageLookupByLibrary.simpleMessage(
       "Переименовать подправило",
     ),
-    "subRuleRuleCount": m23,
+    "subRuleRuleCount": m24,
     "subRules": MessageLookupByLibrary.simpleMessage("Подправила"),
     "submit": MessageLookupByLibrary.simpleMessage("Отправить"),
     "sync": MessageLookupByLibrary.simpleMessage("Синхронизация"),
@@ -1067,7 +1126,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Получить профиль через URL",
     ),
-    "urlTip": m24,
+    "urlTip": m25,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
@@ -1094,7 +1153,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Режим белого списка",
     ),
     "years": MessageLookupByLibrary.simpleMessage("Лет"),
-    "yearsAgo": m25,
+    "yearsAgo": m26,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
     "zoom": MessageLookupByLibrary.simpleMessage("Масштаб"),
   };

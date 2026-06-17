@@ -144,6 +144,44 @@ extension AppRoutingController on AppController {
     return _writeValidatedApply(file, profileId, next);
   }
 
+  /// Switches the profile's tunnel mode by moving the membership list under the
+  /// other tun key: whitelist keeps the in-tunnel apps as include-package,
+  /// blacklist keeps the bypassing apps as exclude-package. The current
+  /// [packages] (installed apps) bound the membership so the inverted set stays
+  /// finite. A null/equal target is a no-op. Hot-applies.
+  Future<String?> setTunnelMode(
+    int profileId,
+    AccessControlMode mode, {
+    required List<String> packages,
+  }) async {
+    final file = File(await appPath.getProfilePath(profileId.toString()));
+    final raw = await file.exists() ? await file.readAsString() : 'tun: {}\n';
+    final doc = ProfileRulesDocument(raw);
+    final String next;
+    try {
+      if (mode == AccessControlMode.acceptSelected) {
+        final included = doc.includedPackages.isNotEmpty
+            ? doc.includedPackages
+            : packages.where((p) => !doc.excludedPackages.contains(p)).toList();
+        final cleared = ProfileRulesDocument(
+          doc.withExcludedPackages(const []),
+        );
+        next = cleared.withIncludedPackages(included);
+      } else {
+        final excluded = doc.excludedPackages.isNotEmpty
+            ? doc.excludedPackages
+            : packages.where((p) => !doc.includedPackages.contains(p)).toList();
+        final cleared = ProfileRulesDocument(
+          doc.withIncludedPackages(const []),
+        );
+        next = cleared.withExcludedPackages(excluded);
+      }
+    } on ProfileRulesWriteException catch (e) {
+      return e.message;
+    }
+    return _writeValidatedApply(file, profileId, next);
+  }
+
   /// One-time fold of a per-profile [Profile.accessControlProps] override into
   /// the YAML tun.*-package SSoT, then clears the drift override so the two no
   /// longer fight (effectiveAccessControl preferred the drift one). Returns the

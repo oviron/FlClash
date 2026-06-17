@@ -26,60 +26,63 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(count) =>
       "Moved ${count} apps from App access into the profile";
 
-  static String m2(overlaid, conflicts) =>
+  static String m2(count, fallback) =>
+      "${count} more apps — default ${fallback}";
+
+  static String m3(overlaid, conflicts) =>
       "Per-app routing updated: ${overlaid} re-added, ${conflicts} kept yours";
 
-  static String m3(count) =>
+  static String m4(count) =>
       "${Intl.plural(count, one: '1 day ago', other: '${count} days ago')}";
 
-  static String m4(label) =>
+  static String m5(label) =>
       "Are you sure you want to delete the selected ${label}?";
 
-  static String m5(label) =>
+  static String m6(label) =>
       "Are you sure you want to delete the current ${label}?";
 
-  static String m6(label) => "${label} details";
+  static String m7(label) => "${label} details";
 
-  static String m7(label) => "${label} cannot be empty";
+  static String m8(label) => "${label} cannot be empty";
 
-  static String m8(label) => "Current ${label} already exists";
+  static String m9(label) => "Current ${label} already exists";
 
-  static String m9(upstream) => "Fork of ${upstream}";
+  static String m10(upstream) => "Fork of ${upstream}";
 
-  static String m10(keys) => "Preserved as-is: ${keys}";
+  static String m11(keys) => "Preserved as-is: ${keys}";
 
-  static String m11(count) => "${count} members";
-
-  static String m12(count) =>
-      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
+  static String m12(count) => "${count} members";
 
   static String m13(count) =>
-      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
+      "${Intl.plural(count, one: '1 hour ago', other: '${count} hours ago')}";
 
   static String m14(count) =>
+      "${Intl.plural(count, one: '1 minute ago', other: '${count} minutes ago')}";
+
+  static String m15(count) =>
       "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
 
-  static String m15(label) => "No ${label} yet";
+  static String m16(label) => "No ${label} yet";
 
-  static String m16(label) => "${label} must be a number";
+  static String m17(label) => "${label} must be a number";
 
-  static String m17(label) => "${label} must be between 1024 and 49151";
+  static String m18(label) => "${label} must be between 1024 and 49151";
 
-  static String m18(count) => "${count} groups";
+  static String m19(count) => "${count} groups";
 
-  static String m19(count) => "${count} nodes";
+  static String m20(count) => "${count} nodes";
 
-  static String m20(count) => "${count} providers · limits";
+  static String m21(count) => "${count} providers · limits";
 
-  static String m21(n) => "every ${n}s";
+  static String m22(n) => "every ${n}s";
 
-  static String m22(count) => "${count} items have been selected";
+  static String m23(count) => "${count} items have been selected";
 
-  static String m23(count) => "${count} rules";
+  static String m24(count) => "${count} rules";
 
-  static String m24(label) => "${label} must be a url";
+  static String m25(label) => "${label} must be a url";
 
-  static String m25(count) =>
+  static String m26(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -144,12 +147,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "appRouting": MessageLookupByLibrary.simpleMessage("Per-app routing"),
     "appRoutingAllRules": MessageLookupByLibrary.simpleMessage("All rules"),
     "appRoutingApps": MessageLookupByLibrary.simpleMessage("Apps"),
+    "appRoutingBypassChip": MessageLookupByLibrary.simpleMessage("bypass"),
+    "appRoutingBypassDirect": MessageLookupByLibrary.simpleMessage("Bypass"),
+    "appRoutingBypassSection": MessageLookupByLibrary.simpleMessage(
+      "Bypass · direct",
+    ),
     "appRoutingDanglingTargets": m0,
     "appRoutingDeadRule": MessageLookupByLibrary.simpleMessage(
       "App is outside the tunnel, so its routing target won\'t apply",
     ),
     "appRoutingDefault": MessageLookupByLibrary.simpleMessage("Profile rules"),
+    "appRoutingDefaultBypass": MessageLookupByLibrary.simpleMessage("direct"),
+    "appRoutingDefaultTunnel": MessageLookupByLibrary.simpleMessage(
+      "in tunnel",
+    ),
+    "appRoutingDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "inside mihomo, but direct",
+    ),
     "appRoutingInTunnel": MessageLookupByLibrary.simpleMessage("In tunnel"),
+    "appRoutingInTunnelSection": MessageLookupByLibrary.simpleMessage(
+      "In tunnel · via mihomo",
+    ),
+    "appRoutingListMode": MessageLookupByLibrary.simpleMessage("List mode"),
     "appRoutingMigrated": m1,
     "appRoutingModeBlacklist": MessageLookupByLibrary.simpleMessage(
       "Blacklist: marked apps bypass the VPN, the rest go through",
@@ -158,12 +177,50 @@ class MessageLookup extends MessageLookupByLibrary {
       "Whitelist: only apps marked in-tunnel go through the VPN",
     ),
     "appRoutingOutside": MessageLookupByLibrary.simpleMessage("Outside tunnel"),
+    "appRoutingProcessMatch": MessageLookupByLibrary.simpleMessage(
+      "Process matching",
+    ),
+    "appRoutingProcessMatchDesc": MessageLookupByLibrary.simpleMessage(
+      "needed for per-app rules to work",
+    ),
     "appRoutingProcessOff": MessageLookupByLibrary.simpleMessage(
       "Process matching is off in this profile, per-app routing won\'t apply",
     ),
-    "appRoutingRulesReapplied": m2,
+    "appRoutingProfileRulesDesc": MessageLookupByLibrary.simpleMessage(
+      "the profile decides",
+    ),
+    "appRoutingRemaining": m2,
+    "appRoutingRulesReapplied": m3,
     "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage("Search apps"),
+    "appRoutingSectionFast": MessageLookupByLibrary.simpleMessage("Fast"),
+    "appRoutingSectionGroup": MessageLookupByLibrary.simpleMessage("Via group"),
+    "appRoutingSectionGroupHint": MessageLookupByLibrary.simpleMessage(
+      "one exit for all traffic",
+    ),
+    "appRoutingSectionScenario": MessageLookupByLibrary.simpleMessage(
+      "By scenario",
+    ),
+    "appRoutingSectionScenarioHint": MessageLookupByLibrary.simpleMessage(
+      "via a rule set",
+    ),
+    "appRoutingSettingsTitle": MessageLookupByLibrary.simpleMessage(
+      "Routing settings",
+    ),
     "appRoutingShowSystem": MessageLookupByLibrary.simpleMessage("System apps"),
+    "appRoutingShowSystemDesc": MessageLookupByLibrary.simpleMessage(
+      "in the app list",
+    ),
+    "appRoutingSortConfigured": MessageLookupByLibrary.simpleMessage(
+      "Configured first",
+    ),
+    "appRoutingSortName": MessageLookupByLibrary.simpleMessage("By name"),
+    "appRoutingStep1": MessageLookupByLibrary.simpleMessage("In mihomo?"),
+    "appRoutingStep1Hint": MessageLookupByLibrary.simpleMessage(
+      "in tunnel — traffic enters mihomo and follows the rules below",
+    ),
+    "appRoutingStep2": MessageLookupByLibrary.simpleMessage(
+      "Route inside mihomo",
+    ),
     "appRoutingSubRule": MessageLookupByLibrary.simpleMessage("Sub-rule"),
     "appRoutingTunnelRestart": MessageLookupByLibrary.simpleMessage(
       "Tunnel change applies on next VPN restart",
@@ -285,7 +342,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Dashboard"),
     "days": MessageLookupByLibrary.simpleMessage("Days"),
-    "daysAgo": m3,
+    "daysAgo": m4,
     "defaultNameserver": MessageLookupByLibrary.simpleMessage(
       "Default nameserver",
     ),
@@ -296,8 +353,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "delay": MessageLookupByLibrary.simpleMessage("Delay"),
     "delayTest": MessageLookupByLibrary.simpleMessage("Delay Test"),
     "delete": MessageLookupByLibrary.simpleMessage("Delete"),
-    "deleteMultipTip": m4,
-    "deleteTip": m5,
+    "deleteMultipTip": m5,
+    "deleteTip": m6,
     "desc": MessageLookupByLibrary.simpleMessage(
       "A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.",
     ),
@@ -308,7 +365,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "destinationIPASN": MessageLookupByLibrary.simpleMessage(
       "Destination IPASN",
     ),
-    "details": m6,
+    "details": m7,
     "detailsSection": MessageLookupByLibrary.simpleMessage("Details"),
     "detectionRejected": MessageLookupByLibrary.simpleMessage("REJECT"),
     "detectionTimeout": MessageLookupByLibrary.simpleMessage("timeout"),
@@ -349,11 +406,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Edit global rules",
     ),
     "editRule": MessageLookupByLibrary.simpleMessage("Edit rule"),
-    "emptyTip": m7,
+    "emptyTip": m8,
     "en": MessageLookupByLibrary.simpleMessage("English"),
     "engine": MessageLookupByLibrary.simpleMessage("Engine"),
     "entries": MessageLookupByLibrary.simpleMessage(" entries"),
-    "existsTip": m8,
+    "existsTip": m9,
     "exit": MessageLookupByLibrary.simpleMessage("Exit"),
     "expand": MessageLookupByLibrary.simpleMessage("Standard"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Export file"),
@@ -378,7 +435,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to force restart the core?",
     ),
-    "forkOf": m9,
+    "forkOf": m10,
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("FruitSalad"),
     "general": MessageLookupByLibrary.simpleMessage("General"),
     "generalSettings": MessageLookupByLibrary.simpleMessage("General settings"),
@@ -402,7 +459,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "groupDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "Delete this group?",
     ),
-    "groupExtraKeys": m10,
+    "groupExtraKeys": m11,
     "groupHealthInterval": MessageLookupByLibrary.simpleMessage(
       "Interval (seconds)",
     ),
@@ -410,7 +467,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "groupLazy": MessageLookupByLibrary.simpleMessage(
       "Lazy (test only when selected)",
     ),
-    "groupMemberCount": m11,
+    "groupMemberCount": m12,
     "groupMembers": MessageLookupByLibrary.simpleMessage("Members"),
     "groupNameExists": MessageLookupByLibrary.simpleMessage(
       "A group with this name already exists",
@@ -437,7 +494,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Use keyboard to control applications",
     ),
     "hours": MessageLookupByLibrary.simpleMessage("Hours"),
-    "hoursAgo": m12,
+    "hoursAgo": m13,
     "icon": MessageLookupByLibrary.simpleMessage("Icon"),
     "iconStyle": MessageLookupByLibrary.simpleMessage("Icon style"),
     "import": MessageLookupByLibrary.simpleMessage("Import"),
@@ -580,12 +637,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Back button sends the app to background instead of closing it",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("Minutes"),
-    "minutesAgo": m13,
+    "minutesAgo": m14,
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed Port"),
     "mode": MessageLookupByLibrary.simpleMessage("Mode"),
     "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
     "months": MessageLookupByLibrary.simpleMessage("Months"),
-    "monthsAgo": m14,
+    "monthsAgo": m15,
     "more": MessageLookupByLibrary.simpleMessage("More"),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
     "nameserver": MessageLookupByLibrary.simpleMessage("Nameserver"),
@@ -722,8 +779,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "No profile, Please add a profile",
     ),
-    "nullTip": m15,
-    "numberTip": m16,
+    "nullTip": m16,
+    "numberTip": m17,
     "onlyIcon": MessageLookupByLibrary.simpleMessage("Icon"),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage(
       "Only statistics proxy",
@@ -769,7 +826,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Please enter a different port",
     ),
-    "portTip": m17,
+    "portTip": m18,
     "preferH3": MessageLookupByLibrary.simpleMessage("Prefer H3"),
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Prioritize the use of DOH\'s http/3",
@@ -792,15 +849,15 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Please enter the auto update interval time",
         ),
-    "profileGroupCount": m18,
+    "profileGroupCount": m19,
     "profileHasUpdate": MessageLookupByLibrary.simpleMessage(
       "The profile has been modified. Do you want to disable auto update?",
     ),
     "profileNameNullValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Please input the profile name",
     ),
-    "profileNodeCount": m19,
-    "profileProvidersLimits": m20,
+    "profileNodeCount": m20,
+    "profileProvidersLimits": m21,
     "profileUrlInvalidValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Please input a valid profile URL",
     ),
@@ -814,7 +871,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "providerDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "Delete this provider?",
     ),
-    "providerEveryN": m21,
+    "providerEveryN": m22,
     "providerFormat": MessageLookupByLibrary.simpleMessage("Format"),
     "providerHealthCheck": MessageLookupByLibrary.simpleMessage("Health-check"),
     "providerHealthCheckEnable": MessageLookupByLibrary.simpleMessage(
@@ -955,7 +1012,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Seconds"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m22,
+    "selectedCountTitle": m23,
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
@@ -990,7 +1047,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("New sub-rule"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("Rename sub-rule"),
-    "subRuleRuleCount": m23,
+    "subRuleRuleCount": m24,
     "subRules": MessageLookupByLibrary.simpleMessage("Sub-rules"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
@@ -1043,7 +1100,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m24,
+    "urlTip": m25,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
@@ -1066,7 +1123,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "years": MessageLookupByLibrary.simpleMessage("Years"),
-    "yearsAgo": m25,
+    "yearsAgo": m26,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
     "zoom": MessageLookupByLibrary.simpleMessage("Zoom"),
   };

@@ -4364,6 +4364,246 @@ class AppLocalizations {
     );
   }
 
+  /// `In tunnel · via mihomo`
+  String get appRoutingInTunnelSection {
+    return Intl.message(
+      'In tunnel · via mihomo',
+      name: 'appRoutingInTunnelSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bypass · direct`
+  String get appRoutingBypassSection {
+    return Intl.message(
+      'Bypass · direct',
+      name: 'appRoutingBypassSection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `bypass`
+  String get appRoutingBypassChip {
+    return Intl.message(
+      'bypass',
+      name: 'appRoutingBypassChip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} more apps — default {fallback}`
+  String appRoutingRemaining(Object count, Object fallback) {
+    return Intl.message(
+      '$count more apps — default $fallback',
+      name: 'appRoutingRemaining',
+      desc: '',
+      args: [count, fallback],
+    );
+  }
+
+  /// `in tunnel`
+  String get appRoutingDefaultTunnel {
+    return Intl.message(
+      'in tunnel',
+      name: 'appRoutingDefaultTunnel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `direct`
+  String get appRoutingDefaultBypass {
+    return Intl.message(
+      'direct',
+      name: 'appRoutingDefaultBypass',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In mihomo?`
+  String get appRoutingStep1 {
+    return Intl.message(
+      'In mihomo?',
+      name: 'appRoutingStep1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `in tunnel — traffic enters mihomo and follows the rules below`
+  String get appRoutingStep1Hint {
+    return Intl.message(
+      'in tunnel — traffic enters mihomo and follows the rules below',
+      name: 'appRoutingStep1Hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Route inside mihomo`
+  String get appRoutingStep2 {
+    return Intl.message(
+      'Route inside mihomo',
+      name: 'appRoutingStep2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bypass`
+  String get appRoutingBypassDirect {
+    return Intl.message(
+      'Bypass',
+      name: 'appRoutingBypassDirect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fast`
+  String get appRoutingSectionFast {
+    return Intl.message(
+      'Fast',
+      name: 'appRoutingSectionFast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Via group`
+  String get appRoutingSectionGroup {
+    return Intl.message(
+      'Via group',
+      name: 'appRoutingSectionGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `one exit for all traffic`
+  String get appRoutingSectionGroupHint {
+    return Intl.message(
+      'one exit for all traffic',
+      name: 'appRoutingSectionGroupHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By scenario`
+  String get appRoutingSectionScenario {
+    return Intl.message(
+      'By scenario',
+      name: 'appRoutingSectionScenario',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `via a rule set`
+  String get appRoutingSectionScenarioHint {
+    return Intl.message(
+      'via a rule set',
+      name: 'appRoutingSectionScenarioHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `the profile decides`
+  String get appRoutingProfileRulesDesc {
+    return Intl.message(
+      'the profile decides',
+      name: 'appRoutingProfileRulesDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `inside mihomo, but direct`
+  String get appRoutingDirectDesc {
+    return Intl.message(
+      'inside mihomo, but direct',
+      name: 'appRoutingDirectDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Routing settings`
+  String get appRoutingSettingsTitle {
+    return Intl.message(
+      'Routing settings',
+      name: 'appRoutingSettingsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `List mode`
+  String get appRoutingListMode {
+    return Intl.message(
+      'List mode',
+      name: 'appRoutingListMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Process matching`
+  String get appRoutingProcessMatch {
+    return Intl.message(
+      'Process matching',
+      name: 'appRoutingProcessMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `needed for per-app rules to work`
+  String get appRoutingProcessMatchDesc {
+    return Intl.message(
+      'needed for per-app rules to work',
+      name: 'appRoutingProcessMatchDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `in the app list`
+  String get appRoutingShowSystemDesc {
+    return Intl.message(
+      'in the app list',
+      name: 'appRoutingShowSystemDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By name`
+  String get appRoutingSortName {
+    return Intl.message(
+      'By name',
+      name: 'appRoutingSortName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Configured first`
+  String get appRoutingSortConfigured {
+    return Intl.message(
+      'Configured first',
+      name: 'appRoutingSortConfigured',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Sub-rules`
   String get subRules {
     return Intl.message('Sub-rules', name: 'subRules', desc: '', args: []);
