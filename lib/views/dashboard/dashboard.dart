@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'widgets/widgets.dart' as dash;
-import 'widgets/start_button.dart';
+import 'widgets/hero.dart';
 
 GridItem _buildDashboardItem(DashboardWidget kind) => GridItem(
   key: ValueKey(kind),
@@ -50,11 +50,13 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
   final key = GlobalKey<SuperGridState>();
   final _isEditNotifier = ValueNotifier<bool>(false);
   final _addedWidgetsNotifier = ValueNotifier<List<GridItem>>([]);
+  final _detailsOpenNotifier = ValueNotifier<bool>(false);
 
   @override
   void dispose() {
     _isEditNotifier.dispose();
     _addedWidgetsNotifier.dispose();
+    _detailsOpenNotifier.dispose();
     super.dispose();
   }
 
@@ -278,7 +280,6 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       (isEdit) => CommonScaffold(
         title: appLocalizations.dashboard,
         actions: _buildActions(isEdit),
-        floatingActionButton: const StartButton(),
         body: Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
@@ -302,11 +303,20 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                       },
                     ),
                   )
-                : Grid(
-                    crossAxisCount: columns,
-                    crossAxisSpacing: spacing,
-                    mainAxisSpacing: spacing,
-                    children: children,
+                : Column(
+                    children: [
+                      const DashboardHero(),
+                      const SizedBox(height: 10),
+                      DashboardDetailsSection(
+                        openNotifier: _detailsOpenNotifier,
+                        grid: Grid(
+                          crossAxisCount: columns,
+                          crossAxisSpacing: spacing,
+                          mainAxisSpacing: spacing,
+                          children: children,
+                        ),
+                      ),
+                    ],
                   ),
           ),
         ),
@@ -388,6 +398,73 @@ class _AddedContainerState extends State<_AddedContainer> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// "More" toggle that reveals the customizable widget grid beneath the hero;
+/// the grid keeps its full reorder/add editing (reached via the app-bar edit
+/// action), so power users lose nothing to the simpler default.
+class DashboardDetailsSection extends StatelessWidget {
+  final ValueNotifier<bool> openNotifier;
+  final Widget grid;
+
+  const DashboardDetailsSection({
+    super.key,
+    required this.openNotifier,
+    required this.grid,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: openNotifier,
+      builder: (_, open, _) {
+        return Column(
+          children: [
+            InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () => openNotifier.value = !open,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      appLocalizations.more,
+                      style: context.textTheme.labelLarge?.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    AnimatedRotation(
+                      turns: open ? 0.5 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: Icon(
+                        Icons.expand_more,
+                        size: 18,
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            AnimatedCrossFade(
+              firstChild: const SizedBox(width: double.infinity),
+              secondChild: Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: grid,
+              ),
+              crossFadeState: open
+                  ? CrossFadeState.showSecond
+                  : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 200),
+            ),
+          ],
+        );
+      },
     );
   }
 }
