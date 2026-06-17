@@ -23,17 +23,17 @@ void main() {
   test('subRuleNames lists the sub-rules: keys, empty when absent', () {
     const withSub =
         'sub-rules:\n  vpn-app-route:\n    - MATCH,VPN\n  browser-route:\n    - MATCH,DIRECT\n';
-    expect(const ProfileRulesDocument(withSub).subRuleNames, [
+    expect(ProfileRulesDocument(withSub).subRuleNames, [
       'vpn-app-route',
       'browser-route',
     ]);
-    expect(const ProfileRulesDocument(_sample).subRuleNames, isEmpty);
+    expect(ProfileRulesDocument(_sample).subRuleNames, isEmpty);
   });
 
   test('subRules parses each entry into a rule list', () {
     const doc =
         'sub-rules:\n  vpn:\n    - PROCESS-NAME,com.a,VPN\n    - MATCH,VPN\n';
-    final sub = const ProfileRulesDocument(doc).subRules;
+    final sub = ProfileRulesDocument(doc).subRules;
     expect(sub.keys, ['vpn']);
     expect(sub['vpn']!.map((r) => r.serialize()).toList(), [
       'PROCESS-NAME,com.a,VPN',
@@ -43,7 +43,7 @@ void main() {
 
   test('withSubRules round-trips and preserves other keys', () {
     const doc = '# top\nmode: rule\n';
-    final out = const ProfileRulesDocument(doc).withSubRules({
+    final out = ProfileRulesDocument(doc).withSubRules({
       'browser': [
         RoutingRule.parse('RULE-SET,ru,DIRECT'),
         RoutingRule.parse('MATCH,VPN'),
@@ -59,12 +59,12 @@ void main() {
 
   test('empty map removes the sub-rules key', () {
     const doc = 'sub-rules:\n  x:\n    - MATCH,VPN\n';
-    final out = const ProfileRulesDocument(doc).withSubRules({});
+    final out = ProfileRulesDocument(doc).withSubRules({});
     expect(ProfileRulesDocument(out).subRules, isEmpty);
   });
 
   test('reads the rules block', () {
-    const doc = ProfileRulesDocument(_sample);
+    final doc = ProfileRulesDocument(_sample);
     final rules = doc.rules;
     expect(rules.length, 4);
     expect(rules.first, isA<TypedRule>());
@@ -75,7 +75,7 @@ void main() {
   });
 
   test('rewrite preserves other keys and comments', () {
-    const doc = ProfileRulesDocument(_sample);
+    final doc = ProfileRulesDocument(_sample);
     final out = doc.withRules(doc.rules);
     expect(out, contains('# top comment'));
     expect(out, contains('mixed-port: 7890'));
@@ -89,7 +89,7 @@ void main() {
   });
 
   test('adding a rule shows up and round-trips', () {
-    const doc = ProfileRulesDocument(_sample);
+    final doc = ProfileRulesDocument(_sample);
     final next = [
       const TypedRule(
         action: RuleAction.PROCESS_NAME,
@@ -106,7 +106,7 @@ void main() {
   });
 
   test('removing a rule works', () {
-    const doc = ProfileRulesDocument(_sample);
+    final doc = ProfileRulesDocument(_sample);
     final kept = doc.rules.where((r) => r is! LogicalRule).toList();
     final out = doc.withRules(kept);
     final reread = ProfileRulesDocument(out).rules;
@@ -116,7 +116,7 @@ void main() {
 
   test('missing rules key is created', () {
     const noRules = 'mixed-port: 7890\nmode: rule\n';
-    const doc = ProfileRulesDocument(noRules);
+    final doc = ProfileRulesDocument(noRules);
     expect(doc.rules, isEmpty);
     final out = doc.withRules([
       const TypedRule(action: RuleAction.MATCH, value: '', target: 'DIRECT'),
@@ -127,12 +127,12 @@ void main() {
 
   test('non-map root throws', () {
     expect(
-      () => const ProfileRulesDocument('- just\n- a\n- list\n').withRules([]),
+      () => ProfileRulesDocument('- just\n- a\n- list\n').withRules([]),
       throwsA(isA<ProfileRulesWriteException>()),
     );
   });
 
   test('unparseable document yields empty rules', () {
-    expect(const ProfileRulesDocument(':\n  bad: [').rules, isEmpty);
+    expect(ProfileRulesDocument(':\n  bad: [').rules, isEmpty);
   });
 }

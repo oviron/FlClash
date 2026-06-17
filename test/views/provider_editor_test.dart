@@ -112,9 +112,7 @@ void main() {
         interval: '3600',
       );
       const raw = 'mixed-port: 7890\nrules: []\n';
-      final out = const ProfileRulesDocument(
-        raw,
-      ).withProxyProviders({'govpn': spec});
+      final out = ProfileRulesDocument(raw).withProxyProviders({'govpn': spec});
       final reparsed = ProfileRulesDocument(out).proxyProviders;
       expect(reparsed.keys, ['govpn']);
       expect(reparsed['govpn']!.url, 'https://sub/x.yaml');

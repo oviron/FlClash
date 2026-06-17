@@ -21,8 +21,7 @@ proxy-groups:
     interval: 300
 ''';
 
-GroupSpec _spec(int index) =>
-    const ProfileRulesDocument(_sample).proxyGroups[index];
+GroupSpec _spec(int index) => ProfileRulesDocument(_sample).proxyGroups[index];
 
 void main() {
   group('buildGroupSpec lossless', () {
@@ -87,7 +86,7 @@ void main() {
     });
 
     test('write round-trip preserves filter and other unknown keys', () {
-      const doc = ProfileRulesDocument(_sample);
+      final doc = ProfileRulesDocument(_sample);
       final filtered = doc.proxyGroups[1];
       final edited = buildGroupSpec(
         base: filtered,

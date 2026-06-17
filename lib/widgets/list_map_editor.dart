@@ -8,11 +8,9 @@ import 'scaffold.dart';
 /// Optional per-row badge for list mode (e.g. "DoH" next to a DNS URL).
 typedef ListRowTagBuilder = String? Function(String value);
 
-/// A pure, reusable list / map editor driven by [value] + [onChanged].
-///
-/// No provider coupling: the host owns persistence and passes the current
-/// value down, receiving the edited copy back through [onChanged]. Used for
-/// DNS nameserver lists, fake-ip filters, nameserver-policy, hosts, etc.
+/// A pure, reusable list / map editor driven by [value] + [onChanged]. No
+/// provider coupling: the host owns persistence, passing the current value down
+/// and receiving the edited copy back through [onChanged].
 class ListMapEditor extends StatefulWidget {
   /// List mode: reorderable string rows with add / remove and an optional tag.
   const ListMapEditor.list({
@@ -486,7 +484,7 @@ class _SingleFieldDialogState extends State<_SingleFieldDialog> {
 }
 
 /// Scaffold host for [ListMapEditor.list]. Returns the edited list via pop, so
-/// it slots into the existing `OpenDelegate(onChanged:)` flow like ListInputPage.
+/// it slots into the existing `OpenDelegate(onChanged:)` flow.
 class ListEditorPage extends StatefulWidget {
   final String title;
   final List<String> items;

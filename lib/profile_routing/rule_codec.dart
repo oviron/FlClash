@@ -88,10 +88,9 @@ final class PassthroughRule extends RoutingRule {
   int get hashCode => raw.hashCode;
 }
 
-/// The single-clause `SUB-RULE,(PROCESS-NAME,<pkg>),<name>` shape: routes one
-/// app into a named sub-rule. Modeled separately from [TypedRule] because a
-/// plain PROCESS-NAME rule cannot target a sub-rule. Multi-clause SUB-RULEs
-/// (AND/OR payloads) stay [PassthroughRule].
+/// The single-clause `SUB-RULE,(PROCESS-NAME,<pkg>),<name>` shape. Modeled apart
+/// from [TypedRule] because a plain PROCESS-NAME rule cannot target a sub-rule;
+/// multi-clause SUB-RULEs (AND/OR payloads) stay [PassthroughRule].
 final class AppToSubRuleRoute extends RoutingRule {
   final String packageName;
   final String subRuleName;
@@ -136,10 +135,9 @@ final class LogicalClause {
   int get hashCode => Object.hash(action, params);
 }
 
-/// A flat-clause logical rule: `AND`/`OR`/`NOT` over parenthesized clauses, e.g.
-/// `AND,((DOMAIN,a.com),(NETWORK,UDP)),REJECT`. Editable in the block builder
-/// and round-trips byte-for-byte. A clause that is itself logical or nested
-/// keeps the whole rule as [PassthroughRule] (deep nesting is not modeled).
+/// A flat-clause logical rule (`AND`/`OR`/`NOT` over parenthesized clauses),
+/// round-tripped byte-for-byte. A clause that is itself logical or nested keeps
+/// the whole rule as [PassthroughRule] (deep nesting is not modeled).
 final class LogicalRule extends RoutingRule {
   final RuleAction op; // AND, OR, or NOT
   final List<LogicalClause> clauses;
@@ -298,10 +296,9 @@ AppToSubRuleRoute? _parseAppSubRule(List<String> core) {
   return AppToSubRuleRoute(packageName: parts[1], subRuleName: core[2]);
 }
 
-// Recognizes `AND`/`OR`/`NOT,(<clauses>),<target>` where each clause is a flat
-// `(TYPE,params)`. Returns null (-> Passthrough) on nested logical clauses, a
-// NOT with other than one clause, or any malformed shape, so deep nesting and
-// odd grammar are never lossily reshaped.
+// Recognizes `AND`/`OR`/`NOT,(<clauses>),<target>` with flat `(TYPE,params)`
+// clauses. Returns null (-> Passthrough) on nested logical clauses, a NOT with
+// other than one clause, or any malformed shape, so odd grammar is never reshaped.
 LogicalRule? _parseLogical(
   RuleAction op,
   List<String> core, {

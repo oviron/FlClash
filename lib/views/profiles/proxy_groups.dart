@@ -2,6 +2,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/profile_routing/group_spec.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,9 +25,8 @@ bool _isHealthType(String type) =>
     type == 'url-test' || type == 'fallback' || type == 'load-balance';
 
 /// Pure group-editor reducer: applies the edited fields onto [base], preserving
-/// every unmodeled key not surfaced by the editor. Health fields apply only to
-/// health-check types; `filter` is set/cleared by [filterMode]; [extras] carry
-/// the edited unknown key/values. Lossless: keys outside this set survive.
+/// every unmodeled key. Health fields apply only to health-check types; `filter`
+/// is set/cleared by [filterMode]; [extras] carry edited unknown key/values.
 GroupSpec buildGroupSpec({
   required GroupSpec base,
   required String name,
@@ -77,21 +77,10 @@ GroupSpec _withExtraKey(GroupSpec g, String key, Object? value) {
 /// raw string when it is not valid YAML.
 Object? _inferYaml(String value) {
   try {
-    return _plainYaml(loadYaml(value));
+    return yamlToDart(loadYaml(value));
   } on YamlException {
     return value;
   }
-}
-
-Object? _plainYaml(Object? node) {
-  if (node is YamlMap) {
-    return {
-      for (final e in node.entries) e.key.toString(): _plainYaml(e.value),
-    };
-  }
-  if (node is YamlList) return node.map(_plainYaml).toList();
-  if (node is YamlScalar) return node.value;
-  return node;
 }
 
 /// Lists and edits a profile's `proxy-groups:`. Each group's unknown keys
@@ -168,7 +157,11 @@ class _ProxyGroupsViewState extends ConsumerState<ProxyGroupsView> {
   }
 
   Future<void> _delete(int index) async {
-    final ok = await _confirm(_groups[index].name);
+    final ok = await globalState.showMessage(
+      title: _groups[index].name,
+      message: TextSpan(text: appLocalizations.groupDeleteConfirm),
+      confirmText: appLocalizations.delete,
+    );
     if (ok != true || !mounted) return;
     await _apply([..._groups]..removeAt(index));
   }
@@ -193,24 +186,6 @@ class _ProxyGroupsViewState extends ConsumerState<ProxyGroupsView> {
       _GroupEditorView(initial: group, candidates: candidates, delays: delays),
     );
   }
-
-  Future<bool?> _confirm(String name) => showDialog<bool>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(name),
-      content: Text(appLocalizations.groupDeleteConfirm),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: Text(appLocalizations.cancel),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(appLocalizations.delete),
-        ),
-      ],
-    ),
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -340,37 +315,42 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
     setState(() => _extras = {..._extras, key: ''});
   }
 
-  Future<String?> _promptKey() {
+  Future<String?> _promptKey() async {
     final controller = TextEditingController();
-    return showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(appLocalizations.groupAddKey),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: appLocalizations.key,
+    try {
+      return await showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(appLocalizations.groupAddKey),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: appLocalizations.key,
+            ),
+            onSubmitted: (v) => Navigator.of(context).pop(v.trim()),
           ),
-          onSubmitted: (v) => Navigator.of(context).pop(v.trim()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(appLocalizations.cancel),
+            ),
+            TextButton(
+              onPressed: () =>
+                  Navigator.of(context).pop(controller.text.trim()),
+              child: Text(appLocalizations.confirm),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(appLocalizations.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(controller.text.trim()),
-            child: Text(appLocalizations.confirm),
-          ),
-        ],
-      ),
-    );
+      );
+    } finally {
+      controller.dispose();
+    }
   }
 
   void _showYaml() {
-    final yaml = const GroupSpecYamlPreview().render(_build());
+    final text = yaml.encode(_build().raw);
     showSheet<void>(
       context: context,
       props: const SheetProps(isScrollControlled: true),
@@ -380,7 +360,7 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: SelectableText(
-            yaml,
+            text,
             style: context.textTheme.bodyMedium?.toJetBrainsMono,
           ),
         ),
@@ -645,28 +625,5 @@ class _MemberPickerSheetState extends State<_MemberPickerSheet> {
         ],
       ),
     );
-  }
-}
-
-/// Minimal flow-YAML preview of a single group's `raw` map for the read-only
-/// "open as YAML" fallback. Scalars only; nested maps/lists print inline.
-class GroupSpecYamlPreview {
-  const GroupSpecYamlPreview();
-
-  String render(GroupSpec g) {
-    final out = StringBuffer();
-    g.raw.forEach((k, v) => out.writeln('$k: ${_inline(v)}'));
-    return out.toString();
-  }
-
-  String _inline(Object? v) {
-    if (v is List) return '[${v.map(_inline).join(', ')}]';
-    if (v is Map) {
-      final body = v.entries
-          .map((e) => '${e.key}: ${_inline(e.value)}')
-          .join(', ');
-      return '{$body}';
-    }
-    return '$v';
   }
 }

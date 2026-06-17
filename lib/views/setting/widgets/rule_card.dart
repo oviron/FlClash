@@ -1,6 +1,3 @@
-// Rule card. Disabled rules render at lowered opacity; that is independent
-// of the master toggle (which dims the whole list at the screen level).
-
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/providers/database.dart';
@@ -75,6 +72,7 @@ class RuleCard extends ConsumerWidget {
       ],
     ];
 
+    // Per-rule dim is independent of the master toggle (which dims the list).
     return Opacity(
       key: ValueKey('rule-card-${rule.id}'),
       opacity: rule.enabled ? 1.0 : 0.5,

@@ -1,6 +1,6 @@
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/common.dart';
-import 'package:fl_clash/views/proxies/node_selector_sheet.dart';
+import 'package:fl_clash/views/proxies/group_chain.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Group _g(String name, {String? now, GroupType type = GroupType.Selector}) =>

@@ -128,17 +128,9 @@ extension SemanticColorScheme on ColorScheme {
 
   Color get success =>
       _dark ? const Color(0xFF7EE0A7) : const Color(0xFF146C43);
-  Color get successContainer =>
-      _dark ? const Color(0xFF1F3B2C) : const Color(0xFFC6F3DE);
-  Color get onSuccessContainer =>
-      _dark ? const Color(0xFFB9E4D0) : const Color(0xFF04502E);
 
   Color get warning =>
       _dark ? const Color(0xFFFFD479) : const Color(0xFF7A5900);
-  Color get warningContainer =>
-      _dark ? const Color(0xFF3B2F12) : const Color(0xFFFFDEA8);
-  Color get onWarningContainer =>
-      _dark ? const Color(0xFFFFE6C7) : const Color(0xFF574500);
 }
 
 /// Latency → semantic color. null = untested (neutral); <= 0 = timeout (error);

@@ -429,7 +429,7 @@ class ProfileItem extends StatelessWidget {
 
 /// Group/node stats for a card without a profile-level quota; the providers
 /// link (URL profiles) jumps to where per-provider limits live.
-class _ProfileStatLine extends StatelessWidget {
+class _ProfileStatLine extends StatefulWidget {
   final int profileId;
   final bool showProvidersLink;
 
@@ -438,13 +438,31 @@ class _ProfileStatLine extends StatelessWidget {
     required this.showProvidersLink,
   });
 
+  @override
+  State<_ProfileStatLine> createState() => _ProfileStatLineState();
+}
+
+class _ProfileStatLineState extends State<_ProfileStatLine> {
+  // Read once per profileId: a profile switch rebuilds the whole grid, so a
+  // per-build future would re-read every card's file on every switch.
+  late Future<({int groups, int nodes, int providers})> _stats = appController
+      .readProfileStats(widget.profileId);
+
+  @override
+  void didUpdateWidget(_ProfileStatLine old) {
+    super.didUpdateWidget(old);
+    if (old.profileId != widget.profileId) {
+      _stats = appController.readProfileStats(widget.profileId);
+    }
+  }
+
   void _openProviders(BuildContext context) {
     showExtend(
       context,
       builder: (_, type) => AdaptiveSheetScaffold(
         type: type,
         title: appLocalizations.providers,
-        body: ProfileProvidersView(profileId: profileId),
+        body: ProfileProvidersView(profileId: widget.profileId),
       ),
     );
   }
@@ -452,7 +470,7 @@ class _ProfileStatLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<({int groups, int nodes, int providers})>(
-      future: appController.readProfileStats(profileId),
+      future: _stats,
       builder: (context, snapshot) {
         final stats = snapshot.data;
         if (stats == null || (stats.groups == 0 && stats.nodes == 0)) {
@@ -489,7 +507,7 @@ class _ProfileStatLine extends StatelessWidget {
                   ),
                 ],
               ),
-              if (showProvidersLink && stats.providers > 0) ...[
+              if (widget.showProvidersLink && stats.providers > 0) ...[
                 const SizedBox(height: 8),
                 InkWell(
                   borderRadius: BorderRadius.circular(12),

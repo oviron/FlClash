@@ -1,5 +1,6 @@
 library;
 
+import 'package:fl_clash/common/yaml.dart';
 import 'package:yaml/yaml.dart';
 
 const _unset = Object();
@@ -14,7 +15,7 @@ class GroupSpec {
   const GroupSpec(this.raw);
 
   factory GroupSpec.fromYaml(YamlMap node) =>
-      GroupSpec((_deep(node) as Map).cast<String, dynamic>());
+      GroupSpec((yamlToDart(node) as Map).cast<String, dynamic>());
 
   factory GroupSpec.create({required String name, required String type}) =>
       GroupSpec({'name': name, 'type': type, 'proxies': <String>[]});
@@ -66,13 +67,4 @@ class GroupSpec {
 
   static List<String> _strings(Object? v) =>
       v is List ? v.map((e) => e.toString()).toList() : const [];
-
-  static Object? _deep(Object? node) {
-    if (node is YamlMap) {
-      return {for (final e in node.entries) e.key.toString(): _deep(e.value)};
-    }
-    if (node is YamlList) return node.map(_deep).toList();
-    if (node is YamlScalar) return node.value;
-    return node;
-  }
 }

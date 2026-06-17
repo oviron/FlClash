@@ -18,11 +18,9 @@ class _Row {
   const _Row(this.id, this.rule);
 }
 
-/// Reorderable editor over an in-memory rule list, shared by the per-app
-/// "All rules" surface and the sub-rule editor. Typed rows (except MATCH) are
-/// editable; logical/SUB-RULE/MATCH rows are read-only and preserved verbatim.
-/// Each mutation calls [onChanged]; a non-null return (a validation error)
-/// reverts the optimistic edit and is surfaced to the user.
+/// Reorderable editor over an in-memory rule list. Typed rows (except MATCH) are
+/// editable; logical/SUB-RULE/MATCH rows are read-only and preserved verbatim. A
+/// non-null [onChanged] return (validation error) reverts the optimistic edit.
 class RoutingRulesEditor extends ConsumerStatefulWidget {
   final List<RoutingRule> rules;
   final Future<String?> Function(List<RoutingRule>) onChanged;

@@ -4,6 +4,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/profile_routing/provider_spec.dart';
 import 'package:fl_clash/profile_routing/provider_url.dart';
 import 'package:fl_clash/providers/app.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,11 +14,9 @@ const _formats = ['yaml', 'text', 'mrs'];
 
 enum ProviderKind { proxy, rule }
 
-/// Maps the editor's per-field strings onto a [ProviderSpec], honouring which
-/// fields the chosen source [type] exposes: http carries `url` (no `path`),
-/// file/inline carry `path`; file has no `interval`; rule-providers carry
-/// `behavior`/`format` (and no `health-check`), proxy-providers the inverse.
-/// [base]'s unknown keys (and unmanaged `health-check` keys) are preserved.
+/// Maps the editor's per-field strings onto a [ProviderSpec], emitting only the
+/// fields the chosen source [type] exposes. [base]'s unknown keys (and unmanaged
+/// `health-check` keys) are preserved.
 ProviderSpec buildProviderSpec({
   required ProviderSpec base,
   required bool isRule,
@@ -143,7 +142,11 @@ class _ProfileProvidersViewState extends ConsumerState<ProfileProvidersView> {
   }
 
   Future<void> _delete(ProviderKind kind, String name) async {
-    final ok = await _confirm(name);
+    final ok = await globalState.showMessage(
+      title: name,
+      message: TextSpan(text: appLocalizations.providerDeleteConfirm),
+      confirmText: appLocalizations.delete,
+    );
     if (ok != true || !mounted) return;
     await _apply(kind, {..._mapOf(kind)}..remove(name));
   }
@@ -163,24 +166,6 @@ class _ProfileProvidersViewState extends ConsumerState<ProfileProvidersView> {
       ),
     );
   }
-
-  Future<bool?> _confirm(String name) => showDialog<bool>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(name),
-      content: Text(appLocalizations.providerDeleteConfirm),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: Text(appLocalizations.cancel),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(appLocalizations.delete),
-        ),
-      ],
-    ),
-  );
 
   Iterable<Widget> _rows(ProviderKind kind, List<ExternalProvider> runtime) {
     final map = _mapOf(kind);

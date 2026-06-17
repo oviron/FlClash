@@ -168,10 +168,9 @@ class BypassDomainItem extends ConsumerWidget {
       title: Text(appLocalizations.bypassDomain),
       subtitle: Text(_bypassDomainCountLabel(bypassDomain.length)),
       delegate: OpenDelegate(
-        widget: ListInputPage(
+        widget: ListEditorPage(
           title: appLocalizations.bypassDomain,
           items: bypassDomain,
-          titleBuilder: (item) => Text(item),
         ),
         onChanged: (items) {
           ref
@@ -267,10 +266,9 @@ class RouteAddressItem extends ConsumerWidget {
       title: Text(appLocalizations.routeAddress),
       subtitle: Text(appLocalizations.routeAddressDesc),
       delegate: OpenDelegate(
-        widget: ListInputPage(
+        widget: ListEditorPage(
           title: appLocalizations.routeAddress,
           items: routeAddress,
-          titleBuilder: (item) => Text(item),
         ),
         onChanged: (items) {
           ref

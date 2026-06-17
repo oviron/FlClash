@@ -13,19 +13,24 @@ import 'rule_codec.dart';
 class ProfileRulesDocument {
   final String raw;
 
-  const ProfileRulesDocument(this.raw);
+  ProfileRulesDocument(this.raw);
+
+  // Parsed once per instance; a half-written file yields null instead of throwing.
+  late final YamlMap? _root = _parseRoot();
+
+  YamlMap? _parseRoot() {
+    try {
+      final doc = loadYaml(raw);
+      return doc is YamlMap ? doc : null;
+    } on YamlException {
+      return null;
+    }
+  }
 
   /// Parsed `rules:` entries; empty when the key is absent, not a list, or the
   /// document fails to parse (a half-written file must not throw).
   List<RoutingRule> get rules {
-    final Object? doc;
-    try {
-      doc = loadYaml(raw);
-    } on YamlException {
-      return const [];
-    }
-    if (doc is! YamlMap) return const [];
-    final node = doc['rules'];
+    final node = _root?['rules'];
     if (node is! YamlList) return const [];
     return parseRoutingRules(node.map((e) => e.toString()).toList());
   }
@@ -50,13 +55,7 @@ class ProfileRulesDocument {
   /// Names under `sub-rules:` (each is its own named rule list); empty when
   /// absent. These are valid routing targets for app->sub-rule rules.
   List<String> get subRuleNames {
-    final Object? doc;
-    try {
-      doc = loadYaml(raw);
-    } on YamlException {
-      return const [];
-    }
-    final node = doc is YamlMap ? doc['sub-rules'] : null;
+    final node = _root?['sub-rules'];
     if (node is! YamlMap) return const [];
     return node.keys.map((e) => e.toString()).toList();
   }
@@ -64,13 +63,7 @@ class ProfileRulesDocument {
   /// Each `sub-rules:` entry parsed into its rule list (preserving order);
   /// empty map when absent or malformed.
   Map<String, List<RoutingRule>> get subRules {
-    final Object? doc;
-    try {
-      doc = loadYaml(raw);
-    } on YamlException {
-      return const {};
-    }
-    final node = doc is YamlMap ? doc['sub-rules'] : null;
+    final node = _root?['sub-rules'];
     if (node is! YamlMap) return const {};
     final out = <String, List<RoutingRule>>{};
     for (final entry in node.entries) {
@@ -208,24 +201,8 @@ class ProfileRulesDocument {
     return editor;
   }
 
-  YamlMap? get _root {
-    final Object? doc;
-    try {
-      doc = loadYaml(raw);
-    } on YamlException {
-      return null;
-    }
-    return doc is YamlMap ? doc : null;
-  }
-
   List<String> _tunPackages(String key) {
-    final Object? doc;
-    try {
-      doc = loadYaml(raw);
-    } on YamlException {
-      return const [];
-    }
-    final tun = doc is YamlMap ? doc['tun'] : null;
+    final tun = _root?['tun'];
     final node = tun is YamlMap ? tun[key] : null;
     if (node is! YamlList) return const [];
     return node.whereType<String>().toList();

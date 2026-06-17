@@ -63,7 +63,7 @@ size-limit: 5
   });
 
   group('ProfileRulesDocument providers', () {
-    const doc = ProfileRulesDocument(_yaml);
+    final doc = ProfileRulesDocument(_yaml);
 
     test('reads proxy-providers and rule-providers', () {
       expect(doc.proxyProviders.keys, ['govpn']);

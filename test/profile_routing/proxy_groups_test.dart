@@ -21,7 +21,7 @@ proxy-groups:
 
 void main() {
   test('proxyGroups + proxyNames read typed fields', () {
-    const doc = ProfileRulesDocument(_sample);
+    final doc = ProfileRulesDocument(_sample);
     expect(doc.proxyNames, ['A', 'B']);
     final groups = doc.proxyGroups;
     expect(groups.length, 2);
@@ -42,7 +42,7 @@ void main() {
   });
 
   test('copyWith edits known fields, preserves unknown keys', () {
-    final g = const ProfileRulesDocument(_sample).proxyGroups[0];
+    final g = ProfileRulesDocument(_sample).proxyGroups[0];
     final edited = g.copyWith(proxies: ['B'], type: 'select');
     expect(edited.proxies, ['B']);
     expect(edited.type, 'select');
@@ -51,7 +51,7 @@ void main() {
   });
 
   test('withProxyGroups round-trips and keeps strategy + other config', () {
-    const doc = ProfileRulesDocument(_sample);
+    final doc = ProfileRulesDocument(_sample);
     final groups = doc.proxyGroups;
     final out = doc.withProxyGroups([
       groups[0].copyWith(proxies: ['B']),
@@ -66,7 +66,7 @@ void main() {
   });
 
   test('clearing url removes the key, not the group', () {
-    final g = const ProfileRulesDocument(_sample).proxyGroups[0];
+    final g = ProfileRulesDocument(_sample).proxyGroups[0];
     final edited = g.copyWith(url: null);
     expect(edited.url, isNull);
     expect(edited.raw.containsKey('url'), isFalse);

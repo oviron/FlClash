@@ -7,10 +7,8 @@ extension AppRoutingController on AppController {
     return ProfileRulesDocument(await file.readAsString()).rules;
   }
 
-  /// Live-mirrors [rules] into the profile's `<id>.yaml` (rest of the file
-  /// preserved) and hot-applies when it is the active profile. Returns a
-  /// validation error string on a rejected config (the file is left untouched),
-  /// or null on success.
+  /// Live-mirrors [rules] into `<id>.yaml` (rest preserved) and hot-applies on
+  /// the active profile. Returns a validation error (file untouched) or null.
   Future<String?> writeRoutingRules(
     int profileId,
     List<RoutingRule> rules,
@@ -80,10 +78,8 @@ extension AppRoutingController on AppController {
   }
 
   /// Sets an app's routing target, replacing any existing app rule for
-  /// [packageName]. When [isSubRule] the target is a sub-rule name and the rule
-  /// is written as `SUB-RULE,(PROCESS-NAME,<pkg>),<target>`; otherwise it is a
-  /// proxy/group and the rule is a flat `PROCESS-NAME,<pkg>,<target>`. A
-  /// null/empty [target] drops the rule. Hot-applies.
+  /// [packageName]; [isSubRule] writes a `SUB-RULE,(PROCESS-NAME,...)` form, else
+  /// a flat `PROCESS-NAME,<pkg>,<target>`. Null/empty [target] drops it.
   Future<String?> setAppTarget(
     int profileId,
     String packageName, {
@@ -144,11 +140,9 @@ extension AppRoutingController on AppController {
     return _writeValidatedApply(file, profileId, next);
   }
 
-  /// Switches the profile's tunnel mode by moving the membership list under the
-  /// other tun key: whitelist keeps the in-tunnel apps as include-package,
-  /// blacklist keeps the bypassing apps as exclude-package. The current
-  /// [packages] (installed apps) bound the membership so the inverted set stays
-  /// finite. A null/equal target is a no-op. Hot-applies.
+  /// Switches tunnel mode by moving the membership list to the other tun key.
+  /// [packages] (installed apps) bounds the membership so the inverted set stays
+  /// finite. Hot-applies.
   Future<String?> setTunnelMode(
     int profileId,
     AccessControlMode mode, {
@@ -182,10 +176,9 @@ extension AppRoutingController on AppController {
     return _writeValidatedApply(file, profileId, next);
   }
 
-  /// One-time fold of a per-profile [Profile.accessControlProps] override into
-  /// the YAML tun.*-package SSoT, then clears the drift override so the two no
-  /// longer fight (effectiveAccessControl preferred the drift one). Returns the
-  /// migrated app count, or null when there was nothing to migrate.
+  /// One-time fold of the [Profile.accessControlProps] override into the YAML
+  /// tun.*-package SSoT, then clears the override so the two no longer fight.
+  /// Returns the migrated app count, or null when nothing was migrated.
   Future<int?> migrateAccessControlToYaml(int profileId) async {
     final profile = _ref.read(profilesProvider).getProfile(profileId);
     final acl = profile?.accessControlProps;
@@ -312,9 +305,7 @@ extension AppRoutingController on AppController {
   }
 
   bool _isAppRule(RoutingRule r, String packageName) =>
-      (r is TypedRule &&
-          r.action == RuleAction.PROCESS_NAME &&
-          r.value == packageName) ||
+      (r is TypedRule && r.isAppRouting && r.value == packageName) ||
       (r is AppToSubRuleRoute && r.packageName == packageName);
 
   Future<String?> _writeValidatedApply(

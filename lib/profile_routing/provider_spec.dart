@@ -1,5 +1,6 @@
 library;
 
+import 'package:fl_clash/common/yaml.dart';
 import 'package:yaml/yaml.dart';
 
 const _unset = Object();
@@ -14,7 +15,7 @@ class ProviderSpec {
   const ProviderSpec(this.raw);
 
   factory ProviderSpec.fromYaml(YamlMap node) =>
-      ProviderSpec((_deep(node) as Map).cast<String, dynamic>());
+      ProviderSpec((yamlToDart(node) as Map).cast<String, dynamic>());
 
   factory ProviderSpec.create({required String type}) =>
       ProviderSpec({'type': type});
@@ -79,14 +80,5 @@ class ProviderSpec {
   static void _put(Map<String, dynamic> m, String key, Object? value) {
     if (identical(value, _unset)) return;
     value == null ? m.remove(key) : m[key] = value;
-  }
-
-  static Object? _deep(Object? node) {
-    if (node is YamlMap) {
-      return {for (final e in node.entries) e.key.toString(): _deep(e.value)};
-    }
-    if (node is YamlList) return node.map(_deep).toList();
-    if (node is YamlScalar) return node.value;
-    return node;
   }
 }

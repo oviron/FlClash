@@ -20,10 +20,9 @@ LogicalRule defaultLogicalRule(String target) => LogicalRule(
   target: target,
 );
 
-/// Sheet that edits a [LogicalRule]: op segment (AND/OR/NOT), a clause list
-/// (condition-type + params), a target picker, src/no-resolve toggles and a
-/// live monospace preview of [LogicalRule.serialize]. NOT is constrained to a
-/// single clause. Confirm returns the rule; an invalid build keeps it open.
+/// Sheet that edits a [LogicalRule] (op, clauses, target, toggles) with a live
+/// serialize preview. NOT is constrained to a single clause; confirm returns the
+/// rule, an invalid build keeps the sheet open.
 class RuleBlockBuilder extends StatefulWidget {
   final SheetType type;
   final LogicalRule initial;

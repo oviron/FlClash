@@ -17,11 +17,9 @@ enum _View { apps, rules }
 
 enum _Sort { name, configuredFirst }
 
-/// Per-app routing. Two surfaces over the same profile-YAML, live-mirrored via
-/// [AppRoutingController]:
-/// - Apps: grouped by tunnel membership (in mihomo / bypass) with a per-app
-///   routing target (a flat `PROCESS-NAME` rule, or `SUB-RULE,(PROCESS-NAME,...)`).
-/// - All rules: the full ordered `rules:` list (see [RoutingRulesEditor]).
+/// Per-app routing: two surfaces over the same profile-YAML, live-mirrored via
+/// [AppRoutingController]. Apps (grouped by tunnel membership, each with a route
+/// target) and All rules (the full ordered `rules:` list, see [RoutingRulesEditor]).
 class AppRoutingView extends ConsumerStatefulWidget {
   final int profileId;
 
@@ -657,10 +655,9 @@ IconData _kindIcon(TargetChipKind kind) => switch (kind) {
   TargetChipKind.subRule => Icons.alt_route,
 };
 
-/// Two-step per-app picker. Step 1 segments tunnel membership; step 2 lists the
-/// route inside mihomo, grouped Fast / Via group / By scenario, dimmed and
-/// non-interactive while step 1 is "Bypass". Pops
-/// `({bool inTunnel, AppTarget target})`.
+/// Two-step per-app picker: step 1 segments tunnel membership, step 2 lists the
+/// route inside mihomo (dimmed and non-interactive while step 1 is "Bypass").
+/// Pops `({bool inTunnel, AppTarget target})`.
 class AppRoutingPickerSheet extends StatefulWidget {
   final SheetType type;
   final String title;

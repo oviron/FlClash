@@ -32,7 +32,7 @@ void main() {
   test('editing a typed rule target preserves passthrough verbatim', () {
     final rules = _rules(_doc);
     rules[0] = (rules[0] as TypedRule).copyWith(target: 'GrpB');
-    final out = const ProfileRulesDocument(_doc).withRules(rules);
+    final out = ProfileRulesDocument(_doc).withRules(rules);
     final reread = _ser(out);
     expect(reread.contains('PROCESS-NAME,com.a,GrpB'), true);
     expect(reread.contains(_logical), true);
@@ -42,7 +42,7 @@ void main() {
   test('reorder persists order, logical rule survives', () {
     final rules = _rules(_doc);
     final moved = [rules[1], rules[2], rules[0], rules[3]];
-    final out = const ProfileRulesDocument(_doc).withRules(moved);
+    final out = ProfileRulesDocument(_doc).withRules(moved);
     final reread = _ser(out);
     expect(reread.first, 'DOMAIN-SUFFIX,x.com,DIRECT');
     expect(reread[2], 'PROCESS-NAME,com.a,GrpA');
@@ -51,7 +51,7 @@ void main() {
 
   test('delete removes one rule, others intact', () {
     final rules = _rules(_doc)..removeAt(0);
-    final out = const ProfileRulesDocument(_doc).withRules(rules);
+    final out = ProfileRulesDocument(_doc).withRules(rules);
     final reread = _ser(out);
     expect(reread.length, 3);
     expect(reread.any((r) => r.startsWith('PROCESS-NAME')), false);
@@ -67,7 +67,7 @@ void main() {
       ),
       ..._rules(_doc),
     ];
-    final out = const ProfileRulesDocument(_doc).withRules(rules);
+    final out = ProfileRulesDocument(_doc).withRules(rules);
     expect(_ser(out).first, 'PROCESS-NAME,com.new,GrpA');
   });
 }
