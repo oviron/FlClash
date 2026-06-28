@@ -1,5 +1,4 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/views/proxies/group_chain.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -22,7 +21,9 @@ class ActiveChainStrip extends ConsumerWidget {
       }),
     );
     if (chain.isEmpty) return const SizedBox.shrink();
-    final connected = ref.watch(coreStatusProvider) == CoreStatus.connected;
+    // VPN running, not core status (the core stays "connected" while the
+    // tunnel is off).
+    final connected = ref.watch(isStartProvider);
     final leafDelay = ref.watch(getDelayProvider(proxyName: chain.last));
     final scheme = context.colorScheme;
     return Container(

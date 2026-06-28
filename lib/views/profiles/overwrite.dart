@@ -318,14 +318,11 @@ class __StandardContentState extends ConsumerState<_StandardContent> {
               child: CommonCard(
                 padding: EdgeInsets.zero,
                 radius: 18,
-                child: ListTile(
+                child: ListItem(
                   minTileHeight: 0,
-                  minVerticalPadding: 0,
+                  minVerticalPadding: 16,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   titleTextStyle: context.textTheme.bodyMedium?.toJetBrainsMono,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
-                  ),
                   title: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -399,13 +396,13 @@ class _ScriptContent extends ConsumerWidget {
                       padding: EdgeInsets.zero,
                       type: CommonCardType.filled,
                       radius: 18,
-                      child: ListTile(
-                        minLeadingWidth: 0,
+                      child: ListItem(
                         minTileHeight: 0,
                         minVerticalPadding: 16,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        onTap: () {
+                          _handleChange(ref, script.id);
+                        },
                         title: Row(
                           children: [
                             SizedBox(
@@ -427,9 +424,6 @@ class _ScriptContent extends ConsumerWidget {
                             Flexible(child: Text(script.label)),
                           ],
                         ),
-                        onTap: () {
-                          _handleChange(ref, script.id);
-                        },
                       ),
                     ),
                   );
@@ -444,14 +438,11 @@ class _ScriptContent extends ConsumerWidget {
             child: CommonCard(
               padding: EdgeInsets.zero,
               radius: 18,
-              child: ListTile(
+              child: ListItem(
                 minTileHeight: 0,
-                minVerticalPadding: 0,
+                minVerticalPadding: 16,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 titleTextStyle: context.textTheme.bodyMedium?.toJetBrainsMono,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

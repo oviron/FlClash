@@ -107,17 +107,16 @@ class _AccessViewState extends ConsumerState<AccessView> {
     return FadeRotationScaleBox(
       alignment: Alignment.centerRight,
       child: isSelectedAll
-          ? FloatingActionButton.extended(
+          ? CommonFloatingActionButton(
               key: const ValueKey(true),
               onPressed: onPressed,
-              label: Text(appLocalizations.cancelSelectAll),
+              label: appLocalizations.cancelSelectAll,
               icon: const Icon(Icons.deselect),
             )
-          : FloatingActionButton.extended(
+          : CommonFloatingActionButton(
               key: const ValueKey(false),
-              tooltip: appLocalizations.selectAll,
               onPressed: onPressed,
-              label: Text(appLocalizations.selectAll),
+              label: appLocalizations.selectAll,
               icon: const Icon(Icons.select_all),
             ),
     );
@@ -372,29 +371,13 @@ class _AccessViewState extends ConsumerState<AccessView> {
     final describe = mode == AccessControlMode.acceptSelected
         ? appLocalizations.accessControlAllowDesc
         : appLocalizations.accessControlNotAllowDesc;
-    final textStyle = context.textTheme.labelLarge?.copyWith(
-      color: context.colorScheme.onPrimary,
-    );
     return MaterialBanner(
       content: Text(describe),
       actions: [
-        Card.filled(
-          color: context.colorScheme.primary,
-          elevation: 0,
-          shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(appLocalizations.selected, style: textStyle),
-                const SizedBox(width: 4),
-                Flexible(child: Text('$count', style: textStyle)),
-              ],
-            ),
-          ),
+        CommonChip(
+          type: ChipType.tonal,
+          label: '${appLocalizations.selected} $count',
+          tonalColor: context.colorScheme.primary,
         ),
       ],
     );
@@ -465,11 +448,13 @@ class _AccessViewState extends ConsumerState<AccessView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SwitchListTile(
-              secondary: const Icon(Icons.tune),
+            ListItem.switchItem(
+              leading: const Icon(Icons.tune),
               title: Text(appLocalizations.accessControl),
-              value: accessControl.enable,
-              onChanged: (_) => _handleToggle(),
+              delegate: SwitchDelegate(
+                value: accessControl.enable,
+                onChanged: (_) => _handleToggle(),
+              ),
             ),
             if (widget.showProfileLockBadge && isProfileLocked)
               MaterialBanner(

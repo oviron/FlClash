@@ -65,7 +65,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
   double _getListItemHeight(Type type, ProxyCardType proxyCardType) {
     return switch (type) {
       const (SizedBox) => 8,
-      const (ListHeader) => listHeaderHeight,
+      const (ProxyGroupHeader) => listHeaderHeight,
       Type() => getItemHeight(proxyCardType),
     };
   }
@@ -100,7 +100,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
     final List<double> headerOffset = [];
     double currentHeight = 0;
     for (final item in items) {
-      if (item.runtimeType == ListHeader) {
+      if (item.runtimeType == ProxyGroupHeader) {
         headerOffset.add(currentHeight);
       }
       final itemHeight = _getListItemHeight(item.runtimeType, proxyCardType);
@@ -123,7 +123,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
       final groupName = group.name;
       final isExpand = currentUnfoldSet.contains(groupName);
       items.addAll([
-        ListHeader(
+        ProxyGroupHeader(
           onScrollToSelected: _scrollToGroupSelected,
           isExpand: isExpand,
           group: group,
@@ -178,7 +178,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
     final isExpand = currentUnfoldSet.contains(groupName);
     return SizedBox(
       height: listHeaderHeight,
-      child: ListHeader(
+      child: ProxyGroupHeader(
         enterAnimated: false,
         onScrollToSelected: _scrollToGroupSelected,
         key: Key(groupName),
@@ -373,7 +373,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
   }
 }
 
-class ListHeader extends StatefulWidget {
+class ProxyGroupHeader extends StatefulWidget {
   final Group group;
 
   final Function(String groupName) onChange;
@@ -382,7 +382,7 @@ class ListHeader extends StatefulWidget {
 
   final bool enterAnimated;
 
-  const ListHeader({
+  const ProxyGroupHeader({
     super.key,
     this.enterAnimated = true,
     required this.group,
@@ -392,10 +392,10 @@ class ListHeader extends StatefulWidget {
   });
 
   @override
-  State<ListHeader> createState() => _ListHeaderState();
+  State<ProxyGroupHeader> createState() => _ProxyGroupHeaderState();
 }
 
-class _ListHeaderState extends State<ListHeader> {
+class _ProxyGroupHeaderState extends State<ProxyGroupHeader> {
   var isLock = false;
 
   String get icon => widget.group.icon;

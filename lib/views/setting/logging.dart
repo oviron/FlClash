@@ -52,7 +52,7 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
       title: appLocalizations.loggingTitle,
       body: ListView(
         children: [
-          _section(appLocalizations.loggingSourceSection),
+          ListHeader(title: appLocalizations.loggingSourceSection),
           _levelTile(
             icon: Icons.input,
             title: appLocalizations.loggingSourceLevel,
@@ -66,7 +66,7 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
             },
           ),
           const Divider(height: 0),
-          _section(appLocalizations.loggingLogcatSection),
+          ListHeader(title: appLocalizations.loggingLogcatSection),
           _levelTile(
             icon: Icons.terminal,
             title: appLocalizations.loggingLogcatLevel,
@@ -80,7 +80,7 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
             },
           ),
           const Divider(height: 0),
-          _section(appLocalizations.loggingFileSection),
+          ListHeader(title: appLocalizations.loggingFileSection),
           ListItem.switchItem(
             leading: const Icon(Icons.save_outlined),
             title: Text(appLocalizations.loggingFileEnabled),
@@ -107,7 +107,7 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
             },
           ),
           const Divider(height: 0),
-          _section(appLocalizations.loggingInAppSection),
+          ListHeader(title: appLocalizations.loggingInAppSection),
           ListItem.switchItem(
             leading: const Icon(Icons.history),
             title: Text(appLocalizations.inAppLogBuffer),
@@ -165,16 +165,6 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
       ),
     );
   }
-
-  Widget _section(String label) => Padding(
-    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-    child: Text(
-      label,
-      style: context.textTheme.titleSmall?.copyWith(
-        color: context.colorScheme.primary,
-      ),
-    ),
-  );
 
   Widget _levelTile({
     required IconData icon,

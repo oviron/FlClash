@@ -39,7 +39,7 @@ class NetworkRulesService : Service() {
                 manager?.createNotificationChannel(
                     NotificationChannel(
                         CHANNEL,
-                        "Network rules",
+                        getString(R.string.network_rules_channel),
                         NotificationManager.IMPORTANCE_LOW,
                     ),
                 )
@@ -48,7 +48,7 @@ class NetworkRulesService : Service() {
         val open = NotificationCompat.Builder(this, CHANNEL)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("FlClash")
-            .setContentText("Auto VPN by network is active")
+            .setContentText(getString(R.string.network_rules_notification))
             .setOngoing(true)
             .setShowWhen(false)
             .setPriority(NotificationCompat.PRIORITY_LOW)

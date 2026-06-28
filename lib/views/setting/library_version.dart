@@ -101,7 +101,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListHeader(title: _coreTitle(label)),
-        ListTile(
+        ListItem(
           leading: const Icon(Icons.check_circle_outline),
           title: Text(Intl.message('Active', name: 'libActive')),
           subtitle: Text(
@@ -132,7 +132,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
           const Divider(height: 0),
           ListHeader(title: Intl.message('Installed', name: 'libInstalled')),
           for (final lib in installed)
-            ListTile(
+            ListItem(
               leading: const Icon(Icons.inventory_2_outlined),
               title: Text('v${lib.version}'),
               subtitle: Text(_sizeLabel(lib.sizeBytes)),
@@ -146,7 +146,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
             padding: EdgeInsets.all(16),
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (e, _) => ListTile(
+          error: (e, _) => ListItem(
             leading: const Icon(Icons.error_outline),
             title: Text(
               Intl.message('Failed to load releases', name: 'libLoadError'),
@@ -223,10 +223,12 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
         ? 'bridgeABI ${rel.bridgeAbi}'
         : '${rel.coreName} ${rel.coreVersion}';
     if (!compatible) {
-      return ListTile(
-        enabled: false,
+      return ListItem(
         leading: const Icon(Icons.block),
-        title: Text('v${rel.version}'),
+        title: Text(
+          'v${rel.version}',
+          style: TextStyle(color: Theme.of(context).disabledColor),
+        ),
         subtitle: Text(
           Intl.message('Requires app update', name: 'libNeedsUpdate') +
               (expectedAbi != null && rel.bridgeAbi != expectedAbi
@@ -236,7 +238,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
       );
     }
     final busy = _busy.contains('dl-${rel.version}');
-    return ListTile(
+    return ListItem(
       leading: Icon(
         isBundled ? Icons.check_circle_outline : Icons.cloud_download_outlined,
       ),

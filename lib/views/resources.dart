@@ -323,14 +323,7 @@ class _UpdateGeoUrlFormDialogState extends State<UpdateGeoUrlFormDialog> {
       ],
       child: Wrap(
         runSpacing: 16,
-        children: [
-          TextField(
-            maxLines: 5,
-            minLines: 1,
-            controller: _urlController,
-            decoration: const InputDecoration(border: OutlineInputBorder()),
-          ),
-        ],
+        children: [CommonTextField(maxLines: 5, controller: _urlController)],
       ),
     );
   }

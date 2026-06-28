@@ -509,39 +509,14 @@ class _ProfileStatLineState extends State<_ProfileStatLine> {
               ),
               if (widget.showProvidersLink && stats.providers > 0) ...[
                 const SizedBox(height: 8),
-                InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () => _openProviders(context),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 11,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: context.colorScheme.primary.opacity15,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.cloud_sync_outlined,
-                          size: 15,
-                          color: context.colorScheme.primary,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          appLocalizations.profileProvidersLimits(
-                            stats.providers,
-                          ),
-                          style: context.textTheme.labelMedium?.copyWith(
-                            color: context.colorScheme.primary,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
+                CommonChip(
+                  type: ChipType.tonal,
+                  tonalColor: context.colorScheme.primary,
+                  avatar: const Icon(Icons.cloud_sync_outlined, size: 15),
+                  label: appLocalizations.profileProvidersLimits(
+                    stats.providers,
                   ),
+                  onPressed: () => _openProviders(context),
                 ),
               ],
             ],

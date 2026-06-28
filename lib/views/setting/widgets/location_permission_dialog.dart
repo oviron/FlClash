@@ -1,4 +1,6 @@
 import 'package:fl_clash/l10n/l10n.dart';
+import 'package:fl_clash/state.dart';
+import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class LocationPermissionDialog extends StatelessWidget {
@@ -7,9 +9,8 @@ class LocationPermissionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return AlertDialog(
-      title: Text(l10n.locationPermissionTitle),
-      content: Text(l10n.locationPermissionExplanation),
+    return CommonDialog(
+      title: l10n.locationPermissionTitle,
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
@@ -20,16 +21,14 @@ class LocationPermissionDialog extends StatelessWidget {
           child: Text(l10n.permissionAllow),
         ),
       ],
+      child: Text(l10n.locationPermissionExplanation),
     );
   }
 
-  /// Returns `true` if the user agreed to proceed with the system permission
-  /// request, `false` if they dismissed or chose "Not now". Callers must not
-  /// trust `null` from `showDialog` (back-button) and must default to `false`.
+  // Returns true if user agreed to proceed, false otherwise.
   static Future<bool> show(BuildContext context) async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (_) => const LocationPermissionDialog(),
+    final result = await globalState.showCommonDialog<bool>(
+      child: const LocationPermissionDialog(),
     );
     return result ?? false;
   }

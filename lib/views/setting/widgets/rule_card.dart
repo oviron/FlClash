@@ -1,7 +1,10 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/location_permission.dart';
+import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -76,9 +79,11 @@ class RuleCard extends ConsumerWidget {
     return Opacity(
       key: ValueKey('rule-card-${rule.id}'),
       opacity: rule.enabled ? 1.0 : 0.5,
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Padding(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: CommonCard(
+          type: CommonCardType.filled,
+          radius: 16,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,16 +117,16 @@ class RuleCard extends ConsumerWidget {
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: isInvalid
                               ? [
-                                  Chip(
+                                  CommonChip(
+                                    type: ChipType.tonal,
+                                    tonalColor: scheme.error,
                                     avatar: Icon(
                                       Icons.error_outline,
                                       size: 18,
                                       color: scheme.error,
                                     ),
-                                    label: Text(
-                                      appLocalizations.networkRulesInvalidRule,
-                                    ),
-                                    visualDensity: VisualDensity.compact,
+                                    label: appLocalizations
+                                        .networkRulesInvalidRule,
                                   ),
                                 ]
                               : [
@@ -143,36 +148,35 @@ class RuleCard extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  PopupMenuButton<_RuleMenu>(
-                    icon: const Icon(Icons.more_vert),
-                    onSelected: (value) {
-                      switch (value) {
-                        case _RuleMenu.edit:
-                          onEdit();
-                        case _RuleMenu.delete:
-                          onDelete();
-                        case _RuleMenu.toggle:
-                          onToggleEnabled();
-                      }
-                    },
-                    itemBuilder: (_) => [
-                      PopupMenuItem(
-                        value: _RuleMenu.edit,
-                        child: Text(appLocalizations.networkRulesEdit),
-                      ),
-                      PopupMenuItem(
-                        value: _RuleMenu.toggle,
-                        child: Text(
-                          rule.enabled
+                  CommonPopupBox(
+                    targetBuilder: (open) => IconButton(
+                      icon: const Icon(Icons.more_vert),
+                      onPressed: () => open(),
+                    ),
+                    popup: CommonPopupMenu(
+                      items: [
+                        PopupMenuItemData(
+                          icon: Icons.edit_outlined,
+                          label: appLocalizations.networkRulesEdit,
+                          onPressed: onEdit,
+                        ),
+                        PopupMenuItemData(
+                          icon: rule.enabled
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          label: rule.enabled
                               ? appLocalizations.networkRulesDisable
                               : appLocalizations.networkRulesEnableShort,
+                          onPressed: onToggleEnabled,
                         ),
-                      ),
-                      PopupMenuItem(
-                        value: _RuleMenu.delete,
-                        child: Text(appLocalizations.networkRulesDelete),
-                      ),
-                    ],
+                        PopupMenuItemData(
+                          icon: Icons.delete_outline,
+                          label: appLocalizations.networkRulesDelete,
+                          onPressed: onDelete,
+                          danger: true,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -183,8 +187,6 @@ class RuleCard extends ConsumerWidget {
     );
   }
 }
-
-enum _RuleMenu { edit, toggle, delete }
 
 class _ConditionChip extends ConsumerWidget {
   final NetworkCondition condition;
@@ -205,12 +207,10 @@ class _ConditionChip extends ConsumerWidget {
       final name = match.isNotEmpty && match.first.label.isNotEmpty
           ? match.first.label
           : '#${c.profileId}';
-      return Chip(
+      return CommonChip(
+        type: ChipType.tonal,
         avatar: const Icon(Icons.layers_outlined, size: 18),
-        label: Text(
-          '$prefix${appLocalizations.networkRulesConditionProfileIs}$name',
-        ),
-        visualDensity: VisualDensity.compact,
+        label: '$prefix${appLocalizations.networkRulesConditionProfileIs}$name',
       );
     }
     if (c is WifiNamed) {
@@ -220,39 +220,36 @@ class _ConditionChip extends ConsumerWidget {
         WifiMatch.prefix => '${c.ssid}…',
         WifiMatch.contains => '…${c.ssid}…',
       };
-      return Chip(
+      return CommonChip(
+        type: ChipType.tonal,
+        tonalColor: showWarning ? scheme.error : null,
         avatar: Icon(
           showWarning ? Icons.warning_amber : Icons.wifi,
           size: 18,
           color: showWarning ? scheme.error : null,
         ),
-        label: Text('$prefix$pattern'),
-        visualDensity: VisualDensity.compact,
+        label: '$prefix$pattern',
       );
     }
     if (c is AnyWifi) {
-      return Chip(
+      return CommonChip(
+        type: ChipType.tonal,
         avatar: const Icon(Icons.wifi, size: 18),
-        label: Text('$prefix${appLocalizations.networkRulesConditionAnyWifi}'),
-        visualDensity: VisualDensity.compact,
+        label: '$prefix${appLocalizations.networkRulesConditionAnyWifi}',
       );
     }
     if (c is AnyCellular) {
-      return Chip(
+      return CommonChip(
+        type: ChipType.tonal,
         avatar: const Icon(Icons.signal_cellular_alt, size: 18),
-        label: Text(
-          '$prefix${appLocalizations.networkRulesConditionAnyCellular}',
-        ),
-        visualDensity: VisualDensity.compact,
+        label: '$prefix${appLocalizations.networkRulesConditionAnyCellular}',
       );
     }
     if (c is AnyEthernet) {
-      return Chip(
+      return CommonChip(
+        type: ChipType.tonal,
         avatar: const Icon(Icons.settings_ethernet, size: 18),
-        label: Text(
-          '$prefix${appLocalizations.networkRulesConditionAnyEthernet}',
-        ),
-        visualDensity: VisualDensity.compact,
+        label: '$prefix${appLocalizations.networkRulesConditionAnyEthernet}',
       );
     }
     return const SizedBox.shrink();

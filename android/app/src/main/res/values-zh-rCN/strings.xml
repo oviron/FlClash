@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_rules_channel">网络规则</string>
+    <string name="network_rules_notification">按网络自动切换 VPN 已启用</string>
+</resources>

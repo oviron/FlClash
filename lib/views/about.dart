@@ -56,7 +56,7 @@ class AboutView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      ListTile(
+      ListItem(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

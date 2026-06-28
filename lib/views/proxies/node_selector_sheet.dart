@@ -69,10 +69,8 @@ class _NodeRow extends ConsumerWidget {
     final isSelected =
         ref.watch(getProxyNameProvider(group.name)) == proxy.name;
     final delay = ref.watch(getDelayProvider(proxyName: proxy.name));
-    return ListTile(
-      selected: isSelected,
-      selectedTileColor: context.colorScheme.secondaryContainer,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    return ListItem(
+      color: isSelected ? context.colorScheme.secondaryContainer : null,
       title: Text(proxy.name, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: proxy.type.isEmpty ? null : Text(proxy.type),
       trailing: Row(

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_rules_channel">Network rules</string>
+    <string name="network_rules_notification">Auto VPN by network is active</string>
+</resources>

@@ -153,23 +153,27 @@ class _RuleBlockBuilderState extends State<RuleBlockBuilder> {
         children: [
           Text(appLocalizations.ruleBlockOperator, style: _label(context)),
           const SizedBox(height: 8),
-          SegmentedButton<RuleAction>(
-            segments: [
-              ButtonSegment(
-                value: RuleAction.AND,
-                label: Text(appLocalizations.ruleOpAnd),
+          CommonTabBar<RuleAction>(
+            groupValue: _op,
+            thumbColor: context.colorScheme.secondaryContainer,
+            proportionalWidth: false,
+            onValueChanged: (v) {
+              if (v != null) _setOp(v);
+            },
+            children: {
+              RuleAction.AND: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 9),
+                child: Center(child: Text(appLocalizations.ruleOpAnd)),
               ),
-              ButtonSegment(
-                value: RuleAction.OR,
-                label: Text(appLocalizations.ruleOpOr),
+              RuleAction.OR: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 9),
+                child: Center(child: Text(appLocalizations.ruleOpOr)),
               ),
-              ButtonSegment(
-                value: RuleAction.NOT,
-                label: Text(appLocalizations.ruleOpNot),
+              RuleAction.NOT: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 9),
+                child: Center(child: Text(appLocalizations.ruleOpNot)),
               ),
-            ],
-            selected: {_op},
-            onSelectionChanged: (s) => _setOp(s.first),
+            },
           ),
           const SizedBox(height: 24),
           Row(
@@ -193,30 +197,26 @@ class _RuleBlockBuilderState extends State<RuleBlockBuilder> {
                 children: [
                   Expanded(
                     flex: 5,
-                    child: DropdownButtonFormField<RuleAction>(
-                      initialValue: _clauses[i].action,
-                      isExpanded: true,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        labelText: appLocalizations.ruleConditionType,
+                    child: ListItem.options(
+                      title: Text(_clauses[i].action.value),
+                      subtitle: Text(appLocalizations.ruleConditionType),
+                      delegate: OptionsDelegate<RuleAction>(
+                        title: appLocalizations.ruleConditionType,
+                        options: clauseActions,
+                        value: _clauses[i].action,
+                        textBuilder: (a) => a.value,
+                        onChanged: (v) {
+                          if (v != null) _setClauseAction(i, v);
+                        },
                       ),
-                      items: [
-                        for (final a in clauseActions)
-                          DropdownMenuItem(value: a, child: Text(a.value)),
-                      ],
-                      onChanged: (v) =>
-                          v == null ? null : _setClauseAction(i, v),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     flex: 6,
-                    child: TextField(
+                    child: CommonTextField(
                       controller: _params[i],
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        labelText: appLocalizations.ruleConditionParams,
-                      ),
+                      labelText: appLocalizations.ruleConditionParams,
                       onChanged: (_) => setState(() {}),
                     ),
                   ),
@@ -238,17 +238,19 @@ class _RuleBlockBuilderState extends State<RuleBlockBuilder> {
             ),
           ),
           const SizedBox(height: 16),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
+          ListItem.switchItem(
             title: Text(appLocalizations.sourceIp),
-            value: _src,
-            onChanged: (v) => setState(() => _src = v),
+            delegate: SwitchDelegate(
+              value: _src,
+              onChanged: (v) => setState(() => _src = v),
+            ),
           ),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
+          ListItem.switchItem(
             title: Text(appLocalizations.noResolve),
-            value: _noResolve,
-            onChanged: (v) => setState(() => _noResolve = v),
+            delegate: SwitchDelegate(
+              value: _noResolve,
+              onChanged: (v) => setState(() => _noResolve = v),
+            ),
           ),
           const SizedBox(height: 16),
           Text(appLocalizations.preview, style: _label(context)),

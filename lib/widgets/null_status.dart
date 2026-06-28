@@ -6,11 +6,13 @@ import 'package:flutter_svg/svg.dart';
 class NullStatus extends StatelessWidget {
   final String label;
   final Widget illustration;
+  final Widget? action;
 
   const NullStatus({
     super.key,
     required this.label,
     this.illustration = const DataEmptyIllustration(),
+    this.action,
   });
 
   @override
@@ -28,6 +30,7 @@ class NullStatus extends StatelessWidget {
             label,
             style: Theme.of(context).textTheme.titleMedium?.toBold.toLight,
           ),
+          if (action != null) ...[const SizedBox(height: 16), action!],
         ],
       ),
     );

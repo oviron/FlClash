@@ -37,7 +37,7 @@
         android:name=".Application"
         android:banner="@mipmap/ic_banner"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="${appIcon}"
         android:label="${appLabel}">
         <activity
             android:name=".MainActivity"

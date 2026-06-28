@@ -5108,6 +5108,201 @@ class AppLocalizations {
       args: [count],
     );
   }
+
+  /// `On`
+  String get networkRulesVpnOn {
+    return Intl.message('On', name: 'networkRulesVpnOn', desc: '', args: []);
+  }
+
+  /// `Off`
+  String get networkRulesVpnOff {
+    return Intl.message('Off', name: 'networkRulesVpnOff', desc: '', args: []);
+  }
+
+  /// `Keep`
+  String get networkRulesVpnKeep {
+    return Intl.message(
+      'Keep',
+      name: 'networkRulesVpnKeep',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wi-Fi «{ssid}»`
+  String networkRulesNetWifiNamed(Object ssid) {
+    return Intl.message(
+      'Wi-Fi «$ssid»',
+      name: 'networkRulesNetWifiNamed',
+      desc: '',
+      args: [ssid],
+    );
+  }
+
+  /// `Wi-Fi`
+  String get networkRulesNetWifi {
+    return Intl.message(
+      'Wi-Fi',
+      name: 'networkRulesNetWifi',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No network`
+  String get networkRulesNetNone {
+    return Intl.message(
+      'No network',
+      name: 'networkRulesNetNone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Conditions`
+  String get networkRulesConditionsLabel {
+    return Intl.message(
+      'Conditions',
+      name: 'networkRulesConditionsLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Library version`
+  String get libraryVersion {
+    return Intl.message(
+      'Library version',
+      name: 'libraryVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download and switch the mihomo core version`
+  String get libraryVersionDesc {
+    return Intl.message(
+      'Download and switch the mihomo core version',
+      name: 'libraryVersionDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Switch core version`
+  String get libSwitchTitle {
+    return Intl.message(
+      'Switch core version',
+      name: 'libSwitchTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Switching reloads the engine and drops your current connection. Continue?`
+  String get libSwitchBody {
+    return Intl.message(
+      'Switching reloads the engine and drops your current connection. Continue?',
+      name: 'libSwitchBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Installed`
+  String get libInstalled {
+    return Intl.message('Installed', name: 'libInstalled', desc: '', args: []);
+  }
+
+  /// `Installed`
+  String get libInstalledTag {
+    return Intl.message(
+      'Installed',
+      name: 'libInstalledTag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available`
+  String get libAvailable {
+    return Intl.message('Available', name: 'libAvailable', desc: '', args: []);
+  }
+
+  /// `Active`
+  String get libActive {
+    return Intl.message('Active', name: 'libActive', desc: '', args: []);
+  }
+
+  /// `In use`
+  String get libInUse {
+    return Intl.message('In use', name: 'libInUse', desc: '', args: []);
+  }
+
+  /// `Bundled (default)`
+  String get libBundled {
+    return Intl.message(
+      'Bundled (default)',
+      name: 'libBundled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bundled`
+  String get libBundledShort {
+    return Intl.message('Bundled', name: 'libBundledShort', desc: '', args: []);
+  }
+
+  /// `Bundled`
+  String get libBundledTag {
+    return Intl.message('Bundled', name: 'libBundledTag', desc: '', args: []);
+  }
+
+  /// `Use`
+  String get libUse {
+    return Intl.message('Use', name: 'libUse', desc: '', args: []);
+  }
+
+  /// `Delete`
+  String get libDelete {
+    return Intl.message('Delete', name: 'libDelete', desc: '', args: []);
+  }
+
+  /// `Refresh`
+  String get libRefresh {
+    return Intl.message('Refresh', name: 'libRefresh', desc: '', args: []);
+  }
+
+  /// `Reset to bundled`
+  String get libReset {
+    return Intl.message(
+      'Reset to bundled',
+      name: 'libReset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to load releases`
+  String get libLoadError {
+    return Intl.message(
+      'Failed to load releases',
+      name: 'libLoadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requires app update`
+  String get libNeedsUpdate {
+    return Intl.message(
+      'Requires app update',
+      name: 'libNeedsUpdate',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

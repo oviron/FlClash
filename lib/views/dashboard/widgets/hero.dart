@@ -48,9 +48,11 @@ class _ConnectButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final status = ref.watch(coreStatusProvider);
+    // VPN running (isStart = runTime != null), not core status: the core stays
+    // "connected" while the tunnel is off, so coreStatus can't tell on from off.
+    final on = ref.watch(isStartProvider);
+    final connecting = ref.watch(coreStatusProvider) == CoreStatus.connecting;
     final scheme = context.colorScheme;
-    final connected = status == CoreStatus.connected;
     const size = 168.0;
     return GestureDetector(
       onTap: () => _toggle(ref),
@@ -61,7 +63,7 @@ class _ConnectButton extends ConsumerWidget {
           alignment: Alignment.center,
           children: [
             AnimatedOpacity(
-              opacity: connected ? 1 : 0,
+              opacity: on ? 1 : 0,
               duration: const Duration(milliseconds: 300),
               child: Container(
                 width: size - 16,
@@ -84,9 +86,7 @@ class _ConnectButton extends ConsumerWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: connected
-                      ? scheme.success.opacity50
-                      : scheme.outlineVariant,
+                  color: on ? scheme.success.opacity50 : scheme.outlineVariant,
                   width: 2,
                 ),
               ),
@@ -96,12 +96,12 @@ class _ConnectButton extends ConsumerWidget {
               height: size - 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: connected
+                color: on
                     ? scheme.primaryContainer
                     : scheme.surfaceContainerHigh,
               ),
               alignment: Alignment.center,
-              child: status == CoreStatus.connecting
+              child: connecting
                   ? SizedBox(
                       width: 40,
                       height: 40,
@@ -113,7 +113,7 @@ class _ConnectButton extends ConsumerWidget {
                   : Icon(
                       Icons.power_settings_new,
                       size: 56,
-                      color: connected
+                      color: on
                           ? scheme.onPrimaryContainer
                           : scheme.onSurfaceVariant,
                     ),
@@ -130,12 +130,11 @@ class _StatusLine extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final status = ref.watch(coreStatusProvider);
-    final label = switch (status) {
-      CoreStatus.connected => appLocalizations.connected,
-      CoreStatus.connecting => appLocalizations.connecting,
-      CoreStatus.disconnected => appLocalizations.disconnected,
-    };
+    final on = ref.watch(isStartProvider);
+    final connecting = ref.watch(coreStatusProvider) == CoreStatus.connecting;
+    final label = connecting
+        ? appLocalizations.connecting
+        : (on ? appLocalizations.connected : appLocalizations.disconnected);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -145,7 +144,7 @@ class _StatusLine extends ConsumerWidget {
             fontWeight: FontWeight.w800,
           ),
         ),
-        if (status == CoreStatus.connected)
+        if (on)
           Padding(
             padding: const EdgeInsets.only(top: 2),
             child: Text(
@@ -254,41 +253,39 @@ class _SpeedTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = context.colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: scheme.outlineVariant),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: color),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    fontFeatures: const [FontFeature.tabularFigures()],
+    return CommonCard(
+      radius: 18,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: color),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
                   ),
-                ),
-                Text(
-                  label,
-                  style: context.textTheme.labelSmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
+                  Text(
+                    label,
+                    style: context.textTheme.labelSmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

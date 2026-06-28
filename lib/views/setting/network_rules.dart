@@ -7,6 +7,7 @@ import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/network_rules.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';
 import 'package:fl_clash/providers/network_state.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/setting/widgets/edit_rule_dialog.dart';
 import 'package:fl_clash/views/setting/widgets/rule_card.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -70,10 +71,10 @@ class _NetworkRulesViewState extends ConsumerState<NetworkRulesView> {
           Positioned(
             right: 16,
             bottom: 80,
-            child: FloatingActionButton.extended(
+            child: CommonFloatingActionButton(
               onPressed: () => _openCreateDialog(context),
               icon: const Icon(Icons.add),
-              label: Text(appLocalizations.networkRulesAdd),
+              label: appLocalizations.networkRulesAdd,
             ),
           ),
         ],
@@ -142,13 +143,15 @@ class _MasterToggleCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SwitchListTile(
-      secondary: const Icon(Icons.toggle_on_outlined),
+    return ListItem.switchItem(
+      leading: const Icon(Icons.toggle_on_outlined),
       title: Text(appLocalizations.networkRulesEnable),
-      value: enabled,
-      onChanged: (value) {
-        ref.read(networkRulesSettingsProvider.notifier).setEnabled(value);
-      },
+      delegate: SwitchDelegate(
+        value: enabled,
+        onChanged: (value) {
+          ref.read(networkRulesSettingsProvider.notifier).setEnabled(value);
+        },
+      ),
     );
   }
 }
@@ -170,36 +173,29 @@ class _DefaultActionCard extends ConsumerWidget {
     }
   }
 
-  Future<void> _choose(BuildContext context, WidgetRef ref) async {
-    final picked = await showDialog<DefaultNetworkAction>(
-      context: context,
-      builder: (dialogContext) => SimpleDialog(
-        title: Text(appLocalizations.networkRulesDefaultActionTitle),
-        children: [
-          for (final action in DefaultNetworkAction.values)
-            ListTile(
-              title: Text(_label(action)),
-              trailing: action == value ? const Icon(Icons.check) : null,
-              onTap: () => Navigator.of(dialogContext).pop(action),
-            ),
-        ],
-      ),
-    );
-    if (picked != null) {
-      ref.read(networkRulesSettingsProvider.notifier).setDefaultAction(picked);
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Opacity(
       opacity: enabled ? 1 : 0.5,
-      child: ListTile(
-        enabled: enabled,
-        leading: const Icon(Icons.rule_outlined),
-        title: Text(appLocalizations.networkRulesDefaultActionTitle),
-        subtitle: Text(_label(value)),
-        onTap: enabled ? () => _choose(context, ref) : null,
+      child: IgnorePointer(
+        ignoring: !enabled,
+        child: ListItem.options(
+          leading: const Icon(Icons.rule_outlined),
+          title: Text(appLocalizations.networkRulesDefaultActionTitle),
+          subtitle: Text(_label(value)),
+          delegate: OptionsDelegate<DefaultNetworkAction>(
+            title: appLocalizations.networkRulesDefaultActionTitle,
+            value: value,
+            options: DefaultNetworkAction.values,
+            textBuilder: _label,
+            onChanged: (picked) {
+              if (picked == null) return;
+              ref
+                  .read(networkRulesSettingsProvider.notifier)
+                  .setDefaultAction(picked);
+            },
+          ),
+        ),
       ),
     );
   }
@@ -219,6 +215,22 @@ class _StatusLine extends ConsumerWidget {
     }
   }
 
+  String _networkLabel(NetworkSnapshot snapshot) {
+    switch (snapshot.type) {
+      case NetworkType.wifi:
+        final ssid = snapshot.ssid;
+        return ssid == null || ssid.isEmpty
+            ? appLocalizations.networkRulesNetWifi
+            : appLocalizations.networkRulesNetWifiNamed(ssid);
+      case NetworkType.cellular:
+        return appLocalizations.networkRulesConditionAnyCellular;
+      case NetworkType.ethernet:
+        return appLocalizations.networkRulesConditionAnyEthernet;
+      case NetworkType.none:
+        return appLocalizations.networkRulesNetNone;
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(networkRulesSettingsProvider);
@@ -227,25 +239,27 @@ class _StatusLine extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final status = ref.watch(lastNetworkRuleStatusProvider);
 
-    final String text;
+    final NetworkSnapshot snapshot;
+    final NetworkDecision decision;
     final bool overridden;
     if (status != null) {
-      text = status.reason;
+      snapshot = status.snapshot;
+      decision = status.decision;
       overridden = status.overridden;
     } else {
       // The resident service hasn't reported yet (just enabled / cold start):
       // show a local preview from the same engine so the line isn't blank.
       final rules = ref.watch(networkRulesStreamProvider).value ?? const [];
-      final snapshot = ref.watch(currentNetworkSnapshotProvider);
-      final decision = resolveNetworkDecision(
+      snapshot = ref.watch(currentNetworkSnapshotProvider);
+      decision = resolveNetworkDecision(
         rules: rules,
         snapshot: snapshot,
         defaultAction: settings.defaultAction,
         activeProfileId: ref.watch(currentProfileIdProvider),
       );
-      text = _decisionLabel(decision);
       overridden = false;
     }
+    final text = '${_networkLabel(snapshot)} → ${_decisionLabel(decision)}';
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
@@ -288,17 +302,16 @@ class _RulesList extends ConsumerWidget {
     WidgetRef ref,
     NetworkRule rule,
   ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(appLocalizations.networkRulesConfirmDelete),
+    final confirmed = await globalState.showCommonDialog<bool>(
+      child: CommonDialog(
+        title: appLocalizations.networkRulesConfirmDelete,
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
+            onPressed: () => Navigator.of(context).pop(false),
             child: Text(appLocalizations.cancel),
           ),
           FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
+            onPressed: () => Navigator.of(context).pop(true),
             child: Text(appLocalizations.networkRulesDelete),
           ),
         ],
@@ -325,15 +338,9 @@ class _RulesList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (rules.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Text(
-            appLocalizations.networkRulesEmpty,
-            style: context.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ),
+      return NullStatus(
+        label: appLocalizations.networkRulesEmpty,
+        illustration: const RuleEmptyIllustration(),
       );
     }
     return Opacity(

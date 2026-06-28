@@ -42,8 +42,9 @@ void main() {
     await tester.pumpAndSettle();
 
     final en = AppLocalizations();
-    // Step 2 sections are rendered (in-tunnel start).
-    expect(find.text(en.appRoutingSectionFast), findsOneWidget);
+    // Step 2 sections are rendered (in-tunnel start). Section headers are
+    // uppercased by the canonical ListHeader.
+    expect(find.text(en.appRoutingSectionFast.toUpperCase()), findsOneWidget);
     expect(find.text('VPN'), findsOneWidget);
     expect(find.text('browser-route'), findsOneWidget);
 

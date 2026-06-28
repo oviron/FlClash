@@ -62,27 +62,29 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m15(count) =>
       "${Intl.plural(count, one: '1 month ago', other: '${count} months ago')}";
 
-  static String m16(label) => "No ${label} yet";
+  static String m16(ssid) => "Wi-Fi «${ssid}»";
 
-  static String m17(label) => "${label} must be a number";
+  static String m17(label) => "No ${label} yet";
 
-  static String m18(label) => "${label} must be between 1024 and 49151";
+  static String m18(label) => "${label} must be a number";
 
-  static String m19(count) => "${count} groups";
+  static String m19(label) => "${label} must be between 1024 and 49151";
 
-  static String m20(count) => "${count} nodes";
+  static String m20(count) => "${count} groups";
 
-  static String m21(count) => "${count} providers · limits";
+  static String m21(count) => "${count} nodes";
 
-  static String m22(n) => "every ${n}s";
+  static String m22(count) => "${count} providers · limits";
 
-  static String m23(count) => "${count} items have been selected";
+  static String m23(n) => "every ${n}s";
 
-  static String m24(count) => "${count} rules";
+  static String m24(count) => "${count} items have been selected";
 
-  static String m25(label) => "${label} must be a url";
+  static String m25(count) => "${count} rules";
 
-  static String m26(count) =>
+  static String m26(label) => "${label} must be a url";
+
+  static String m27(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -567,6 +569,34 @@ class MessageLookup extends MessageLookupByLibrary {
     "legalAndDisclaimer": MessageLookupByLibrary.simpleMessage(
       "Legal & disclaimer",
     ),
+    "libActive": MessageLookupByLibrary.simpleMessage("Active"),
+    "libAvailable": MessageLookupByLibrary.simpleMessage("Available"),
+    "libBundled": MessageLookupByLibrary.simpleMessage("Bundled (default)"),
+    "libBundledShort": MessageLookupByLibrary.simpleMessage("Bundled"),
+    "libBundledTag": MessageLookupByLibrary.simpleMessage("Bundled"),
+    "libDelete": MessageLookupByLibrary.simpleMessage("Delete"),
+    "libInUse": MessageLookupByLibrary.simpleMessage("In use"),
+    "libInstalled": MessageLookupByLibrary.simpleMessage("Installed"),
+    "libInstalledTag": MessageLookupByLibrary.simpleMessage("Installed"),
+    "libLoadError": MessageLookupByLibrary.simpleMessage(
+      "Failed to load releases",
+    ),
+    "libNeedsUpdate": MessageLookupByLibrary.simpleMessage(
+      "Requires app update",
+    ),
+    "libRefresh": MessageLookupByLibrary.simpleMessage("Refresh"),
+    "libReset": MessageLookupByLibrary.simpleMessage("Reset to bundled"),
+    "libSwitchBody": MessageLookupByLibrary.simpleMessage(
+      "Switching reloads the engine and drops your current connection. Continue?",
+    ),
+    "libSwitchTitle": MessageLookupByLibrary.simpleMessage(
+      "Switch core version",
+    ),
+    "libUse": MessageLookupByLibrary.simpleMessage("Use"),
+    "libraryVersion": MessageLookupByLibrary.simpleMessage("Library version"),
+    "libraryVersionDesc": MessageLookupByLibrary.simpleMessage(
+      "Download and switch the mihomo core version",
+    ),
     "light": MessageLookupByLibrary.simpleMessage("Light"),
     "list": MessageLookupByLibrary.simpleMessage("List"),
     "listen": MessageLookupByLibrary.simpleMessage("Listen"),
@@ -730,6 +760,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesConditionWifiNamed": MessageLookupByLibrary.simpleMessage(
       "Wi-Fi named",
     ),
+    "networkRulesConditionsLabel": MessageLookupByLibrary.simpleMessage(
+      "Conditions",
+    ),
     "networkRulesConfirmDelete": MessageLookupByLibrary.simpleMessage(
       "Delete this rule?",
     ),
@@ -762,6 +795,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkRulesJoinOr": MessageLookupByLibrary.simpleMessage("OR"),
     "networkRulesMatchAll": MessageLookupByLibrary.simpleMessage("Match all"),
     "networkRulesMatchAny": MessageLookupByLibrary.simpleMessage("Match any"),
+    "networkRulesNetNone": MessageLookupByLibrary.simpleMessage("No network"),
+    "networkRulesNetWifi": MessageLookupByLibrary.simpleMessage("Wi-Fi"),
+    "networkRulesNetWifiNamed": m16,
     "networkRulesOverrideActive": MessageLookupByLibrary.simpleMessage(
       "Manual choice kept until the network changes",
     ),
@@ -772,6 +808,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Current decision",
     ),
     "networkRulesTitle": MessageLookupByLibrary.simpleMessage("Network rules"),
+    "networkRulesVpnKeep": MessageLookupByLibrary.simpleMessage("Keep"),
+    "networkRulesVpnOff": MessageLookupByLibrary.simpleMessage("Off"),
+    "networkRulesVpnOn": MessageLookupByLibrary.simpleMessage("On"),
     "networkRulesWifiMatchContains": MessageLookupByLibrary.simpleMessage(
       "Contains",
     ),
@@ -795,8 +834,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "No profile, Please add a profile",
     ),
-    "nullTip": m16,
-    "numberTip": m17,
+    "nullTip": m17,
+    "numberTip": m18,
     "onlyIcon": MessageLookupByLibrary.simpleMessage("Icon"),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage(
       "Only statistics proxy",
@@ -842,7 +881,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
       "Please enter a different port",
     ),
-    "portTip": m18,
+    "portTip": m19,
     "preferH3": MessageLookupByLibrary.simpleMessage("Prefer H3"),
     "preferH3Desc": MessageLookupByLibrary.simpleMessage(
       "Prioritize the use of DOH\'s http/3",
@@ -865,15 +904,15 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Please enter the auto update interval time",
         ),
-    "profileGroupCount": m19,
+    "profileGroupCount": m20,
     "profileHasUpdate": MessageLookupByLibrary.simpleMessage(
       "The profile has been modified. Do you want to disable auto update?",
     ),
     "profileNameNullValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Please input the profile name",
     ),
-    "profileNodeCount": m20,
-    "profileProvidersLimits": m21,
+    "profileNodeCount": m21,
+    "profileProvidersLimits": m22,
     "profileUrlInvalidValidationDesc": MessageLookupByLibrary.simpleMessage(
       "Please input a valid profile URL",
     ),
@@ -887,7 +926,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "providerDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "Delete this provider?",
     ),
-    "providerEveryN": m22,
+    "providerEveryN": m23,
     "providerFormat": MessageLookupByLibrary.simpleMessage("Format"),
     "providerHealthCheck": MessageLookupByLibrary.simpleMessage("Health-check"),
     "providerHealthCheckEnable": MessageLookupByLibrary.simpleMessage(
@@ -1041,7 +1080,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Seconds"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m23,
+    "selectedCountTitle": m24,
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
@@ -1076,7 +1115,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("New sub-rule"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("Rename sub-rule"),
-    "subRuleRuleCount": m24,
+    "subRuleRuleCount": m25,
     "subRules": MessageLookupByLibrary.simpleMessage("Sub-rules"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
@@ -1129,7 +1168,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m25,
+    "urlTip": m26,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
@@ -1152,7 +1191,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "years": MessageLookupByLibrary.simpleMessage("Years"),
-    "yearsAgo": m26,
+    "yearsAgo": m27,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
     "zoom": MessageLookupByLibrary.simpleMessage("Zoom"),
   };

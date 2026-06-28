@@ -97,46 +97,43 @@ class _SubRulesViewState extends ConsumerState<SubRulesView> {
     final controller = TextEditingController(text: initial);
     return showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: appLocalizations.name,
-          ),
-          onSubmitted: (v) => Navigator.of(context).pop(v.trim()),
-        ),
+      builder: (ctx) => CommonDialog(
+        title: title,
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(ctx).pop(),
             child: Text(appLocalizations.cancel),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(controller.text.trim()),
+            onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
             child: Text(appLocalizations.confirm),
           ),
         ],
+        child: CommonTextField(
+          controller: controller,
+          autofocus: true,
+          labelText: appLocalizations.name,
+          onSubmitted: (v) => Navigator.of(ctx).pop(v.trim()),
+        ),
       ),
     );
   }
 
   Future<bool?> _confirmDelete(String name) => showDialog<bool>(
     context: context,
-    builder: (context) => AlertDialog(
-      title: Text(name),
-      content: Text(appLocalizations.subRuleDeleteConfirm),
+    builder: (ctx) => CommonDialog(
+      title: name,
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
+          onPressed: () => Navigator.of(ctx).pop(false),
           child: Text(appLocalizations.cancel),
         ),
         TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
+          onPressed: () => Navigator.of(ctx).pop(true),
           child: Text(appLocalizations.delete),
         ),
       ],
+      child: Text(appLocalizations.subRuleDeleteConfirm),
     ),
   );
 
@@ -144,9 +141,10 @@ class _SubRulesViewState extends ConsumerState<SubRulesView> {
   Widget build(BuildContext context) {
     return CommonScaffold(
       title: appLocalizations.subRules,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: CommonFloatingActionButton(
         onPressed: _create,
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: appLocalizations.add,
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -158,7 +156,7 @@ class _SubRulesViewState extends ConsumerState<SubRulesView> {
               padding: const EdgeInsets.only(bottom: 88),
               children: [
                 for (final entry in _subRules.entries)
-                  ListTile(
+                  ListItem(
                     leading: const Icon(Icons.alt_route),
                     title: Text(entry.key),
                     subtitle: Text(

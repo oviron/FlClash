@@ -1,6 +1,8 @@
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/providers/location_permission.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/setting/widgets/location_permission_dialog.dart';
+import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -66,21 +68,20 @@ Future<void> _ensureBackground(
 
 Future<bool> _showBackgroundRationaleDialog(BuildContext context) async {
   final l10n = AppLocalizations.of(context);
-  final result = await showDialog<bool>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(l10n.permissionRequiredHint),
-      content: Text(l10n.backgroundLocationRationale),
+  final result = await globalState.showCommonDialog<bool>(
+    child: CommonDialog(
+      title: l10n.permissionRequiredHint,
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(false),
+          onPressed: () => Navigator.of(context).pop(false),
           child: Text(l10n.permissionNotNow),
         ),
         FilledButton(
-          onPressed: () => Navigator.of(dialogContext).pop(true),
+          onPressed: () => Navigator.of(context).pop(true),
           child: Text(l10n.permissionAllow),
         ),
       ],
+      child: Text(l10n.backgroundLocationRationale),
     ),
   );
   return result ?? false;
@@ -88,48 +89,46 @@ Future<bool> _showBackgroundRationaleDialog(BuildContext context) async {
 
 Future<void> _showServiceDisabledDialog(BuildContext context) async {
   final l10n = AppLocalizations.of(context);
-  await showDialog<void>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(l10n.permissionRequiredHint),
-      content: Text(l10n.locationServicesDisabled),
+  await globalState.showCommonDialog<void>(
+    child: CommonDialog(
+      title: l10n.permissionRequiredHint,
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(),
+          onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.permissionNotNow),
         ),
         FilledButton(
           onPressed: () async {
-            Navigator.of(dialogContext).pop();
+            Navigator.of(context).pop();
             await openAppSettings();
           },
           child: Text(l10n.openSettings),
         ),
       ],
+      child: Text(l10n.locationServicesDisabled),
     ),
   );
 }
 
 Future<void> _showOpenSettingsDialog(BuildContext context) async {
   final l10n = AppLocalizations.of(context);
-  await showDialog<void>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(l10n.permissionRequiredHint),
-      content: Text(l10n.locationPermissionExplanation),
+  await globalState.showCommonDialog<void>(
+    child: CommonDialog(
+      title: l10n.permissionRequiredHint,
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(),
+          onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.permissionNotNow),
         ),
         FilledButton(
           onPressed: () async {
-            Navigator.of(dialogContext).pop();
+            Navigator.of(context).pop();
             await openAppSettings();
           },
           child: Text(l10n.openSettings),
         ),
       ],
+      child: Text(l10n.locationPermissionExplanation),
     ),
   );
 }

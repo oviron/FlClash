@@ -230,33 +230,49 @@ class _AppRoutingViewState extends ConsumerState<AppRoutingView> {
                     horizontal: 16,
                     vertical: 8,
                   ),
-                  child: SegmentedButton<_View>(
-                    segments: [
-                      ButtonSegment(
-                        value: _View.apps,
-                        label: Text(appLocalizations.appRoutingApps),
-                        icon: const Icon(Icons.apps),
+                  child: CommonTabBar<_View>(
+                    groupValue: _view,
+                    thumbColor: context.colorScheme.secondaryContainer,
+                    proportionalWidth: false,
+                    onValueChanged: (v) {
+                      if (v != null) setState(() => _view = v);
+                    },
+                    children: {
+                      _View.apps: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 9),
+                        child: Center(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.apps, size: 16),
+                              const SizedBox(width: 6),
+                              Text(appLocalizations.appRoutingApps),
+                            ],
+                          ),
+                        ),
                       ),
-                      ButtonSegment(
-                        value: _View.rules,
-                        label: Text(appLocalizations.appRoutingAllRules),
-                        icon: const Icon(Icons.list),
+                      _View.rules: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 9),
+                        child: Center(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.list, size: 16),
+                              const SizedBox(width: 6),
+                              Text(appLocalizations.appRoutingAllRules),
+                            ],
+                          ),
+                        ),
                       ),
-                    ],
-                    selected: {_view},
-                    onSelectionChanged: (s) => setState(() => _view = s.first),
+                    },
                   ),
                 ),
                 if (_view == _View.apps)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        isDense: true,
-                        prefixIcon: const Icon(Icons.search),
-                        border: const OutlineInputBorder(),
-                        hintText: appLocalizations.appRoutingSearchHint,
-                      ),
+                    child: CommonTextField(
+                      prefixIcon: const Icon(Icons.search),
+                      hintText: appLocalizations.appRoutingSearchHint,
                       onChanged: (v) => setState(() => _query = v),
                     ),
                   ),
@@ -428,7 +444,7 @@ class _AppRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = context.colorScheme;
-    return ListTile(
+    return ListItem(
       onTap: onTap,
       leading: SizedBox(
         width: 40,
@@ -524,9 +540,7 @@ class _TargetWay extends StatelessWidget {
       };
 }
 
-/// Color-coded routing-target chip for an in-tunnel app. Group → primary,
-/// sub-rule → tertiary, DIRECT/builtins → neutral, REJECT → error, default →
-/// outlined.
+/// Color-coded routing-target chip for an in-tunnel app.
 class _TargetChip extends StatelessWidget {
   final AppTarget? target;
 
@@ -536,24 +550,12 @@ class _TargetChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final kind = targetChipKind(target);
     final scheme = context.colorScheme;
-    final (bg, fg) = switch (kind) {
-      TargetChipKind.group => (
-        scheme.primaryContainer,
-        scheme.onPrimaryContainer,
-      ),
-      TargetChipKind.subRule => (
-        scheme.tertiaryContainer,
-        scheme.onTertiaryContainer,
-      ),
-      TargetChipKind.reject => (scheme.errorContainer, scheme.onErrorContainer),
-      TargetChipKind.direct || TargetChipKind.global => (
-        scheme.surfaceContainerHighest,
-        scheme.onSurfaceVariant,
-      ),
-      TargetChipKind.profileRules => (
-        Colors.transparent,
-        scheme.onSurfaceVariant,
-      ),
+    final tonalColor = switch (kind) {
+      TargetChipKind.group => scheme.primary,
+      TargetChipKind.subRule => scheme.tertiary,
+      TargetChipKind.reject => scheme.error,
+      TargetChipKind.direct || TargetChipKind.global => scheme.onSurfaceVariant,
+      TargetChipKind.profileRules => scheme.onSurfaceVariant,
     };
     final label = switch (kind) {
       TargetChipKind.profileRules => appLocalizations.appRoutingDefault,
@@ -561,35 +563,11 @@ class _TargetChip extends StatelessWidget {
     };
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 124),
-      child: Container(
-        decoration: ShapeDecoration(
-          color: bg,
-          shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(14),
-            side: kind == TargetChipKind.profileRules
-                ? BorderSide(color: scheme.outlineVariant)
-                : BorderSide.none,
-          ),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(_kindIcon(kind), size: 15, color: fg),
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                style: context.textTheme.labelMedium?.copyWith(
-                  color: fg,
-                  fontWeight: FontWeight.w700,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-          ],
-        ),
+      child: CommonChip(
+        label: label,
+        type: ChipType.tonal,
+        tonalColor: tonalColor,
+        avatar: Icon(_kindIcon(kind), size: 14),
       ),
     );
   }
@@ -701,24 +679,44 @@ class _AppRoutingPickerSheetState extends State<AppRoutingPickerSheet> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(bottom: 12),
         children: [
-          _StepLabel('1 · ${appLocalizations.appRoutingStep1}'),
+          ListHeader(title: '1 · ${appLocalizations.appRoutingStep1}'),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: SegmentedButton<bool>(
-              segments: [
-                ButtonSegment(
-                  value: true,
-                  label: Text(appLocalizations.appRoutingInTunnel),
-                  icon: const Icon(Icons.vpn_lock, size: 18),
+            child: CommonTabBar<bool>(
+              groupValue: _inTunnel,
+              thumbColor: context.colorScheme.secondaryContainer,
+              proportionalWidth: false,
+              onValueChanged: (v) {
+                if (v != null) setState(() => _inTunnel = v);
+              },
+              children: {
+                true: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 9),
+                  child: Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.vpn_lock, size: 16),
+                        const SizedBox(width: 6),
+                        Text(appLocalizations.appRoutingInTunnel),
+                      ],
+                    ),
+                  ),
                 ),
-                ButtonSegment(
-                  value: false,
-                  label: Text(appLocalizations.appRoutingBypassDirect),
-                  icon: const Icon(Icons.logout, size: 18),
+                false: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 9),
+                  child: Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.logout, size: 16),
+                        const SizedBox(width: 6),
+                        Text(appLocalizations.appRoutingBypassDirect),
+                      ],
+                    ),
+                  ),
                 ),
-              ],
-              selected: {_inTunnel},
-              onSelectionChanged: (s) => setState(() => _inTunnel = s.first),
+              },
             ),
           ),
           Padding(
@@ -742,7 +740,7 @@ class _AppRoutingPickerSheetState extends State<AppRoutingPickerSheet> {
                 label: Text(appLocalizations.appRoutingBypassDirect),
               ),
             ),
-          _StepLabel('2 · ${appLocalizations.appRoutingStep2}'),
+          ListHeader(title: '2 · ${appLocalizations.appRoutingStep2}'),
           IgnorePointer(
             ignoring: !_inTunnel,
             child: Opacity(
@@ -757,10 +755,7 @@ class _AppRoutingPickerSheetState extends State<AppRoutingPickerSheet> {
 
   List<Widget> _buildRouteNodes(BuildContext context) {
     return [
-      _NodeLabel(
-        icon: Icons.bolt,
-        label: appLocalizations.appRoutingSectionFast,
-      ),
+      ListHeader(title: appLocalizations.appRoutingSectionFast),
       _RouteNode(
         kind: TargetChipKind.profileRules,
         title: appLocalizations.appRoutingDefault,
@@ -782,11 +777,9 @@ class _AppRoutingPickerSheetState extends State<AppRoutingPickerSheet> {
         onTap: () => _select(kRoutingReject, false),
       ),
       if (widget.groupNames.isNotEmpty) ...[
-        _NodeLabel(
-          icon: Icons.hub,
-          label: appLocalizations.appRoutingSectionGroup,
-          hint: appLocalizations.appRoutingSectionGroupHint,
-          color: context.colorScheme.primary,
+        ListHeader(
+          title: appLocalizations.appRoutingSectionGroup,
+          subTitle: appLocalizations.appRoutingSectionGroupHint,
         ),
         for (final g in widget.groupNames)
           _RouteNode(
@@ -797,11 +790,9 @@ class _AppRoutingPickerSheetState extends State<AppRoutingPickerSheet> {
           ),
       ],
       if (widget.subRuleNames.isNotEmpty) ...[
-        _NodeLabel(
-          icon: Icons.alt_route,
-          label: appLocalizations.appRoutingSectionScenario,
-          hint: appLocalizations.appRoutingSectionScenarioHint,
-          color: context.colorScheme.tertiary,
+        ListHeader(
+          title: appLocalizations.appRoutingSectionScenario,
+          subTitle: appLocalizations.appRoutingSectionScenarioHint,
         ),
         for (final n in widget.subRuleNames)
           _RouteNode(
@@ -813,76 +804,6 @@ class _AppRoutingPickerSheetState extends State<AppRoutingPickerSheet> {
           ),
       ],
     ];
-  }
-}
-
-class _StepLabel extends StatelessWidget {
-  final String text;
-
-  const _StepLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 10, 18, 8),
-      child: Text(
-        text,
-        style: context.textTheme.labelMedium?.copyWith(
-          color: context.colorScheme.onSurfaceVariant,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.4,
-        ),
-      ),
-    );
-  }
-}
-
-class _NodeLabel extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String? hint;
-  final Color? color;
-
-  const _NodeLabel({
-    required this.icon,
-    required this.label,
-    this.hint,
-    this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final c = color ?? context.colorScheme.onSurfaceVariant;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
-      child: Row(
-        children: [
-          Icon(icon, size: 15, color: c),
-          const SizedBox(width: 7),
-          Text(
-            label,
-            style: context.textTheme.labelSmall?.copyWith(
-              color: c,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.4,
-            ),
-          ),
-          if (hint != null) ...[
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text(
-                hint!,
-                maxLines: 1,
-                style: context.textTheme.labelSmall?.copyWith(
-                  color: context.colorScheme.onSurfaceVariant,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
   }
 }
 
@@ -983,28 +904,80 @@ class _SettingsSheetState extends State<_SettingsSheet> {
         shrinkWrap: true,
         padding: const EdgeInsets.only(bottom: 16),
         children: [
-          _SettingsLabel(appLocalizations.appRoutingListMode),
+          ListHeader(title: appLocalizations.appRoutingListMode),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
                 Expanded(
-                  child: _ModeCard(
-                    icon: Icons.checklist,
-                    title: appLocalizations.whitelistMode,
-                    desc: appLocalizations.appRoutingModeWhitelist,
-                    selected: _mode == AccessControlMode.acceptSelected,
-                    onTap: () => _setMode(AccessControlMode.acceptSelected),
+                  child: CommonCard(
+                    type: CommonCardType.filled,
+                    isSelected: _mode == AccessControlMode.acceptSelected,
+                    onPressed: () => _setMode(AccessControlMode.acceptSelected),
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.checklist,
+                            size: 22,
+                            color: context.colorScheme.primary,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            appLocalizations.whitelistMode,
+                            style: context.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            appLocalizations.appRoutingModeWhitelist,
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: _ModeCard(
-                    icon: Icons.block,
-                    title: appLocalizations.blacklistMode,
-                    desc: appLocalizations.appRoutingModeBlacklist,
-                    selected: _mode == AccessControlMode.rejectSelected,
-                    onTap: () => _setMode(AccessControlMode.rejectSelected),
+                  child: CommonCard(
+                    type: CommonCardType.filled,
+                    isSelected: _mode == AccessControlMode.rejectSelected,
+                    onPressed: () => _setMode(AccessControlMode.rejectSelected),
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.block,
+                            size: 22,
+                            color: context.colorScheme.primary,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            appLocalizations.blacklistMode,
+                            style: context.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            appLocalizations.appRoutingModeBlacklist,
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -1035,21 +1008,23 @@ class _SettingsSheetState extends State<_SettingsSheet> {
               },
             ),
           ),
-          _SettingsLabel(appLocalizations.sort),
+          ListHeader(title: appLocalizations.sort),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Wrap(
               spacing: 8,
               children: [
-                ChoiceChip(
-                  label: Text(appLocalizations.appRoutingSortName),
-                  selected: _sort == _Sort.name,
-                  onSelected: (_) => _setSort(_Sort.name),
+                CommonChip(
+                  label: appLocalizations.appRoutingSortName,
+                  type: _sort == _Sort.name ? ChipType.tonal : ChipType.action,
+                  onPressed: () => _setSort(_Sort.name),
                 ),
-                ChoiceChip(
-                  label: Text(appLocalizations.appRoutingSortConfigured),
-                  selected: _sort == _Sort.configuredFirst,
-                  onSelected: (_) => _setSort(_Sort.configuredFirst),
+                CommonChip(
+                  label: appLocalizations.appRoutingSortConfigured,
+                  type: _sort == _Sort.configuredFirst
+                      ? ChipType.tonal
+                      : ChipType.action,
+                  onPressed: () => _setSort(_Sort.configuredFirst),
                 ),
               ],
             ),
@@ -1067,76 +1042,5 @@ class _SettingsSheetState extends State<_SettingsSheet> {
   void _setSort(_Sort sort) {
     setState(() => _sort = sort);
     widget.onSort(sort);
-  }
-}
-
-class _SettingsLabel extends StatelessWidget {
-  final String text;
-
-  const _SettingsLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 12, 18, 8),
-      child: Text(
-        text,
-        style: context.textTheme.labelMedium?.copyWith(
-          color: context.colorScheme.onSurfaceVariant,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
-  }
-}
-
-class _ModeCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String desc;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _ModeCard({
-    required this.icon,
-    required this.title,
-    required this.desc,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = context.colorScheme;
-    return CommonCard(
-      type: CommonCardType.filled,
-      isSelected: selected,
-      onPressed: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 22, color: scheme.primary),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: context.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              desc,
-              style: context.textTheme.bodySmall?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

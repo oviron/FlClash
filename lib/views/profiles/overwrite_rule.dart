@@ -58,28 +58,18 @@ class RuleStatusItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        child: CommonCard(
-          padding: EdgeInsets.zero,
-          radius: 18,
-          type: CommonCardType.filled,
-          onPressed: () {
-            onChange(!status);
-          },
-          child: ListTile(
-            minTileHeight: 0,
-            minVerticalPadding: 0,
-            titleTextStyle: context.textTheme.bodyMedium?.toJetBrainsMono,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
-            trailing: Switch(value: status, onChanged: onChange),
-            title: Text(rule.value),
-          ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: CommonCard(
+        padding: EdgeInsets.zero,
+        radius: 18,
+        type: CommonCardType.filled,
+        child: ListItem.switchItem(
+          titleTextStyle: context.textTheme.bodyMedium?.toJetBrainsMono,
+          minTileHeight: 0,
+          minVerticalPadding: 16,
+          title: Text(rule.value),
+          delegate: SwitchDelegate(value: status, onChanged: onChange),
         ),
       ),
     );
@@ -101,7 +91,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
   final _contentController = TextEditingController();
   bool _noResolve = false;
   bool _src = false;
-  List<DropdownMenuEntry<String>> _targetItems = [];
+  List<String> _targetItems = [];
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -110,14 +100,11 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
     super.initState();
   }
 
-  List<DropdownMenuEntry<String>> _buildTargetItems(RuleAction action) {
-    return [
-      ...RuleTarget.values
-          .where(
-            (item) => item != RuleTarget.MATCH || action == RuleAction.MATCH,
-          )
-          .map((item) => DropdownMenuEntry(value: item.name, label: item.name)),
-    ];
+  List<String> _buildTargetItems(RuleAction action) {
+    return RuleTarget.values
+        .where((item) => item != RuleTarget.MATCH || action == RuleAction.MATCH)
+        .map((item) => item.name)
+        .toList();
   }
 
   void _initState() {
@@ -134,7 +121,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
     _ruleAction = RuleAction.addedRuleActions.first;
     _targetItems = _buildTargetItems(_ruleAction);
     if (_targetItems.isNotEmpty) {
-      _ruleTargetController.text = _targetItems.first.value;
+      _ruleTargetController.text = _targetItems.first;
     }
   }
 
@@ -183,142 +170,153 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
           child: Text(appLocalizations.confirm),
         ),
       ],
-      child: DropdownMenuTheme(
-        data: DropdownMenuThemeData(
-          inputDecorationTheme: InputDecorationTheme(
-            border: const OutlineInputBorder(),
-            labelStyle: context.textTheme.bodyLarge?.copyWith(
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        child: Form(
-          key: _formKey,
-          child: LayoutBuilder(
-            builder: (_, constraints) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FilledButton.tonal(
-                    onPressed: () async {
-                      _ruleAction =
-                          await globalState.showCommonDialog<RuleAction>(
-                            filter: false,
-                            child: OptionsDialog<RuleAction>(
-                              title: appLocalizations.ruleName,
-                              options: RuleAction.addedRuleActions,
-                              textBuilder: (item) => item.value,
-                              value: _ruleAction,
-                            ),
-                          ) ??
-                          _ruleAction;
-                      _targetItems = _buildTargetItems(_ruleAction);
-                      final currentTarget = _ruleTargetController.text
-                          .toUpperCase();
-                      final hasCurrent = _targetItems.any(
-                        (i) => i.value.toUpperCase() == currentTarget,
+      child: Form(
+        key: _formKey,
+        child: LayoutBuilder(
+          builder: (_, constraints) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FilledButton.tonal(
+                  onPressed: () async {
+                    _ruleAction =
+                        await globalState.showCommonDialog<RuleAction>(
+                          filter: false,
+                          child: OptionsDialog<RuleAction>(
+                            title: appLocalizations.ruleName,
+                            options: RuleAction.addedRuleActions,
+                            textBuilder: (item) => item.value,
+                            value: _ruleAction,
+                          ),
+                        ) ??
+                        _ruleAction;
+                    _targetItems = _buildTargetItems(_ruleAction);
+                    final currentTarget = _ruleTargetController.text
+                        .toUpperCase();
+                    final hasCurrent = _targetItems.any(
+                      (i) => i.toUpperCase() == currentTarget,
+                    );
+                    if (!hasCurrent && _targetItems.isNotEmpty) {
+                      _ruleTargetController.text = _targetItems.first;
+                    }
+                    setState(() {});
+                  },
+                  child: Text(_ruleAction.value),
+                ),
+                const SizedBox(height: 24),
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  onFieldSubmitted: (_) {
+                    _handleSubmit();
+                  },
+                  controller: _contentController,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: appLocalizations.content,
+                  ),
+                  validator: (_) {
+                    if (_contentController.text.isEmpty) {
+                      return appLocalizations.emptyTip(
+                        appLocalizations.content,
                       );
-                      if (!hasCurrent && _targetItems.isNotEmpty) {
-                        _ruleTargetController.text = _targetItems.first.value;
-                      }
-                      setState(() {});
-                    },
-                    child: Text(_ruleAction.value),
-                  ),
-                  const SizedBox(height: 24),
-                  TextFormField(
-                    keyboardType: TextInputType.text,
-                    onFieldSubmitted: (_) {
-                      _handleSubmit();
-                    },
-                    controller: _contentController,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: appLocalizations.content,
-                    ),
-                    validator: (_) {
-                      if (_contentController.text.isEmpty) {
-                        return appLocalizations.emptyTip(
-                          appLocalizations.content,
-                        );
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 24),
-                  FormField<String>(
-                    validator: (_) {
-                      if (_ruleTargetController.text.isEmpty) {
-                        return appLocalizations.emptyTip(
-                          appLocalizations.ruleTarget,
-                        );
-                      }
-                      return null;
-                    },
-                    builder: (filed) {
-                      return DropdownMenu(
-                        controller: _ruleTargetController,
-                        label: Text(appLocalizations.ruleTarget),
-                        width: 200,
-                        menuHeight: 250,
-                        enableFilter: false,
-                        enableSearch: false,
-                        dropdownMenuEntries: _targetItems,
-                        errorText: filed.errorText,
-                      );
-                    },
-                  ),
-                  if (_ruleAction.hasParams) ...[
-                    const SizedBox(height: 20),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        CommonCard(
-                          radius: 8,
-                          isSelected: _src,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 8,
-                            ),
-                            child: Text(
-                              appLocalizations.sourceIp,
-                              style: context.textTheme.bodyMedium,
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 24),
+                FormField<String>(
+                  validator: (_) => _ruleTargetController.text.isEmpty
+                      ? appLocalizations.emptyTip(appLocalizations.ruleTarget)
+                      : null,
+                  builder: (field) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FilledButton.tonal(
+                        onPressed: () async {
+                          final picked = await globalState
+                              .showCommonDialog<String>(
+                                filter: false,
+                                child: OptionsDialog<String>(
+                                  title: appLocalizations.ruleTarget,
+                                  options: _targetItems,
+                                  textBuilder: (s) => s,
+                                  value: _ruleTargetController.text,
+                                ),
+                              );
+                          if (picked != null) {
+                            setState(() => _ruleTargetController.text = picked);
+                          }
+                        },
+                        child: Text(
+                          _ruleTargetController.text.isEmpty
+                              ? appLocalizations.ruleTarget
+                              : _ruleTargetController.text,
+                        ),
+                      ),
+                      if (field.errorText != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4, left: 4),
+                          child: Text(
+                            field.errorText!,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                              fontSize: 12,
                             ),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _src = !_src;
-                            });
-                          },
                         ),
-                        CommonCard(
-                          radius: 8,
-                          isSelected: _noResolve,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 8,
-                            ),
-                            child: Text(
-                              appLocalizations.noResolve,
-                              style: context.textTheme.bodyMedium,
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _noResolve = !_noResolve;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+                if (_ruleAction.hasParams) ...[
                   const SizedBox(height: 20),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      CommonCard(
+                        radius: 8,
+                        isSelected: _src,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 8,
+                          ),
+                          child: Text(
+                            appLocalizations.sourceIp,
+                            style: context.textTheme.bodyMedium,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _src = !_src;
+                          });
+                        },
+                      ),
+                      CommonCard(
+                        radius: 8,
+                        isSelected: _noResolve,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 8,
+                          ),
+                          child: Text(
+                            appLocalizations.noResolve,
+                            style: context.textTheme.bodyMedium,
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _noResolve = !_noResolve;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ],
-              );
-            },
-          ),
+                const SizedBox(height: 20),
+              ],
+            );
+          },
         ),
       ),
     );

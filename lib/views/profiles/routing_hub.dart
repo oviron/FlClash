@@ -87,7 +87,7 @@ class _ProxiesView extends StatelessWidget {
             itemCount: proxies.length,
             itemBuilder: (_, index) {
               final p = proxies[index];
-              return ListTile(
+              return ListItem(
                 leading: const Icon(Icons.dns_outlined),
                 title: Text(p.name),
                 subtitle: Text(

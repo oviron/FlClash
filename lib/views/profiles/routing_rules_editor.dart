@@ -93,12 +93,12 @@ class _RoutingRulesEditorState extends ConsumerState<RoutingRulesEditor> {
       body: ListView(
         shrinkWrap: true,
         children: [
-          ListTile(
+          ListItem(
             leading: const Icon(Icons.tune),
             title: Text(appLocalizations.addRule),
             onTap: () => Navigator.of(context).pop(false),
           ),
-          ListTile(
+          ListItem(
             leading: const Icon(Icons.account_tree_outlined),
             title: Text(appLocalizations.addLogicalRule),
             onTap: () => Navigator.of(context).pop(true),
@@ -170,7 +170,7 @@ class _RoutingRulesEditorState extends ConsumerState<RoutingRulesEditor> {
           shrinkWrap: true,
           children: [
             for (final o in options)
-              ListTile(
+              ListItem(
                 title: Text(o),
                 trailing: o == current ? const Icon(Icons.check) : null,
                 onTap: () => Navigator.of(context).pop(o),
@@ -209,7 +209,7 @@ class _RoutingRulesEditorState extends ConsumerState<RoutingRulesEditor> {
                   itemBuilder: (_, index) {
                     final row = _rows[index];
                     final editable = _editable(row.rule);
-                    return ListTile(
+                    return ListItem(
                       key: ValueKey(row.id),
                       leading: Icon(_leadingIcon(row.rule), size: 18),
                       title: Text(row.rule.serialize(), style: mono),
@@ -283,17 +283,16 @@ class _RuleEditorSheetState extends State<_RuleEditorSheet> {
           shrinkWrap: true,
           padding: const EdgeInsets.all(16),
           children: [
-            DropdownButtonFormField<RuleAction>(
-              initialValue: _action,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: appLocalizations.ruleName,
+            ListItem.options(
+              title: Text(_action.value),
+              subtitle: Text(appLocalizations.ruleName),
+              delegate: OptionsDelegate<RuleAction>(
+                title: appLocalizations.ruleName,
+                options: editableRuleActions,
+                value: _action,
+                textBuilder: (a) => a.value,
+                onChanged: (v) => setState(() => _action = v ?? _action),
               ),
-              items: [
-                for (final a in editableRuleActions)
-                  DropdownMenuItem(value: a, child: Text(a.value)),
-              ],
-              onChanged: (v) => setState(() => _action = v ?? _action),
             ),
             const SizedBox(height: 16),
             TextFormField(

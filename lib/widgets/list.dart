@@ -404,6 +404,15 @@ class ListItem<T> extends StatelessWidget {
   }
 }
 
+/// Canonical section-header padding. A plain const (not the text-scaled
+/// `listHeaderPadding`) so a bare `ListHeader` renders without `globalState`.
+const _sectionHeaderPadding = EdgeInsets.only(
+  left: 16,
+  right: 8,
+  top: 24,
+  bottom: 8,
+);
+
 class ListHeader extends StatelessWidget {
   final String title;
   final String? subTitle;
@@ -424,7 +433,7 @@ class ListHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerLeft,
-      padding: padding ?? listHeaderPadding,
+      padding: padding ?? _sectionHeaderPadding,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -434,10 +443,11 @@ class ListHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
-                  style: context.textTheme.labelLarge?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant.opacity80,
-                    fontWeight: FontWeight.w600,
+                  title.toUpperCase(),
+                  style: context.textTheme.labelMedium?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
                   ),
                 ),
                 if (subTitle != null)

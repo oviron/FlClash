@@ -58,6 +58,80 @@ class OptionsDialog<T> extends StatelessWidget {
   }
 }
 
+/// Canonical inline text field for sheet/form bodies — one filled, rounded
+/// decoration so screens stop hand-rolling bare TextField vs OutlineInputBorder.
+class CommonTextField extends StatelessWidget {
+  final TextEditingController? controller;
+  final String? labelText;
+  final String? hintText;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final TextInputType? keyboardType;
+  final bool obscureText;
+  final bool autofocus;
+  final int? maxLines;
+  final TextStyle? style;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
+
+  const CommonTextField({
+    super.key,
+    this.controller,
+    this.labelText,
+    this.hintText,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.keyboardType,
+    this.obscureText = false,
+    this.autofocus = false,
+    this.maxLines = 1,
+    this.style,
+    this.onChanged,
+    this.onSubmitted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = context.colorScheme;
+    final radius = BorderRadius.circular(12);
+    return TextField(
+      controller: controller,
+      autofocus: autofocus,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      maxLines: obscureText ? 1 : maxLines,
+      style: style,
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: scheme.surfaceContainerHigh,
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: radius,
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: radius,
+          borderSide: BorderSide(color: scheme.outlineVariant),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: radius,
+          borderSide: BorderSide(color: scheme.primary, width: 1.5),
+        ),
+      ),
+    );
+  }
+}
+
 class CommonCheckBox extends StatelessWidget {
   final bool? value;
   final ValueChanged<bool?>? onChanged;

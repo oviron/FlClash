@@ -52,6 +52,7 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders["appLabel"] = "FlClash"
+        manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
         buildConfigField(
             "String", "BUNDLED_MIHOMO_VERSION",
             "\"${aarBundledVersion("../core/libs", "libmihomo-android-v")}\"",
@@ -79,6 +80,8 @@ android {
         debug {
             isMinifyEnabled = false
             applicationIdSuffix = ".dev"
+            manifestPlaceholders["appLabel"] = "FlClash Dev"
+            manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_dev"
         }
 
         release {
@@ -89,6 +92,8 @@ android {
             } else {
                 signingConfig = signingConfigs.getByName("debug")
                 applicationIdSuffix = ".dev"
+                manifestPlaceholders["appLabel"] = "FlClash Dev"
+                manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher_dev"
             }
 
             proguardFiles(

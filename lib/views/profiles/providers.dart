@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/profile_routing/provider_spec.dart';
 import 'package:fl_clash/profile_routing/provider_url.dart';
@@ -251,16 +252,25 @@ class _ProviderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final info = runtime?.subscriptionInfo;
+    final isSub = spec.type == 'http';
     return ListItem(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      leading: Icon(
-        spec.type == 'http' ? Icons.cloud_outlined : Icons.description_outlined,
-      ),
+      leading: Icon(isSub ? Icons.cloud_outlined : Icons.description_outlined),
       title: Row(
         children: [
           Flexible(child: Text(name, overflow: TextOverflow.ellipsis)),
           const SizedBox(width: 8),
-          _SourceBadge(type: spec.type),
+          CommonChip(
+            type: ChipType.tonal,
+            tonalColor: isSub
+                ? context.colorScheme.secondary
+                : context.colorScheme.onSurfaceVariant,
+            label: isSub
+                ? appLocalizations.providerSourceHttp
+                : spec.type == 'file'
+                ? appLocalizations.providerSourceFile
+                : appLocalizations.providerSourceInline,
+          ),
         ],
       ),
       subtitle: Column(
@@ -279,38 +289,6 @@ class _ProviderRow extends StatelessWidget {
         onPressed: onDelete,
       ),
       onTap: onTap,
-    );
-  }
-}
-
-class _SourceBadge extends StatelessWidget {
-  final String type;
-
-  const _SourceBadge({required this.type});
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = context.colorScheme;
-    final isSub = type == 'http';
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-      decoration: BoxDecoration(
-        color: isSub
-            ? scheme.secondaryContainer
-            : scheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(7),
-      ),
-      child: Text(
-        isSub
-            ? appLocalizations.providerSourceHttp
-            : type == 'file'
-            ? appLocalizations.providerSourceFile
-            : appLocalizations.providerSourceInline,
-        style: context.textTheme.labelSmall?.copyWith(
-          color: isSub ? scheme.onSecondaryContainer : scheme.onSurfaceVariant,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
     );
   }
 }
@@ -414,16 +392,16 @@ class _ProviderEditorState extends State<ProviderEditor> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          TextField(
+          CommonTextField(
             controller: _name,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: appLocalizations.name,
-            ),
+            labelText: appLocalizations.name,
             onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 20),
-          _SectionLabel(appLocalizations.providerSource),
+          ListHeader(
+            title: appLocalizations.providerSource,
+            padding: const EdgeInsets.only(bottom: 10),
+          ),
           _SourceSegment(
             kind: widget.kind,
             value: _type,
@@ -438,74 +416,93 @@ class _ProviderEditorState extends State<ProviderEditor> {
             ),
           ] else ...[
             const SizedBox(height: 16),
-            TextField(
+            CommonTextField(
               controller: _path,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: appLocalizations.providerPath,
-              ),
+              labelText: appLocalizations.providerPath,
             ),
           ],
           if (!isFile) ...[
             const SizedBox(height: 16),
-            TextField(
+            CommonTextField(
               controller: _interval,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: appLocalizations.groupHealthInterval,
-              ),
+              labelText: appLocalizations.groupHealthInterval,
             ),
           ],
           if (_isRule) ...[
             const SizedBox(height: 20),
-            _SectionLabel(appLocalizations.providerBehavior),
-            _ChipRow(
-              options: _behaviors,
-              labels: [
-                appLocalizations.behaviorDomain,
-                appLocalizations.behaviorIpcidr,
-                appLocalizations.behaviorClassical,
+            ListHeader(
+              title: appLocalizations.providerBehavior,
+              padding: const EdgeInsets.only(bottom: 10),
+            ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final (i, opt) in _behaviors.indexed)
+                  CommonChip(
+                    type: ChipType.tonal,
+                    tonalColor: _behavior == opt
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+                    label: [
+                      appLocalizations.behaviorDomain,
+                      appLocalizations.behaviorIpcidr,
+                      appLocalizations.behaviorClassical,
+                    ][i],
+                    onPressed: () => setState(
+                      () => _behavior = _behavior == opt ? null : opt,
+                    ),
+                  ),
               ],
-              selected: _behavior,
-              onSelected: (v) => setState(() => _behavior = v),
             ),
             const SizedBox(height: 20),
-            _SectionLabel(appLocalizations.providerFormat),
-            _ChipRow(
-              options: _formats,
-              labels: _formats,
-              selected: _format,
-              onSelected: (v) => setState(() => _format = v),
+            ListHeader(
+              title: appLocalizations.providerFormat,
+              padding: const EdgeInsets.only(bottom: 10),
+            ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final opt in _formats)
+                  CommonChip(
+                    type: ChipType.tonal,
+                    tonalColor: _format == opt
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+                    label: opt,
+                    onPressed: () =>
+                        setState(() => _format = _format == opt ? null : opt),
+                  ),
+              ],
             ),
           ],
           if (!_isRule) ...[
             const SizedBox(height: 20),
-            _SectionLabel(appLocalizations.providerHealthCheck),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
+            ListHeader(
+              title: appLocalizations.providerHealthCheck,
+              padding: const EdgeInsets.only(bottom: 10),
+            ),
+            ListItem.switchItem(
               title: Text(appLocalizations.providerHealthCheckEnable),
-              value: _healthEnabled,
-              onChanged: (v) => setState(() => _healthEnabled = v),
+              delegate: SwitchDelegate<bool>(
+                value: _healthEnabled,
+                onChanged: (v) => setState(() => _healthEnabled = v),
+              ),
             ),
             if (_healthEnabled) ...[
               const SizedBox(height: 8),
-              TextField(
+              CommonTextField(
                 controller: _healthUrl,
                 keyboardType: TextInputType.url,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: appLocalizations.groupHealthUrl,
-                ),
+                labelText: appLocalizations.groupHealthUrl,
               ),
               const SizedBox(height: 16),
-              TextField(
+              CommonTextField(
                 controller: _healthInterval,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: appLocalizations.groupHealthInterval,
-                ),
+                labelText: appLocalizations.groupHealthInterval,
               ),
             ],
           ],
@@ -519,27 +516,6 @@ class _ProviderEditorState extends State<ProviderEditor> {
             ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  final String text;
-
-  const _SectionLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Text(
-        text.toUpperCase(),
-        style: context.textTheme.labelMedium?.copyWith(
-          color: context.colorScheme.onSurfaceVariant,
-          fontWeight: FontWeight.w800,
-          letterSpacing: .5,
-        ),
       ),
     );
   }
@@ -577,95 +553,27 @@ class _SourceSegment extends StatelessWidget {
         for (final (i, opt) in options.indexed) ...[
           if (i > 0) const SizedBox(width: 8),
           Expanded(
-            child: _SegmentCard(
-              icon: opt.$2,
-              label: opt.$3,
-              selected: value == opt.$1,
-              onTap: () => onChanged(opt.$1),
+            child: CommonCard(
+              type: CommonCardType.filled,
+              isSelected: value == opt.$1,
+              onPressed: () => onChanged(opt.$1),
+              radius: 13,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 8,
+                ),
+                child: Column(
+                  children: [
+                    Icon(opt.$2, size: 20),
+                    const SizedBox(height: 6),
+                    Text(opt.$3, textAlign: TextAlign.center),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
-      ],
-    );
-  }
-}
-
-class _SegmentCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _SegmentCard({
-    required this.icon,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = context.colorScheme;
-    return InkWell(
-      borderRadius: BorderRadius.circular(13),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: selected
-              ? scheme.secondaryContainer
-              : scheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(13),
-          border: Border.all(
-            color: selected ? scheme.primary : scheme.outlineVariant,
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 20, color: scheme.primary),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: context.textTheme.labelMedium?.copyWith(
-                fontWeight: FontWeight.w800,
-                color: selected
-                    ? scheme.onSecondaryContainer
-                    : scheme.onSurface,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ChipRow extends StatelessWidget {
-  final List<String> options;
-  final List<String> labels;
-  final String? selected;
-  final ValueChanged<String?> onSelected;
-
-  const _ChipRow({
-    required this.options,
-    required this.labels,
-    required this.selected,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: [
-        for (final (i, opt) in options.indexed)
-          ChoiceChip(
-            label: Text(labels[i]),
-            selected: selected == opt,
-            onSelected: (on) => onSelected(on ? opt : null),
-          ),
       ],
     );
   }
@@ -687,19 +595,16 @@ class _UrlField extends StatelessWidget {
     final masked = maskProviderUrl(controller.text);
     final hasMask = masked != controller.text;
     if (visible || !hasMask) {
-      return TextField(
+      return CommonTextField(
         controller: controller,
         keyboardType: TextInputType.url,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: appLocalizations.providerSubscriptionUrl,
-          suffixIcon: hasMask
-              ? IconButton(
-                  icon: const Icon(Icons.visibility_off_outlined),
-                  onPressed: onToggle,
-                )
-              : null,
-        ),
+        labelText: appLocalizations.providerSubscriptionUrl,
+        suffixIcon: hasMask
+            ? IconButton(
+                icon: const Icon(Icons.visibility_off_outlined),
+                onPressed: onToggle,
+              )
+            : null,
       );
     }
     return InputDecorator(

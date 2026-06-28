@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/profile_routing/group_spec.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -191,9 +192,10 @@ class _ProxyGroupsViewState extends ConsumerState<ProxyGroupsView> {
   Widget build(BuildContext context) {
     return CommonScaffold(
       title: appLocalizations.proxyGroups,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: CommonFloatingActionButton(
         onPressed: _create,
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: appLocalizations.add,
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -205,7 +207,7 @@ class _ProxyGroupsViewState extends ConsumerState<ProxyGroupsView> {
               onReorder: _reorder,
               itemBuilder: (_, index) {
                 final g = _groups[index];
-                return ListTile(
+                return ListItem(
                   key: ValueKey('${g.name}#$index'),
                   leading: const Icon(Icons.lan_outlined),
                   title: Text(g.name),
@@ -320,28 +322,24 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
     try {
       return await showDialog<String>(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text(appLocalizations.groupAddKey),
-          content: TextField(
-            controller: controller,
-            autofocus: true,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: appLocalizations.key,
-            ),
-            onSubmitted: (v) => Navigator.of(context).pop(v.trim()),
-          ),
+        builder: (ctx) => CommonDialog(
+          title: appLocalizations.groupAddKey,
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(ctx).pop(),
               child: Text(appLocalizations.cancel),
             ),
             TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(controller.text.trim()),
+              onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
               child: Text(appLocalizations.confirm),
             ),
           ],
+          child: CommonTextField(
+            controller: controller,
+            autofocus: true,
+            labelText: appLocalizations.key,
+            onSubmitted: (v) => Navigator.of(ctx).pop(v.trim()),
+          ),
         ),
       );
     } finally {
@@ -387,12 +385,9 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          TextField(
+          CommonTextField(
             controller: _name,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: appLocalizations.name,
-            ),
+            labelText: appLocalizations.name,
             onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 16),
@@ -403,38 +398,33 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
             runSpacing: 8,
             children: [
               for (final t in _types)
-                ChoiceChip(
+                CommonChip(
+                  label: t,
                   avatar: Icon(_typeIcons[t], size: 18),
-                  label: Text(t),
-                  selected: _type == t,
-                  onSelected: (_) => setState(() => _type = t),
+                  type: _type == t ? ChipType.tonal : ChipType.action,
+                  onPressed: () => setState(() => _type = t),
                 ),
             ],
           ),
           if (health) ...[
             const SizedBox(height: 16),
-            TextField(
+            CommonTextField(
               controller: _url,
               keyboardType: TextInputType.url,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: appLocalizations.groupHealthUrl,
-              ),
+              labelText: appLocalizations.groupHealthUrl,
             ),
             const SizedBox(height: 16),
-            TextField(
+            CommonTextField(
               controller: _interval,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: appLocalizations.groupHealthInterval,
-              ),
+              labelText: appLocalizations.groupHealthInterval,
             ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
+            ListItem.switchItem(
               title: Text(appLocalizations.groupLazy),
-              value: _lazy,
-              onChanged: (v) => setState(() => _lazy = v),
+              delegate: SwitchDelegate(
+                value: _lazy,
+                onChanged: (v) => setState(() => _lazy = v),
+              ),
             ),
           ],
           const SizedBox(height: 16),
@@ -456,13 +446,10 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
             style: context.textTheme.titleSmall,
           ),
           const SizedBox(height: 8),
-          TextField(
+          CommonTextField(
             controller: _filter,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: appLocalizations.groupFilterRegex,
-              helperText: appLocalizations.groupFilterHint,
-            ),
+            labelText: appLocalizations.groupFilterRegex,
+            hintText: appLocalizations.groupFilterHint,
           ),
           const SizedBox(height: 8),
           Align(
@@ -510,7 +497,7 @@ class _GroupEditorViewState extends State<_GroupEditorView> {
             }),
             children: [
               for (final m in _members)
-                ListTile(
+                ListItem(
                   key: ValueKey(m),
                   dense: true,
                   title: Text(m),
@@ -613,14 +600,16 @@ class _MemberPickerSheetState extends State<_MemberPickerSheet> {
         shrinkWrap: true,
         children: [
           for (final c in widget.pool)
-            CheckboxListTile(
+            ListItem.checkbox(
               dense: true,
-              value: _selected.contains(c),
+              leading: LatencyBadge(widget.delays[c]),
               title: Text(c),
-              secondary: LatencyBadge(widget.delays[c]),
-              onChanged: (v) => setState(() {
-                v == true ? _selected.add(c) : _selected.remove(c);
-              }),
+              delegate: CheckboxDelegate(
+                value: _selected.contains(c),
+                onChanged: (v) => setState(() {
+                  v == true ? _selected.add(c) : _selected.remove(c);
+                }),
+              ),
             ),
         ],
       ),

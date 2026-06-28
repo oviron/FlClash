@@ -113,7 +113,7 @@ enum FindProcessMode { always, off }
 
 enum RestoreOption { all, onlyProfiles }
 
-enum ChipType { action, delete }
+enum ChipType { action, delete, tonal }
 
 enum CommonCardType { plain, filled }
 
