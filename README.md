@@ -14,7 +14,7 @@ A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (
 
 - **Per-profile App Access Control:** YAML `tun.include-package` / `tun.exclude-package` are honored by `VpnService.Builder.addAllowedApplication()`. Without this, Android Auto breaks on whitelist profiles. A per-profile GUI editor with drift v2 migration, opt-in override (Profile UI > YAML > Global), and Reset-to-YAML are included.
 - **Network Rules v1:** automatic VPN on/off based on the current network (WifiNamed / AnyWifi / AnyCellular).
-- **H.7 backend:** `metacubex/mihomo v1.19.24` direct, with CMfA-style patterns: type-explicit providers API, async-callback path, push subscription for connections/log, INNER-bypass via Dart pre-process.
+- **H.7 backend:** `metacubex/mihomo v1.19.26` direct, with CMfA-style patterns: type-explicit providers API, async-callback path, push subscription for connections/log, INNER-bypass via Dart pre-process.
 - **Dashboard checkIp probe:** JNI `WithSpecialProxy` bypasses user rules so the real exit-IP shows even on whitelist profiles with `MATCH,REJECT`.
 - Stability stack: wake/Wi-Fi locks, idempotent module loader, defensive Go type-assertions, MATCH-rule guard for upstream #1959, Global proxy watchdog.
 
