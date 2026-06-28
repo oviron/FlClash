@@ -584,6 +584,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "libNeedsUpdate": MessageLookupByLibrary.simpleMessage(
       "Requires app update",
     ),
+    "quickStartPasteKey": MessageLookupByLibrary.simpleMessage("Paste your key"),
+    "quickStartPasteHint": MessageLookupByLibrary.simpleMessage(
+      "Paste the link, QR, or code your provider sent you",
+    ),
+    "quickStartNoServers": MessageLookupByLibrary.simpleMessage(
+      "No servers found in what you pasted",
+    ),
+    "quickStartImported": MessageLookupByLibrary.simpleMessage("Imported"),
+    "quickStartVerifying": MessageLookupByLibrary.simpleMessage(
+      "Checking your connection...",
+    ),
+    "quickStartVerified": MessageLookupByLibrary.simpleMessage("verified"),
+    "quickStartFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "Couldn't reach the internet through this key",
+    ),
+    "quickStartFailedBody": MessageLookupByLibrary.simpleMessage(
+      "The key connected, but no page would load.",
+    ),
+    "quickStartTryAgain": MessageLookupByLibrary.simpleMessage("Try again"),
+    "quickStartUseDifferent": MessageLookupByLibrary.simpleMessage(
+      "Use a different key",
+    ),
     "libRefresh": MessageLookupByLibrary.simpleMessage("Refresh"),
     "libReset": MessageLookupByLibrary.simpleMessage("Reset to bundled"),
     "libSwitchBody": MessageLookupByLibrary.simpleMessage(

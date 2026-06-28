@@ -33,6 +33,7 @@ export 'preferences.dart';
 export 'print.dart';
 export 'request.dart';
 export 'scroll.dart';
+export 'share_link.dart';
 export 'snowflake.dart';
 export 'string.dart';
 export 'system.dart';

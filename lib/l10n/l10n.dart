@@ -5303,6 +5303,106 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Paste your key`
+  String get quickStartPasteKey {
+    return Intl.message(
+      'Paste your key',
+      name: 'quickStartPasteKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paste the link, QR, or code your provider sent you`
+  String get quickStartPasteHint {
+    return Intl.message(
+      'Paste the link, QR, or code your provider sent you',
+      name: 'quickStartPasteHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No servers found in what you pasted`
+  String get quickStartNoServers {
+    return Intl.message(
+      'No servers found in what you pasted',
+      name: 'quickStartNoServers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Imported`
+  String get quickStartImported {
+    return Intl.message(
+      'Imported',
+      name: 'quickStartImported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checking your connection...`
+  String get quickStartVerifying {
+    return Intl.message(
+      'Checking your connection...',
+      name: 'quickStartVerifying',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `verified`
+  String get quickStartVerified {
+    return Intl.message(
+      'verified',
+      name: 'quickStartVerified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't reach the internet through this key`
+  String get quickStartFailedTitle {
+    return Intl.message(
+      'Couldn\'t reach the internet through this key',
+      name: 'quickStartFailedTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The key connected, but no page would load.`
+  String get quickStartFailedBody {
+    return Intl.message(
+      'The key connected, but no page would load.',
+      name: 'quickStartFailedBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try again`
+  String get quickStartTryAgain {
+    return Intl.message(
+      'Try again',
+      name: 'quickStartTryAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use a different key`
+  String get quickStartUseDifferent {
+    return Intl.message(
+      'Use a different key',
+      name: 'quickStartUseDifferent',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

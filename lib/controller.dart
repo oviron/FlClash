@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -11,6 +13,7 @@ import 'package:fl_clash/profile_routing/rule_codec.dart';
 import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/services/profile_setup_service.dart';
+import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/dialog.dart';
 import 'package:flutter/material.dart';

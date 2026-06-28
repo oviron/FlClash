@@ -9,6 +9,17 @@ extension StringExtension on String {
     return RegExp(r'^(http|https|ftp)://').hasMatch(this);
   }
 
+  bool get isShareLink {
+    final s = trim();
+    final i = s.indexOf('://');
+    if (i <= 0) return false;
+    return shareLinkSchemes.contains(s.substring(0, i).toLowerCase());
+  }
+
+  /// True for anything the quick-start importer can ingest from a single-line
+  /// field: an http(s) subscription URL or a bare share link.
+  bool get isImportable => isUrl || isShareLink;
+
   dynamic get splitByMultipleSeparators {
     final parts = split(
       RegExp(r'[, ;]+'),

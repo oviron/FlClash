@@ -613,6 +613,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "libNeedsUpdate": MessageLookupByLibrary.simpleMessage(
       "Требуется обновление приложения",
     ),
+    "quickStartPasteKey": MessageLookupByLibrary.simpleMessage("Вставьте ключ"),
+    "quickStartPasteHint": MessageLookupByLibrary.simpleMessage(
+      "Вставьте ссылку, QR или код от провайдера",
+    ),
+    "quickStartNoServers": MessageLookupByLibrary.simpleMessage(
+      "В том, что вы вставили, серверы не найдены",
+    ),
+    "quickStartImported": MessageLookupByLibrary.simpleMessage("Импортировано"),
+    "quickStartVerifying": MessageLookupByLibrary.simpleMessage(
+      "Проверяем подключение...",
+    ),
+    "quickStartVerified": MessageLookupByLibrary.simpleMessage("проверено"),
+    "quickStartFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "Не удалось выйти в интернет через этот ключ",
+    ),
+    "quickStartFailedBody": MessageLookupByLibrary.simpleMessage(
+      "Ключ подключился, но страницы не открываются.",
+    ),
+    "quickStartTryAgain": MessageLookupByLibrary.simpleMessage(
+      "Попробовать снова",
+    ),
+    "quickStartUseDifferent": MessageLookupByLibrary.simpleMessage(
+      "Другой ключ",
+    ),
     "libRefresh": MessageLookupByLibrary.simpleMessage("Обновить"),
     "libReset": MessageLookupByLibrary.simpleMessage("Сбросить на встроенное"),
     "libSwitchBody": MessageLookupByLibrary.simpleMessage(

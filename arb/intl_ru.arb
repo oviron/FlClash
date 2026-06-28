@@ -648,5 +648,15 @@
   "libRefresh": "Обновить",
   "libReset": "Сбросить на встроенное",
   "libLoadError": "Не удалось загрузить релизы",
-  "libNeedsUpdate": "Требуется обновление приложения"
+  "libNeedsUpdate": "Требуется обновление приложения",
+  "quickStartPasteKey": "Вставьте ключ",
+  "quickStartPasteHint": "Вставьте ссылку, QR или код от провайдера",
+  "quickStartNoServers": "В том, что вы вставили, серверы не найдены",
+  "quickStartImported": "Импортировано",
+  "quickStartVerifying": "Проверяем подключение...",
+  "quickStartVerified": "проверено",
+  "quickStartFailedTitle": "Не удалось выйти в интернет через этот ключ",
+  "quickStartFailedBody": "Ключ подключился, но страницы не открываются.",
+  "quickStartTryAgain": "Попробовать снова",
+  "quickStartUseDifferent": "Другой ключ"
 }

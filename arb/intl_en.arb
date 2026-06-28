@@ -648,5 +648,15 @@
   "libRefresh": "Refresh",
   "libReset": "Reset to bundled",
   "libLoadError": "Failed to load releases",
-  "libNeedsUpdate": "Requires app update"
+  "libNeedsUpdate": "Requires app update",
+  "quickStartPasteKey": "Paste your key",
+  "quickStartPasteHint": "Paste the link, QR, or code your provider sent you",
+  "quickStartNoServers": "No servers found in what you pasted",
+  "quickStartImported": "Imported",
+  "quickStartVerifying": "Checking your connection...",
+  "quickStartVerified": "verified",
+  "quickStartFailedTitle": "Couldn't reach the internet through this key",
+  "quickStartFailedBody": "The key connected, but no page would load.",
+  "quickStartTryAgain": "Try again",
+  "quickStartUseDifferent": "Use a different key"
 }

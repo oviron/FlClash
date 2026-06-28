@@ -8,6 +8,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/profile_routing/reapply.dart';
 import 'package:fl_clash/profile_routing/target_validation.dart';
 import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
+import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:fl_clash/state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -196,9 +197,10 @@ extension ProfileExtension on Profile {
     final response = await request.getFileResponseForUrl(url);
     final disposition = response.headers.value('content-disposition');
     final userinfo = response.headers.value('subscription-userinfo');
-    final bytes = await _reapplyAppRouting(
+    final converted = await _maybeConvertSubscriptionBody(
       response.data ?? Uint8List.fromList([]),
     );
+    final bytes = await _reapplyAppRouting(converted);
     _notifyDanglingTargets(bytes);
     return await copyWith(
       label: label.takeFirstValid([
@@ -207,6 +209,28 @@ extension ProfileExtension on Profile {
       ]),
       subscriptionInfo: SubscriptionInfo.formHString(userinfo),
     ).saveFile(bytes);
+  }
+
+  // A subscription URL may return a base64 v2ray list (or a single share link)
+  // instead of clash YAML; convert it in-app so refreshes keep working. Falls
+  // back to the raw body on any failure (e.g. it was already clash YAML).
+  Future<Uint8List> _maybeConvertSubscriptionBody(Uint8List raw) async {
+    try {
+      final text = utf8.decode(raw);
+      final kind = classifyArtifact(text);
+      final proxies = switch (kind) {
+        ArtifactKind.shareLink => [
+          parseShareLink(text.trim()),
+        ].whereType<Map<String, dynamic>>().toList(),
+        ArtifactKind.base64List => parseSubscriptionContent(text),
+        _ => <Map<String, dynamic>>[],
+      };
+      if (proxies.isEmpty) return raw;
+      final yamlString = await encodeYamlTask(synthesizeConfig(proxies));
+      return Uint8List.fromList(utf8.encode(yamlString));
+    } catch (_) {
+      return raw;
+    }
   }
 
   // A subscription refresh can rename/remove a proxy-group a routing rule

@@ -44,9 +44,12 @@ class _ScanPageState extends State<ScanPage> with WidgetsBindingObserver {
     unawaited(_subscription?.cancel());
     _subscription = null;
     unawaited(controller.stop());
-    final barcode = barcodeCapture.barcodes.first;
-    if (barcode.type == BarcodeType.url) {
-      Navigator.pop<String>(context, barcode.rawValue);
+    // Accept any non-empty barcode payload, not just BarcodeType.url: a
+    // vless:// / ss:// QR decodes as BarcodeType.text and must reach the
+    // quick-start classifier instead of being dropped.
+    final value = barcodeCapture.barcodes.first.rawValue;
+    if (value != null && value.isNotEmpty) {
+      Navigator.pop<String>(context, value);
     } else {
       Navigator.pop(context);
     }

@@ -128,6 +128,58 @@ extension ProfilesControllerExt on AppController {
     }
   }
 
+  /// Single funnel for any pasted/scanned artifact (bare share link, base64
+  /// v2ray list, subscription URL, clash YAML). A subscription URL keeps the
+  /// existing http/quota path; everything else is converted in-app to a
+  /// self-contained config and saved as a local profile.
+  Future<void> addProfileFromText(String raw) async {
+    final text = raw.trim();
+    final kind = classifyArtifact(text);
+    if (kind == ArtifactKind.subscriptionUrl) {
+      return addProfileFormURL(text);
+    }
+    if (globalState.navigatorKey.currentState?.canPop() ?? false) {
+      globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    }
+    toProfiles();
+    final profile = await loadingRun(tag: LoadingTag.profiles, () async {
+      final bytes = await _quickStartBytes(text, kind);
+      if (bytes == null) {
+        throw appLocalizations.quickStartNoServers;
+      }
+      return await Profile.normal(
+        label: _quickStartLabel(text, kind),
+      ).saveFile(bytes);
+    }, title: appLocalizations.addProfile);
+    if (profile != null) {
+      putProfile(profile);
+    }
+  }
+
+  Future<Uint8List?> _quickStartBytes(String text, ArtifactKind kind) async {
+    if (kind == ArtifactKind.clashYaml) {
+      return Uint8List.fromList(utf8.encode(text));
+    }
+    final proxies = switch (kind) {
+      ArtifactKind.shareLink => [
+        parseShareLink(text),
+      ].whereType<Map<String, dynamic>>().toList(),
+      ArtifactKind.base64List => parseSubscriptionContent(text),
+      _ => <Map<String, dynamic>>[],
+    };
+    if (proxies.isEmpty) return null;
+    final yamlString = await encodeYamlTask(synthesizeConfig(proxies));
+    return Uint8List.fromList(utf8.encode(yamlString));
+  }
+
+  String _quickStartLabel(String text, ArtifactKind kind) {
+    if (kind == ArtifactKind.shareLink) {
+      final name = (parseShareLink(text)?['name'] as String?)?.trim();
+      if (name != null && name.isNotEmpty) return name;
+    }
+    return appLocalizations.quickStartImported;
+  }
+
   void setProfileAndAutoApply(Profile profile) {
     _ref.read(profilesProvider.notifier).put(profile);
     if (profile.id == _ref.read(currentProfileIdProvider)) {
@@ -153,9 +205,9 @@ extension ProfilesControllerExt on AppController {
   }
 
   Future<void> addProfileFormQrCode() async {
-    final url = await safeRun(picker.pickerConfigQRCode);
-    if (url == null) return;
-    unawaited(addProfileFormURL(url));
+    final text = await safeRun(picker.pickerConfigQRCode);
+    if (text == null) return;
+    unawaited(addProfileFromText(text));
   }
 
   void reorder(List<Profile> profiles) {

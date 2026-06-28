@@ -15,15 +15,15 @@ class AddProfileView extends StatelessWidget {
     unawaited(appController.addProfileFormFile());
   }
 
-  Future<void> _handleAddProfileFormURL(String url) async {
-    unawaited(appController.addProfileFormURL(url));
+  Future<void> _handleAddProfileFromText(String text) async {
+    unawaited(appController.addProfileFromText(text));
   }
 
   Future<void> _toScan() async {
     final url = await BaseNavigator.push(context, const ScanPage());
     if (url != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _handleAddProfileFormURL(url);
+        _handleAddProfileFromText(url);
       });
     }
   }
@@ -39,7 +39,7 @@ class AddProfileView extends StatelessWidget {
           if (value == null || value.isEmpty) {
             return appLocalizations.emptyTip('').trim();
           }
-          if (!value.isUrl) {
+          if (!value.isImportable) {
             return appLocalizations.urlTip('').trim();
           }
           return null;
@@ -47,7 +47,7 @@ class AddProfileView extends StatelessWidget {
       ),
     );
     if (url != null) {
-      unawaited(_handleAddProfileFormURL(url));
+      unawaited(_handleAddProfileFromText(url));
     }
   }
 
