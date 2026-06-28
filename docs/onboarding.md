@@ -1,6 +1,6 @@
 # Onboarding and Zero-to-Profile: Paste-and-Go Design
 
-Status: proposal (not yet implemented)
+Status: v1 implemented (Stages 1-5); on-device tunnel check pending a real server
 Target line: 0.16 / 0.17
 Last updated: 2026-06-28
 Audience of the app: users on censored networks (RU / IR / CN), Android-first, no telemetry.
@@ -10,6 +10,36 @@ findings that ground it, the design principles, the product flow, the generated-
 spec, and the staged implementation plan. It was produced from two adversarially-verified
 multi-agent research passes (code + UX + competitors + protocol, then user-pain +
 zero-to-profile product design); a provenance note is at the end.
+
+## Implementation status (2026-06-28)
+
+The v1 paste-and-go path is implemented and gated green by the fork's full CI set
+(dart format, flutter analyze --fatal-infos, DCM check-unused-code/files, the full
+test suite). What shipped:
+
+- `lib/common/share_link.dart` - Dart parsers for vless (reality/ws/grpc/tls), vmess,
+  ss (SIP002), trojan, plus a base64-subscription decoder.
+- `lib/services/quickstart_config_service.dart` - artifact classifier and a synthesizer
+  that wraps parsed nodes into a complete config (inline `proxies:` + a single url-test
+  `PROXY` group + `MATCH,PROXY`, no `dns:` so the hardened model defaults apply).
+- Ingestion wired through one `addProfileFromText` funnel; the three http-only gates
+  (`isUrl`, gallery-QR, `BarcodeType.url`) relaxed; `Profile.update()` converts a
+  base64/share-link subscription body; a "Paste your key" CTA on the empty first-run
+  screen reads the clipboard or opens a format-agnostic paste dialog.
+
+Mechanism note (decided after reading the live code, supersedes the `type: file`
+sidecar idea in section 15): the converter is a **Dart-side parser that inlines
+`proxies:`**, not a core `type: file` proxy-provider. Reason: a provider-only config
+makes the static Dart gates read zero nodes and leaves Reality unreadable from Dart,
+whereas inlining keeps the node-count gate working, lets us write `reality-opts`
+ourselves (certainty), keeps `validateConfig` self-contained, and is fully unit-testable.
+
+P1 (the load-bearing risk in section 18) is **resolved for config acceptance**: the
+synthesized config - vless+reality (`public-key`/`short-id`/`client-fingerprint`/`flow`),
+vmess+ws+tls, ss, trojan, the url-test group, `MATCH,PROXY` - passes `mihomo -t` on the
+exact pinned engine (Meta v1.19.26, the build embedded in libmihomo-android v0.1.4).
+Remaining: the real tunnel + HTTP 204 through a working server, which needs an operator's
+live VLESS endpoint and a device/emulator (no code-level unknown left).
 
 ## Table of contents
 
