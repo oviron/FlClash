@@ -86,4 +86,21 @@ void main() {
       expect(() => synthesizeConfig([]), throwsArgumentError);
     });
   });
+
+  group('honesty gate', () {
+    test('isHealthyDelay treats null/<=0 as unhealthy', () {
+      expect(isHealthyDelay(null), false);
+      expect(isHealthyDelay(0), false);
+      expect(isHealthyDelay(-1), false);
+      expect(isHealthyDelay(42), true);
+    });
+
+    test('fastestHealthy picks min positive latency, skips unhealthy', () {
+      expect(fastestHealthy({'a': 300, 'b': -1, 'c': 120, 'd': null}), 'c');
+    });
+
+    test('fastestHealthy returns null when no node is healthy', () {
+      expect(fastestHealthy({'a': -1, 'b': null, 'c': 0}), isNull);
+    });
+  });
 }

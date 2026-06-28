@@ -56,6 +56,26 @@ Map<String, dynamic> synthesizeConfig(List<Map<String, dynamic>> proxies) {
   };
 }
 
+/// A node passes the 204 honesty gate iff it returned a positive latency to
+/// the url-test target. null = untested, <= 0 = unreachable/timeout (the
+/// delayColor convention in common/color.dart). The synthesized PROXY group is
+/// `url-test`, so the core already auto-selects the fastest healthy node; this
+/// is the predicate the UI uses to decide "verified" vs the honest-fail state.
+bool isHealthyDelay(int? delayMs) => delayMs != null && delayMs > 0;
+
+/// Name of the fastest node that passes the honesty gate, or null if none do.
+String? fastestHealthy(Map<String, int?> delays) {
+  String? best;
+  var bestMs = 1 << 30;
+  delays.forEach((name, ms) {
+    if (isHealthyDelay(ms) && ms! < bestMs) {
+      bestMs = ms;
+      best = name;
+    }
+  });
+  return best;
+}
+
 List<Map<String, dynamic>> _ensureUniqueNames(
   List<Map<String, dynamic>> proxies,
 ) {
