@@ -53,8 +53,25 @@ String encodeNetworkRulesMirror({
   });
 }
 
+int _mirrorWriteSeq = 0;
+
 Future<void> writeNetworkRulesMirror(String homeDir, String content) async {
-  final tmp = File(join(homeDir, '$networkRulesMirrorFileName.tmp'));
-  await tmp.writeAsString(content, flush: true);
-  await tmp.rename(join(homeDir, networkRulesMirrorFileName));
+  final dir = Directory(homeDir);
+  if (!await dir.exists()) {
+    await dir.create(recursive: true);
+  }
+  // Unique temp per write: concurrent _onRulesChanged calls would otherwise
+  // share one `.tmp`, and the second rename fails (the source was already moved).
+  final tmp = File(
+    join(homeDir, '$networkRulesMirrorFileName.${_mirrorWriteSeq++}.tmp'),
+  );
+  try {
+    await tmp.writeAsString(content, flush: true);
+    await tmp.rename(join(homeDir, networkRulesMirrorFileName));
+  } catch (_) {
+    if (await tmp.exists()) {
+      await tmp.delete();
+    }
+    rethrow;
+  }
 }

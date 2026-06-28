@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/network_rules/engine.dart';
 import 'package:fl_clash/network_rules/mirror.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart';
 
 void main() {
   group('encodeNetworkRulesMirror', () {
@@ -123,6 +125,40 @@ void main() {
       expect((rules[1] as Map)['conditions'], [
         {'kind': 'any_cellular'},
       ]);
+    });
+  });
+
+  group('writeNetworkRulesMirror', () {
+    late Directory dir;
+    setUp(() async {
+      dir = await Directory.systemTemp.createTemp('nr_mirror');
+    });
+    tearDown(() async {
+      if (await dir.exists()) await dir.delete(recursive: true);
+    });
+
+    test('concurrent writes do not race on a shared temp file', () async {
+      await Future.wait([
+        for (var i = 0; i < 8; i++)
+          writeNetworkRulesMirror(dir.path, '{"n":$i}'),
+      ]);
+      final file = File(join(dir.path, networkRulesMirrorFileName));
+      expect(await file.exists(), true);
+      expect(
+        jsonDecode(await file.readAsString()),
+        isA<Map<String, dynamic>>(),
+      );
+      final leftovers = dir.listSync().where((e) => e.path.endsWith('.tmp'));
+      expect(leftovers, isEmpty, reason: 'no orphan .tmp files left behind');
+    });
+
+    test('creates the home dir when it does not exist yet', () async {
+      final nested = join(dir.path, 'sub', 'home');
+      await writeNetworkRulesMirror(nested, '{"ok":true}');
+      expect(
+        await File(join(nested, networkRulesMirrorFileName)).exists(),
+        true,
+      );
     });
   });
 }
