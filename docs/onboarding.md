@@ -1,6 +1,6 @@
 # Onboarding and Zero-to-Profile: Paste-and-Go Design
 
-Status: v1 implemented (Stages 1-5); on-device tunnel check pending a real server
+Status: v1 implemented and verified on-device (emulator + pinned core); only a 204 through a live server remains
 Target line: 0.16 / 0.17
 Last updated: 2026-06-28
 Audience of the app: users on censored networks (RU / IR / CN), Android-first, no telemetry.
@@ -34,12 +34,21 @@ makes the static Dart gates read zero nodes and leaves Reality unreadable from D
 whereas inlining keeps the node-count gate working, lets us write `reality-opts`
 ourselves (certainty), keeps `validateConfig` self-contained, and is fully unit-testable.
 
-P1 (the load-bearing risk in section 18) is **resolved for config acceptance**: the
-synthesized config - vless+reality (`public-key`/`short-id`/`client-fingerprint`/`flow`),
-vmess+ws+tls, ss, trojan, the url-test group, `MATCH,PROXY` - passes `mihomo -t` on the
-exact pinned engine (Meta v1.19.26, the build embedded in libmihomo-android v0.1.4).
-Remaining: the real tunnel + HTTP 204 through a working server, which needs an operator's
-live VLESS endpoint and a device/emulator (no code-level unknown left).
+P1 (the load-bearing risk in section 18) is **resolved**. Two independent proofs:
+
+- `mihomo -t` on the exact pinned engine (Meta v1.19.26) accepts the synthesized config
+  for vless+reality (`public-key`/`short-id`/`client-fingerprint`/`flow`), vmess+ws+tls,
+  ss, trojan, the url-test group, and `MATCH,PROXY`.
+- End-to-end on an Android 15 / arm64 emulator running the **release APK** with the pinned
+  native core (libclash, mihomo v1.19.26): pasting a vless+reality link through the
+  Paste-your-key dialog creates a profile (`1 group / 1 node`), the native `validateConfig`
+  accepts the synthesized config, the core loads the node, and the url-test group
+  health-checks it via `cp.cloudflare.com/generate_204`. A dead test endpoint correctly
+  reports `alive: false` (the honest-fail path, never a false "connected").
+
+The only unexercised assertion is a 204 **success** through a live operator VLESS server
+(the test used a fake endpoint, so `alive: false` is the correct result). That is purely
+server-dependent, not a code-level unknown.
 
 ## Table of contents
 
