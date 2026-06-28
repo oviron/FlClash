@@ -584,7 +584,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "libNeedsUpdate": MessageLookupByLibrary.simpleMessage(
       "Requires app update",
     ),
-    "quickStartPasteKey": MessageLookupByLibrary.simpleMessage("Paste your key"),
+    "quickStartPasteKey": MessageLookupByLibrary.simpleMessage(
+      "Paste your key",
+    ),
     "quickStartPasteHint": MessageLookupByLibrary.simpleMessage(
       "Paste the link, QR, or code your provider sent you",
     ),
