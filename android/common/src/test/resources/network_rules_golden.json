@@ -1,0 +1,137 @@
+{
+  "_comment": "Shared engine parity vectors. Asserted from BOTH the Dart engine (test/network_rules/engine_test.dart) and the Kotlin engine (NetworkRulesEngineTest.kt). Each case is a rules mirror plus a snapshot and the decision both engines must return. Keep the two loaders in sync.",
+  "cases": [
+    {
+      "name": "wifi named match wins over default",
+      "enabled": true,
+      "defaultAction": "turnOff",
+      "rules": [
+        {"id": 1, "actionVpn": "turnOff", "priority": 0, "enabled": true,
+         "conditions": [{"kind": "wifi_named", "ssid": "Home"}]}
+      ],
+      "snapshot": {"type": "wifi", "ssid": "home"},
+      "expect": "stop"
+    },
+    {
+      "name": "no rule falls to default turnOff",
+      "enabled": true,
+      "defaultAction": "turnOff",
+      "rules": [],
+      "snapshot": {"type": "cellular"},
+      "expect": "stop"
+    },
+    {
+      "name": "no rule falls to default leaveAsIs",
+      "enabled": true,
+      "defaultAction": "leaveAsIs",
+      "rules": [],
+      "snapshot": {"type": "wifi", "ssid": "cafe"},
+      "expect": "leaveAsIs"
+    },
+    {
+      "name": "disabled mirror is a no-op regardless of rules/default",
+      "enabled": false,
+      "defaultAction": "turnOn",
+      "rules": [
+        {"id": 1, "actionVpn": "turnOn", "priority": 0, "enabled": true,
+         "conditions": [{"kind": "any_cellular"}]}
+      ],
+      "snapshot": {"type": "cellular"},
+      "expect": "leaveAsIs"
+    },
+    {
+      "name": "profile gate matches the active profile",
+      "enabled": true,
+      "defaultAction": "leaveAsIs",
+      "activeProfileId": 5,
+      "rules": [
+        {"id": 1, "actionVpn": "turnOff", "priority": 0, "enabled": true,
+         "conditions": [{"kind": "any_cellular"}, {"kind": "profile_is", "profileId": 5}]}
+      ],
+      "snapshot": {"type": "cellular"},
+      "expect": "stop"
+    },
+    {
+      "name": "profile gate fails on a different active profile",
+      "enabled": true,
+      "defaultAction": "leaveAsIs",
+      "activeProfileId": 9,
+      "rules": [
+        {"id": 1, "actionVpn": "turnOff", "priority": 0, "enabled": true,
+         "conditions": [{"kind": "any_cellular"}, {"kind": "profile_is", "profileId": 5}]}
+      ],
+      "snapshot": {"type": "cellular"},
+      "expect": "leaveAsIs"
+    },
+    {
+      "name": "any match mode fires on one condition",
+      "enabled": true,
+      "defaultAction": "leaveAsIs",
+      "rules": [
+        {"id": 1, "match": "any", "actionVpn": "turnOn", "priority": 0, "enabled": true,
+         "conditions": [{"kind": "wifi_named", "ssid": "A"}, {"kind": "wifi_named", "ssid": "B"}]}
+      ],
+      "snapshot": {"type": "wifi", "ssid": "B"},
+      "expect": "start"
+    },
+    {
+      "name": "not inverts inner condition (miss)",
+      "enabled": true,
+      "defaultAction": "turnOff",
+      "rules": [
+        {"id": 1, "actionVpn": "turnOn", "priority": 0, "enabled": true,
+         "conditions": [{"kind": "any_wifi"},
+                        {"kind": "not", "condition": {"kind": "wifi_named", "ssid": "Home"}}]}
+      ],
+      "snapshot": {"type": "wifi", "ssid": "Cafe"},
+      "expect": "start"
+    },
+    {
+      "name": "not inverts inner condition (hit -> no match -> default)",
+      "enabled": true,
+      "defaultAction": "turnOff",
+      "rules": [
+        {"id": 1, "actionVpn": "turnOn", "priority": 0, "enabled": true,
+         "conditions": [{"kind": "any_wifi"},
+                        {"kind": "not", "condition": {"kind": "wifi_named", "ssid": "Home"}}]}
+      ],
+      "snapshot": {"type": "wifi", "ssid": "Home"},
+      "expect": "stop"
+    },
+    {
+      "name": "named wifi beats any wifi regardless of priority",
+      "enabled": true,
+      "defaultAction": "leaveAsIs",
+      "rules": [
+        {"id": 1, "actionVpn": "turnOn", "priority": 0, "enabled": true,
+         "conditions": [{"kind": "any_wifi"}]},
+        {"id": 2, "actionVpn": "turnOff", "priority": 10, "enabled": true,
+         "conditions": [{"kind": "wifi_named", "ssid": "Home"}]}
+      ],
+      "snapshot": {"type": "wifi", "ssid": "Home"},
+      "expect": "stop"
+    },
+    {
+      "name": "leave action falls through to default turnOn",
+      "enabled": true,
+      "defaultAction": "turnOn",
+      "rules": [
+        {"id": 1, "actionVpn": "leave", "priority": 0, "enabled": true,
+         "conditions": [{"kind": "any_cellular"}]}
+      ],
+      "snapshot": {"type": "cellular"},
+      "expect": "start"
+    },
+    {
+      "name": "any ethernet matches",
+      "enabled": true,
+      "defaultAction": "leaveAsIs",
+      "rules": [
+        {"id": 1, "actionVpn": "turnOn", "priority": 0, "enabled": true,
+         "conditions": [{"kind": "any_ethernet"}]}
+      ],
+      "snapshot": {"type": "ethernet"},
+      "expect": "start"
+    }
+  ]
+}

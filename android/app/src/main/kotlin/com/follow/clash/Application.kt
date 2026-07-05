@@ -18,7 +18,7 @@ class Application : Application() {
         super.attachBaseContext(base)
         GlobalState.init(this)
         Logger.installRemoteForward { level, tag, payload ->
-            // :main has no libclash.so — forward over AIDL to :remote where the
+            // :main has no libclash.so; forward over AIDL to :remote where the
             // cgo dispatcher and file sink live. Drop silently if not bound yet.
             logForwardScope.launch {
                 runCatching {

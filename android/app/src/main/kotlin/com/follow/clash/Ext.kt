@@ -28,7 +28,7 @@ private const val ICON_TTL_DAYS = 1L
 
 // Flutter's shared_preferences plugin namespaces all keys with the
 // "flutter." prefix in the FlutterSharedPreferences XML. The Dart-side
-// key is "sharedState" — see lib/common/preferences.dart.
+// key is "sharedState"; see lib/common/preferences.dart.
 private const val SHARED_PREFS_NAME = "FlutterSharedPreferences"
 private const val SHARED_STATE_PREFS_KEY = "flutter.sharedState"
 

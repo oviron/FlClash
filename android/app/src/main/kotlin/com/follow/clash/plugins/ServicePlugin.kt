@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 
-// Method-name constants — mirrored on the Dart side in
+// Method-name constants, mirrored on the Dart side in
 // lib/plugins/method_names.dart. Renames here MUST land in the same PR
 // as the Dart-side rename, or the bridge silently breaks.
 private object ServiceMethod {

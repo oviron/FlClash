@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-// Method-name constants — mirrored on the Dart side in lib/plugins/method_names.dart
+// Method-name constants, mirrored on the Dart side in lib/plugins/method_names.dart
 // (LibraryMethod). Renames here MUST land in the same PR as the Dart-side rename.
 private object LibraryMethod {
     const val EXPECTED_BRIDGE_ABI = "expectedBridgeAbi"

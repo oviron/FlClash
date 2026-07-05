@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/network_rules/engine.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -495,4 +498,66 @@ void main() {
       expect(const WifiNamed('Home').toJson().containsKey('match'), false);
     });
   });
+
+  // Same fixture the Kotlin engine asserts (NetworkRulesEngineTest.
+  // goldenVectorsMatchAcrossEngines), so the two engines can never silently
+  // diverge on a decision.
+  group('golden vectors (shared with the Kotlin engine)', () {
+    final cases =
+        (jsonDecode(
+                  File(
+                    'android/common/src/test/resources/network_rules_golden.json',
+                  ).readAsStringSync(),
+                )
+                as Map<String, dynamic>)['cases']
+            as List;
+    for (final c in cases.cast<Map<String, dynamic>>()) {
+      test(c['name'] as String, () {
+        expect(_decisionName(_resolveGoldenCase(c)), c['expect']);
+      });
+    }
+  });
 }
+
+// Mirror-enabled no-op is normalized to leaveAsIs, matching the Kotlin
+// resolve(mirror, snapshot) entry point.
+NetworkDecision _resolveGoldenCase(Map<String, dynamic> c) {
+  if (c['enabled'] == false) return NetworkDecision.leaveAsIs;
+  return resolveNetworkDecision(
+    rules: (c['rules'] as List)
+        .cast<Map<String, dynamic>>()
+        .map(_goldenRule)
+        .toList(),
+    snapshot: _goldenSnapshot(c['snapshot'] as Map<String, dynamic>),
+    defaultAction: DefaultNetworkAction.values.byName(
+      c['defaultAction'] as String,
+    ),
+    activeProfileId: c['activeProfileId'] as int?,
+  );
+}
+
+NetworkRule _goldenRule(Map<String, dynamic> r) => NetworkRule(
+  id: r['id'] as int? ?? 0,
+  conditions: NetworkConditionListCodec.decode(jsonEncode(r['conditions'])),
+  action: NetworkAction(
+    vpn: NetworkVpnMode.values.byName(r['actionVpn'] as String),
+    profileId: r['actionProfileId'] as int?,
+  ),
+  priority: r['priority'] as int? ?? 0,
+  enabled: r['enabled'] as bool? ?? true,
+  matchMode: r['match'] == 'any' ? NetworkMatchMode.any : NetworkMatchMode.all,
+);
+
+NetworkSnapshot _goldenSnapshot(Map<String, dynamic> s) =>
+    switch (s['type'] as String) {
+      'wifi' => NetworkSnapshot.wifi(ssid: s['ssid'] as String?),
+      'cellular' => const NetworkSnapshot.cellular(),
+      'ethernet' => const NetworkSnapshot.ethernet(),
+      _ => const NetworkSnapshot.none(),
+    };
+
+String _decisionName(NetworkDecision d) => switch (d) {
+  NetworkDecision.start => 'start',
+  NetworkDecision.stop => 'stop',
+  NetworkDecision.leaveAsIs => 'leaveAsIs',
+};

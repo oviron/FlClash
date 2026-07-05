@@ -73,3 +73,20 @@ object NetworkRulesEngine {
         }
     }
 }
+
+// A foreground-applied profile equals the echoed [active] profile id; a mismatch
+// outside the guard window ([now] >= [guardUntil]) means the user switched by
+// hand. Returns the profile id to pin, or null. Arms only while
+// [lastEngineProfileId] is non-null (after a foreground apply), so a stale
+// activeProfileId never misfires. Pure so it can be unit-tested off-device.
+fun decideManualSwitch(
+    active: Int?,
+    lastEngineProfileId: Int?,
+    guardUntil: Long,
+    now: Long,
+): Int? {
+    if (active == null || lastEngineProfileId == null) return null
+    if (active == lastEngineProfileId) return null
+    if (now < guardUntil) return null
+    return active
+}

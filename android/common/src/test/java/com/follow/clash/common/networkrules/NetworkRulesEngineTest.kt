@@ -1,5 +1,6 @@
 package com.follow.clash.common.networkrules
 
+import com.google.gson.JsonParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -338,6 +339,47 @@ class NetworkRulesEngineTest {
         assertNull(
             NetworkRulesEngine.evaluate(rules, NetworkSnapshot(NetworkRuleType.WIFI, "Home")),
         )
+    }
+
+    @Test
+    fun manualSwitchArmsOnlyAfterAForegroundApply() {
+        // No prior foreground apply: unarmed, never a manual switch.
+        assertNull(decideManualSwitch(active = 7, lastEngineProfileId = null, guardUntil = 0, now = 100))
+        // Active equals what the engine applied: not manual.
+        assertNull(decideManualSwitch(active = 7, lastEngineProfileId = 7, guardUntil = 0, now = 100))
+        // Divergent but inside the guard window: engine-attributed, not manual.
+        assertNull(decideManualSwitch(active = 8, lastEngineProfileId = 7, guardUntil = 200, now = 100))
+        // Null active (headless apply): unattributable, not manual.
+        assertNull(decideManualSwitch(active = null, lastEngineProfileId = 7, guardUntil = 200, now = 300))
+        // Divergent, armed, outside the window: the user switched by hand.
+        assertEquals(8, decideManualSwitch(active = 8, lastEngineProfileId = 7, guardUntil = 200, now = 300))
+    }
+
+    @Test
+    fun goldenVectorsMatchAcrossEngines() {
+        val text = javaClass.getResource("/network_rules_golden.json")!!.readText()
+        val cases = JsonParser.parseString(text).asJsonObject.getAsJsonArray("cases")
+        for (element in cases) {
+            val case = element.asJsonObject
+            val name = case.get("name").asString
+            val mirror = NetworkRulesCodec.parse(case.toString())
+            val snap = case.getAsJsonObject("snapshot")
+            val snapshot = NetworkSnapshot(
+                when (snap.get("type").asString) {
+                    "wifi" -> NetworkRuleType.WIFI
+                    "cellular" -> NetworkRuleType.CELLULAR
+                    "ethernet" -> NetworkRuleType.ETHERNET
+                    else -> NetworkRuleType.NONE
+                },
+                if (snap.has("ssid") && !snap.get("ssid").isJsonNull) snap.get("ssid").asString else null,
+            )
+            val expected = when (case.get("expect").asString) {
+                "start" -> NetworkDecision.START
+                "stop" -> NetworkDecision.STOP
+                else -> NetworkDecision.LEAVE_AS_IS
+            }
+            assertEquals(name, expected, NetworkRulesEngine.resolve(mirror, snapshot))
+        }
     }
 
     @Test

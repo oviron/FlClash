@@ -46,7 +46,7 @@ import java.io.File
 import java.lang.ref.WeakReference
 import java.util.zip.ZipFile
 
-// Method-name constants — mirrored on the Dart side in
+// Method-name constants, mirrored on the Dart side in
 // lib/plugins/method_names.dart. Renames here MUST land in the same PR
 // as the Dart-side rename, or the bridge silently breaks.
 private object AppMethod {
@@ -241,7 +241,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
             }
 
             AppMethod.GET_LOG_DIRECTORY -> {
-                // App-scoped external — no MANAGE_EXTERNAL_STORAGE needed.
+                // App-scoped external; no MANAGE_EXTERNAL_STORAGE needed.
                 val dir = File(applicationContext.getExternalFilesDir(null), "FlClash")
                 if (!dir.exists()) dir.mkdirs()
                 result.success(dir.absolutePath)
@@ -480,7 +480,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
         scope.cancel()
-        // Drop the cached package list — engine may reattach to a different
+        // Drop the cached package list; engine may reattach to a different
         // FlutterEngine instance with a different installed-package snapshot
         // (or the user installed/removed apps while the engine was detached).
         synchronized(packagesLock) {

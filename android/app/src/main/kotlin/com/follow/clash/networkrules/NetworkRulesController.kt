@@ -11,6 +11,7 @@ import com.follow.clash.common.networkrules.NetworkResolution
 import com.follow.clash.common.networkrules.NetworkRulesCodec
 import com.follow.clash.common.networkrules.NetworkRulesEngine
 import com.follow.clash.common.networkrules.NetworkRuleType
+import com.follow.clash.common.networkrules.decideManualSwitch
 import com.follow.clash.common.networkrules.NetworkSnapshot
 import com.follow.clash.common.networkrules.RulesMirror
 import com.follow.clash.service.models.NotificationParams
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.io.File
+import java.util.concurrent.atomic.AtomicLong
 
 data class NetworkRulesStatus(
     val type: NetworkRuleType,
@@ -47,6 +49,7 @@ object NetworkRulesController {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val mutex = Mutex()
+    private val swapSeq = AtomicLong(0)
 
     private var observer: NetworkRulesObserver? = null
     private var runStateJob: Job? = null
@@ -127,7 +130,12 @@ object NetworkRulesController {
             // A foreground-applied profile is echoed back as activeProfileId; a
             // divergence (outside the guard window) is the user switching by
             // hand -> pin the profile so the engine stops fighting on this key.
-            val manualProfile = manualProfileSwitch(mirror.activeProfileId)
+            val manualProfile = decideManualSwitch(
+                mirror.activeProfileId,
+                lastEngineProfileId,
+                engineGuardUntil,
+                SystemClock.elapsedRealtime(),
+            )
             if (manualProfile != null) {
                 override = ManualOverride(key, override?.running, manualProfile)
             }
@@ -186,6 +194,9 @@ object NetworkRulesController {
         startAction?.invoke()
     }
 
+    // Headless hot-swap updates mihomo routing (config.yaml) and the
+    // notification, but NOT the VpnService per-app allow/deny set: that is bound
+    // to the TUN fd at establish() and re-applying it would drop the tunnel.
     private suspend fun applyResolvedProfile(
         profileTarget: Int,
         foreground: ((Int) -> Unit)?,
@@ -204,17 +215,6 @@ object NetworkRulesController {
         }
     }
 
-    // A foreground-applied profile equals activeProfileId; a mismatch outside the
-    // guard window means the user switched by hand. Returns the manual profile id
-    // to pin, or null. Detection arms only while lastEngineProfileId is non-null
-    // (i.e. after a foreground apply), so a stale activeProfileId never misfires.
-    private fun manualProfileSwitch(active: Int?): Int? {
-        if (active == null || lastEngineProfileId == null) return null
-        if (active == lastEngineProfileId) return null
-        if (SystemClock.elapsedRealtime() < engineGuardUntil) return null
-        return active
-    }
-
     // Live profile swap: overwrite config.yaml from the pre-baked cache and tell
     // the running core to re-apply. applyConfig re-reads config.yaml without
     // touching the TUN fd, so the VPN never drops.
@@ -228,7 +228,13 @@ object NetworkRulesController {
         val envelope = Gson().toJson(
             mapOf("id" to "nr-$profileId", "method" to "setupConfig", "data" to data),
         )
-        Service.invokeAction(envelope, null)
+        val result = Service.invokeAction(envelope, null)
+        if (result.isFailure) {
+            GlobalState.log("network-rules: hot apply failed for profile $profileId: ${result.exceptionOrNull()}")
+            return
+        }
+        // Retitle the notification only after the core accepted the config; on
+        // failure it keeps showing the actually-active profile.
         if (profileName != null) {
             Service.updateNotificationParams(
                 NotificationParams(title = profileName, stopText = State.sharedState.stopText),
@@ -239,6 +245,9 @@ object NetworkRulesController {
     // Atomically replace config.yaml with the cached profile config. Returns
     // false on a cache miss (deleted/never-baked profile) so the caller leaves
     // the profile dimension untouched and never boots into a missing config.
+    // The resident is the only writer while headless (Dart's foreground path
+    // takes over once attached); a unique tmp per swap keeps two overlapping
+    // resident swaps from clobbering each other's rename.
     private fun swapConfig(profileId: Int): Boolean {
         val filesDir = GlobalState.application.filesDir
         val cache = File(filesDir, "$CACHE_DIR/$profileId.yaml")
@@ -246,18 +255,19 @@ object NetworkRulesController {
             GlobalState.log("network-rules: cache miss for profile $profileId, leaving profile")
             return false
         }
+        val tmp = File(filesDir, "$CONFIG_FILE.${swapSeq.getAndIncrement()}.tmp")
         return try {
             val target = File(filesDir, CONFIG_FILE)
-            val tmp = File(filesDir, "$CONFIG_FILE.tmp")
             cache.copyTo(tmp, overwrite = true)
             if (!tmp.renameTo(target)) {
                 tmp.copyTo(target, overwrite = true)
-                tmp.delete()
             }
             true
         } catch (e: Throwable) {
             GlobalState.log("network-rules: config swap failed for $profileId: $e")
             false
+        } finally {
+            if (tmp.exists()) tmp.delete()
         }
     }
 

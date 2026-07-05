@@ -39,7 +39,7 @@ object Logger {
     fun e(tag: String, msg: String) = log(LogLevel.ERROR, tag, msg)
 }
 
-// `data` is itself a JSON string — that's what action.go's parseStringData expects.
+// `data` is itself a JSON string; that's what action.go's parseStringData expects.
 fun buildHostLogAction(level: Int, tag: String, payload: String): String {
     val params = JSONObject().apply {
         put("level", level)
