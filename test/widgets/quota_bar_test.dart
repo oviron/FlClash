@@ -31,6 +31,16 @@ void main() {
     expect(_bar(tester).value, 1.0);
   });
 
+  testWidgets('defends against NaN / Infinity / negative from a panel', (
+    tester,
+  ) async {
+    for (final bad in [double.nan, double.infinity, -0.5]) {
+      await tester.pumpWidget(_host(QuotaBar(value: bad)));
+      expect(_bar(tester).value, 0.0);
+      expect(_bar(tester).color, scheme.primary);
+    }
+  });
+
   testWidgets('renders the optional caption', (tester) async {
     await tester.pumpWidget(
       _host(const QuotaBar(value: 0.5, label: '5 / 50 GB')),

@@ -662,6 +662,8 @@
   "routingLists": "Lists",
   "routingScenarios": "Scenarios",
   "routingApps": "Apps",
+  "routingHideSystemApps": "Hide system apps",
+  "routingSkippedNodes": "Some nodes of an unsupported type were skipped",
   "routingAppsSubtitle": "Which apps use the VPN and how",
   "routingAppsCardTitle": "Default for new and unset apps:",
   "routingAppsRuleWhitelist": "Only apps in the list below go through the VPN. Everything else, including new apps, stays off the VPN and cannot see it.",

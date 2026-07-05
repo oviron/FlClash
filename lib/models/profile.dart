@@ -238,17 +238,7 @@ extension ProfileExtension on Profile {
     try {
       final text = utf8.decode(raw);
       final kind = classifyArtifact(text);
-      final proxies = switch (kind) {
-        ArtifactKind.shareLink => [
-          parseShareLink(text.trim()),
-        ].whereType<Map<String, dynamic>>().toList(),
-        ArtifactKind.base64List => parseSubscriptionContent(text).proxies,
-        ArtifactKind.xrayJson => parseXrayJson(text),
-        _ => <Map<String, dynamic>>[],
-      };
-      if (proxies.isEmpty) return raw;
-      final envelope = await encodeYamlTask(synthesizeConfig(proxies));
-      return Uint8List.fromList(utf8.encode(applyQuickStartRouting(envelope)));
+      return await artifactToConfigBytes(text, kind) ?? raw;
     } catch (_) {
       return raw;
     }

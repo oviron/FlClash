@@ -145,7 +145,13 @@ Color delayColor(ColorScheme scheme, int? delay) {
 }
 
 /// Usage ratio (0..1) → bar color: warn past [warnAt], error at/over full.
-Color quotaColor(ColorScheme scheme, double ratio, {double warnAt = 0.6}) {
+const kQuotaWarnAt = 0.6;
+
+Color quotaColor(
+  ColorScheme scheme,
+  double ratio, {
+  double warnAt = kQuotaWarnAt,
+}) {
   if (ratio >= 1) return scheme.error;
   if (ratio >= warnAt) return scheme.warning;
   return scheme.primary;

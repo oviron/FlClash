@@ -5424,6 +5424,24 @@ class AppLocalizations {
     return Intl.message('Apps', name: 'routingApps', desc: '', args: []);
   }
 
+  String get routingHideSystemApps {
+    return Intl.message(
+      'Hide system apps',
+      name: 'routingHideSystemApps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get routingSkippedNodes {
+    return Intl.message(
+      'Some nodes of an unsupported type were skipped',
+      name: 'routingSkippedNodes',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Which apps use the VPN and how`
   String get routingAppsSubtitle {
     return Intl.message(

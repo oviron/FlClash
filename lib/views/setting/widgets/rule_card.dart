@@ -4,6 +4,7 @@ import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/location_permission.dart';
+import 'package:fl_clash/views/setting/widgets/rule_labels.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -201,12 +202,11 @@ class _ConditionChip extends ConsumerWidget {
     final c = negated ? (condition as Not).inner : condition;
     final prefix = negated ? '¬ ' : '';
     if (c is ProfileIs) {
-      final match = ref
-          .watch(profilesProvider)
-          .where((p) => p.id == c.profileId);
-      final name = match.isNotEmpty && match.first.label.isNotEmpty
-          ? match.first.label
-          : '#${c.profileId}';
+      final name = profileLabel(
+        ref.watch(profilesProvider),
+        c.profileId,
+        nullLabel: '',
+      );
       return CommonChip(
         type: ChipType.tonal,
         avatar: const Icon(Icons.layers_outlined, size: 18),
@@ -215,11 +215,7 @@ class _ConditionChip extends ConsumerWidget {
     }
     if (c is WifiNamed) {
       final showWarning = !hasPermission;
-      final pattern = switch (c.match) {
-        WifiMatch.exact => c.ssid,
-        WifiMatch.prefix => '${c.ssid}…',
-        WifiMatch.contains => '…${c.ssid}…',
-      };
+      final pattern = wifiPatternLabel(c);
       return CommonChip(
         type: ChipType.tonal,
         tonalColor: showWarning ? scheme.error : null,

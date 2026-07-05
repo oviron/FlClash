@@ -115,14 +115,19 @@ class _ListMapEditorState extends State<ListMapEditor> {
 
   Future<void> _addRow() async {
     final value = await _prompt();
-    if (value == null || value.isEmpty) return;
+    // Values are unique (they key the reorderable rows); a duplicate add no-ops.
+    if (value == null || value.isEmpty || _list.contains(value)) return;
     setState(() => _list.add(value));
     _emitList();
   }
 
   Future<void> _editRow(int index) async {
     final value = await _prompt(initial: _list[index]);
-    if (value == null || value.isEmpty) return;
+    if (value == null ||
+        value.isEmpty ||
+        (value != _list[index] && _list.contains(value))) {
+      return;
+    }
     setState(() => _list[index] = value);
     _emitList();
   }
@@ -152,7 +157,7 @@ class _ListMapEditorState extends State<ListMapEditor> {
           proxyDecorator: (child, index, animation) =>
               commonProxyDecorator(child, index, animation),
           itemBuilder: (_, index) => _ListRow(
-            key: ValueKey('lme-row-$index-${_list[index]}'),
+            key: ValueKey('lme-row-${_list[index]}'),
             index: index,
             value: _list[index],
             tag: widget.tagBuilder?.call(_list[index]),
@@ -383,6 +388,7 @@ class _MapCard extends StatelessWidget {
             spacing: 6,
             runSpacing: 6,
             children: [
+              // InputChip kept over CommonChip for its onDeleted delete affordance.
               for (var i = 0; i < values.length; i++)
                 InputChip(
                   label: Text(

@@ -41,5 +41,12 @@ void main() {
     test('returns empty on empty input', () {
       expect(parseGeositeCategories(Uint8List(0)), isEmpty);
     });
+
+    test('does not throw on a blob truncated mid-varint', () {
+      // Trailing 0x80 sets the continuation bit with no next byte: a naive
+      // varint read walks off the end. Parser must return what it decoded.
+      final bytes = Uint8List.fromList([..._entry('RU'), 0x80]);
+      expect(parseGeositeCategories(bytes), ['ru']);
+    });
   });
 }

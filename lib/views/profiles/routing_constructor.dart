@@ -15,12 +15,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaml/yaml.dart';
 
-/// The zero-YAML routing constructor: Lists, Scenarios, Apps in plain language.
-/// Reads and writes the profile through [RoutingModel] (docs/onboarding.md II).
-/// The routing sections (servers, groups, lists, rules, scenarios, apps) as an
-/// embeddable block: owns the model and reloads it after each sub-screen returns.
-/// Ordered bottom-up: servers, then how they are grouped, then the lists/rules
-/// that split traffic, then per-app routing.
+/// The zero-YAML routing constructor (servers, groups, lists, rules, scenarios,
+/// apps) as an embeddable block: reads/writes the profile through [RoutingModel]
+/// and reloads after each sub-screen (docs/onboarding.md II).
 class RoutingSections extends StatefulWidget {
   final int profileId;
 
@@ -1061,10 +1058,9 @@ const _ipMatchers = {
   RuleAction.SRC_GEOIP,
 };
 
-// The value for a matcher rule, one humane input per type: GEOSITE and GEOIP
-// pick from the device's geo data, NETWORK is a tcp/udp choice, PROCESS-NAME
-// picks an installed app; everything else is free text. GEOSITE falls back to
-// text when the geo database is not downloaded yet.
+// One humane input per matcher type: GEOSITE/GEOIP pick from device geo data
+// (GEOSITE falls back to text when the geo DB is absent), NETWORK is tcp/udp,
+// PROCESS-NAME picks an installed app; everything else is free text.
 Future<String?> _matcherValue(BuildContext context, RuleAction action) async {
   if (action == RuleAction.GEOSITE) {
     final categories = await loadGeositeCategories();
@@ -1518,9 +1514,12 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
         if (p == null) return _fail();
         await _addNodes(m, [p]);
       case ArtifactKind.base64List:
-        final ps = parseSubscriptionContent(t).proxies;
-        if (ps.isEmpty) return _fail();
-        await _addNodes(m, ps);
+        final res = parseSubscriptionContent(t);
+        if (res.proxies.isEmpty) return _fail();
+        await _addNodes(m, res.proxies);
+        if (res.skipped > 0 && mounted) {
+          context.showNotifier(appLocalizations.routingSkippedNodes);
+        }
       case ArtifactKind.subscriptionUrl:
         await _addSubscription(m, t);
       case ArtifactKind.xrayJson:
@@ -2270,11 +2269,18 @@ class _AppsViewState extends State<_AppsView>
   int get profileId => widget.profileId;
   List<Package> _packages = const [];
   String _query = '';
+  bool _hideSystem = false;
 
   @override
   void initState() {
     super.initState();
     _load();
+  }
+
+  Future<void> _resetApps() async {
+    final model = _model;
+    if (model == null || model.apps.isEmpty) return;
+    await _write(model.copyWith(apps: const []));
   }
 
   @override
@@ -2411,7 +2417,11 @@ class _AppsViewState extends State<_AppsView>
     }
     final q = _query.toLowerCase();
     final filtered = _packages
-        .where((p) => q.isEmpty || p.label.toLowerCase().contains(q))
+        .where(
+          (p) =>
+              (q.isEmpty || p.label.toLowerCase().contains(q)) &&
+              (!_hideSystem || !p.system),
+        )
         .toList();
     final changed = [
       for (final p in filtered)
@@ -2437,6 +2447,22 @@ class _AppsViewState extends State<_AppsView>
     final whitelist = _mode == TunnelMode.whitelist;
     return CommonScaffold(
       title: appLocalizations.routingApps,
+      actions: [
+        PopupMenuButton<int>(
+          onSelected: (v) {
+            if (v == 0) setState(() => _hideSystem = !_hideSystem);
+            if (v == 1) _resetApps();
+          },
+          itemBuilder: (_) => [
+            CheckedPopupMenuItem(
+              value: 0,
+              checked: _hideSystem,
+              child: Text(appLocalizations.routingHideSystemApps),
+            ),
+            PopupMenuItem(value: 1, child: Text(appLocalizations.reset)),
+          ],
+        ),
+      ],
       body: Column(
         children: [
           Card(
@@ -2491,15 +2517,23 @@ class _AppsViewState extends State<_AppsView>
           ),
           SizedBox(height: 8.mAp),
           Expanded(
-            child: ListView.builder(
-              itemCount: rows.length,
-              itemBuilder: (_, i) {
-                final row = rows[i];
-                return row.header != null
-                    ? ListHeader(title: row.header!)
-                    : _appRow(row.pkg!);
-              },
-            ),
+            child: filtered.isEmpty
+                ? Center(
+                    child: NullStatus(
+                      label: appLocalizations.nullTip(
+                        appLocalizations.routingApps,
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: rows.length,
+                    itemBuilder: (_, i) {
+                      final row = rows[i];
+                      return row.header != null
+                          ? ListHeader(title: row.header!)
+                          : _appRow(row.pkg!);
+                    },
+                  ),
           ),
         ],
       ),

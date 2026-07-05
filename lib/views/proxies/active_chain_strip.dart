@@ -12,14 +12,13 @@ class ActiveChainStrip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chain = ref.watch(
-      currentGroupsStateProvider.select((s) {
-        final start = primaryGroup(s.value);
-        return start == null
-            ? const <String>[]
-            : resolveChain(s.value, start.name);
-      }),
-    );
+    // A `.select` returning a fresh List never memoizes (List == is identity),
+    // so watch the state directly and compute the chain here.
+    final groups = ref.watch(currentGroupsStateProvider).value;
+    final start = primaryGroup(groups);
+    final chain = start == null
+        ? const <String>[]
+        : resolveChain(groups, start.name);
     if (chain.isEmpty) return const SizedBox.shrink();
     // VPN running, not core status (the core stays "connected" while the
     // tunnel is off).

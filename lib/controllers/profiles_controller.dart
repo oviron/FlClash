@@ -180,17 +180,7 @@ extension ProfilesControllerExt on AppController {
     if (kind == ArtifactKind.clashYaml) {
       return Uint8List.fromList(utf8.encode(text));
     }
-    final proxies = switch (kind) {
-      ArtifactKind.shareLink => [
-        parseShareLink(text),
-      ].whereType<Map<String, dynamic>>().toList(),
-      ArtifactKind.base64List => parseSubscriptionContent(text).proxies,
-      ArtifactKind.xrayJson => parseXrayJson(text),
-      _ => <Map<String, dynamic>>[],
-    };
-    if (proxies.isEmpty) return null;
-    final envelope = await encodeYamlTask(synthesizeConfig(proxies));
-    return Uint8List.fromList(utf8.encode(applyQuickStartRouting(envelope)));
+    return artifactToConfigBytes(text, kind);
   }
 
   String _quickStartLabel(String text, ArtifactKind kind) {

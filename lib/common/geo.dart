@@ -11,7 +11,7 @@ import 'package:path/path.dart';
 (int, int) _varint(Uint8List b, int i) {
   var shift = 0;
   var result = 0;
-  while (true) {
+  while (i < b.length) {
     final byte = b[i];
     i++;
     result |= (byte & 0x7f) << shift;

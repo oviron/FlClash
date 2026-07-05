@@ -3,6 +3,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/views/setting/location_permission_gate.dart';
+import 'package:fl_clash/views/setting/widgets/rule_labels.dart';
 import 'package:fl_clash/network_rules/probe.dart';
 import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/location_permission.dart';
@@ -281,13 +282,11 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     if (result != null) setState(() => _conditions[index] = result);
   }
 
-  String _profileName(int? id) {
-    if (id == null) return appLocalizations.networkRulesActionProfile;
-    final match = ref.read(profilesProvider).where((p) => p.id == id);
-    return match.isNotEmpty && match.first.label.isNotEmpty
-        ? match.first.label
-        : '#$id';
-  }
+  String _profileName(int? id) => profileLabel(
+    ref.read(profilesProvider),
+    id,
+    nullLabel: appLocalizations.networkRulesActionProfile,
+  );
 
   void _save() {
     if (!_isValid) return;
@@ -314,16 +313,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
 
   String _conditionLabel(NetworkCondition c, List<Profile> profiles) {
     if (c is Not) return '¬ ${_conditionLabel(c.inner, profiles)}';
-    if (c is WifiNamed) {
-      switch (c.match) {
-        case WifiMatch.exact:
-          return c.ssid;
-        case WifiMatch.prefix:
-          return '${c.ssid}…';
-        case WifiMatch.contains:
-          return '…${c.ssid}…';
-      }
-    }
+    if (c is WifiNamed) return wifiPatternLabel(c);
     if (c is AnyWifi) return appLocalizations.networkRulesConditionAnyWifi;
     if (c is AnyCellular) {
       return appLocalizations.networkRulesConditionAnyCellular;
@@ -332,10 +322,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
       return appLocalizations.networkRulesConditionAnyEthernet;
     }
     if (c is ProfileIs) {
-      final match = profiles.where((p) => p.id == c.profileId);
-      final name = match.isNotEmpty && match.first.label.isNotEmpty
-          ? match.first.label
-          : '#${c.profileId}';
+      final name = profileLabel(profiles, c.profileId, nullLabel: '');
       return '${appLocalizations.networkRulesConditionProfileIs}$name';
     }
     return '';
@@ -525,13 +512,11 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     );
   }
 
-  String _profileLabel(int? id, List<Profile> profiles) {
-    if (id == null) return appLocalizations.networkRulesActionNoProfile;
-    final match = profiles.where((p) => p.id == id);
-    return match.isNotEmpty && match.first.label.isNotEmpty
-        ? match.first.label
-        : '#$id';
-  }
+  String _profileLabel(int? id, List<Profile> profiles) => profileLabel(
+    profiles,
+    id,
+    nullLabel: appLocalizations.networkRulesActionNoProfile,
+  );
 }
 
 class _WifiConditionSheet extends StatefulWidget {

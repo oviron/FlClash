@@ -1104,6 +1104,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Couldn\'t apply the change",
     ),
     "routingApps": MessageLookupByLibrary.simpleMessage("Apps"),
+    "routingHideSystemApps": MessageLookupByLibrary.simpleMessage(
+      "Hide system apps",
+    ),
+    "routingSkippedNodes": MessageLookupByLibrary.simpleMessage(
+      "Some nodes of an unsupported type were skipped",
+    ),
     "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(
       "Default for new and unset apps:",
     ),

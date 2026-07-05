@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:fl_clash/common/share_link.dart';
+import 'package:fl_clash/common/task.dart';
+import 'package:fl_clash/common/xray_json.dart';
 import 'package:fl_clash/services/routing_model.dart';
 
 /// The kind of artifact a user pasted, decided without any network call.
@@ -90,6 +93,23 @@ String applyQuickStartRouting(String envelopeYaml) => const RoutingModel(
   apps: [],
   defaultRoute: toVpn,
 ).toYaml(envelopeYaml);
+
+/// Converts a non-clash artifact (share link, base64 v2ray list, xray-JSON) into
+/// hardened quick-start config bytes, or null when it yields no proxies. One
+/// owner for the import switch, shared by first-run paste and refresh conversion.
+Future<Uint8List?> artifactToConfigBytes(String text, ArtifactKind kind) async {
+  final proxies = switch (kind) {
+    ArtifactKind.shareLink => [
+      parseShareLink(text.trim()),
+    ].whereType<Map<String, dynamic>>().toList(),
+    ArtifactKind.base64List => parseSubscriptionContent(text).proxies,
+    ArtifactKind.xrayJson => parseXrayJson(text),
+    _ => <Map<String, dynamic>>[],
+  };
+  if (proxies.isEmpty) return null;
+  final envelope = await encodeYamlTask(synthesizeConfig(proxies));
+  return Uint8List.fromList(utf8.encode(applyQuickStartRouting(envelope)));
+}
 
 List<Map<String, dynamic>> _ensureUniqueNames(
   List<Map<String, dynamic>> proxies,

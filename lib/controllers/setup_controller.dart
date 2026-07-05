@@ -202,7 +202,7 @@ extension SetupControllerExt on AppController {
     await _prefetchXrayProviders(config, profile);
     final configFilePath = await appPath.configFilePath;
     final yamlString = await encodeYamlTask(config);
-    await File(configFilePath).safeWriteAsString(yamlString);
+    await File(configFilePath).safeWriteAsStringAtomic(yamlString);
     final selectedMap = _ref.read(selectedMapProvider);
     final testUrl = _ref.read(
       appSettingProvider.select((state) => state.testUrl),
@@ -262,6 +262,7 @@ extension SetupControllerExt on AppController {
 
     final buckets = <String, List<String>>{};
     var fingerprint = 'upstream';
+    var dropUnmatched = false;
     final xray = spec.raw['xray'];
     if (xray is Map) {
       final b = xray['buckets'];
@@ -271,19 +272,17 @@ extension SetupControllerExt on AppController {
         });
       }
       if (xray['fingerprint'] != null) fingerprint = '${xray['fingerprint']}';
+      dropUnmatched = xray['drop-unmatched'] == true;
     }
 
-    final headers = <String, String>{};
+    final base = <String, String>{};
     final rawHeader = spec.raw['header'];
     if (rawHeader is Map) {
       rawHeader.forEach((k, v) {
-        headers['$k'] = v is List && v.isNotEmpty ? '${v.first}' : '$v';
+        base['$k'] = v is List && v.isNotEmpty ? '${v.first}' : '$v';
       });
     }
-    headers.putIfAbsent('User-Agent', () => happUserAgent);
-    if (!headers.containsKey(happHwidHeader)) {
-      headers[happHwidHeader] = await ensureHwid();
-    }
+    final headers = await happHeaders(base: base);
 
     var proxies = const <Map<String, dynamic>>[];
     final url = spec.url;
@@ -295,6 +294,7 @@ extension SetupControllerExt on AppController {
           prefix: key,
           buckets: buckets,
           fingerprint: fingerprint,
+          dropUnmatched: dropUnmatched,
         );
       } catch (e) {
         commonPrint.log('xray provider $key fetch failed: $e');
@@ -303,11 +303,14 @@ extension SetupControllerExt on AppController {
 
     final file = File(path);
     if (proxies.isNotEmpty) {
-      await file.safeWriteAsString(await encodeYamlTask({'proxies': proxies}));
+      await file.safeWriteAsStringAtomic(
+        await encodeYamlTask({'proxies': proxies}),
+      );
     } else if (!await file.exists()) {
-      // First fetch failed with no cache: a valid empty provider, never a
-      // dangling path (the core errors on a missing file provider).
-      await file.safeWriteAsString('proxies: []\n');
+      // First fetch failed with no cache: write a valid empty provider (never a
+      // dangling path) and surface the failure rather than a silent empty group.
+      await file.safeWriteAsStringAtomic('proxies: []\n');
+      globalState.showNotifier('$key: ${appLocalizations.networkException}');
     } // else: upstream unreachable but a cache exists -> serve it (failover).
 
     entry['type'] = 'file';
