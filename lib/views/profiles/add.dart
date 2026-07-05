@@ -2,9 +2,38 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/pages/scan.dart';
+import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// First-run on-ramp: if the clipboard already holds a recognizable artifact,
+// import it in one tap; otherwise open the format-agnostic paste dialog.
+Future<void> pasteKeyOnramp() async {
+  final data = await Clipboard.getData(Clipboard.kTextPlain);
+  final text = data?.text?.trim();
+  if (text != null &&
+      text.isNotEmpty &&
+      classifyArtifact(text) != ArtifactKind.unknown) {
+    unawaited(appController.addProfileFromText(text));
+    return;
+  }
+  final value = await globalState.showCommonDialog<String>(
+    child: InputDialog(
+      autovalidateMode: AutovalidateMode.onUnfocus,
+      title: appLocalizations.quickStartPasteKey,
+      labelText: appLocalizations.quickStartPasteHint,
+      value: '',
+      validator: (v) => (v == null || v.isEmpty)
+          ? appLocalizations.emptyTip('').trim()
+          : null,
+    ),
+  );
+  if (value != null) {
+    unawaited(appController.addProfileFromText(value));
+  }
+}
 
 class AddProfileView extends StatelessWidget {
   final BuildContext context;
@@ -39,7 +68,9 @@ class AddProfileView extends StatelessWidget {
           if (value == null || value.isEmpty) {
             return appLocalizations.emptyTip('').trim();
           }
-          if (!value.isImportable) {
+          // Accept anything addProfileFromText handles: a URL, share link, or
+          // pasted clash/xray/base64 content, not just a bare URL.
+          if (classifyArtifact(value) == ArtifactKind.unknown) {
             return appLocalizations.urlTip('').trim();
           }
           return null;

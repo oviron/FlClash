@@ -2,7 +2,9 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/common.dart';
+import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/views/profiles/add.dart';
 import 'package:fl_clash/views/proxies/group_chain.dart';
 import 'package:fl_clash/views/proxies/node_selector_sheet.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -13,11 +15,30 @@ import 'package:intl/intl.dart';
 /// The resting-state home: a connect button, status, the active node pill, live
 /// speed and the outbound-mode segment. The customizable widget grid lives
 /// below it, under "details".
-class DashboardHero extends StatelessWidget {
+class DashboardHero extends ConsumerWidget {
   const DashboardHero({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasProfile = ref.watch(
+      profilesProvider.select((profiles) => profiles.isNotEmpty),
+    );
+    if (!hasProfile) {
+      // No profile yet: an active Connect button would just fail to start the
+      // tunnel. Offer the paste on-ramp instead of an empty first-run dead-end.
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: NullStatus(
+          label: appLocalizations.quickStartPasteHint,
+          illustration: const ProfileEmptyIllustration(),
+          action: FilledButton.icon(
+            onPressed: pasteKeyOnramp,
+            icon: const Icon(Icons.content_paste),
+            label: Text(appLocalizations.quickStartPasteKey),
+          ),
+        ),
+      );
+    }
     return const Column(
       mainAxisSize: MainAxisSize.min,
       children: [

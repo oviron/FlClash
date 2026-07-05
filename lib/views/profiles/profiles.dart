@@ -5,7 +5,6 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/providers/providers.dart';
-import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/profiles/overwrite.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -41,33 +40,6 @@ class _ProfilesViewState extends State<ProfilesView> {
         );
       },
     );
-  }
-
-  // First-run on-ramp: if the clipboard already holds a recognizable artifact,
-  // import it in one tap; otherwise open the format-agnostic paste dialog.
-  Future<void> _handlePasteKey() async {
-    final data = await Clipboard.getData(Clipboard.kTextPlain);
-    final text = data?.text?.trim();
-    if (text != null &&
-        text.isNotEmpty &&
-        classifyArtifact(text) != ArtifactKind.unknown) {
-      unawaited(appController.addProfileFromText(text));
-      return;
-    }
-    final value = await globalState.showCommonDialog<String>(
-      child: InputDialog(
-        autovalidateMode: AutovalidateMode.onUnfocus,
-        title: appLocalizations.quickStartPasteKey,
-        labelText: appLocalizations.quickStartPasteHint,
-        value: '',
-        validator: (v) => (v == null || v.isEmpty)
-            ? appLocalizations.emptyTip('').trim()
-            : null,
-      ),
-    );
-    if (value != null) {
-      unawaited(appController.addProfileFromText(value));
-    }
   }
 
   Future<void> _updateProfiles(List<Profile> profiles) async {
@@ -146,7 +118,7 @@ class _ProfilesViewState extends State<ProfilesView> {
                   label: appLocalizations.nullProfileDesc,
                   illustration: const ProfileEmptyIllustration(),
                   action: FilledButton.icon(
-                    onPressed: _handlePasteKey,
+                    onPressed: pasteKeyOnramp,
                     icon: const Icon(Icons.content_paste),
                     label: Text(appLocalizations.quickStartPasteKey),
                   ),
