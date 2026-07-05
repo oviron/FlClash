@@ -237,4 +237,127 @@ void main() {
     const lines = ['PROCESS-NAME,a,X', 'AND,((DOMAIN,b)),Y', 'MATCH,Z'];
     expect(serializeRoutingRules(parseRoutingRules(lines)), lines);
   });
+
+  group('src trailing flag (T3)', () {
+    test('src alone parses and round-trips', () {
+      final r = RoutingRule.parse('IP-CIDR,10.0.0.0/8,DIRECT,src') as TypedRule;
+      expect(r.src, isTrue);
+      expect(r.noResolve, isFalse);
+      expect(r.serialize(), 'IP-CIDR,10.0.0.0/8,DIRECT,src');
+    });
+
+    test('src before no-resolve is the canonical order', () {
+      final r =
+          RoutingRule.parse('SRC-IP-CIDR,192.168.0.0/16,REJECT,src,no-resolve')
+              as TypedRule;
+      expect(r.src, isTrue);
+      expect(r.noResolve, isTrue);
+      expect(r.serialize(), 'SRC-IP-CIDR,192.168.0.0/16,REJECT,src,no-resolve');
+    });
+
+    test('reversed flags canonicalize to src,no-resolve on re-serialize', () {
+      // parse strips flags in any order; serialize re-emits the canonical order.
+      expect(
+        RoutingRule.parse(
+          'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve,src',
+        ).serialize(),
+        'IP-CIDR,10.0.0.0/8,DIRECT,src,no-resolve',
+      );
+    });
+
+    test('a logical rule carries src too', () {
+      final r =
+          RoutingRule.parse('AND,((DOMAIN,a)),DIRECT,src,no-resolve')
+              as LogicalRule;
+      expect(r.src, isTrue);
+      expect(r.noResolve, isTrue);
+      expect(r.serialize(), 'AND,((DOMAIN,a)),DIRECT,src,no-resolve');
+    });
+  });
+
+  group('constructed-rule round-trip: parse(serialize(r)) == r (D5)', () {
+    const rules = <RoutingRule>[
+      TypedRule(action: RuleAction.DOMAIN, value: 'a.com', target: 'DIRECT'),
+      TypedRule(
+        action: RuleAction.GEOIP,
+        value: 'CN',
+        target: 'PROXY',
+        noResolve: true,
+      ),
+      TypedRule(
+        action: RuleAction.IP_CIDR,
+        value: '10.0.0.0/8',
+        target: 'DIRECT',
+        src: true,
+      ),
+      TypedRule(
+        action: RuleAction.SRC_IP_CIDR,
+        value: '192.168.0.0/16',
+        target: 'REJECT',
+        src: true,
+        noResolve: true,
+      ),
+      TypedRule(action: RuleAction.MATCH, value: '', target: 'PROXY'),
+      AppToSubRuleRoute(packageName: 'com.x', subRuleName: 'route'),
+      SubRuleRoute(
+        action: RuleAction.DOMAIN_SUFFIX,
+        params: 'ya.ru',
+        subRuleName: 'route',
+      ),
+      SubRuleRoute(
+        action: RuleAction.GEOIP,
+        params: 'CN,no-resolve',
+        subRuleName: 'route',
+      ),
+      LogicalRule(
+        op: RuleAction.AND,
+        clauses: [
+          LogicalClause(action: RuleAction.DOMAIN, params: 'a.com'),
+          LogicalClause(action: RuleAction.NETWORK, params: 'UDP'),
+        ],
+        target: 'REJECT',
+      ),
+      LogicalRule(
+        op: RuleAction.OR,
+        clauses: [
+          LogicalClause(action: RuleAction.GEOIP, params: 'CN,no-resolve'),
+        ],
+        target: 'PROXY',
+        src: true,
+        noResolve: true,
+      ),
+      PassthroughRule('AND,((AND,((DOMAIN,a))),(NETWORK,UDP)),X'),
+    ];
+    for (final r in rules) {
+      test('${r.runtimeType}: ${r.serialize()}', () {
+        expect(RoutingRule.parse(r.serialize()), r);
+      });
+    }
+  });
+
+  test('every non-logical action round-trips as a TypedRule (D5)', () {
+    const logical = {
+      RuleAction.AND,
+      RuleAction.OR,
+      RuleAction.NOT,
+      RuleAction.SUB_RULE,
+      RuleAction.MATCH,
+    };
+    for (final action in RuleAction.values) {
+      if (logical.contains(action)) continue;
+      final r = TypedRule(action: action, value: 'x', target: 'DIRECT');
+      expect(
+        RoutingRule.parse(r.serialize()),
+        r,
+        reason: '${action.value} did not round-trip',
+      );
+    }
+  });
+
+  test('an unknown rule type survives verbatim as a PassthroughRule (D5)', () {
+    const line = 'MYSTERY-TYPE,payload,DIRECT,extra';
+    final r = RoutingRule.parse(line);
+    expect(r, isA<PassthroughRule>());
+    expect(r.serialize(), line);
+  });
 }

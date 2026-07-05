@@ -84,7 +84,8 @@ class NetworkMatchContext {
   const NetworkMatchContext({required this.snapshot, this.activeProfileId});
 }
 
-/// A single match clause. Multiple conditions on a rule are combined with AND.
+/// A single match clause. A rule's conditions combine per its matchMode (AND by
+/// default, OR when any).
 sealed class NetworkCondition {
   const NetworkCondition();
 
