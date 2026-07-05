@@ -54,7 +54,7 @@ class _CoreContainerState extends ConsumerState<CoreManager>
       },
       fireImmediately: true,
     );
-    // Strict order: path first, then enable — else file sink opens without path.
+    // Strict order: path first, then enable; else file sink opens without path.
     unawaited(_bootLogging());
     ref.listenManual(coreStatusProvider, (prev, next) {
       if (next == CoreStatus.connected) {

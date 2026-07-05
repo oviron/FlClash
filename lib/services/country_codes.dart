@@ -1,10 +1,8 @@
-library;
-
 import 'routing_model.dart';
 
 /// A country for the "by IP" (GEOIP) List source. This is standard ISO-3166
 /// reference data for the country picker (a system enumeration, like the
-/// installed-app list) — not curated content. The matcher value is the code.
+/// installed-app list), not curated content. The matcher value is the code.
 class CountryEntry {
   final String code;
   final String flag;

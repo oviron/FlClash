@@ -1,5 +1,3 @@
-library;
-
 import 'package:yaml/yaml.dart';
 
 import 'rule_codec.dart';

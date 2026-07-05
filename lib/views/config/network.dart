@@ -87,7 +87,7 @@ class UnifiedIpv6Item extends ConsumerWidget {
     final dns = ref.watch(
       patchClashConfigProvider.select((state) => state.dns.ipv6),
     );
-    // Majority vote — keep IPv6 a single switch. If layers were left desynced
+    // Majority vote: keep IPv6 a single switch. If layers were left desynced
     // (e.g. by an older build or manual YAML edit), the displayed value is the
     // dominant state and any toggle flip rewrites all three layers.
     final activeCount = (inbound ? 1 : 0) + (engine ? 1 : 0) + (dns ? 1 : 0);

@@ -1,5 +1,3 @@
-library;
-
 import 'package:fl_clash/enum/enum.dart';
 
 /// A single mihomo `rules:` entry: [TypedRule] when it parses into typed
@@ -115,10 +113,9 @@ final class AppToSubRuleRoute extends RoutingRule {
   int get hashCode => Object.hash(packageName, subRuleName);
 }
 
-/// A `SUB-RULE,(<TYPE>,<params>),<name>` with a single flat, non-logical clause
-/// that is not PROCESS-NAME (those stay [AppToSubRuleRoute]). Lets any ordinary
-/// matcher target a named sub-rule; round-trips byte-for-byte. Multi-clause or
-/// logical SUB-RULE payloads stay [PassthroughRule].
+/// A `SUB-RULE,(<TYPE>,<params>),<name>` with a single flat non-logical clause
+/// that is not PROCESS-NAME (those are [AppToSubRuleRoute]); round-trips
+/// byte-for-byte. Multi-clause or logical payloads stay [PassthroughRule].
 final class SubRuleRoute extends RoutingRule {
   final RuleAction action;
   final String
@@ -308,10 +305,9 @@ RoutingRule _parse(String line) {
   );
 }
 
-// Recognizes `SUB-RULE,(<TYPE>,<params>),<name>` with a single flat, non-logical
-// clause. A PROCESS-NAME clause is the app-routing shape ([AppToSubRuleRoute]);
-// any other matcher becomes a [SubRuleRoute]. Multi-clause, logical, or empty
-// payloads return null, so odd grammar stays Passthrough.
+// `SUB-RULE,(<TYPE>,<params>),<name>` with a single flat non-logical clause: a
+// PROCESS-NAME clause is [AppToSubRuleRoute], any other matcher a [SubRuleRoute].
+// Multi-clause/logical/empty payloads return null (stay Passthrough).
 RoutingRule? _parseSubRule(List<String> core) {
   if (core.length != 3) return null;
   final name = core[2];

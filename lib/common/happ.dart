@@ -7,7 +7,7 @@ import 'preferences.dart';
 const happUserAgent = 'Happ/3.6.0';
 const happHwidHeader = 'x-hwid';
 
-/// RFC 4122 v4 UUID from 16 secure-random bytes — the device id Happ invents
+/// RFC 4122 v4 UUID from 16 secure-random bytes; the device id Happ invents
 /// per install; a panel counts it as one device slot.
 String generateHwid() {
   final r = Random.secure();

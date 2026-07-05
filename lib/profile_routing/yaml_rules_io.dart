@@ -1,5 +1,3 @@
-library;
-
 import 'package:fl_clash/common/yaml.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
@@ -213,7 +211,7 @@ class ProfileRulesDocument {
       editor.toString().replaceAll(r'\/', '/');
 
   // A YamlEditor over a map-rooted config, or a ProfileRulesWriteException the
-  // controller already catches — so a malformed file surfaces as a message
+  // controller already catches; so a malformed file surfaces as a message
   // instead of an uncaught YamlException from the editor constructor.
   YamlEditor _mapEditor() {
     final YamlEditor editor;

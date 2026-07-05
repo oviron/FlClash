@@ -92,7 +92,7 @@ class EditRuleDialog extends ConsumerStatefulWidget {
   const EditRuleDialog({super.key, this.initial, required this.type});
 
   /// Returns the saved rule, or null if the user cancelled. The caller persists
-  /// via the repo provider — keeping that out of the widget makes the editor
+  /// via the repo provider; keeping that out of the widget makes the editor
   /// reusable for both create and edit.
   static Future<NetworkRule?> show({
     required BuildContext context,
@@ -165,7 +165,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
   }
 
   /// One sheet for the whole Wi-Fi condition: SSID + match pattern + negate,
-  /// all picked at once — no second hop to reach the pattern.
+  /// all picked at once; no second hop to reach the pattern.
   Future<NetworkCondition?> _pickWifi(NetworkCondition? current) async {
     final granted = await ensureLocationPermissionForSsid(context, ref);
     if (!granted || !mounted) return null;

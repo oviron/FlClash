@@ -58,7 +58,7 @@ class OptionsDialog<T> extends StatelessWidget {
   }
 }
 
-/// Canonical inline text field for sheet/form bodies — one filled, rounded
+/// Canonical inline text field for sheet/form bodies: one filled, rounded
 /// decoration so screens stop hand-rolling bare TextField vs OutlineInputBorder.
 class CommonTextField extends StatelessWidget {
   final TextEditingController? controller;

@@ -176,7 +176,7 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
     return ListItem<LogLevel>.options(
       leading: Icon(icon),
       title: Text(title),
-      subtitle: Text('${value.name} — $description'),
+      subtitle: Text('${value.name}: $description'),
       delegate: OptionsDelegate<LogLevel>(
         title: title,
         options: LogLevel.values,

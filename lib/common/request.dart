@@ -269,11 +269,10 @@ Map<String, String>? redirectSafeHeaders(
   Uri to,
 ) {
   if (headers == null || from.host == to.host) return headers;
-  return Map<String, String>.from(headers)
-    ..removeWhere((k, _) {
-      final key = k.toLowerCase();
-      return key == happHwidHeader || key == 'authorization';
-    });
+  return Map<String, String>.from(headers)..removeWhere((k, _) {
+    final key = k.toLowerCase();
+    return key == happHwidHeader || key == 'authorization';
+  });
 }
 
 final request = Request();

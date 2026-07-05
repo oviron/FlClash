@@ -285,7 +285,9 @@ class SelectedItems extends _$SelectedItems with AutoDisposeNotifierMixin {
 }
 
 @riverpod
-// ignore: strict_raw_type — _$SelectedItem is $Notifier<dynamic>; making it explicit triggers cascading override errors
+// _$SelectedItem is $Notifier<dynamic>; making it explicit triggers cascading
+// override errors.
+// ignore: strict_raw_type
 class SelectedItem extends _$SelectedItem with AutoDisposeNotifierMixin {
   @override
   dynamic build(String key) {

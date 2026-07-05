@@ -4564,10 +4564,10 @@ class AppLocalizations {
     );
   }
 
-  /// `{count} more apps — default {fallback}`
+  /// `{count} more apps, default {fallback}`
   String appRoutingRemaining(Object count, Object fallback) {
     return Intl.message(
-      '$count more apps — default $fallback',
+      '$count more apps, default $fallback',
       name: 'appRoutingRemaining',
       desc: '',
       args: [count, fallback],
@@ -4604,10 +4604,10 @@ class AppLocalizations {
     );
   }
 
-  /// `in tunnel — traffic enters mihomo and follows the rules below`
+  /// `in tunnel: traffic enters mihomo and follows the rules below`
   String get appRoutingStep1Hint {
     return Intl.message(
-      'in tunnel — traffic enters mihomo and follows the rules below',
+      'in tunnel: traffic enters mihomo and follows the rules below',
       name: 'appRoutingStep1Hint',
       desc: '',
       args: [],

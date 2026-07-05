@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// A govpn-shaped xray-JSON: a list of {remarks, outbounds:[xray-outbound]}.
 /// Bucket needles are ASCII here; real profiles pass their own (e.g. Cyrillic)
-/// needles as data via `buckets` — substring matching is encoding-agnostic.
+/// needles as data via `buckets`; substring matching is encoding-agnostic.
 const _govpnLike = '''
 [
   {"remarks":"Main mode","outbounds":[
@@ -184,17 +184,19 @@ void main() {
       expect(parseXrayJson(j), isEmpty);
     });
 
-    test('servername has no bogus Show fallback (empty when serverName absent)',
-        () {
-      const j = '''
+    test(
+      'servername has no bogus Show fallback (empty when serverName absent)',
+      () {
+        const j = '''
 [{"remarks":"m","outbounds":[
   {"protocol":"vless","settings":{"vnext":[{"address":"1.1.1.1","port":443,"users":[{"id":"u"}]}]},
     "streamSettings":{"network":"tcp","security":"reality","realitySettings":{"publicKey":"PBK","Show":true}}}]}]
 ''';
-      final p = parseXrayJson(j).single;
-      expect(p['servername'], '');
-      expect(p['reality-opts']['public-key'], 'PBK');
-    });
+        final p = parseXrayJson(j).single;
+        expect(p['servername'], '');
+        expect(p['reality-opts']['public-key'], 'PBK');
+      },
+    );
   });
 
   group('parseXrayJson dropUnmatched (allowlist panels)', () {

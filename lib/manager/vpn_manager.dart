@@ -19,7 +19,7 @@ class VpnManager extends ConsumerStatefulWidget {
 
 class _VpnContainerState extends ConsumerState<VpnManager> {
   // VpnOptions (per-app ACL, TUN, ipv6…) are baked into the VpnService at
-  // establish and can't be hot-reloaded — applying them means re-establishing
+  // establish and can't be hot-reloaded; applying them means re-establishing
   // the tunnel, which drops live connections. Debounce to batch edit bursts.
   static const _window = Duration(seconds: 2);
 
@@ -61,7 +61,7 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
       _reestablishing = false;
     }
     if (!mounted) return;
-    // A change that landed mid-reconnect leaves us dirty — apply it next.
+    // A change that landed mid-reconnect leaves us dirty; apply it next.
     if (_dirty) _schedule();
   }
 

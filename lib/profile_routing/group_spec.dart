@@ -1,5 +1,3 @@
-library;
-
 import 'package:fl_clash/common/yaml.dart';
 import 'package:yaml/yaml.dart';
 

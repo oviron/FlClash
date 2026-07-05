@@ -21,11 +21,8 @@ const defaultBypassDomain = [
   '172.30.*',
   '172.31.*',
   '192.168.*',
-  // Android NetworkMonitor captive-portal probes. AOSP 7+ uses
-  // CAPTIVE_PORTAL_HTTP_URL=connectivitycheck.gstatic.com and
-  // CAPTIVE_PORTAL_HTTPS_URL=www.google.com; older ROMs fall back to
-  // connectivitycheck.android.com. Without these in bypass, the OS may
-  // mark the network as "no internet" while VPN is active.
+  // Android captive-portal probes; without these in bypass the OS marks the
+  // network "no internet" while the VPN is up.
   'connectivitycheck.gstatic.com',
   'connectivitycheck.android.com',
   'www.google.com',

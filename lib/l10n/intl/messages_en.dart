@@ -27,7 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Moved ${count} apps from App access into the profile";
 
   static String m2(count, fallback) =>
-      "${count} more apps — default ${fallback}";
+      "${count} more apps, default ${fallback}";
 
   static String m3(overlaid, conflicts) =>
       "Per-app routing updated: ${overlaid} re-added, ${conflicts} kept yours";
@@ -231,7 +231,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "appRoutingSortName": MessageLookupByLibrary.simpleMessage("By name"),
     "appRoutingStep1": MessageLookupByLibrary.simpleMessage("In mihomo?"),
     "appRoutingStep1Hint": MessageLookupByLibrary.simpleMessage(
-      "in tunnel — traffic enters mihomo and follows the rules below",
+      "in tunnel: traffic enters mihomo and follows the rules below",
     ),
     "appRoutingStep2": MessageLookupByLibrary.simpleMessage(
       "Route inside mihomo",

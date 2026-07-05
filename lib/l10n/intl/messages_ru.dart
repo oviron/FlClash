@@ -27,7 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Перенесено ${count} приложений из «Доступа приложений» в профиль";
 
   static String m2(count, fallback) =>
-      "Ещё ${count} приложений — по умолчанию ${fallback}";
+      "Ещё ${count} приложений, по умолчанию ${fallback}";
 
   static String m3(overlaid, conflicts) =>
       "Маршрутизация приложений обновлена: ${overlaid} восстановлено, ${conflicts} оставлено ваших";
@@ -240,7 +240,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "appRoutingSortName": MessageLookupByLibrary.simpleMessage("По имени"),
     "appRoutingStep1": MessageLookupByLibrary.simpleMessage("Входит в mihomo?"),
     "appRoutingStep1Hint": MessageLookupByLibrary.simpleMessage(
-      "в туннеле — трафик попадает в mihomo и идёт по правилам ниже",
+      "в туннеле: трафик попадает в mihomo и идёт по правилам ниже",
     ),
     "appRoutingStep2": MessageLookupByLibrary.simpleMessage(
       "Маршрут внутри mihomo",
@@ -682,7 +682,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Постоянный файл",
     ),
     "loggingHintAdb": MessageLookupByLibrary.simpleMessage(
-      "Подсказка ADB: adb pull <путь к файлу> — забрать лог на компьютер без root",
+      "Подсказка ADB: adb pull <путь к файлу>, забрать лог на компьютер без root",
     ),
     "loggingInAppSection": MessageLookupByLibrary.simpleMessage(
       "Внутренний просмотр",

@@ -16,7 +16,7 @@ void main() {
 
     test('skips unknown kinds instead of throwing', () {
       // A future version could write a kind we do not know about. We must
-      // keep the rest of the conditions visible — losing one record cannot
+      // keep the rest of the conditions visible; losing one record cannot
       // be allowed to wipe the entire user rules list.
       const json =
           '[{"kind":"any_wifi"},'

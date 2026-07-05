@@ -1,5 +1,3 @@
-library;
-
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/profile_routing/group_spec.dart';
 import 'package:fl_clash/profile_routing/provider_spec.dart';

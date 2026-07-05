@@ -1500,9 +1500,9 @@ as List<String>,
 /// @nodoc
 mixin _$Dns {
 
- bool get enable; String get listen;@JsonKey(name: 'prefer-h3') bool get preferH3;@JsonKey(name: 'use-hosts') bool get useHosts;@JsonKey(name: 'use-system-hosts') bool get useSystemHosts;@JsonKey(name: 'respect-rules') bool get respectRules; bool get ipv6;// Bootstrap layer — resolves any DoH/DoT hostnames in nameserver. Must be
+ bool get enable; String get listen;@JsonKey(name: 'prefer-h3') bool get preferH3;@JsonKey(name: 'use-hosts') bool get useHosts;@JsonKey(name: 'use-system-hosts') bool get useSystemHosts;@JsonKey(name: 'respect-rules') bool get respectRules; bool get ipv6;// Bootstrap layer: resolves any DoH/DoT hostnames in nameserver. Must be
 // plain IPs (no scheme): a scheme here would need its own bootstrap (loop).
-@JsonKey(name: 'default-nameserver') List<String> get defaultNameserver;@JsonKey(name: 'enhanced-mode') DnsMode get enhancedMode;@JsonKey(name: 'fake-ip-range') String get fakeIpRange;// Hosts that must resolve to real IPs (not fake-IP) — Android
+@JsonKey(name: 'default-nameserver') List<String> get defaultNameserver;@JsonKey(name: 'enhanced-mode') DnsMode get enhancedMode;@JsonKey(name: 'fake-ip-range') String get fakeIpRange;// Hosts that must resolve to real IPs (not fake-IP): Android
 // captive-portal probes, Google Update CDN, NTP. Without these the
 // OS marks the network as "no internet" within ~3s.
 @JsonKey(name: 'fake-ip-filter') List<String> get fakeIpFilter;@JsonKey(name: 'nameserver-policy') Map<String, String> get nameserverPolicy;// IP-literal DoH to censorship-surviving resolvers (Quad9 + AdGuard).
@@ -1728,10 +1728,10 @@ class _Dns implements Dns {
 @override@JsonKey(name: 'use-system-hosts') final  bool useSystemHosts;
 @override@JsonKey(name: 'respect-rules') final  bool respectRules;
 @override@JsonKey() final  bool ipv6;
-// Bootstrap layer — resolves any DoH/DoT hostnames in nameserver. Must be
+// Bootstrap layer: resolves any DoH/DoT hostnames in nameserver. Must be
 // plain IPs (no scheme): a scheme here would need its own bootstrap (loop).
  final  List<String> _defaultNameserver;
-// Bootstrap layer — resolves any DoH/DoT hostnames in nameserver. Must be
+// Bootstrap layer: resolves any DoH/DoT hostnames in nameserver. Must be
 // plain IPs (no scheme): a scheme here would need its own bootstrap (loop).
 @override@JsonKey(name: 'default-nameserver') List<String> get defaultNameserver {
   if (_defaultNameserver is EqualUnmodifiableListView) return _defaultNameserver;
@@ -1741,11 +1741,11 @@ class _Dns implements Dns {
 
 @override@JsonKey(name: 'enhanced-mode') final  DnsMode enhancedMode;
 @override@JsonKey(name: 'fake-ip-range') final  String fakeIpRange;
-// Hosts that must resolve to real IPs (not fake-IP) — Android
+// Hosts that must resolve to real IPs (not fake-IP): Android
 // captive-portal probes, Google Update CDN, NTP. Without these the
 // OS marks the network as "no internet" within ~3s.
  final  List<String> _fakeIpFilter;
-// Hosts that must resolve to real IPs (not fake-IP) — Android
+// Hosts that must resolve to real IPs (not fake-IP): Android
 // captive-portal probes, Google Update CDN, NTP. Without these the
 // OS marks the network as "no internet" within ~3s.
 @override@JsonKey(name: 'fake-ip-filter') List<String> get fakeIpFilter {

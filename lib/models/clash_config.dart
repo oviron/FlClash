@@ -227,7 +227,7 @@ abstract class Dns with _$Dns {
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    // Bootstrap layer — resolves any DoH/DoT hostnames in nameserver. Must be
+    // Bootstrap layer: resolves any DoH/DoT hostnames in nameserver. Must be
     // plain IPs (no scheme): a scheme here would need its own bootstrap (loop).
     @Default(['1.1.1.1', '8.8.8.8', '9.9.9.9'])
     @JsonKey(name: 'default-nameserver')
@@ -238,7 +238,7 @@ abstract class Dns with _$Dns {
     @Default('198.18.0.1/16')
     @JsonKey(name: 'fake-ip-range')
     String fakeIpRange,
-    // Hosts that must resolve to real IPs (not fake-IP) — Android
+    // Hosts that must resolve to real IPs (not fake-IP): Android
     // captive-portal probes, Google Update CDN, NTP. Without these the
     // OS marks the network as "no internet" within ~3s.
     @Default([
