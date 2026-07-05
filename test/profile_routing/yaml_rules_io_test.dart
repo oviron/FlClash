@@ -144,13 +144,13 @@ void main() {
     final out = ProfileRulesDocument(doc).withRules(const [
       TypedRule(
         action: RuleAction.IP_CIDR,
-        value: '45.142.164.71/32',
+        value: '203.0.113.71/32',
         target: 'DIRECT',
         noResolve: true,
       ),
       TypedRule(action: RuleAction.MATCH, value: '', target: 'DIRECT'),
     ]);
     expect(out.contains(r'\/'), isFalse, reason: 'invalid YAML escape: $out');
-    expect(out, contains('45.142.164.71/32'));
+    expect(out, contains('203.0.113.71/32'));
   });
 }

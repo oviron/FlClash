@@ -31,17 +31,4 @@ extension RoutingConstructorController on AppController {
     }
     return _writeValidatedApply(file, profileId, next);
   }
-
-  /// The profile's raw YAML, for the single "Edit raw YAML" escape hatch.
-  Future<String> readProfileYaml(int profileId) async {
-    final file = File(await appPath.getProfilePath(profileId.toString()));
-    return await file.exists() ? await file.readAsString() : 'rules: []\n';
-  }
-
-  /// Validates and writes [raw] verbatim (hot-applying on the active profile);
-  /// returns a validation error (file untouched) or null.
-  Future<String?> writeProfileYaml(int profileId, String raw) async {
-    final file = File(await appPath.getProfilePath(profileId.toString()));
-    return _writeValidatedApply(file, profileId, raw);
-  }
 }

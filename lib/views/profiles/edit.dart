@@ -288,14 +288,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
             ),
           ),
       ],
-      ListItem(
-        title: Text(appLocalizations.routing),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () => BaseNavigator.push(
-          context,
-          RoutingConstructorView(profileId: widget.profile.id),
-        ),
-      ),
+      RoutingSections(profileId: widget.profile.id),
       ValueListenableBuilder<FileInfo?>(
         valueListenable: _fileInfoNotifier,
         builder: (_, fileInfo, _) {
@@ -353,18 +346,15 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
         ),
         child: Form(
           key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: ListView.separated(
-              padding: kMaterialListPadding.copyWith(bottom: 72),
-              itemBuilder: (_, index) {
-                return items[index];
-              },
-              separatorBuilder: (_, _) {
-                return const SizedBox(height: 24);
-              },
-              itemCount: items.length,
-            ),
+          child: ListView.separated(
+            padding: kMaterialListPadding.copyWith(top: 8, bottom: 72),
+            itemBuilder: (_, index) {
+              return items[index];
+            },
+            separatorBuilder: (_, _) {
+              return const SizedBox(height: 12);
+            },
+            itemCount: items.length,
           ),
         ),
       ),

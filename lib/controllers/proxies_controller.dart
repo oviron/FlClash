@@ -96,6 +96,29 @@ extension ProxiesControllerExt on AppController {
     addCheckIp();
   }
 
+  /// Selects [proxyName] in [groupName]. For a computed-selected group tapping
+  /// the active node clears the pin (toggle off). Returns false (with a notice)
+  /// for a group whose selection cannot be changed. Shared by the proxy card and
+  /// the node-selector sheet.
+  bool selectGroupMember({
+    required String groupName,
+    required String proxyName,
+    required GroupType groupType,
+  }) {
+    final isComputedSelected = groupType.isComputedSelected;
+    if (!isComputedSelected && groupType != GroupType.Selector) {
+      globalState.showNotifier(appLocalizations.notSelectedTip);
+      return false;
+    }
+    final current = _ref.read(getProxyNameProvider(groupName));
+    final next = isComputedSelected
+        ? (current == proxyName ? '' : proxyName)
+        : proxyName;
+    updateCurrentSelectedMap(groupName, next);
+    changeProxyDebounce(groupName, next);
+    return true;
+  }
+
   void setProvider(ExternalProvider? provider) {
     _ref.read(providersProvider.notifier).setProvider(provider);
   }

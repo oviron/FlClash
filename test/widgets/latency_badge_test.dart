@@ -33,10 +33,20 @@ void main() {
     expect(find.byType(Text), findsNothing);
   });
 
-  testWidgets('renders the timeout label for <= 0 in error color', (
+  testWidgets('renders a spinner (not the timeout label) while probing (0)', (
     tester,
   ) async {
+    // value:0 is the in-progress sentinel set before a delay test; it must not
+    // flash the red timeout label. A real timeout is value:-1 (delay < 0).
     await tester.pumpWidget(_host(const LatencyBadge(0)));
+    await tester.pump();
+    expect(find.text('timeout'), findsNothing);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('renders the timeout label for a real timeout (-1) in error color',
+      (tester) async {
+    await tester.pumpWidget(_host(const LatencyBadge(-1)));
     await tester.pumpAndSettle();
     final finder = find.text('timeout');
     expect(finder, findsOneWidget);

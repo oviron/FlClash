@@ -857,7 +857,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "プライベートルートをバイパス",
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("設定を使用"),
-    "routing": MessageLookupByLibrary.simpleMessage("ルーティング"),
     "routingAddCondition": MessageLookupByLibrary.simpleMessage("条件を追加"),
     "routingAddList": MessageLookupByLibrary.simpleMessage("リストを追加"),
     "routingAddRule": MessageLookupByLibrary.simpleMessage("ルールを追加"),
@@ -895,7 +894,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingConditions": MessageLookupByLibrary.simpleMessage("条件"),
     "routingConnection": MessageLookupByLibrary.simpleMessage("接続"),
-    "routingConstructor": MessageLookupByLibrary.simpleMessage("ルーティング"),
     "routingCountryOther": MessageLookupByLibrary.simpleMessage("その他のコード"),
     "routingCountryOtherHint": MessageLookupByLibrary.simpleMessage(
       "ISO コードまたは geo タグ (例: private)",
@@ -1034,10 +1032,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingRawGroupHint": MessageLookupByLibrary.simpleMessage(
       "この高度なグループは YAML で編集してください",
-    ),
-    "routingRawYaml": MessageLookupByLibrary.simpleMessage("YAML を編集"),
-    "routingRawYamlSubtitle": MessageLookupByLibrary.simpleMessage(
-      "DNS、sniffer などの低レベル設定",
     ),
     "routingRename": MessageLookupByLibrary.simpleMessage("名前を変更"),
     "routingRuleByList": MessageLookupByLibrary.simpleMessage("リストで"),

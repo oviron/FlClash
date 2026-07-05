@@ -194,7 +194,16 @@ extension ProfileExtension on Profile {
   }
 
   Future<Profile> update() async {
-    final response = await request.getFileResponseForUrl(url);
+    var response = await request.getFileResponseForUrl(url);
+    // A Happ/xray panel gates its subscription on the Happ client (UA + x-hwid):
+    // a plain request is redirected to an instruction page, not the nodes. If
+    // the body is not a recognizable profile, retry pretending to be Happ.
+    if (_looksUnusable(response.data)) {
+      response = await request.getFileResponseForUrl(
+        url,
+        headers: await happHeaders(),
+      );
+    }
     final disposition = response.headers.value('content-disposition');
     final userinfo = response.headers.value('subscription-userinfo');
     final converted = await _maybeConvertSubscriptionBody(
@@ -211,6 +220,17 @@ extension ProfileExtension on Profile {
     ).saveFile(bytes);
   }
 
+  // Unknown = not clash / base64 / share-link / xray-JSON, i.e. an instruction
+  // page or a block, which signals the panel wants a Happ-shaped request.
+  bool _looksUnusable(Uint8List? raw) {
+    if (raw == null || raw.isEmpty) return true;
+    try {
+      return classifyArtifact(utf8.decode(raw)) == ArtifactKind.unknown;
+    } catch (_) {
+      return true;
+    }
+  }
+
   // A subscription URL may return a base64 v2ray list (or a single share link)
   // instead of clash YAML; convert it in-app so refreshes keep working. Falls
   // back to the raw body on any failure (e.g. it was already clash YAML).
@@ -222,7 +242,8 @@ extension ProfileExtension on Profile {
         ArtifactKind.shareLink => [
           parseShareLink(text.trim()),
         ].whereType<Map<String, dynamic>>().toList(),
-        ArtifactKind.base64List => parseSubscriptionContent(text),
+        ArtifactKind.base64List => parseSubscriptionContent(text).proxies,
+        ArtifactKind.xrayJson => parseXrayJson(text),
         _ => <Map<String, dynamic>>[],
       };
       if (proxies.isEmpty) return raw;

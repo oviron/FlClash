@@ -14,6 +14,14 @@ Object? yamlToDart(Object? node) {
   return node;
 }
 
+/// Coerces a YAML/JSON-decoded scalar to int (int, num, or numeric String).
+int? asInt(Object? v) {
+  if (v is int) return v;
+  if (v is num) return v.toInt();
+  if (v is String) return int.tryParse(v);
+  return null;
+}
+
 class Yaml {
   static Yaml? _instance;
 

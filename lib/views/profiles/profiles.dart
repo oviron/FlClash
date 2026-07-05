@@ -253,7 +253,7 @@ class ProfileItem extends StatelessWidget {
         return AdaptiveSheetScaffold(
           type: type,
           body: EditProfileView(profile: profile, context: context),
-          title: '${appLocalizations.edit}${appLocalizations.profile}',
+          title: '${appLocalizations.edit} ${appLocalizations.profile}',
         );
       },
     );

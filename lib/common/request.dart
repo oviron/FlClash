@@ -23,6 +23,10 @@ class Request {
     _clashDio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         final client = HttpClient();
+        // Subscription/provider fetches carry the device id and adopt the
+        // returned config, so they must verify TLS. The global override accepts
+        // any cert; reset it here so this channel does not (scoped, not global).
+        client.badCertificateCallback = null;
         client.findProxy = (Uri uri) {
           client.userAgent = appController.ua;
           return FlClashHttpOverrides.handleFindProxy(uri);
@@ -58,35 +62,61 @@ class Request {
     }
   }
 
-  Future<Response<Uint8List>> getFileResponseForUrl(String url) async {
-    try {
-      return await _clashDio
-          .get<Uint8List>(
-            url,
+  /// Fetches [url] following redirects manually so identity headers (x-hwid,
+  /// Authorization) are stripped on a cross-host hop and never leak to another
+  /// origin (see [redirectSafeHeaders]).
+  Future<Response<T>> _fetch<T>(
+    String url,
+    ResponseType responseType,
+    Map<String, String>? headers,
+  ) async {
+    var currentUrl = url;
+    var currentHeaders = headers;
+    for (var i = 0; i < 5; i++) {
+      final res = await _clashDio
+          .get<T>(
+            currentUrl,
             options: Options(
-              responseType: ResponseType.bytes,
+              responseType: responseType,
               sendTimeout: profileRequestTimeoutDuration,
               receiveTimeout: profileRequestTimeoutDuration,
+              headers: currentHeaders,
+              followRedirects: false,
+              validateStatus: (s) => s != null && s < 400,
             ),
           )
           .timeout(profileRequestTimeoutDuration);
+      final code = res.statusCode ?? 0;
+      final location = res.headers.value('location');
+      if (code >= 300 && code < 400 && location != null) {
+        final from = Uri.parse(currentUrl);
+        final to = from.resolve(location);
+        currentHeaders = redirectSafeHeaders(currentHeaders, from, to);
+        currentUrl = to.toString();
+        continue;
+      }
+      return res;
+    }
+    throw appLocalizations.networkException;
+  }
+
+  Future<Response<Uint8List>> getFileResponseForUrl(
+    String url, {
+    Map<String, String>? headers,
+  }) async {
+    try {
+      return await _fetch<Uint8List>(url, ResponseType.bytes, headers);
     } catch (e) {
       _throwProfileRequestError('getFileResponseForUrl', e);
     }
   }
 
-  Future<Response<String>> getTextResponseForUrl(String url) async {
+  Future<Response<String>> getTextResponseForUrl(
+    String url, {
+    Map<String, String>? headers,
+  }) async {
     try {
-      return await _clashDio
-          .get<String>(
-            url,
-            options: Options(
-              responseType: ResponseType.plain,
-              sendTimeout: profileRequestTimeoutDuration,
-              receiveTimeout: profileRequestTimeoutDuration,
-            ),
-          )
-          .timeout(profileRequestTimeoutDuration);
+      return await _fetch<String>(url, ResponseType.plain, headers);
     } catch (e) {
       _throwProfileRequestError('getTextResponseForUrl', e);
     }
@@ -228,6 +258,22 @@ class Request {
       return false;
     }
   }
+}
+
+/// Headers safe to carry to [to] when a request to [from] redirects: on a
+/// cross-host hop the device id (x-hwid) and Authorization are dropped so they
+/// never leak to another origin.
+Map<String, String>? redirectSafeHeaders(
+  Map<String, String>? headers,
+  Uri from,
+  Uri to,
+) {
+  if (headers == null || from.host == to.host) return headers;
+  return Map<String, String>.from(headers)
+    ..removeWhere((k, _) {
+      final key = k.toLowerCase();
+      return key == happHwidHeader || key == 'authorization';
+    });
 }
 
 final request = Request();

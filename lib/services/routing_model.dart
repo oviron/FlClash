@@ -175,23 +175,33 @@ class AppAssignment {
 
 /// A single node (inline proxy from a pasted link) or a subscription (a
 /// proxy-provider from a URL). Both are "servers" to the user; never typed.
-enum ServerKind { node, subscription }
-
-class ServerSource {
+sealed class ServerSource {
   final String name;
-  final ServerKind kind;
-  final Map<String, dynamic>? proxy; // node
-  final String? url; // subscription
 
-  const ServerSource.node({
-    required this.name,
-    required Map<String, dynamic> this.proxy,
-  }) : kind = ServerKind.node,
-       url = null;
+  const ServerSource(this.name);
 
-  const ServerSource.subscription({required this.name, required this.url})
-    : kind = ServerKind.subscription,
-      proxy = null;
+  const factory ServerSource.node({
+    required String name,
+    required Map<String, dynamic> proxy,
+  }) = NodeSource;
+
+  const factory ServerSource.subscription({
+    required String name,
+    required String? url,
+  }) = SubscriptionSource;
+}
+
+final class NodeSource extends ServerSource {
+  final Map<String, dynamic> proxy;
+
+  const NodeSource({required String name, required this.proxy}) : super(name);
+}
+
+final class SubscriptionSource extends ServerSource {
+  final String? url;
+
+  const SubscriptionSource({required String name, required this.url})
+    : super(name);
 }
 
 /// A human server-selection behavior. `autoFastest` -> `url-test`, `failover` ->
@@ -302,7 +312,7 @@ class RoutingModel {
   final Destination? defaultRoute;
 
   /// Imported nodes + subscriptions. Empty means "this model does not manage the
-  /// server layer" (e.g. a routing-only or paste-and-go model) — the writer then
+  /// server layer" (e.g. a routing-only or paste-and-go model); the writer then
   /// leaves `proxies:`/`proxy-providers:`/`proxy-groups:` untouched.
   final List<ServerSource> servers;
   final List<ServerGroup> groups;
@@ -358,9 +368,7 @@ class RoutingModel {
   /// group whose members reference it, so nothing silently reroutes.
   RoutingModel renameGroup(String from, String to) {
     if (from == to || from.isEmpty) return this;
-    List<String> ren(List<String> xs) => [
-      for (final x in xs) x == from ? to : x,
-    ];
+    List<String> ren(List<String> xs) => _replaceName(xs, from, to);
     return copyWith(
       exitGroup: exitGroup == from ? to : exitGroup,
       groups: [
@@ -385,9 +393,7 @@ class RoutingModel {
   /// members/`use:` and the exit selection so no reference dangles.
   RoutingModel renameServer(String from, String to) {
     if (from == to || from.isEmpty || to.isEmpty) return this;
-    List<String> ren(List<String> xs) => [
-      for (final x in xs) x == from ? to : x,
-    ];
+    List<String> ren(List<String> xs) => _replaceName(xs, from, to);
     return copyWith(
       exitGroup: exitGroup == from ? to : exitGroup,
       servers: [
@@ -395,14 +401,14 @@ class RoutingModel {
           if (s.name != from)
             s
           else
-            switch (s.kind) {
-              ServerKind.node => ServerSource.node(
+            switch (s) {
+              NodeSource(:final proxy) => ServerSource.node(
                 name: to,
-                proxy: {...s.proxy!, 'name': to},
+                proxy: {...proxy, 'name': to},
               ),
-              ServerKind.subscription => ServerSource.subscription(
+              SubscriptionSource(:final url) => ServerSource.subscription(
                 name: to,
-                url: s.url!,
+                url: url,
               ),
             },
       ],
@@ -456,7 +462,7 @@ class RoutingModel {
     return base.copyWith(
       servers: [
         for (final s in base.servers)
-          if (s.kind == ServerKind.node && s.name == to)
+          if (s is NodeSource && s.name == to)
             ServerSource.node(name: to, proxy: proxy)
           else
             s,
@@ -468,13 +474,17 @@ class RoutingModel {
   RoutingModel updateSubscriptionUrl(String name, String url) => copyWith(
     servers: [
       for (final s in servers)
-        if (s.kind == ServerKind.subscription && s.name == name)
+        if (s is SubscriptionSource && s.name == name)
           ServerSource.subscription(name: name, url: url)
         else
           s,
     ],
   );
 }
+
+List<String> _replaceName(List<String> xs, String from, String to) => [
+  for (final x in xs) x == from ? to : x,
+];
 
 String _write(RoutingModel m, String base) {
   var out = _writeServers(m, base);
@@ -549,11 +559,11 @@ String _writeServers(RoutingModel m, String base) {
   if (m.servers.isNotEmpty) {
     out = ProfileRulesDocument(out).withProxies([
       for (final s in m.servers)
-        if (s.kind == ServerKind.node) s.proxy!,
+        if (s is NodeSource) s.proxy,
     ]);
     out = ProfileRulesDocument(out).withProxyProviders({
       for (final s in m.servers)
-        if (s.kind == ServerKind.subscription)
+        if (s is SubscriptionSource)
           s.name: _subToProvider(s, baseProviders[s.name]),
     });
   }
@@ -565,7 +575,7 @@ String _writeServers(RoutingModel m, String base) {
   return out;
 }
 
-ProviderSpec _subToProvider(ServerSource s, ProviderSpec? existing) =>
+ProviderSpec _subToProvider(SubscriptionSource s, ProviderSpec? existing) =>
     (existing ?? ProviderSpec.create(type: 'http')).copyWith(
       type: 'http',
       url: s.url,
@@ -796,19 +806,21 @@ RoutingModel _read(String raw) {
   final groups = [for (final g in doc.proxyGroups) _readGroup(g)];
 
   final topRules = doc.rules;
-  final terminalIsMatch =
+  final terminal =
       topRules.isNotEmpty &&
-      topRules.last is TypedRule &&
-      (topRules.last as TypedRule).action == RuleAction.MATCH;
-  final defaultRoute = terminalIsMatch
-      ? (destOf((topRules.last as TypedRule).target) ?? toVpn)
+          topRules.last is TypedRule &&
+          (topRules.last as TypedRule).action == RuleAction.MATCH
+      ? topRules.last as TypedRule
       : null;
+  // Only a terminal MATCH to a base policy (exit/DIRECT/REJECT) is the modeled
+  // default route; MATCH to an arbitrary group round-trips as a global rule.
+  final defaultRoute = terminal != null ? destOf(terminal.target) : null;
 
   // One destination per package (dedup); a LinkedHashMap keeps first-seen order.
   final appByPkg = <String, Destination>{};
   final globalRules = <ScenarioRule>[];
   for (var i = 0; i < topRules.length; i++) {
-    if (terminalIsMatch && i == topRules.length - 1) continue;
+    if (defaultRoute != null && i == topRules.length - 1) continue;
     final r = topRules[i];
     if (r is AppToSubRuleRoute) {
       appByPkg[r.packageName] = ToScenario(r.subRuleName);
@@ -832,8 +844,8 @@ RoutingModel _read(String raw) {
     appByPkg.putIfAbsent(pkg, () => toVpn);
   }
 
-  // OS-level exclusion is authoritative: an excluded package is Мимо VPN even if
-  // a stray rule also targets it, so an OS-excluded app is never upgraded to VPN.
+  // OS-level exclusion is authoritative: an excluded package bypasses the VPN
+  // even if a stray rule targets it, so an OS-excluded app is never upgraded.
   for (final pkg in doc.excludedPackages) {
     if (pkg == routingOwnPackageSentinel) continue;
     appByPkg[pkg] = toBypass;
@@ -856,21 +868,6 @@ RoutingModel _read(String raw) {
     tunnelMode: tunnelMode,
   );
 }
-
-// Keys SmartGroup models directly; everything else on a group is carried in its
-// `extra` map (preserved verbatim so an unknown key like `icon` survives).
-const _smartGroupKeys = {
-  'name',
-  'type',
-  'proxies',
-  'use',
-  'filter',
-  'interval',
-  'lazy',
-  'url',
-  'hidden',
-  'tolerance',
-};
 
 // Classify by group TYPE: a known behavior (select/url-test/fallback) is a
 // human-editable SmartGroup even when provider-backed (use/filter) or carrying
@@ -895,10 +892,7 @@ ServerGroup _readGroup(GroupSpec g) {
     url: g.url,
     hidden: g.hidden,
     tolerance: g.tolerance,
-    extra: {
-      for (final e in g.raw.entries)
-        if (!_smartGroupKeys.contains(e.key)) e.key: e.value,
-    },
+    extra: g.extra,
   );
 }
 

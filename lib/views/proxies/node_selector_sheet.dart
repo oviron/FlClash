@@ -1,9 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
-import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/providers.dart';
-import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,25 +47,19 @@ class _NodeRow extends ConsumerWidget {
 
   const _NodeRow({required this.group, required this.proxy});
 
-  void _select(BuildContext context, WidgetRef ref) {
-    final type = group.type;
-    if (!type.isComputedSelected && type != GroupType.Selector) {
-      globalState.showNotifier(appLocalizations.notSelectedTip);
-      return;
-    }
-    final current = ref.read(getProxyNameProvider(group.name));
-    final next = type.isComputedSelected
-        ? (current == proxy.name ? '' : proxy.name)
-        : proxy.name;
-    appController.updateCurrentSelectedMap(group.name, next);
-    appController.changeProxyDebounce(group.name, next);
-    Navigator.of(context).maybePop();
+  void _select(BuildContext context) {
+    final selected = appController.selectGroupMember(
+      groupName: group.name,
+      proxyName: proxy.name,
+      groupType: group.type,
+    );
+    if (selected) Navigator.of(context).maybePop();
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isSelected =
-        ref.watch(getProxyNameProvider(group.name)) == proxy.name;
+        ref.watch(getSelectedProxyNameProvider(group.name)) == proxy.name;
     final delay = ref.watch(getDelayProvider(proxyName: proxy.name));
     return ListItem(
       color: isSelected ? context.colorScheme.secondaryContainer : null,
@@ -83,7 +75,7 @@ class _NodeRow extends ConsumerWidget {
           ],
         ],
       ),
-      onTap: () => _select(context, ref),
+      onTap: () => _select(context),
     );
   }
 }

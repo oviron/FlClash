@@ -1083,7 +1083,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Bypass private route address",
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("Use config"),
-    "routing": MessageLookupByLibrary.simpleMessage("Routing"),
     "routingAddCondition": MessageLookupByLibrary.simpleMessage(
       "Add condition",
     ),
@@ -1135,7 +1134,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingConditions": MessageLookupByLibrary.simpleMessage("Conditions"),
     "routingConnection": MessageLookupByLibrary.simpleMessage("Connection"),
-    "routingConstructor": MessageLookupByLibrary.simpleMessage("Routing"),
     "routingCountryOther": MessageLookupByLibrary.simpleMessage("Other code"),
     "routingCountryOtherHint": MessageLookupByLibrary.simpleMessage(
       "ISO code or geo tag (e.g. private)",
@@ -1316,10 +1314,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingRawGroupHint": MessageLookupByLibrary.simpleMessage(
       "This group is advanced; edit it in raw YAML",
-    ),
-    "routingRawYaml": MessageLookupByLibrary.simpleMessage("Edit raw YAML"),
-    "routingRawYamlSubtitle": MessageLookupByLibrary.simpleMessage(
-      "DNS, sniffer and other low-level blocks",
     ),
     "routingRename": MessageLookupByLibrary.simpleMessage("Rename"),
     "routingRuleByList": MessageLookupByLibrary.simpleMessage("By list"),

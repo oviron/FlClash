@@ -773,7 +773,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeMode": MessageLookupByLibrary.simpleMessage("路由模式"),
     "routeMode_bypassPrivate": MessageLookupByLibrary.simpleMessage("绕过私有路由地址"),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("使用配置"),
-    "routing": MessageLookupByLibrary.simpleMessage("路由"),
     "routingAddCondition": MessageLookupByLibrary.simpleMessage("添加条件"),
     "routingAddList": MessageLookupByLibrary.simpleMessage("添加列表"),
     "routingAddRule": MessageLookupByLibrary.simpleMessage("添加规则"),
@@ -807,7 +806,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingCheckedTopToBottom": MessageLookupByLibrary.simpleMessage("自上而下匹配"),
     "routingConditions": MessageLookupByLibrary.simpleMessage("条件"),
     "routingConnection": MessageLookupByLibrary.simpleMessage("连接"),
-    "routingConstructor": MessageLookupByLibrary.simpleMessage("路由"),
     "routingCountryOther": MessageLookupByLibrary.simpleMessage("其他代码"),
     "routingCountryOtherHint": MessageLookupByLibrary.simpleMessage(
       "ISO 代码或 geo 标签 (如 private)",
@@ -928,10 +926,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingRawGroupHint": MessageLookupByLibrary.simpleMessage(
       "该高级分组请在 YAML 中编辑",
-    ),
-    "routingRawYaml": MessageLookupByLibrary.simpleMessage("编辑 YAML"),
-    "routingRawYamlSubtitle": MessageLookupByLibrary.simpleMessage(
-      "DNS、sniffer 等底层配置",
     ),
     "routingRename": MessageLookupByLibrary.simpleMessage("重命名"),
     "routingRuleByList": MessageLookupByLibrary.simpleMessage("按列表"),

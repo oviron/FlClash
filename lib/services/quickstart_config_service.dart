@@ -1,8 +1,17 @@
+import 'dart:convert';
+
 import 'package:fl_clash/common/share_link.dart';
 import 'package:fl_clash/services/routing_model.dart';
 
 /// The kind of artifact a user pasted, decided without any network call.
-enum ArtifactKind { clashYaml, subscriptionUrl, shareLink, base64List, unknown }
+enum ArtifactKind {
+  clashYaml,
+  subscriptionUrl,
+  shareLink,
+  base64List,
+  xrayJson,
+  unknown,
+}
 
 ArtifactKind classifyArtifact(String text) {
   final t = text.trim();
@@ -20,6 +29,17 @@ ArtifactKind classifyArtifact(String text) {
   if (RegExp(r'(^|\n)\s*proxies\s*:').hasMatch(t) ||
       t.contains('proxy-groups:')) {
     return ArtifactKind.clashYaml;
+  }
+
+  // xray-JSON (Happ subscription): a top-level list of profiles carrying
+  // `outbounds`. Distinct from clash-YAML (a `proxies` map) and SIP008.
+  if (t.startsWith('[')) {
+    try {
+      final j = jsonDecode(t);
+      if (j is List && j.any((e) => e is Map && e.containsKey('outbounds'))) {
+        return ArtifactKind.xrayJson;
+      }
+    } catch (_) {}
   }
 
   final decoded = decodeBase64Text(t);

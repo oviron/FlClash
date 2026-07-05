@@ -90,20 +90,12 @@ class ProxyCard extends StatelessWidget {
     }
   }
 
-  Future<void> _changeProxy(WidgetRef ref) async {
-    final isComputedSelected = groupType.isComputedSelected;
-    final isSelector = groupType == GroupType.Selector;
-    if (isComputedSelected || isSelector) {
-      final currentProxyName = ref.read(getProxyNameProvider(groupName));
-      final nextProxyName = switch (isComputedSelected) {
-        true => currentProxyName == proxy.name ? '' : proxy.name,
-        false => proxy.name,
-      };
-      appController.updateCurrentSelectedMap(groupName, nextProxyName);
-      appController.changeProxyDebounce(groupName, nextProxyName);
-      return;
-    }
-    globalState.showNotifier(appLocalizations.notSelectedTip);
+  void _changeProxy() {
+    appController.selectGroupMember(
+      groupName: groupName,
+      proxyName: proxy.name,
+      groupType: groupType,
+    );
   }
 
   @override
@@ -120,9 +112,7 @@ class ProxyCard extends StatelessWidget {
             );
             return CommonCard(
               key: key,
-              onPressed: () {
-                _changeProxy(ref);
-              },
+              onPressed: _changeProxy,
               isSelected: selectedProxyName == proxy.name,
               child: child!,
             );

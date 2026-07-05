@@ -39,11 +39,11 @@ void main() {
         'sub-one',
       });
       final a = model.servers.firstWhere((s) => s.name == 'node-a');
-      expect(a.kind, ServerKind.node);
-      expect(a.proxy!['cipher'], 'aes-256-gcm');
+      expect(a, isA<NodeSource>());
+      expect((a as NodeSource).proxy['cipher'], 'aes-256-gcm');
       final sub = model.servers.firstWhere((s) => s.name == 'sub-one');
-      expect(sub.kind, ServerKind.subscription);
-      expect(sub.url, 'https://sub.example/list');
+      expect(sub, isA<SubscriptionSource>());
+      expect((sub as SubscriptionSource).url, 'https://sub.example/list');
     });
 
     test(
@@ -94,7 +94,7 @@ void main() {
         expect(back.groups.whereType<RawGroup>().single.name, 'Balance');
         // node-a keeps its protocol fields.
         final a = back.servers.firstWhere((s) => s.name == 'node-a');
-        expect(a.proxy!['cipher'], 'aes-256-gcm');
+        expect((a as NodeSource).proxy['cipher'], 'aes-256-gcm');
         // The provider-backed groups and their `use:` survive verbatim.
         expect(out, contains('use:'));
         expect(

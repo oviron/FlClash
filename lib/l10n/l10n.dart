@@ -4824,11 +4824,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Routing`
-  String get routing {
-    return Intl.message('Routing', name: 'routing', desc: '', args: []);
-  }
-
   /// `Proxy groups`
   String get proxyGroups {
     return Intl.message(
@@ -5399,16 +5394,6 @@ class AppLocalizations {
     return Intl.message(
       'Use a different key',
       name: 'quickStartUseDifferent',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Routing`
-  String get routingConstructor {
-    return Intl.message(
-      'Routing',
-      name: 'routingConstructor',
       desc: '',
       args: [],
     );
@@ -6041,26 +6026,6 @@ class AppLocalizations {
       name: 'routingServerCount',
       desc: '',
       args: [count],
-    );
-  }
-
-  /// `Edit raw YAML`
-  String get routingRawYaml {
-    return Intl.message(
-      'Edit raw YAML',
-      name: 'routingRawYaml',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `DNS, sniffer and other low-level blocks`
-  String get routingRawYamlSubtitle {
-    return Intl.message(
-      'DNS, sniffer and other low-level blocks',
-      name: 'routingRawYamlSubtitle',
-      desc: '',
-      args: [],
     );
   }
 

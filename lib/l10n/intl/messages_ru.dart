@@ -1146,7 +1146,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeMode_config": MessageLookupByLibrary.simpleMessage(
       "Использовать конфигурацию",
     ),
-    "routing": MessageLookupByLibrary.simpleMessage("Маршрутизация"),
     "routingAddCondition": MessageLookupByLibrary.simpleMessage(
       "Добавить условие",
     ),
@@ -1200,7 +1199,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingConditions": MessageLookupByLibrary.simpleMessage("Условия"),
     "routingConnection": MessageLookupByLibrary.simpleMessage("Подключение"),
-    "routingConstructor": MessageLookupByLibrary.simpleMessage("Маршрутизация"),
     "routingCountryOther": MessageLookupByLibrary.simpleMessage("Другой код"),
     "routingCountryOtherHint": MessageLookupByLibrary.simpleMessage(
       "ISO-код или гео-тег (напр. private)",
@@ -1407,10 +1405,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingRawGroupHint": MessageLookupByLibrary.simpleMessage(
       "Это продвинутая группа, правьте её в YAML",
-    ),
-    "routingRawYaml": MessageLookupByLibrary.simpleMessage("Править YAML"),
-    "routingRawYamlSubtitle": MessageLookupByLibrary.simpleMessage(
-      "DNS, sniffer и другие низкоуровневые блоки",
     ),
     "routingRename": MessageLookupByLibrary.simpleMessage("Переименовать"),
     "routingRuleByList": MessageLookupByLibrary.simpleMessage("По списку"),

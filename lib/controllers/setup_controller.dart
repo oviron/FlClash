@@ -199,6 +199,7 @@ extension SetupControllerExt on AppController {
       patchConfig: realPatchConfig,
     );
     await ensureInboundAuth(config);
+    await _prefetchXrayProviders(config, profile);
     final configFilePath = await appPath.configFilePath;
     final yamlString = await encodeYamlTask(config);
     await File(configFilePath).safeWriteAsString(yamlString);
@@ -215,5 +216,106 @@ extension SetupControllerExt on AppController {
       throw message;
     }
     addCheckIp();
+  }
+
+  // Happ/xray proxy-providers can't be fetched by the core (it can't parse
+  // xray-JSON). Detect them from the on-disk profile (the runtime map may be
+  // core-stripped), fetch+convert here, write a `proxies:` file, and flip the
+  // provider to `type: file` so the core just reads it. Markers never reach it.
+  Future<void> _prefetchXrayProviders(
+    Map<String, dynamic> config,
+    Profile? profile,
+  ) async {
+    if (profile == null) return;
+    final providers = config['proxy-providers'];
+    if (providers is! Map || providers.isEmpty) return;
+
+    final String rawYaml;
+    try {
+      rawYaml = await File(
+        await appPath.getProfilePath(profile.id.toString()),
+      ).readAsString();
+    } catch (_) {
+      return;
+    }
+    final onDisk = ProfileRulesDocument(rawYaml).proxyProviders;
+    final keys = onDisk.keys
+        .where(
+          (k) => onDisk[k]!.raw['xray'] != null && providers.containsKey(k),
+        )
+        .toList();
+    if (keys.isEmpty) return;
+
+    await Future.wait(
+      keys.map((k) => _prefetchOneXrayProvider(providers[k], onDisk[k]!, k)),
+    );
+  }
+
+  Future<void> _prefetchOneXrayProvider(
+    dynamic entry,
+    ProviderSpec spec,
+    String key,
+  ) async {
+    if (entry is! Map) return;
+    final path = (entry['path'] ?? spec.path)?.toString();
+    if (path == null) return;
+
+    final buckets = <String, List<String>>{};
+    var fingerprint = 'upstream';
+    final xray = spec.raw['xray'];
+    if (xray is Map) {
+      final b = xray['buckets'];
+      if (b is Map) {
+        b.forEach((k, v) {
+          if (v is List) buckets['$k'] = v.map((e) => '$e').toList();
+        });
+      }
+      if (xray['fingerprint'] != null) fingerprint = '${xray['fingerprint']}';
+    }
+
+    final headers = <String, String>{};
+    final rawHeader = spec.raw['header'];
+    if (rawHeader is Map) {
+      rawHeader.forEach((k, v) {
+        headers['$k'] = v is List && v.isNotEmpty ? '${v.first}' : '$v';
+      });
+    }
+    headers.putIfAbsent('User-Agent', () => happUserAgent);
+    if (!headers.containsKey(happHwidHeader)) {
+      headers[happHwidHeader] = await ensureHwid();
+    }
+
+    var proxies = const <Map<String, dynamic>>[];
+    final url = spec.url;
+    if (url != null && url.isNotEmpty) {
+      try {
+        final resp = await request.getTextResponseForUrl(url, headers: headers);
+        proxies = parseXrayJson(
+          resp.data ?? '',
+          prefix: key,
+          buckets: buckets,
+          fingerprint: fingerprint,
+        );
+      } catch (e) {
+        commonPrint.log('xray provider $key fetch failed: $e');
+      }
+    }
+
+    final file = File(path);
+    if (proxies.isNotEmpty) {
+      await file.safeWriteAsString(await encodeYamlTask({'proxies': proxies}));
+    } else if (!await file.exists()) {
+      // First fetch failed with no cache: a valid empty provider, never a
+      // dangling path (the core errors on a missing file provider).
+      await file.safeWriteAsString('proxies: []\n');
+    } // else: upstream unreachable but a cache exists -> serve it (failover).
+
+    entry['type'] = 'file';
+    entry
+      ..remove('url')
+      ..remove('proxy')
+      ..remove('header')
+      ..remove('xray')
+      ..remove('format');
   }
 }

@@ -17,40 +17,52 @@ import 'package:yaml/yaml.dart';
 
 /// The zero-YAML routing constructor: Lists, Scenarios, Apps in plain language.
 /// Reads and writes the profile through [RoutingModel] (docs/onboarding.md II).
-class RoutingConstructorView extends ConsumerStatefulWidget {
+/// The routing sections (servers, groups, lists, rules, scenarios, apps) as an
+/// embeddable block: owns the model and reloads it after each sub-screen returns.
+/// Ordered bottom-up: servers, then how they are grouped, then the lists/rules
+/// that split traffic, then per-app routing.
+class RoutingSections extends StatefulWidget {
   final int profileId;
 
-  const RoutingConstructorView({super.key, required this.profileId});
+  const RoutingSections({super.key, required this.profileId});
 
   @override
-  ConsumerState<RoutingConstructorView> createState() =>
-      _RoutingConstructorViewState();
+  State<RoutingSections> createState() => _RoutingSectionsState();
 }
 
-class _RoutingConstructorViewState
-    extends ConsumerState<RoutingConstructorView> {
+/// Shared model lifecycle for the routing sections: owns [_model], reloads after
+/// a sub-screen, and writes back with one error notice. Works on State and
+/// ConsumerState alike.
+mixin _RoutingSectionState<T extends StatefulWidget> on State<T> {
   RoutingModel? _model;
+
+  int get profileId;
+
+  Future<void> _load() async {
+    final loaded = await appController.readRoutingModel(profileId);
+    if (mounted) setState(() => _model = loaded);
+  }
+
+  Future<void> _write(RoutingModel next) async {
+    final error = await appController.writeRoutingModel(profileId, next);
+    if (!mounted) return;
+    if (error != null) {
+      context.showNotifier('${appLocalizations.routingApplyFailed}: $error');
+    } else {
+      setState(() => _model = next);
+    }
+  }
+}
+
+class _RoutingSectionsState extends State<RoutingSections>
+    with _RoutingSectionState<RoutingSections> {
+  @override
+  int get profileId => widget.profileId;
 
   @override
   void initState() {
     super.initState();
     _load();
-  }
-
-  Future<void> _load() async {
-    final model = await appController.readRoutingModel(widget.profileId);
-    if (mounted) setState(() => _model = model);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final model = _model;
-    return CommonScaffold(
-      title: appLocalizations.routingConstructor,
-      body: model == null
-          ? const Center(child: CircularProgressIndicator())
-          : _buildBody(context, model),
-    );
   }
 
   Widget _sectionRow({
@@ -69,37 +81,17 @@ class _RoutingConstructorViewState
     },
   );
 
-  // The single raw-YAML escape hatch: the only surface that shows YAML, for
-  // low-level blocks the constructor does not model (DNS, sniffer, mesh).
-  Future<void> _openRawYaml() async {
-    final raw = await appController.readProfileYaml(widget.profileId);
-    if (!mounted) return;
-    final editor = EditorPage(
-      title: appLocalizations.routingRawYaml,
-      content: raw,
-      onSave: (ctx, _, content) async {
-        final error = await appController.writeProfileYaml(
-          widget.profileId,
-          content,
-        );
-        if (!ctx.mounted) return;
-        if (error != null && error.isNotEmpty) {
-          ctx.showNotifier('${appLocalizations.routingApplyFailed}: $error');
-        } else {
-          Navigator.of(ctx).pop(content);
-        }
-      },
-      onPop: (ctx, _, content) async => true,
-    );
-    await BaseNavigator.push<String>(context, editor);
-    await _load();
-  }
-
-  // Ordered bottom-up: servers first, then how they are grouped, then the
-  // lists/rules that split traffic, then per-app routing. A single raw-YAML
-  // hatch at the end replaces the old parallel "Advanced" editor stack.
-  Widget _buildBody(BuildContext context, RoutingModel model) {
-    return ListView(
+  @override
+  Widget build(BuildContext context) {
+    final model = _model;
+    if (model == null) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 24),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         ListHeader(title: appLocalizations.routingConnection),
         _sectionRow(
@@ -146,14 +138,6 @@ class _RoutingConstructorViewState
           subtitle: appLocalizations.routingAppsSubtitle,
           destination: _AppsView(profileId: widget.profileId),
         ),
-        ListHeader(title: appLocalizations.routingAdvanced),
-        ListItem(
-          leading: const Icon(Icons.code),
-          title: Text(appLocalizations.routingRawYaml),
-          subtitle: Text(appLocalizations.routingRawYamlSubtitle),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: _openRawYaml,
-        ),
       ],
     );
   }
@@ -172,28 +156,15 @@ class _ListsView extends StatefulWidget {
   State<_ListsView> createState() => _ListsViewState();
 }
 
-class _ListsViewState extends State<_ListsView> {
-  RoutingModel? _model;
+class _ListsViewState extends State<_ListsView>
+    with _RoutingSectionState<_ListsView> {
+  @override
+  int get profileId => widget.profileId;
 
   @override
   void initState() {
     super.initState();
     _load();
-  }
-
-  Future<void> _load() async {
-    final model = await appController.readRoutingModel(widget.profileId);
-    if (mounted) setState(() => _model = model);
-  }
-
-  Future<void> _write(RoutingModel next) async {
-    final error = await appController.writeRoutingModel(widget.profileId, next);
-    if (!mounted) return;
-    if (error != null) {
-      context.showNotifier('${appLocalizations.routingApplyFailed}: $error');
-    } else {
-      setState(() => _model = next);
-    }
   }
 
   Future<void> _addLists(List<RoutingList> lists) async {
@@ -428,28 +399,15 @@ class _ScenariosView extends StatefulWidget {
   State<_ScenariosView> createState() => _ScenariosViewState();
 }
 
-class _ScenariosViewState extends State<_ScenariosView> {
-  RoutingModel? _model;
+class _ScenariosViewState extends State<_ScenariosView>
+    with _RoutingSectionState<_ScenariosView> {
+  @override
+  int get profileId => widget.profileId;
 
   @override
   void initState() {
     super.initState();
     _load();
-  }
-
-  Future<void> _load() async {
-    final model = await appController.readRoutingModel(widget.profileId);
-    if (mounted) setState(() => _model = model);
-  }
-
-  Future<void> _write(RoutingModel next) async {
-    final error = await appController.writeRoutingModel(widget.profileId, next);
-    if (!mounted) return;
-    if (error != null) {
-      context.showNotifier('${appLocalizations.routingApplyFailed}: $error');
-    } else {
-      setState(() => _model = next);
-    }
   }
 
   Future<void> _newScenario() async {
@@ -769,7 +727,7 @@ Future<RoutingList?> _pickList(BuildContext context, List<RoutingList> lists) =>
       ),
     );
 
-// The single target picker for rules and apps alike: VPN, bypass ("Мимо VPN"),
+// The single target picker for rules and apps alike: VPN, bypass (outside VPN),
 // each named scenario, then block. [scenarios] is empty where a scenario target
 // is not offered (inside a scenario, to avoid loops).
 Future<Destination?> _pickTarget(
@@ -788,14 +746,17 @@ Future<Destination?> _pickTarget(
         for (final d in <Destination>[
           toVpn,
           // A rule/terminal "bypass" would be an in-tunnel MATCH,DIRECT, not the
-          // OS-level Мимо VPN; the everything-else default omits it (invariant 6).
+          // OS-level bypass; the everything-else default omits it (invariant 6).
           if (allowBypass) toBypass,
           for (final s in scenarios) ToScenario(s.name),
           toBlock,
         ])
           ListItem(
-            leading: Icon(_destIcon(d), color: _destColor(context, d)),
-            title: Text(_destLabel(d)),
+            leading: Icon(
+              _destStyle(context, d).icon,
+              color: _destStyle(context, d).color,
+            ),
+            title: Text(_destStyle(context, d).label),
             onTap: () => Navigator.pop(context, d),
           ),
       ],
@@ -1361,8 +1322,11 @@ class _LogicRuleViewState extends State<_LogicRuleView> {
           ListHeader(title: appLocalizations.routingSendTo),
           for (final d in const <Destination>[toVpn, toBypass, toBlock])
             ListItem(
-              leading: Icon(_destIcon(d), color: _destColor(context, d)),
-              title: Text(_destLabel(d)),
+              leading: Icon(
+                _destStyle(context, d).icon,
+                color: _destStyle(context, d).color,
+              ),
+              title: Text(_destStyle(context, d).label),
               trailing: _dest == d
                   ? Icon(Icons.check, color: context.colorScheme.primary)
                   : null,
@@ -1387,28 +1351,15 @@ class _GlobalRulesView extends StatefulWidget {
   State<_GlobalRulesView> createState() => _GlobalRulesViewState();
 }
 
-class _GlobalRulesViewState extends State<_GlobalRulesView> {
-  RoutingModel? _model;
+class _GlobalRulesViewState extends State<_GlobalRulesView>
+    with _RoutingSectionState<_GlobalRulesView> {
+  @override
+  int get profileId => widget.profileId;
 
   @override
   void initState() {
     super.initState();
     _load();
-  }
-
-  Future<void> _load() async {
-    final model = await appController.readRoutingModel(widget.profileId);
-    if (mounted) setState(() => _model = model);
-  }
-
-  Future<void> _write(RoutingModel next) async {
-    final error = await appController.writeRoutingModel(widget.profileId, next);
-    if (!mounted) return;
-    if (error != null) {
-      context.showNotifier('${appLocalizations.routingApplyFailed}: $error');
-    } else {
-      setState(() => _model = next);
-    }
   }
 
   Future<void> _writeRules(List<ScenarioRule> rules) =>
@@ -1535,28 +1486,15 @@ class _ProxiesView extends ConsumerStatefulWidget {
   ConsumerState<_ProxiesView> createState() => _ProxiesViewState();
 }
 
-class _ProxiesViewState extends ConsumerState<_ProxiesView> {
-  RoutingModel? _model;
+class _ProxiesViewState extends ConsumerState<_ProxiesView>
+    with _RoutingSectionState<_ProxiesView> {
+  @override
+  int get profileId => widget.profileId;
 
   @override
   void initState() {
     super.initState();
     _load();
-  }
-
-  Future<void> _load() async {
-    final model = await appController.readRoutingModel(widget.profileId);
-    if (mounted) setState(() => _model = model);
-  }
-
-  Future<void> _write(RoutingModel next) async {
-    final error = await appController.writeRoutingModel(widget.profileId, next);
-    if (!mounted) return;
-    if (error != null) {
-      context.showNotifier('${appLocalizations.routingApplyFailed}: $error');
-    } else {
-      setState(() => _model = next);
-    }
   }
 
   void _fail() {
@@ -1580,11 +1518,15 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView> {
         if (p == null) return _fail();
         await _addNodes(m, [p]);
       case ArtifactKind.base64List:
-        final ps = parseSubscriptionContent(t);
+        final ps = parseSubscriptionContent(t).proxies;
         if (ps.isEmpty) return _fail();
         await _addNodes(m, ps);
       case ArtifactKind.subscriptionUrl:
         await _addSubscription(m, t);
+      case ArtifactKind.xrayJson:
+        final ps = parseXrayJson(t);
+        if (ps.isEmpty) return _fail();
+        await _addNodes(m, ps);
       case ArtifactKind.clashYaml:
       case ArtifactKind.unknown:
         _fail();
@@ -1650,26 +1592,38 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView> {
     );
   }
 
-  Map<String, dynamic>? _parseProxy(String text) {
+  ({Map<String, dynamic>? proxy, String error}) _parseProxy(String text) {
     try {
       final doc = loadYaml(text);
       if (doc is YamlMap) {
-        return (yamlToDart(doc) as Map).cast<String, dynamic>();
+        return (
+          proxy: (yamlToDart(doc) as Map).cast<String, dynamic>(),
+          error: '',
+        );
       }
-    } catch (_) {}
-    return null;
+      return (proxy: null, error: 'expected a YAML map');
+    } catch (e) {
+      return (proxy: null, error: '$e');
+    }
   }
 
   // A node's config is edited as its own YAML (syntax-highlighted), so every
   // field, including nested ones (reality-opts, xhttp-opts), is fully editable.
-  Future<void> _editNode(ServerSource s) async {
+  Future<void> _editNode(NodeSource s) async {
     final editor = EditorPage(
       title: appLocalizations.routingEditProxy,
       content: yaml.encode(s.proxy),
       onSave: (ctx, _, text) async {
-        final proxy = _parseProxy(text);
-        if (proxy == null || (proxy['name'] ?? '').toString().trim().isEmpty) {
-          ctx.showNotifier('${appLocalizations.routingApplyFailed}: YAML');
+        final parsed = _parseProxy(text);
+        final proxy = parsed.proxy;
+        if (proxy == null) {
+          ctx.showNotifier(
+            '${appLocalizations.routingApplyFailed}: ${parsed.error}',
+          );
+          return;
+        }
+        if ((proxy['name'] ?? '').toString().trim().isEmpty) {
+          ctx.showNotifier('${appLocalizations.routingApplyFailed}: name');
           return;
         }
         final error = await appController.writeRoutingModel(
@@ -1689,7 +1643,7 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView> {
     await _load();
   }
 
-  Future<void> _editSubscription(ServerSource s) async {
+  Future<void> _editSubscription(SubscriptionSource s) async {
     final url = await globalState.showCommonDialog<String>(
       child: InputDialog(
         title: appLocalizations.routingSubscriptionUrl,
@@ -1740,7 +1694,7 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView> {
           : ListView(
               children: [
                 for (final s in m.servers)
-                  if (s.kind == ServerKind.node)
+                  if (s is NodeSource)
                     ListItem(
                       leading: const Icon(Icons.dns_outlined),
                       title: Text(
@@ -1757,7 +1711,7 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView> {
                       ),
                     ),
                 for (final s in m.servers)
-                  if (s.kind == ServerKind.subscription)
+                  if (s is SubscriptionSource)
                     ListItem(
                       leading: const Icon(Icons.cloud_outlined),
                       title: Text(s.name),
@@ -1773,8 +1727,8 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView> {
     );
   }
 
-  String _nodeSubtitle(ServerSource s) {
-    final p = s.proxy ?? const <String, dynamic>{};
+  String _nodeSubtitle(NodeSource s) {
+    final p = s.proxy;
     final type = (p['type'] ?? '').toString();
     final server = p['server']?.toString();
     return server == null || server.isEmpty ? type : '$type · $server';
@@ -1794,28 +1748,15 @@ class _GroupsView extends ConsumerStatefulWidget {
   ConsumerState<_GroupsView> createState() => _GroupsViewState();
 }
 
-class _GroupsViewState extends ConsumerState<_GroupsView> {
-  RoutingModel? _model;
+class _GroupsViewState extends ConsumerState<_GroupsView>
+    with _RoutingSectionState<_GroupsView> {
+  @override
+  int get profileId => widget.profileId;
 
   @override
   void initState() {
     super.initState();
     _load();
-  }
-
-  Future<void> _load() async {
-    final model = await appController.readRoutingModel(widget.profileId);
-    if (mounted) setState(() => _model = model);
-  }
-
-  Future<void> _write(RoutingModel next) async {
-    final error = await appController.writeRoutingModel(widget.profileId, next);
-    if (!mounted) return;
-    if (error != null) {
-      context.showNotifier('${appLocalizations.routingApplyFailed}: $error');
-    } else {
-      setState(() => _model = next);
-    }
   }
 
   Future<void> _createGroup() async {
@@ -1859,7 +1800,7 @@ class _GroupsViewState extends ConsumerState<_GroupsView> {
     final gname = _slug(name);
     final nodes = [
       for (final s in m.servers)
-        if (s.kind == ServerKind.node) s.name,
+        if (s is NodeSource) s.name,
     ];
     await _write(
       m.copyWith(
@@ -1972,8 +1913,10 @@ class _GroupEditorView extends ConsumerStatefulWidget {
   ConsumerState<_GroupEditorView> createState() => _GroupEditorViewState();
 }
 
-class _GroupEditorViewState extends ConsumerState<_GroupEditorView> {
-  RoutingModel? _model;
+class _GroupEditorViewState extends ConsumerState<_GroupEditorView>
+    with _RoutingSectionState<_GroupEditorView> {
+  @override
+  int get profileId => widget.profileId;
   late final String _original = widget.groupName;
   final _nameController = TextEditingController();
   final _filterController = TextEditingController();
@@ -2004,14 +1947,15 @@ class _GroupEditorViewState extends ConsumerState<_GroupEditorView> {
     super.dispose();
   }
 
+  @override
   Future<void> _load() async {
-    final model = await appController.readRoutingModel(widget.profileId);
-    final matches = model.groups.whereType<SmartGroup>().where(
+    final loaded = await appController.readRoutingModel(profileId);
+    final matches = loaded.groups.whereType<SmartGroup>().where(
       (x) => x.name == widget.groupName,
     );
     if (!mounted) return;
     setState(() {
-      _model = model;
+      _model = loaded;
       if (matches.isNotEmpty) {
         final g = matches.first;
         _nameController.text = g.name;
@@ -2086,11 +2030,9 @@ class _GroupEditorViewState extends ConsumerState<_GroupEditorView> {
   // A member's hint: "type · server" for a node, or "Groups" when it is itself
   // a group referenced as a member.
   String _memberHint(RoutingModel m, String name) {
-    final node = m.servers.where(
-      (s) => s.kind == ServerKind.node && s.name == name,
-    );
+    final node = m.servers.whereType<NodeSource>().where((s) => s.name == name);
     if (node.isEmpty) return appLocalizations.routingGroups;
-    final p = node.first.proxy ?? const <String, dynamic>{};
+    final p = node.first.proxy;
     final type = (p['type'] ?? '').toString();
     final server = p['server']?.toString();
     return server == null || server.isEmpty ? type : '$type · $server';
@@ -2101,7 +2043,7 @@ class _GroupEditorViewState extends ConsumerState<_GroupEditorView> {
     if (m == null) return;
     final options = <({String value, String label, String detail})>[
       for (final s in m.servers)
-        if (s.kind == ServerKind.node && !_members.contains(s.name))
+        if (s is NodeSource && !_members.contains(s.name))
           (value: s.name, label: s.name, detail: _memberHint(m, s.name)),
       for (final g in m.groups)
         if (g.name != _original && !_members.contains(g.name))
@@ -2124,7 +2066,7 @@ class _GroupEditorViewState extends ConsumerState<_GroupEditorView> {
     if (m == null) return;
     final options = <({String value, String label, String detail})>[
       for (final s in m.servers)
-        if (s.kind == ServerKind.subscription && !_use.contains(s.name))
+        if (s is SubscriptionSource && !_use.contains(s.name))
           (value: s.name, label: s.name, detail: s.url ?? ''),
     ];
     final picked = await _pickFromList(
@@ -2322,8 +2264,10 @@ class _AppsView extends StatefulWidget {
   State<_AppsView> createState() => _AppsViewState();
 }
 
-class _AppsViewState extends State<_AppsView> {
-  RoutingModel? _model;
+class _AppsViewState extends State<_AppsView>
+    with _RoutingSectionState<_AppsView> {
+  @override
+  int get profileId => widget.profileId;
   List<Package> _packages = const [];
   String _query = '';
 
@@ -2333,12 +2277,13 @@ class _AppsViewState extends State<_AppsView> {
     _load();
   }
 
+  @override
   Future<void> _load() async {
-    final model = await appController.readRoutingModel(widget.profileId);
+    final loaded = await appController.readRoutingModel(profileId);
     final packages = await appController.getPackages();
     if (!mounted) return;
     setState(() {
-      _model = model;
+      _model = loaded;
       _packages = packages.where((p) => p.internet).toList()
         ..sort(
           (a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()),
@@ -2355,20 +2300,10 @@ class _AppsViewState extends State<_AppsView> {
 
   TunnelMode get _mode => _model!.tunnelMode;
 
-  // The outcome an untouched app gets in the current mode. Whitelist -> Мимо VPN
-  // (OS-excluded, fail-closed); blacklist -> Через VPN (enters tunnel -> exit).
+  // The outcome an untouched app gets in the current mode. Whitelist -> bypass
+  // (OS-excluded, fail-closed); blacklist -> via VPN (enters tunnel -> exit).
   Destination get _defaultDest =>
       _mode == TunnelMode.blacklist ? toVpn : toBypass;
-
-  Future<void> _write(RoutingModel next) async {
-    final error = await appController.writeRoutingModel(widget.profileId, next);
-    if (!mounted) return;
-    if (error != null) {
-      context.showNotifier('${appLocalizations.routingApplyFailed}: $error');
-    } else {
-      setState(() => _model = next);
-    }
-  }
 
   Future<void> _setDest(String pkg, Destination dest) async {
     final model = _model!;
@@ -2431,16 +2366,16 @@ class _AppsViewState extends State<_AppsView> {
 
   Widget _appChip(AppAssignment? a) {
     final dest = a?.dest ?? _defaultDest;
-    final color = _destColor(context, dest);
+    final style = _destStyle(context, dest);
     return CommonChip(
-      label: _destLabel(dest),
+      label: style.label,
       type: ChipType.tonal,
-      tonalColor: color,
+      tonalColor: style.color,
       // Lock = OS-level bypass, the bank-safety signal (dark-mode/colorblind safe).
       avatar: Icon(
-        dest is ToBypass ? Icons.lock_outline : _destIcon(dest),
+        dest is ToBypass ? Icons.lock_outline : style.icon,
         size: 16,
-        color: color,
+        color: style.color,
       ),
     );
   }
@@ -2494,7 +2429,7 @@ class _AppsViewState extends State<_AppsView> {
       ],
       (
         header:
-            '${appLocalizations.routingAppsSectionRest}: ${_destLabel(_defaultDest)}',
+            '${appLocalizations.routingAppsSectionRest}: ${_destStyle(context, _defaultDest).label}',
         pkg: null,
       ),
       for (final p in rest) (header: null, pkg: p),
@@ -2576,34 +2511,41 @@ class _AppsViewState extends State<_AppsView> {
 // Shared helpers
 // ===========================================================================
 
-Widget _destChip(BuildContext context, Destination d, VoidCallback onTap) =>
-    CommonChip(
-      label: _destLabel(d),
-      type: ChipType.tonal,
-      tonalColor: _destColor(context, d),
-      avatar: Icon(_destIcon(d), size: 16, color: _destColor(context, d)),
-      onPressed: onTap,
-    );
+Widget _destChip(BuildContext context, Destination d, VoidCallback onTap) {
+  final style = _destStyle(context, d);
+  return CommonChip(
+    label: style.label,
+    type: ChipType.tonal,
+    tonalColor: style.color,
+    avatar: Icon(style.icon, size: 16, color: style.color),
+    onPressed: onTap,
+  );
+}
 
-String _destLabel(Destination d) => switch (d) {
-  ToVpn() => appLocalizations.routingViaVpn,
-  ToBypass() => appLocalizations.routingAppBypass,
-  ToBlock() => appLocalizations.routingBlock,
-  ToScenario(:final name) => name,
-};
-
-IconData _destIcon(Destination d) => switch (d) {
-  ToVpn() => Icons.vpn_lock_outlined,
-  ToBypass() => Icons.arrow_outward,
-  ToBlock() => Icons.block,
-  ToScenario() => Icons.alt_route_outlined,
-};
-
-Color _destColor(BuildContext context, Destination d) => switch (d) {
-  ToVpn() => context.colorScheme.primary,
-  ToBypass() => context.colorScheme.onSurfaceVariant,
-  ToBlock() => context.colorScheme.error,
-  ToScenario() => context.colorScheme.tertiary,
+({String label, IconData icon, Color color}) _destStyle(
+  BuildContext context,
+  Destination d,
+) => switch (d) {
+  ToVpn() => (
+    label: appLocalizations.routingViaVpn,
+    icon: Icons.vpn_lock_outlined,
+    color: context.colorScheme.primary,
+  ),
+  ToBypass() => (
+    label: appLocalizations.routingAppBypass,
+    icon: Icons.arrow_outward,
+    color: context.colorScheme.onSurfaceVariant,
+  ),
+  ToBlock() => (
+    label: appLocalizations.routingBlock,
+    icon: Icons.block,
+    color: context.colorScheme.error,
+  ),
+  ToScenario(:final name) => (
+    label: name,
+    icon: Icons.alt_route_outlined,
+    color: context.colorScheme.tertiary,
+  ),
 };
 
 IconData _kindIcon(ListKind k) => switch (k) {

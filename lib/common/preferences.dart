@@ -95,6 +95,16 @@ class Preferences {
     return preferences?.setString('inboundAuth', value) ?? false;
   }
 
+  Future<String?> getHwid() async {
+    final preferences = await sharedPreferencesCompleter.future;
+    return preferences?.getString('happHwid');
+  }
+
+  Future<bool> setHwid(String value) async {
+    final preferences = await sharedPreferencesCompleter.future;
+    return preferences?.setString('happHwid', value) ?? false;
+  }
+
   Future<void> clearPreferences() async {
     final sharedPreferencesIns = await sharedPreferencesCompleter.future;
     await sharedPreferencesIns?.clear();

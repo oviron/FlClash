@@ -32,6 +32,26 @@ extension ProfilesControllerExt on AppController {
         commonPrint.log(e.toString(), logLevel: LogLevel.warning);
       }
     }
+    // A local (file) profile embedding xray providers has no URL to re-pull, so
+    // the loop above skips it; re-applying re-runs the provider prefetch.
+    if (await _currentProfileHasXrayProviders()) {
+      applyProfileDebounce(silence: true);
+    }
+  }
+
+  Future<bool> _currentProfileHasXrayProviders() async {
+    final id = _ref.read(currentProfileIdProvider);
+    if (id == null) return false;
+    try {
+      final raw = await File(
+        await appPath.getProfilePath(id.toString()),
+      ).readAsString();
+      return ProfileRulesDocument(
+        raw,
+      ).proxyProviders.values.any((p) => p.raw['xray'] != null);
+    } catch (_) {
+      return false;
+    }
   }
 
   void putProfile(Profile profile) {
@@ -164,7 +184,8 @@ extension ProfilesControllerExt on AppController {
       ArtifactKind.shareLink => [
         parseShareLink(text),
       ].whereType<Map<String, dynamic>>().toList(),
-      ArtifactKind.base64List => parseSubscriptionContent(text),
+      ArtifactKind.base64List => parseSubscriptionContent(text).proxies,
+      ArtifactKind.xrayJson => parseXrayJson(text),
       _ => <Map<String, dynamic>>[],
     };
     if (proxies.isEmpty) return null;

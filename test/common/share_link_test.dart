@@ -87,6 +87,46 @@ void main() {
     expect(p['password'], 'secretpass');
   });
 
+  group('parseShareLink ss SIP002 plugin', () {
+    test('obfs plugin maps to plugin + plugin-opts', () {
+      final p = parseShareLink(
+        'ss://${_b64('aes-256-gcm:pw')}@1.2.3.4:8388'
+        '?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3Dexample.com#n',
+      );
+      expect(p!['plugin'], 'obfs');
+      expect(p['plugin-opts'], {'mode': 'http', 'host': 'example.com'});
+    });
+
+    test('v2ray-plugin maps mode/host/path/tls', () {
+      final p = parseShareLink(
+        'ss://${_b64('aes-256-gcm:pw')}@1.2.3.4:8388'
+        '?plugin=v2ray-plugin%3Bmode%3Dwebsocket%3Bhost%3Dh.com%3Btls%3Bpath%3D%2Fx#n',
+      );
+      expect(p!['plugin'], 'v2ray-plugin');
+      expect(p['plugin-opts'], {
+        'mode': 'websocket',
+        'host': 'h.com',
+        'path': '/x',
+        'tls': true,
+      });
+    });
+
+    test('an unsupported plugin returns null (honest no-node), not broken', () {
+      final p = parseShareLink(
+        'ss://${_b64('aes-256-gcm:pw')}@1.2.3.4:8388?plugin=exotic-thing#n',
+      );
+      expect(p, isNull);
+    });
+
+    test('no plugin still parses and carries no plugin keys', () {
+      final p = parseShareLink(
+        'ss://${_b64('aes-256-gcm:pw')}@1.2.3.4:8388?foo=bar#n',
+      );
+      expect(p!['type'], 'ss');
+      expect(p.containsKey('plugin'), false);
+    });
+  });
+
   test('parseShareLink trojan', () {
     final p = parseShareLink(
       'trojan://mypass@host.tld:443?sni=h.com&type=tcp#tj',
@@ -117,10 +157,11 @@ void main() {
         'vless://uuid@1.2.3.4:443?security=tls&type=tcp#a\n'
         'trojan://pw@h.tld:443?type=tcp#b\n',
       );
-      final list = parseSubscriptionContent(body);
-      expect(list.length, 2);
-      expect(list[0]['type'], 'vless');
-      expect(list[1]['type'], 'trojan');
+      final res = parseSubscriptionContent(body);
+      expect(res.proxies.length, 2);
+      expect(res.proxies[0]['type'], 'vless');
+      expect(res.proxies[1]['type'], 'trojan');
+      expect(res.skipped, 0);
     });
 
     test('handles a plain newline list and skips garbage', () {
@@ -128,8 +169,19 @@ void main() {
           'vless://uuid@1.2.3.4:443?security=tls&type=tcp#a\n'
           '# a comment line\n'
           'trojan://pw@h.tld:443?type=tcp#b';
-      final list = parseSubscriptionContent(body);
-      expect(list.length, 2);
+      expect(parseSubscriptionContent(body).proxies.length, 2);
+    });
+
+    test('counts recognized-but-unsupported links as skipped, ignores garbage',
+        () {
+      const body =
+          'vless://uuid@1.2.3.4:443?security=tls&type=tcp#a\n'
+          'hysteria2://x@h:443#hy\n'
+          'tuic://y@h:443#tu\n'
+          'plain-garbage-line';
+      final res = parseSubscriptionContent(body);
+      expect(res.proxies.length, 1);
+      expect(res.skipped, 2);
     });
   });
 }

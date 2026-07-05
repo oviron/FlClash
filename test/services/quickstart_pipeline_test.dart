@@ -36,7 +36,7 @@ void main() {
     );
     expect(classifyArtifact(body), ArtifactKind.base64List);
 
-    final proxies = parseSubscriptionContent(body);
+    final proxies = parseSubscriptionContent(body).proxies;
     expect(proxies.length, 2);
 
     final reparsed = loadYaml(yaml.encode(synthesizeConfig(proxies)));

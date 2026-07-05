@@ -26,6 +26,59 @@ extension on _ConditionKind {
       appLocalizations.networkRulesConditionAnyEthernet,
     _ConditionKind.profile => appLocalizations.networkRulesActionProfile,
   };
+
+  IconData get icon => switch (this) {
+    _ConditionKind.wifiNamed => Icons.wifi,
+    _ConditionKind.anyWifi => Icons.wifi_find,
+    _ConditionKind.anyCellular => Icons.signal_cellular_alt,
+    _ConditionKind.anyEthernet => Icons.settings_ethernet,
+    _ConditionKind.profile => Icons.folder_outlined,
+  };
+
+  // wifiNamed/profile open a further picker; the rest add immediately.
+  bool get needsParams => switch (this) {
+    _ConditionKind.wifiNamed || _ConditionKind.profile => true,
+    _ => false,
+  };
+}
+
+/// Picker for a new condition kind: each kind is a tappable card. A trailing
+/// chevron marks kinds that open a further config screen (Wi-Fi name, profile);
+/// the rest show a plus, since tapping adds them immediately.
+class _ConditionKindDialog extends StatelessWidget {
+  const _ConditionKindDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonDialog(
+      title: appLocalizations.networkRulesAddCondition,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final kind in _ConditionKind.values)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: CommonCard(
+                onPressed: () => Navigator.of(context).pop(kind),
+                child: ListItem(
+                  leading: Icon(kind.icon),
+                  title: Text(kind.label),
+                  trailing: Icon(
+                    kind.needsParams ? Icons.chevron_right : Icons.add,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 /// Full-width bottom-sheet editor for one network rule. A sheet (not a dialog)
@@ -143,12 +196,7 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
 
   Future<void> _addCondition() async {
     final kind = await globalState.showCommonDialog<_ConditionKind>(
-      child: OptionsDialog<_ConditionKind>(
-        title: appLocalizations.networkRulesAddCondition,
-        options: _ConditionKind.values,
-        value: _ConditionKind.wifiNamed,
-        textBuilder: (k) => k.label,
-      ),
+      child: const _ConditionKindDialog(),
     );
     if (kind == null || !mounted) return;
     switch (kind) {

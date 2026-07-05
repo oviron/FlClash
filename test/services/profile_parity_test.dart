@@ -89,10 +89,8 @@ void main() {
 
   group('the full profile is reflected in the model', () {
     test('every node and subscription is a server', () {
-      final nodes = model.servers.where((s) => s.kind == ServerKind.node);
-      final subs = model.servers.where(
-        (s) => s.kind == ServerKind.subscription,
-      );
+      final nodes = model.servers.whereType<NodeSource>();
+      final subs = model.servers.whereType<SubscriptionSource>();
       expect(nodes.map((s) => s.name).toSet(), {'qde-a', 'qde-b', 'qde-c'});
       expect(subs.map((s) => s.name).toSet(), {'govpn', 'blancvpn'});
     });

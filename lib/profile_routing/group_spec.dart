@@ -47,10 +47,7 @@ class GroupSpec {
 
   String? get url => raw['url']?.toString();
 
-  int? get interval {
-    final v = raw['interval'];
-    return v is int ? v : int.tryParse('$v');
-  }
+  int? get interval => asInt(raw['interval']);
 
   bool get lazy => raw['lazy'] == true;
 
@@ -58,14 +55,15 @@ class GroupSpec {
   bool get hidden => raw['hidden'] == true;
 
   /// url-test tolerance (ms) before switching; null when absent.
-  int? get tolerance {
-    final v = raw['tolerance'];
-    return v is int ? v : int.tryParse('$v');
-  }
+  int? get tolerance => asInt(raw['tolerance']);
 
   /// Keys not surfaced as typed fields; shown to the user as preserved-as-is.
   List<String> get extraKeys =>
       raw.keys.where((k) => !_known.contains(k)).toList();
+
+  /// The non-modeled keys as a map, preserved verbatim; single source of the
+  /// modeled-key set (used by the routing model instead of a parallel copy).
+  Map<String, dynamic> get extra => {for (final k in extraKeys) k: raw[k]};
 
   GroupSpec copyWith({
     String? name,

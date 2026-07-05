@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fl_clash/common/yaml.dart';
+
 /// Single-proxy share-link schemes we recognize. Parsing is implemented for
 /// vless/vmess/ss/trojan; the rest are recognized (so the artifact classifies
 /// as a share link) but parse to null, surfacing the honest "no servers" state.
@@ -33,12 +35,8 @@ String? decodeBase64Text(String input) {
 }
 
 /// Parse a single share link into a clash/mihomo proxy map, or null if the
-/// scheme is unsupported or the link is malformed.
-///
-/// Field mapping (vless reality, the target case) follows the mihomo clash
-/// schema: pbk -> reality-opts.public-key, sid -> short-id, fp ->
-/// client-fingerprint, sni -> servername, flow -> flow. Confirmed end-to-end
-/// against the pinned core before release (see docs/onboarding.md, Stage 0).
+/// scheme is unsupported or the link is malformed. vless reality maps
+/// pbk/sid/fp/sni/flow to the mihomo schema (see docs/onboarding.md).
 Map<String, dynamic>? parseShareLink(String raw) {
   final text = raw.trim();
   final schemeIdx = text.indexOf('://');
@@ -63,21 +61,33 @@ Map<String, dynamic>? parseShareLink(String raw) {
 }
 
 /// Decode a v2ray subscription body (a base64 blob, or a plain newline list of
-/// share links) into clash proxy maps. Unparseable lines are skipped.
-List<Map<String, dynamic>> parseSubscriptionContent(String body) {
+/// share links) into clash proxy maps. `skipped` counts links whose scheme is
+/// recognized but not parseable (e.g. hy2/tuic), so the loss is not silent.
+({List<Map<String, dynamic>> proxies, int skipped}) parseSubscriptionContent(
+  String body,
+) {
   final decoded = decodeBase64Text(body.trim());
   final text = (decoded != null && decoded.contains('://')) ? decoded : body;
   final out = <Map<String, dynamic>>[];
+  var skipped = 0;
   for (final line in text.split(RegExp(r'[\r\n]+'))) {
     final trimmed = line.trim();
     if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
     final proxy = parseShareLink(trimmed);
-    if (proxy != null) out.add(proxy);
+    if (proxy != null) {
+      out.add(proxy);
+    } else if (_isRecognizedScheme(trimmed)) {
+      skipped++;
+    }
   }
-  return out;
+  return (proxies: out, skipped: skipped);
 }
 
-int? _asInt(dynamic v) => v is int ? v : int.tryParse('$v');
+bool _isRecognizedScheme(String link) {
+  final idx = link.indexOf('://');
+  return idx > 0 &&
+      shareLinkSchemes.contains(link.substring(0, idx).toLowerCase());
+}
 
 String _nameFromFragment(Uri uri) {
   if (uri.fragment.isEmpty) return '';
@@ -150,7 +160,7 @@ Map<String, dynamic>? _parseVmess(String text) {
   if (decoded == null) return null;
   final json = jsonDecode(decoded) as Map<String, dynamic>;
   final server = '${json['add'] ?? ''}';
-  final port = _asInt(json['port']);
+  final port = asInt(json['port']);
   if (server.isEmpty || port == null || port == 0) return null;
   final network = _network('${json['net']}');
   final proxy = <String, dynamic>{
@@ -159,7 +169,7 @@ Map<String, dynamic>? _parseVmess(String text) {
     'server': server,
     'port': port,
     'uuid': '${json['id'] ?? ''}',
-    'alterId': _asInt(json['aid']) ?? 0,
+    'alterId': asInt(json['aid']) ?? 0,
     'cipher': '${json['scy'] ?? 'auto'}',
     'network': network,
     'udp': true,
@@ -184,7 +194,11 @@ Map<String, dynamic>? _parseSs(String text) {
     rest = rest.substring(0, hashIdx);
   }
   final qIdx = rest.indexOf('?');
-  if (qIdx >= 0) rest = rest.substring(0, qIdx);
+  String? pluginParam;
+  if (qIdx >= 0) {
+    pluginParam = Uri.splitQueryString(rest.substring(qIdx + 1))['plugin'];
+    rest = rest.substring(0, qIdx);
+  }
 
   String method;
   String password;
@@ -214,7 +228,7 @@ Map<String, dynamic>? _parseSs(String text) {
   final server = hostPort.substring(0, colon);
   final port = int.tryParse(hostPort.substring(colon + 1));
   if (server.isEmpty || port == null || port == 0) return null;
-  return {
+  final proxy = <String, dynamic>{
     'name': name,
     'type': 'ss',
     'server': server,
@@ -223,6 +237,50 @@ Map<String, dynamic>? _parseSs(String text) {
     'password': password,
     'udp': true,
   };
+  if (pluginParam != null && pluginParam.isNotEmpty) {
+    final plugin = _ssPlugin(pluginParam);
+    if (plugin == null) return null; // unsupported plugin -> honest no-node
+    proxy.addAll(plugin);
+  }
+  return proxy;
+}
+
+/// Maps a SIP002 `plugin=` spec (`name;k=v;flag;...`) to mihomo `plugin` +
+/// `plugin-opts`; null for a plugin mihomo has no clash mapping for.
+Map<String, dynamic>? _ssPlugin(String param) {
+  final parts = param.split(';');
+  final opts = <String, String>{};
+  for (final p in parts.skip(1)) {
+    final eq = p.indexOf('=');
+    if (eq < 0) {
+      opts[p] = '';
+    } else {
+      opts[p.substring(0, eq)] = p.substring(eq + 1);
+    }
+  }
+  switch (parts.first) {
+    case 'obfs-local':
+    case 'simple-obfs':
+      return {
+        'plugin': 'obfs',
+        'plugin-opts': {
+          'mode': opts['obfs'] ?? 'http',
+          if ((opts['obfs-host'] ?? '').isNotEmpty) 'host': opts['obfs-host'],
+        },
+      };
+    case 'v2ray-plugin':
+      return {
+        'plugin': 'v2ray-plugin',
+        'plugin-opts': {
+          'mode': opts['mode'] ?? 'websocket',
+          if ((opts['host'] ?? '').isNotEmpty) 'host': opts['host'],
+          if ((opts['path'] ?? '').isNotEmpty) 'path': opts['path'],
+          if (opts.containsKey('tls')) 'tls': true,
+        },
+      };
+    default:
+      return null;
+  }
 }
 
 Map<String, dynamic>? _parseTrojan(String text) {

@@ -72,7 +72,7 @@ sub-rules:
     - GEOIP,RU,DIRECT,no-resolve
     - MATCH,VPN
 rules:
-  - IP-CIDR,45.142.164.71/32,DIRECT,no-resolve
+  - IP-CIDR,203.0.113.71/32,DIRECT,no-resolve
   - GEOIP,private,DIRECT,no-resolve
   - RULE-SET,ads,REJECT
   - DOMAIN-SUFFIX,sponsor.ajay.app,DIRECT
@@ -158,7 +158,7 @@ void main() {
       final matches = g.whereType<MatchRule>().toList();
       expect(
         matches.map((m) => m.value),
-        containsAll(['45.142.164.71/32', 'sponsor.ajay.app']),
+        containsAll(['203.0.113.71/32', 'sponsor.ajay.app']),
       );
       // The per-app rules are NOT global rules.
       expect(
@@ -661,8 +661,10 @@ rules:
   group('A: editing server data', () {
     test('editing a node field round-trips', () {
       final m = RoutingModel.fromYaml(meshProfile);
-      final nodeA = m.servers.firstWhere((s) => s.name == 'node-a');
-      final edited = {...nodeA.proxy!, 'server': 'b.example', 'port': 8443};
+      final nodeA = m.servers.whereType<NodeSource>().firstWhere(
+        (s) => s.name == 'node-a',
+      );
+      final edited = {...nodeA.proxy, 'server': 'b.example', 'port': 8443};
       final out = m.updateNode('node-a', edited).toYaml(meshProfile);
       final p = ProfileRulesDocument(
         out,
@@ -673,8 +675,10 @@ rules:
 
     test('renaming a node via updateNode cascades into group members', () {
       final m = RoutingModel.fromYaml(meshProfile);
-      final nodeA = m.servers.firstWhere((s) => s.name == 'node-a');
-      final r = m.updateNode('node-a', {...nodeA.proxy!, 'name': 'node-x'});
+      final nodeA = m.servers.whereType<NodeSource>().firstWhere(
+        (s) => s.name == 'node-a',
+      );
+      final r = m.updateNode('node-a', {...nodeA.proxy, 'name': 'node-x'});
       expect(r.servers.any((s) => s.name == 'node-x'), isTrue);
       expect(r.servers.any((s) => s.name == 'node-a'), isFalse);
       final vpn = r.groups.whereType<SmartGroup>().firstWhere(

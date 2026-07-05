@@ -39,6 +39,29 @@ void main() {
       expect(classifyArtifact(blob), ArtifactKind.base64List);
     });
 
+    test('xray json (happ subscription): a list with outbounds', () {
+      expect(
+        classifyArtifact(
+          '[{"remarks":"a","outbounds":[{"protocol":"vless"}]}]',
+        ),
+        ArtifactKind.xrayJson,
+      );
+    });
+
+    test('xray detection is precise (list + outbounds only)', () {
+      // A JSON list without `outbounds` is not xray.
+      expect(classifyArtifact('[1,2,3]'), ArtifactKind.unknown);
+      // JSON objects never trigger the list-only xray branch (SIP008, json-clash).
+      expect(
+        classifyArtifact('{"version":1,"servers":[]}'),
+        ArtifactKind.unknown,
+      );
+      expect(
+        classifyArtifact('{"proxies":[{"name":"a"}]}'),
+        ArtifactKind.unknown,
+      );
+    });
+
     test('unknown', () {
       expect(classifyArtifact('hello world'), ArtifactKind.unknown);
     });

@@ -37,10 +37,7 @@ class ProviderSpec {
 
   String? get path => raw['path']?.toString();
 
-  int? get interval {
-    final v = raw['interval'];
-    return v is int ? v : int.tryParse('$v');
-  }
+  int? get interval => asInt(raw['interval']);
 
   /// rule-providers only: `domain` | `ipcidr` | `classical`.
   String? get behavior => raw['behavior']?.toString();
