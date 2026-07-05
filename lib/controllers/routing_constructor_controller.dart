@@ -31,4 +31,20 @@ extension RoutingConstructorController on AppController {
     }
     return _writeValidatedApply(file, profileId, next);
   }
+
+  // Validate the candidate config, persist it, and hot-apply when it targets the
+  // active profile. Returns a validation error (file untouched) or null.
+  Future<String?> _writeValidatedApply(
+    File file,
+    int profileId,
+    String next,
+  ) async {
+    final error = await coreController.validateConfigWithData(next);
+    if (error.isNotEmpty) return error;
+    await file.safeWriteAsString(next);
+    if (profileId == _ref.read(currentProfileIdProvider)) {
+      await applyProfile(force: true);
+    }
+    return null;
+  }
 }

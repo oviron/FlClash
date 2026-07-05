@@ -558,9 +558,9 @@ class _WifiConditionSheetState extends State<_WifiConditionSheet> {
   }
 
   void _save() {
-    // Sanitize through the probe path so a copy-pasted `"home"` matches what
-    // the runtime reads.
-    final ssid = NetworkProbe.sanitizeSsid(_controller.text.trim());
+    // Sanitize the same way the runtime reads the SSID so a copy-pasted
+    // `"home"` matches.
+    final ssid = sanitizeSsid(_controller.text.trim());
     if (ssid == null || ssid.isEmpty) return;
     final NetworkCondition base = WifiNamed(ssid, match: _match);
     Navigator.of(context).pop(_negated ? Not(base) : base);

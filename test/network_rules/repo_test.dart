@@ -1,5 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:fl_clash/database/database.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/network_rules/model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -82,6 +83,91 @@ void main() {
       final afterDelete = await dao.watchAll().first;
       expect(afterDelete, hasLength(1));
       expect(afterDelete.single.id, bId);
+    });
+  });
+
+  group('database.restore respects the strategy for network rules', () {
+    late Database db;
+
+    setUp(() {
+      db = Database(NativeDatabase.memory());
+    });
+
+    tearDown(() async {
+      await db.close();
+    });
+
+    Future<int> seedHome(NetworkRulesDao dao) => dao.upsert(
+      const NetworkRule(
+        name: 'home',
+        conditions: [WifiNamed('HomeWifi')],
+        action: NetworkAction.turnOff,
+        priority: 0,
+      ).toCompanion(),
+    );
+
+    const work = NetworkRule(
+      id: 42,
+      name: 'work',
+      conditions: [WifiNamed('WorkWifi')],
+      action: NetworkAction.turnOn,
+      priority: 1,
+    );
+
+    test(
+      'compatible restore of a backup without network rules keeps them',
+      () async {
+        final dao = db.networkRulesDao;
+        await seedHome(dao);
+        expect(await dao.watchAll().first, hasLength(1));
+
+        // Old backup: a profile, no network rules. Merge (compatible) mode must
+        // not wipe the user's current rules.
+        await db.restore(
+          [Profile.normal(label: 'imported')],
+          const [],
+          const [],
+          const [],
+          isOverride: false,
+          networkRules: const [],
+        );
+
+        expect(await dao.watchAll().first, hasLength(1));
+      },
+    );
+
+    test('compatible restore merges rules absent from the backup', () async {
+      final dao = db.networkRulesDao;
+      await seedHome(dao);
+
+      await db.restore(
+        const [],
+        const [],
+        const [],
+        const [],
+        isOverride: false,
+        networkRules: const [work],
+      );
+
+      final rules = await dao.watchAll().first;
+      expect(rules.map((r) => r.name), containsAll(['home', 'work']));
+    });
+
+    test('override restore replaces network rules wholesale', () async {
+      final dao = db.networkRulesDao;
+      await seedHome(dao);
+
+      await db.restore(
+        const [],
+        const [],
+        const [],
+        const [],
+        isOverride: true,
+        networkRules: const [work],
+      );
+
+      final rules = await dao.watchAll().first;
+      expect(rules.map((r) => r.name), ['work']);
     });
   });
 }

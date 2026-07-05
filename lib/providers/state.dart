@@ -570,7 +570,6 @@ SharedState sharedState(Ref ref) {
 
 @riverpod
 double overlayTopOffset(Ref ref) {
-  ref.watch(viewSizeProvider);
   return kToolbarHeight.toDouble();
 }
 

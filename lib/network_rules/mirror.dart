@@ -1,7 +1,7 @@
-// The rules mirror: Dart atomically writes the full rule set + settings to a
-// JSON file in the clash home dir (Android filesDir) on every change; the
-// resident reads it as its source of truth. Schema mirrored by NetworkRulesCodec.kt.
+// Dart writes the full rule set + settings to a JSON file the resident reads as
+// its source of truth (schema mirrored by NetworkRulesCodec.kt).
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -51,6 +51,42 @@ String encodeNetworkRulesMirror({
         },
     ],
   });
+}
+
+/// Serializes mirror writes so the newest state always commits last: while a
+/// write runs, further requests coalesce into a single trailing run that reads
+/// the freshest state. [schedule]'s future resolves once that state (or newer)
+/// is committed. [rebake] flags a request that needs the expensive cache
+/// rebuild; the trailing run inherits it if any coalesced request set it.
+class MirrorWriteQueue {
+  Future<void>? _running;
+  bool _pending = false;
+  bool _rebakePending = false;
+
+  Future<void> schedule(
+    Future<void> Function({required bool rebake}) run, {
+    required bool rebake,
+  }) {
+    _rebakePending = _rebakePending || rebake;
+    if (_running != null) {
+      _pending = true;
+      return _running!;
+    }
+    return _running = _drain(run);
+  }
+
+  Future<void> _drain(Future<void> Function({required bool rebake}) run) async {
+    try {
+      do {
+        _pending = false;
+        final rebake = _rebakePending;
+        _rebakePending = false;
+        await run(rebake: rebake);
+      } while (_pending);
+    } finally {
+      _running = null;
+    }
+  }
 }
 
 int _mirrorWriteSeq = 0;

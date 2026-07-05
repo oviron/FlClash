@@ -8,7 +8,6 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/profiles/overwrite.dart';
-import 'package:fl_clash/views/profiles/profile_card_state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -260,15 +259,14 @@ class ProfileItem extends StatelessWidget {
   }
 
   List<Widget> _buildUrlProfileInfo(BuildContext context) {
-    final state = resolveProfileCardState(
-      ProfileType.url,
-      profile.subscriptionInfo,
-    );
+    // A URL profile shows its quota bar only when the subscription reports a
+    // non-zero total; otherwise it degrades to the stat line.
+    final hasQuota = (profile.subscriptionInfo?.total ?? 0) != 0;
     final updated = Text(
       profile.lastUpdateDate?.lastUpdateTimeDesc ?? '',
       style: context.textTheme.labelMedium?.toLighter,
     );
-    if (state == ProfileCardState.subscriptionQuota) {
+    if (hasQuota) {
       return [
         const SizedBox(height: 8),
         SubscriptionInfoView(subscriptionInfo: profile.subscriptionInfo),

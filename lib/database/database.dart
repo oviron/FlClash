@@ -99,7 +99,9 @@ class Database extends _$Database {
               );
         scriptsDao.setAllWithBatch(b, scripts);
         rulesDao.restoreWithBatch(b, rules, links);
-        networkRulesDao.setAllWithBatch(b, networkRules);
+        isOverride
+            ? networkRulesDao.setAllWithBatch(b, networkRules)
+            : networkRulesDao.putAllWithBatch(b, networkRules);
       });
     }
   }

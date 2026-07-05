@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -159,6 +160,45 @@ void main() {
         await File(join(nested, networkRulesMirrorFileName)).exists(),
         true,
       );
+    });
+  });
+
+  group('MirrorWriteQueue', () {
+    test('coalesces overlapping requests into one trailing run', () async {
+      final queue = MirrorWriteQueue();
+      final runs = <bool>[];
+      final gate = Completer<void>();
+      final firstStarted = Completer<void>();
+
+      Future<void> run({required bool rebake}) async {
+        final first = runs.isEmpty;
+        runs.add(rebake);
+        if (first) {
+          firstStarted.complete();
+          await gate.future;
+        }
+      }
+
+      final f1 = queue.schedule(run, rebake: false);
+      await firstStarted.future; // run #1 is in flight, blocked on the gate.
+      final f2 = queue.schedule(run, rebake: false); // queued
+      final f3 = queue.schedule(run, rebake: true); // coalesced; asks to rebake
+      gate.complete();
+      await Future.wait([f1, f2, f3]);
+
+      // Three schedules collapse to two runs: the first, then one trailing run
+      // that reads the freshest state, so nothing older can land after it.
+      expect(runs, [false, true]); // trailing run inherits f3's rebake flag
+    });
+
+    test('runs each non-overlapping request', () async {
+      final queue = MirrorWriteQueue();
+      var count = 0;
+      Future<void> run({required bool rebake}) async => count++;
+
+      await queue.schedule(run, rebake: false);
+      await queue.schedule(run, rebake: true);
+      expect(count, 2);
     });
   });
 }

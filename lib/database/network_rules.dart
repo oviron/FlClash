@@ -89,9 +89,18 @@ class NetworkRulesDao extends DatabaseAccessor<Database>
     return row?.read(priority.max()) ?? -1;
   }
 
-  /// Restore the network_rules table from a backup. Symmetric with
-  /// [ScriptsDao.setAllWithBatch] / [ProfilesDao.setAllWithBatch]: rows
-  /// not present in [items] are deleted, and rows in [items] are upserted.
+  /// Merge restore (compatible strategy): upsert [items] without deleting rows
+  /// absent from the backup, so an old backup that predates network rules can't
+  /// wipe the user's current rules.
+  void putAllWithBatch(Batch batch, Iterable<NetworkRule> items) {
+    batch.insertAllOnConflictUpdate(
+      networkRules,
+      items.map((r) => r.toCompanion()),
+    );
+  }
+
+  /// Override restore: rows not present in [items] are deleted, rows in [items]
+  /// are upserted. Symmetric with [ProfilesDao.setAllWithBatch].
   void setAllWithBatch(Batch batch, Iterable<NetworkRule> items) {
     final companions = items.map((r) => r.toCompanion()).toList();
     final ids = items.map((r) => r.id).toList();

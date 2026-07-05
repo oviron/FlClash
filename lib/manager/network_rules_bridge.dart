@@ -1,12 +1,12 @@
-// Bridges Dart rule state to the resident Kotlin service: writes the mirror on
-// every change, toggles the service with the master switch, and feeds pushed
-// status back into providers for the editor.
+// Wires Dart rule state to the resident Kotlin service: mirror on change,
+// master-switch toggle, and pushed status fed back into providers.
 
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/network_rules/mirror.dart';
+import 'package:fl_clash/network_rules/model.dart';
 import 'package:fl_clash/network_rules/plugin.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/network_rules.dart';
@@ -28,6 +28,9 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
   static const _plugin = NetworkRulesPlugin();
   bool? _lastEnabled;
 
+  final _writeQueue = MirrorWriteQueue();
+  ({List<NetworkRule> rules, Map<int, ProfileCacheEntry> entries})? _lastBake;
+
   @override
   void initState() {
     super.initState();
@@ -37,10 +40,10 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
       networkRulesSettingsProvider,
       (_, _) => _onSettingsChanged(),
     );
-    // Keep activeProfileId fresh in the mirror so the resident can tell a manual
-    // profile switch from its own. No reevaluate: a manual switch must not make
-    // the engine immediately re-apply.
-    ref.listenManual(currentProfileIdProvider, (_, _) => _writeMirror());
+    // Keep activeProfileId fresh so the resident can tell a manual switch from
+    // its own. Publish-only (no cache rebuild, no reevaluate): a manual switch
+    // must not make the engine immediately re-apply.
+    ref.listenManual(currentProfileIdProvider, (_, _) => _publishMirror());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       unawaited(_bootstrap());
@@ -56,7 +59,7 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
   Future<void> _bootstrap() async {
     final settings = ref.read(networkRulesSettingsProvider);
     _lastEnabled = settings.enabled;
-    await _writeMirror();
+    await _rebakeMirror();
     if (settings.enabled) {
       await _plugin.setEnabled(true);
       final status = await _plugin.getStatus();
@@ -64,27 +67,39 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
     }
   }
 
-  Future<void> _writeMirror() async {
+  Future<void> _rebakeMirror() => _writeQueue.schedule(_write, rebake: true);
+
+  Future<void> _publishMirror() => _writeQueue.schedule(_write, rebake: false);
+
+  Future<void> _write({required bool rebake}) async {
+    if (rebake || _lastBake == null) await _bake();
+    final bake = _lastBake!;
     final settings = ref.read(networkRulesSettingsProvider);
+    final json = encodeNetworkRulesMirror(
+      enabled: settings.enabled,
+      defaultAction: settings.defaultAction,
+      rules: bake.rules,
+      selectedMaps: {
+        for (final e in bake.entries.entries) e.key: e.value.selectedMap,
+      },
+      profileNames: {for (final e in bake.entries.entries) e.key: e.value.name},
+      activeProfileId: ref.read(currentProfileIdProvider),
+    );
+    await writeNetworkRulesMirror(await appPath.homeDirPath, json);
+  }
+
+  // Bake the per-profile config cache (<id>.yaml files) BEFORE the mirror that
+  // references them, so the resident never reads a rule whose config is absent.
+  Future<void> _bake() async {
     final rules = ref.read(networkRulesStreamProvider).value ?? const [];
-    // Bake the cache (writes <id>.yaml files) BEFORE publishing the mirror that
-    // references them, so the resident never reads a rule whose config is absent.
     final profileIds = <int>{
       for (final r in rules)
         if (r.enabled && r.action.profileId != null) r.action.profileId!,
     };
-    final entries = await appController.rebuildNetworkRulesCache(profileIds);
-    final json = encodeNetworkRulesMirror(
-      enabled: settings.enabled,
-      defaultAction: settings.defaultAction,
+    _lastBake = (
       rules: rules,
-      selectedMaps: {
-        for (final e in entries.entries) e.key: e.value.selectedMap,
-      },
-      profileNames: {for (final e in entries.entries) e.key: e.value.name},
-      activeProfileId: ref.read(currentProfileIdProvider),
+      entries: await appController.rebuildNetworkRulesCache(profileIds),
     );
-    await writeNetworkRulesMirror(await appPath.homeDirPath, json);
   }
 
   // Engine asked (Flutter alive) for a profile switch: route it through the
@@ -97,7 +112,7 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
   }
 
   Future<void> _onRulesChanged() async {
-    await _writeMirror();
+    await _rebakeMirror();
     if (ref.read(networkRulesSettingsProvider).enabled) {
       await _plugin.reevaluate();
     }
@@ -105,7 +120,7 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
 
   Future<void> _onSettingsChanged() async {
     final enabled = ref.read(networkRulesSettingsProvider).enabled;
-    await _writeMirror();
+    await _publishMirror();
     final wasEnabled = _lastEnabled;
     _lastEnabled = enabled;
     if (wasEnabled != enabled) {
