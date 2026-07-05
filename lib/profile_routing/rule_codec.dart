@@ -31,8 +31,10 @@ final class TypedRule extends RoutingRule {
   bool get isAppRouting => const {
     RuleAction.PROCESS_NAME,
     RuleAction.PROCESS_NAME_REGEX,
+    RuleAction.PROCESS_NAME_WILDCARD,
     RuleAction.PROCESS_PATH,
     RuleAction.PROCESS_PATH_REGEX,
+    RuleAction.PROCESS_PATH_WILDCARD,
     RuleAction.UID,
   }.contains(action);
 
@@ -111,6 +113,39 @@ final class AppToSubRuleRoute extends RoutingRule {
 
   @override
   int get hashCode => Object.hash(packageName, subRuleName);
+}
+
+/// A `SUB-RULE,(<TYPE>,<params>),<name>` with a single flat, non-logical clause
+/// that is not PROCESS-NAME (those stay [AppToSubRuleRoute]). Lets any ordinary
+/// matcher target a named sub-rule; round-trips byte-for-byte. Multi-clause or
+/// logical SUB-RULE payloads stay [PassthroughRule].
+final class SubRuleRoute extends RoutingRule {
+  final RuleAction action;
+  final String
+  params; // everything after the type, e.g. "ya.ru" or "CN,no-resolve"
+  final String subRuleName;
+
+  const SubRuleRoute({
+    required this.action,
+    required this.params,
+    required this.subRuleName,
+  });
+
+  String get _clause =>
+      params.isEmpty ? action.value : '${action.value},$params';
+
+  @override
+  String serialize() => 'SUB-RULE,($_clause),$subRuleName';
+
+  @override
+  bool operator ==(Object other) =>
+      other is SubRuleRoute &&
+      other.action == action &&
+      other.params == params &&
+      other.subRuleName == subRuleName;
+
+  @override
+  int get hashCode => Object.hash(action, params, subRuleName);
 }
 
 /// One clause inside a [LogicalRule]: a non-logical condition type plus its raw
@@ -201,14 +236,6 @@ final class LogicalRule extends RoutingRule {
   }
 }
 
-/// Rule actions authorable in the typed editor as a flat `TYPE,value,target`.
-/// Drops the logical forms (AND/OR/NOT need nested rules); RULE-SET is flat
-/// (`RULE-SET,<set>,<target>`) so it is offered back (it is common in sub-rules).
-List<RuleAction> get editableRuleActions => [
-  ...RuleAction.addedRuleActions.where((a) => !_logical.contains(a)),
-  RuleAction.RULE_SET,
-];
-
 List<RoutingRule> parseRoutingRules(List<String> lines) =>
     lines.map(RoutingRule.parse).toList();
 
@@ -245,7 +272,7 @@ RoutingRule _parse(String line) {
 
   final action = core.isEmpty ? null : _actionOf(core.first);
   if (action == RuleAction.SUB_RULE && !src && !noResolve) {
-    return _parseAppSubRule(core) ?? PassthroughRule(line);
+    return _parseSubRule(core) ?? PassthroughRule(line);
   }
   if (action == RuleAction.AND ||
       action == RuleAction.OR ||
@@ -281,19 +308,27 @@ RoutingRule _parse(String line) {
   );
 }
 
-// Recognizes `SUB-RULE,(PROCESS-NAME,<pkg>),<name>` (one PROCESS-NAME clause).
-// Returns null for any other SUB-RULE payload, which stays Passthrough.
-AppToSubRuleRoute? _parseAppSubRule(List<String> core) {
+// Recognizes `SUB-RULE,(<TYPE>,<params>),<name>` with a single flat, non-logical
+// clause. A PROCESS-NAME clause is the app-routing shape ([AppToSubRuleRoute]);
+// any other matcher becomes a [SubRuleRoute]. Multi-clause, logical, or empty
+// payloads return null, so odd grammar stays Passthrough.
+RoutingRule? _parseSubRule(List<String> core) {
   if (core.length != 3) return null;
+  final name = core[2];
+  if (name.isEmpty) return null;
   final clause = core[1];
   if (!clause.startsWith('(') || !clause.endsWith(')')) return null;
   final inner = clause.substring(1, clause.length - 1);
   if (inner.contains('(') || inner.contains(')')) return null;
-  final parts = inner.split(',');
-  if (parts.length != 2) return null;
-  if (_actionOf(parts[0]) != RuleAction.PROCESS_NAME) return null;
-  if (parts[1].isEmpty || core[2].isEmpty) return null;
-  return AppToSubRuleRoute(packageName: parts[1], subRuleName: core[2]);
+  final fields = _splitTopLevel(inner);
+  final action = fields.isEmpty ? null : _actionOf(fields.first);
+  if (action == null || _logical.contains(action)) return null;
+  final params = fields.sublist(1).join(',');
+  if (params.isEmpty) return null;
+  if (action == RuleAction.PROCESS_NAME) {
+    return AppToSubRuleRoute(packageName: params, subRuleName: name);
+  }
+  return SubRuleRoute(action: action, params: params, subRuleName: name);
 }
 
 // Recognizes `AND`/`OR`/`NOT,(<clauses>),<target>` with flat `(TYPE,params)`

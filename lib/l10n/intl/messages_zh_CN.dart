@@ -69,13 +69,25 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m23(n) => "每 ${n} 秒";
 
-  static String m24(count) => "已选择 ${count} 项";
+  static String m24(count) => "${count} 条规则";
 
-  static String m25(count) => "${count} 条规则";
+  static String m25(source) => "经由 ${source}";
 
-  static String m26(label) => "${label}必须为URL";
+  static String m26(count) => "${count} 个列表";
 
-  static String m27(count) => "${count} 年前";
+  static String m27(count) => "${count} 个场景";
+
+  static String m28(count) => "${count} 条规则";
+
+  static String m29(count) => "${count} 个服务器";
+
+  static String m30(count) => "已选择 ${count} 项";
+
+  static String m31(count) => "${count} 条规则";
+
+  static String m32(label) => "${label}必须为URL";
+
+  static String m33(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -762,7 +774,190 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeMode_bypassPrivate": MessageLookupByLibrary.simpleMessage("绕过私有路由地址"),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("使用配置"),
     "routing": MessageLookupByLibrary.simpleMessage("路由"),
+    "routingAddCondition": MessageLookupByLibrary.simpleMessage("添加条件"),
+    "routingAddList": MessageLookupByLibrary.simpleMessage("添加列表"),
+    "routingAddRule": MessageLookupByLibrary.simpleMessage("添加规则"),
+    "routingAddServer": MessageLookupByLibrary.simpleMessage("添加服务器"),
+    "routingAdvanced": MessageLookupByLibrary.simpleMessage("高级"),
+    "routingAdvancedEditors": MessageLookupByLibrary.simpleMessage("高级编辑器"),
+    "routingAdvancedKeys": MessageLookupByLibrary.simpleMessage("高级键"),
+    "routingAdvancedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "分组、子规则、原始规则和 YAML",
+    ),
+    "routingAppBypass": MessageLookupByLibrary.simpleMessage("绕过 VPN"),
+    "routingApplyFailed": MessageLookupByLibrary.simpleMessage("无法应用更改"),
+    "routingApps": MessageLookupByLibrary.simpleMessage("应用"),
+    "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(
+      "新应用和未设置应用的默认行为：",
+    ),
+    "routingAppsRuleBlacklist": MessageLookupByLibrary.simpleMessage(
+      "所有应用都走 VPN。只有下面标记的应用绕过。新应用默认走 VPN，请手动将银行和政务应用移出。",
+    ),
+    "routingAppsRuleWhitelist": MessageLookupByLibrary.simpleMessage(
+      "只有下面列表中的应用走 VPN。其余应用（包括新应用）不走 VPN，也看不到 VPN。",
+    ),
+    "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage("已更改"),
+    "routingAppsSectionRest": MessageLookupByLibrary.simpleMessage("其余 · 默认"),
+    "routingAppsSubtitle": MessageLookupByLibrary.simpleMessage("哪些应用如何使用VPN"),
+    "routingBehaviorClassical": MessageLookupByLibrary.simpleMessage("混合规则"),
+    "routingBehaviorDomain": MessageLookupByLibrary.simpleMessage("域名"),
+    "routingBehaviorIpcidr": MessageLookupByLibrary.simpleMessage("IP 段"),
+    "routingBlock": MessageLookupByLibrary.simpleMessage("屏蔽"),
+    "routingBuild": MessageLookupByLibrary.simpleMessage("构建"),
+    "routingCheckedTopToBottom": MessageLookupByLibrary.simpleMessage("自上而下匹配"),
+    "routingConditions": MessageLookupByLibrary.simpleMessage("条件"),
+    "routingConnection": MessageLookupByLibrary.simpleMessage("连接"),
+    "routingConstructor": MessageLookupByLibrary.simpleMessage("路由"),
+    "routingCountryOther": MessageLookupByLibrary.simpleMessage("其他代码"),
+    "routingCountryOtherHint": MessageLookupByLibrary.simpleMessage(
+      "ISO 代码或 geo 标签 (如 private)",
+    ),
+    "routingCreateGroup": MessageLookupByLibrary.simpleMessage("创建分组"),
+    "routingEditGroup": MessageLookupByLibrary.simpleMessage("编辑分组"),
+    "routingEditProxy": MessageLookupByLibrary.simpleMessage("编辑服务器"),
+    "routingEverythingElse": MessageLookupByLibrary.simpleMessage("其他所有"),
+    "routingGlobalRules": MessageLookupByLibrary.simpleMessage("全局规则"),
+    "routingGlobalRulesCount": m24,
+    "routingGroupAuto": MessageLookupByLibrary.simpleMessage("自动（最快）"),
+    "routingGroupBehavior": MessageLookupByLibrary.simpleMessage("模式"),
+    "routingGroupFailover": MessageLookupByLibrary.simpleMessage("故障转移"),
+    "routingGroupFilter": MessageLookupByLibrary.simpleMessage("过滤器（正则）"),
+    "routingGroupFilterHint": MessageLookupByLibrary.simpleMessage(
+      "例如 main|premium",
+    ),
+    "routingGroupHidden": MessageLookupByLibrary.simpleMessage("隐藏"),
+    "routingGroupInterval": MessageLookupByLibrary.simpleMessage("测试间隔（秒）"),
+    "routingGroupLazy": MessageLookupByLibrary.simpleMessage("延迟测试"),
+    "routingGroupManual": MessageLookupByLibrary.simpleMessage("手动选择"),
+    "routingGroupNameHint": MessageLookupByLibrary.simpleMessage("分组名称"),
+    "routingGroupSource": MessageLookupByLibrary.simpleMessage("来源"),
+    "routingGroupSourceServers": MessageLookupByLibrary.simpleMessage("选择服务器"),
+    "routingGroupSourceSubscription": MessageLookupByLibrary.simpleMessage(
+      "来自订阅",
+    ),
+    "routingGroupTestUrl": MessageLookupByLibrary.simpleMessage("健康检查 URL"),
+    "routingGroupTolerance": MessageLookupByLibrary.simpleMessage("容差 (ms)"),
+    "routingGroupVia": m25,
+    "routingGroups": MessageLookupByLibrary.simpleMessage("分组"),
+    "routingGroupsSubtitle": MessageLookupByLibrary.simpleMessage("如何选择服务器"),
+    "routingImportFailed": MessageLookupByLibrary.simpleMessage("无法读取该链接"),
+    "routingListBehavior": MessageLookupByLibrary.simpleMessage("匹配类型"),
+    "routingListByCountry": MessageLookupByLibrary.simpleMessage("按国家"),
+    "routingListCount": m26,
+    "routingListFromLink": MessageLookupByLibrary.simpleMessage("自定义链接"),
+    "routingListName": MessageLookupByLibrary.simpleMessage("列表名称"),
+    "routingListPasted": MessageLookupByLibrary.simpleMessage("已粘贴的域名"),
+    "routingLists": MessageLookupByLibrary.simpleMessage("列表"),
+    "routingLogicAll": MessageLookupByLibrary.simpleMessage("全部满足"),
+    "routingLogicAny": MessageLookupByLibrary.simpleMessage("任一满足"),
+    "routingLogicNone": MessageLookupByLibrary.simpleMessage("均不满足"),
+    "routingLogicOperator": MessageLookupByLibrary.simpleMessage("匹配条件"),
+    "routingMatchValueHint": MessageLookupByLibrary.simpleMessage(
+      "域名、IP 段、国家或应用",
+    ),
+    "routingMatcherApp": MessageLookupByLibrary.simpleMessage("应用"),
+    "routingMatcherAppPath": MessageLookupByLibrary.simpleMessage("应用路径"),
+    "routingMatcherAppPathRegex": MessageLookupByLibrary.simpleMessage(
+      "应用路径正则",
+    ),
+    "routingMatcherAppPathWildcard": MessageLookupByLibrary.simpleMessage(
+      "应用路径通配符",
+    ),
+    "routingMatcherAppRegex": MessageLookupByLibrary.simpleMessage("应用名正则"),
+    "routingMatcherAppWildcard": MessageLookupByLibrary.simpleMessage("应用名通配符"),
+    "routingMatcherAsn": MessageLookupByLibrary.simpleMessage("网络运营商 (ASN)"),
+    "routingMatcherCatApp": MessageLookupByLibrary.simpleMessage("应用 / 进程"),
+    "routingMatcherCatConnection": MessageLookupByLibrary.simpleMessage("连接"),
+    "routingMatcherCatDestIp": MessageLookupByLibrary.simpleMessage("目标 IP"),
+    "routingMatcherCatDomain": MessageLookupByLibrary.simpleMessage("域名 / 网站"),
+    "routingMatcherCatSource": MessageLookupByLibrary.simpleMessage("来源"),
+    "routingMatcherDomain": MessageLookupByLibrary.simpleMessage("域名"),
+    "routingMatcherDomainKeyword": MessageLookupByLibrary.simpleMessage(
+      "域名关键词",
+    ),
+    "routingMatcherDomainRegex": MessageLookupByLibrary.simpleMessage("域名正则"),
+    "routingMatcherDomainSuffix": MessageLookupByLibrary.simpleMessage("域名后缀"),
+    "routingMatcherDomainWildcard": MessageLookupByLibrary.simpleMessage(
+      "域名通配符",
+    ),
+    "routingMatcherDstPort": MessageLookupByLibrary.simpleMessage("目标端口"),
+    "routingMatcherGeoip": MessageLookupByLibrary.simpleMessage("国家 (GeoIP)"),
+    "routingMatcherGeosite": MessageLookupByLibrary.simpleMessage("地理分类"),
+    "routingMatcherIp": MessageLookupByLibrary.simpleMessage("IP 范围"),
+    "routingMatcherIpSuffix": MessageLookupByLibrary.simpleMessage("IP 后缀"),
+    "routingMatcherIpV6": MessageLookupByLibrary.simpleMessage("IP 段 (IPv6)"),
+    "routingMatcherNetwork": MessageLookupByLibrary.simpleMessage(
+      "网络（tcp/udp）",
+    ),
+    "routingMatcherSrcAsn": MessageLookupByLibrary.simpleMessage("来源 ASN"),
+    "routingMatcherSrcGeoip": MessageLookupByLibrary.simpleMessage("来源国家"),
+    "routingMatcherSrcIp": MessageLookupByLibrary.simpleMessage("来源 IP 段"),
+    "routingMatcherSrcIpSuffix": MessageLookupByLibrary.simpleMessage(
+      "来源 IP 后缀",
+    ),
+    "routingMatcherSrcPort": MessageLookupByLibrary.simpleMessage("来源端口"),
+    "routingMatcherType": MessageLookupByLibrary.simpleMessage("匹配方式"),
+    "routingMatcherUid": MessageLookupByLibrary.simpleMessage("用户 ID (UID)"),
+    "routingModeSwitchTitle": MessageLookupByLibrary.simpleMessage("切换模式？"),
+    "routingModeSwitchToBypassBody": MessageLookupByLibrary.simpleMessage(
+      "切换后，只有你标记的应用走 VPN，其余绕过。连接会中断一秒。继续？",
+    ),
+    "routingModeSwitchToVpnBody": MessageLookupByLibrary.simpleMessage(
+      "切换后，未标记的新应用（包括你未移出的银行和政务应用）将走 VPN。连接会中断一秒。继续？",
+    ),
+    "routingNewScenario": MessageLookupByLibrary.simpleMessage("新建场景"),
+    "routingNoGroups": MessageLookupByLibrary.simpleMessage("暂无分组"),
+    "routingNoLists": MessageLookupByLibrary.simpleMessage("暂无列表"),
+    "routingNoResolveOff": MessageLookupByLibrary.simpleMessage("先解析域名"),
+    "routingNoResolveOffDesc": MessageLookupByLibrary.simpleMessage(
+      "匹配前先查询 IP",
+    ),
+    "routingNoResolveOn": MessageLookupByLibrary.simpleMessage("仅匹配 IP"),
+    "routingNoResolveOnDesc": MessageLookupByLibrary.simpleMessage(
+      "不解析域名 (no-resolve)",
+    ),
+    "routingNoResolveTitle": MessageLookupByLibrary.simpleMessage("DNS 解析"),
+    "routingNoScenarios": MessageLookupByLibrary.simpleMessage("暂无场景"),
+    "routingNoServers": MessageLookupByLibrary.simpleMessage("暂无服务器"),
+    "routingPasteHint": MessageLookupByLibrary.simpleMessage("每行一个域名"),
+    "routingPickList": MessageLookupByLibrary.simpleMessage("选择列表"),
+    "routingProxies": MessageLookupByLibrary.simpleMessage("代理"),
+    "routingProxiesSubtitle": MessageLookupByLibrary.simpleMessage("服务器和订阅"),
+    "routingProxyNested": MessageLookupByLibrary.simpleMessage(
+      "以下嵌套字段原样保留，请在 raw YAML 中编辑。",
+    ),
+    "routingRawGroupHint": MessageLookupByLibrary.simpleMessage(
+      "该高级分组请在 YAML 中编辑",
+    ),
+    "routingRawYaml": MessageLookupByLibrary.simpleMessage("编辑 YAML"),
+    "routingRawYamlSubtitle": MessageLookupByLibrary.simpleMessage(
+      "DNS、sniffer 等底层配置",
+    ),
+    "routingRename": MessageLookupByLibrary.simpleMessage("重命名"),
+    "routingRuleByList": MessageLookupByLibrary.simpleMessage("按列表"),
+    "routingRuleByMatcher": MessageLookupByLibrary.simpleMessage("按条件"),
+    "routingRuleCombined": MessageLookupByLibrary.simpleMessage("组合条件"),
     "routingRules": MessageLookupByLibrary.simpleMessage("路由规则"),
+    "routingScenarioCount": m27,
+    "routingScenarioName": MessageLookupByLibrary.simpleMessage("场景名称"),
+    "routingScenarioRuleCount": m28,
+    "routingScenarios": MessageLookupByLibrary.simpleMessage("场景"),
+    "routingSearchHint": MessageLookupByLibrary.simpleMessage("搜索"),
+    "routingSendTo": MessageLookupByLibrary.simpleMessage("发送到"),
+    "routingServerAdded": MessageLookupByLibrary.simpleMessage("已添加服务器"),
+    "routingServerCount": m29,
+    "routingServerHint": MessageLookupByLibrary.simpleMessage("粘贴链接或订阅URL"),
+    "routingServers": MessageLookupByLibrary.simpleMessage("服务器"),
+    "routingServersSubtitle": MessageLookupByLibrary.simpleMessage("流量出口"),
+    "routingSetAsExit": MessageLookupByLibrary.simpleMessage("设为当前出口"),
+    "routingSourceCountry": MessageLookupByLibrary.simpleMessage("按国家"),
+    "routingSourceLink": MessageLookupByLibrary.simpleMessage("通过链接"),
+    "routingSourcePaste": MessageLookupByLibrary.simpleMessage("粘贴域名"),
+    "routingSubscription": MessageLookupByLibrary.simpleMessage("订阅"),
+    "routingSubscriptionAdded": MessageLookupByLibrary.simpleMessage("已添加订阅"),
+    "routingSubscriptionUrl": MessageLookupByLibrary.simpleMessage("订阅 URL"),
+    "routingViaVpn": MessageLookupByLibrary.simpleMessage("经 VPN"),
+    "routingWhatToBlock": MessageLookupByLibrary.simpleMessage("屏蔽内容"),
     "ru": MessageLookupByLibrary.simpleMessage("俄语"),
     "rule": MessageLookupByLibrary.simpleMessage("规则"),
     "ruleAddClause": MessageLookupByLibrary.simpleMessage("添加条件"),
@@ -790,7 +985,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
     "selectAll": MessageLookupByLibrary.simpleMessage("全选"),
     "selected": MessageLookupByLibrary.simpleMessage("已选择"),
-    "selectedCountTitle": m24,
+    "selectedCountTitle": m30,
     "settings": MessageLookupByLibrary.simpleMessage("设置"),
     "show": MessageLookupByLibrary.simpleMessage("显示"),
     "shrink": MessageLookupByLibrary.simpleMessage("紧凑"),
@@ -819,7 +1014,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subRuleNameExists": MessageLookupByLibrary.simpleMessage("同名子规则已存在"),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("新建子规则"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("重命名子规则"),
-    "subRuleRuleCount": m25,
+    "subRuleRuleCount": m31,
     "subRules": MessageLookupByLibrary.simpleMessage("子规则"),
     "submit": MessageLookupByLibrary.simpleMessage("提交"),
     "sync": MessageLookupByLibrary.simpleMessage("同步"),
@@ -860,7 +1055,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m26,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系统Hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("用户界面"),
@@ -879,7 +1074,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m27,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
     "zoom": MessageLookupByLibrary.simpleMessage("缩放"),
   };

@@ -78,13 +78,25 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m23(n) => "every ${n}s";
 
-  static String m24(count) => "${count} items have been selected";
+  static String m24(count) => "${count} rules";
 
-  static String m25(count) => "${count} rules";
+  static String m25(source) => "via ${source}";
 
-  static String m26(label) => "${label} must be a url";
+  static String m26(count) => "${count} lists";
 
-  static String m27(count) =>
+  static String m27(count) => "${count} scenarios";
+
+  static String m28(count) => "${count} rules";
+
+  static String m29(count) => "${count} servers";
+
+  static String m30(count) => "${count} items have been selected";
+
+  static String m31(count) => "${count} rules";
+
+  static String m32(label) => "${label} must be a url";
+
+  static String m33(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -584,30 +596,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "libNeedsUpdate": MessageLookupByLibrary.simpleMessage(
       "Requires app update",
     ),
-    "quickStartPasteKey": MessageLookupByLibrary.simpleMessage(
-      "Paste your key",
-    ),
-    "quickStartPasteHint": MessageLookupByLibrary.simpleMessage(
-      "Paste the link, QR, or code your provider sent you",
-    ),
-    "quickStartNoServers": MessageLookupByLibrary.simpleMessage(
-      "No servers found in what you pasted",
-    ),
-    "quickStartImported": MessageLookupByLibrary.simpleMessage("Imported"),
-    "quickStartVerifying": MessageLookupByLibrary.simpleMessage(
-      "Checking your connection...",
-    ),
-    "quickStartVerified": MessageLookupByLibrary.simpleMessage("verified"),
-    "quickStartFailedTitle": MessageLookupByLibrary.simpleMessage(
-      "Couldn't reach the internet through this key",
-    ),
-    "quickStartFailedBody": MessageLookupByLibrary.simpleMessage(
-      "The key connected, but no page would load.",
-    ),
-    "quickStartTryAgain": MessageLookupByLibrary.simpleMessage("Try again"),
-    "quickStartUseDifferent": MessageLookupByLibrary.simpleMessage(
-      "Use a different key",
-    ),
     "libRefresh": MessageLookupByLibrary.simpleMessage("Refresh"),
     "libReset": MessageLookupByLibrary.simpleMessage("Reset to bundled"),
     "libSwitchBody": MessageLookupByLibrary.simpleMessage(
@@ -984,6 +972,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Scan QR code to obtain profile",
     ),
+    "quickStartFailedBody": MessageLookupByLibrary.simpleMessage(
+      "The key connected, but no page would load.",
+    ),
+    "quickStartFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t reach the internet through this key",
+    ),
+    "quickStartImported": MessageLookupByLibrary.simpleMessage("Imported"),
+    "quickStartNoServers": MessageLookupByLibrary.simpleMessage(
+      "No servers found in what you pasted",
+    ),
+    "quickStartPasteHint": MessageLookupByLibrary.simpleMessage(
+      "Paste the link, QR, or code your provider sent you",
+    ),
+    "quickStartPasteKey": MessageLookupByLibrary.simpleMessage(
+      "Paste your key",
+    ),
+    "quickStartTryAgain": MessageLookupByLibrary.simpleMessage("Try again"),
+    "quickStartUseDifferent": MessageLookupByLibrary.simpleMessage(
+      "Use a different key",
+    ),
+    "quickStartVerified": MessageLookupByLibrary.simpleMessage("verified"),
+    "quickStartVerifying": MessageLookupByLibrary.simpleMessage(
+      "Checking your connection...",
+    ),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Rainbow"),
     "recovery": MessageLookupByLibrary.simpleMessage("Recovery"),
     "recoveryAll": MessageLookupByLibrary.simpleMessage("Recover all data"),
@@ -1072,7 +1084,282 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("Use config"),
     "routing": MessageLookupByLibrary.simpleMessage("Routing"),
+    "routingAddCondition": MessageLookupByLibrary.simpleMessage(
+      "Add condition",
+    ),
+    "routingAddList": MessageLookupByLibrary.simpleMessage("Add list"),
+    "routingAddRule": MessageLookupByLibrary.simpleMessage("Add rule"),
+    "routingAddServer": MessageLookupByLibrary.simpleMessage("Add server"),
+    "routingAdvanced": MessageLookupByLibrary.simpleMessage("Advanced"),
+    "routingAdvancedEditors": MessageLookupByLibrary.simpleMessage(
+      "Power-user editors",
+    ),
+    "routingAdvancedKeys": MessageLookupByLibrary.simpleMessage(
+      "Advanced keys",
+    ),
+    "routingAdvancedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Groups, sub-rules, raw rules and YAML",
+    ),
+    "routingAppBypass": MessageLookupByLibrary.simpleMessage("Bypass VPN"),
+    "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t apply the change",
+    ),
+    "routingApps": MessageLookupByLibrary.simpleMessage("Apps"),
+    "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(
+      "Default for new and unset apps:",
+    ),
+    "routingAppsRuleBlacklist": MessageLookupByLibrary.simpleMessage(
+      "All apps go through the VPN. Only the ones marked below bypass it. New apps go through the VPN by default; move banking and government apps off it manually.",
+    ),
+    "routingAppsRuleWhitelist": MessageLookupByLibrary.simpleMessage(
+      "Only apps in the list below go through the VPN. Everything else, including new apps, stays off the VPN and cannot see it.",
+    ),
+    "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage(
+      "Changed",
+    ),
+    "routingAppsSectionRest": MessageLookupByLibrary.simpleMessage(
+      "Others · default",
+    ),
+    "routingAppsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Which apps use the VPN and how",
+    ),
+    "routingBehaviorClassical": MessageLookupByLibrary.simpleMessage(
+      "Mixed rules",
+    ),
+    "routingBehaviorDomain": MessageLookupByLibrary.simpleMessage("Domains"),
+    "routingBehaviorIpcidr": MessageLookupByLibrary.simpleMessage("IP ranges"),
+    "routingBlock": MessageLookupByLibrary.simpleMessage("Block"),
+    "routingBuild": MessageLookupByLibrary.simpleMessage("Build"),
+    "routingCheckedTopToBottom": MessageLookupByLibrary.simpleMessage(
+      "Checked top to bottom",
+    ),
+    "routingConditions": MessageLookupByLibrary.simpleMessage("Conditions"),
+    "routingConnection": MessageLookupByLibrary.simpleMessage("Connection"),
+    "routingConstructor": MessageLookupByLibrary.simpleMessage("Routing"),
+    "routingCountryOther": MessageLookupByLibrary.simpleMessage("Other code"),
+    "routingCountryOtherHint": MessageLookupByLibrary.simpleMessage(
+      "ISO code or geo tag (e.g. private)",
+    ),
+    "routingCreateGroup": MessageLookupByLibrary.simpleMessage("Create group"),
+    "routingEditGroup": MessageLookupByLibrary.simpleMessage("Edit group"),
+    "routingEditProxy": MessageLookupByLibrary.simpleMessage("Edit server"),
+    "routingEverythingElse": MessageLookupByLibrary.simpleMessage(
+      "Everything else",
+    ),
+    "routingGlobalRules": MessageLookupByLibrary.simpleMessage("Global rules"),
+    "routingGlobalRulesCount": m24,
+    "routingGroupAuto": MessageLookupByLibrary.simpleMessage("Auto (fastest)"),
+    "routingGroupBehavior": MessageLookupByLibrary.simpleMessage("Mode"),
+    "routingGroupFailover": MessageLookupByLibrary.simpleMessage("Failover"),
+    "routingGroupFilter": MessageLookupByLibrary.simpleMessage(
+      "Filter (regex)",
+    ),
+    "routingGroupFilterHint": MessageLookupByLibrary.simpleMessage(
+      "e.g. main|premium",
+    ),
+    "routingGroupHidden": MessageLookupByLibrary.simpleMessage("Hidden"),
+    "routingGroupInterval": MessageLookupByLibrary.simpleMessage(
+      "Test interval (seconds)",
+    ),
+    "routingGroupLazy": MessageLookupByLibrary.simpleMessage("Lazy testing"),
+    "routingGroupManual": MessageLookupByLibrary.simpleMessage("Manual pick"),
+    "routingGroupNameHint": MessageLookupByLibrary.simpleMessage("Group name"),
+    "routingGroupSource": MessageLookupByLibrary.simpleMessage("Source"),
+    "routingGroupSourceServers": MessageLookupByLibrary.simpleMessage(
+      "Pick servers",
+    ),
+    "routingGroupSourceSubscription": MessageLookupByLibrary.simpleMessage(
+      "From a subscription",
+    ),
+    "routingGroupTestUrl": MessageLookupByLibrary.simpleMessage(
+      "Health-check URL",
+    ),
+    "routingGroupTolerance": MessageLookupByLibrary.simpleMessage(
+      "Tolerance (ms)",
+    ),
+    "routingGroupVia": m25,
+    "routingGroups": MessageLookupByLibrary.simpleMessage("Groups"),
+    "routingGroupsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "How servers are chosen",
+    ),
+    "routingImportFailed": MessageLookupByLibrary.simpleMessage(
+      "Couldn\'t read that link",
+    ),
+    "routingListBehavior": MessageLookupByLibrary.simpleMessage("Match type"),
+    "routingListByCountry": MessageLookupByLibrary.simpleMessage("By country"),
+    "routingListCount": m26,
+    "routingListFromLink": MessageLookupByLibrary.simpleMessage("Custom link"),
+    "routingListName": MessageLookupByLibrary.simpleMessage("List name"),
+    "routingListPasted": MessageLookupByLibrary.simpleMessage("Pasted domains"),
+    "routingLists": MessageLookupByLibrary.simpleMessage("Lists"),
+    "routingLogicAll": MessageLookupByLibrary.simpleMessage("All of"),
+    "routingLogicAny": MessageLookupByLibrary.simpleMessage("Any of"),
+    "routingLogicNone": MessageLookupByLibrary.simpleMessage("None of"),
+    "routingLogicOperator": MessageLookupByLibrary.simpleMessage("Match when"),
+    "routingMatchValueHint": MessageLookupByLibrary.simpleMessage(
+      "domain, IP range, country or app",
+    ),
+    "routingMatcherApp": MessageLookupByLibrary.simpleMessage("App"),
+    "routingMatcherAppPath": MessageLookupByLibrary.simpleMessage("App path"),
+    "routingMatcherAppPathRegex": MessageLookupByLibrary.simpleMessage(
+      "App path regex",
+    ),
+    "routingMatcherAppPathWildcard": MessageLookupByLibrary.simpleMessage(
+      "App path wildcard",
+    ),
+    "routingMatcherAppRegex": MessageLookupByLibrary.simpleMessage(
+      "App name regex",
+    ),
+    "routingMatcherAppWildcard": MessageLookupByLibrary.simpleMessage(
+      "App name wildcard",
+    ),
+    "routingMatcherAsn": MessageLookupByLibrary.simpleMessage(
+      "Network operator (ASN)",
+    ),
+    "routingMatcherCatApp": MessageLookupByLibrary.simpleMessage(
+      "App / process",
+    ),
+    "routingMatcherCatConnection": MessageLookupByLibrary.simpleMessage(
+      "Connection",
+    ),
+    "routingMatcherCatDestIp": MessageLookupByLibrary.simpleMessage(
+      "Destination IP",
+    ),
+    "routingMatcherCatDomain": MessageLookupByLibrary.simpleMessage(
+      "Domain / website",
+    ),
+    "routingMatcherCatSource": MessageLookupByLibrary.simpleMessage("Source"),
+    "routingMatcherDomain": MessageLookupByLibrary.simpleMessage("Domain"),
+    "routingMatcherDomainKeyword": MessageLookupByLibrary.simpleMessage(
+      "Domain keyword",
+    ),
+    "routingMatcherDomainRegex": MessageLookupByLibrary.simpleMessage(
+      "Domain regex",
+    ),
+    "routingMatcherDomainSuffix": MessageLookupByLibrary.simpleMessage(
+      "Domain suffix",
+    ),
+    "routingMatcherDomainWildcard": MessageLookupByLibrary.simpleMessage(
+      "Domain wildcard",
+    ),
+    "routingMatcherDstPort": MessageLookupByLibrary.simpleMessage(
+      "Destination port",
+    ),
+    "routingMatcherGeoip": MessageLookupByLibrary.simpleMessage(
+      "Country (GeoIP)",
+    ),
+    "routingMatcherGeosite": MessageLookupByLibrary.simpleMessage(
+      "Geo category",
+    ),
+    "routingMatcherIp": MessageLookupByLibrary.simpleMessage("IP range"),
+    "routingMatcherIpSuffix": MessageLookupByLibrary.simpleMessage("IP suffix"),
+    "routingMatcherIpV6": MessageLookupByLibrary.simpleMessage(
+      "IP range (IPv6)",
+    ),
+    "routingMatcherNetwork": MessageLookupByLibrary.simpleMessage(
+      "Network (tcp/udp)",
+    ),
+    "routingMatcherSrcAsn": MessageLookupByLibrary.simpleMessage("Source ASN"),
+    "routingMatcherSrcGeoip": MessageLookupByLibrary.simpleMessage(
+      "Source country",
+    ),
+    "routingMatcherSrcIp": MessageLookupByLibrary.simpleMessage(
+      "Source IP range",
+    ),
+    "routingMatcherSrcIpSuffix": MessageLookupByLibrary.simpleMessage(
+      "Source IP suffix",
+    ),
+    "routingMatcherSrcPort": MessageLookupByLibrary.simpleMessage(
+      "Source port",
+    ),
+    "routingMatcherType": MessageLookupByLibrary.simpleMessage("Match by"),
+    "routingMatcherUid": MessageLookupByLibrary.simpleMessage("User ID (UID)"),
+    "routingModeSwitchTitle": MessageLookupByLibrary.simpleMessage(
+      "Switch mode?",
+    ),
+    "routingModeSwitchToBypassBody": MessageLookupByLibrary.simpleMessage(
+      "After the switch, only apps you mark go through the VPN; everything else stays off it. Connections drop for a second. Continue?",
+    ),
+    "routingModeSwitchToVpnBody": MessageLookupByLibrary.simpleMessage(
+      "After the switch, new and unmarked apps, including banking and government apps you haven\'t moved off, will go through the VPN. Connections drop for a second. Continue?",
+    ),
+    "routingNewScenario": MessageLookupByLibrary.simpleMessage("New scenario"),
+    "routingNoGroups": MessageLookupByLibrary.simpleMessage("No groups yet"),
+    "routingNoLists": MessageLookupByLibrary.simpleMessage("No lists yet"),
+    "routingNoResolveOff": MessageLookupByLibrary.simpleMessage(
+      "Resolve domains first",
+    ),
+    "routingNoResolveOffDesc": MessageLookupByLibrary.simpleMessage(
+      "Look up the IP before matching",
+    ),
+    "routingNoResolveOn": MessageLookupByLibrary.simpleMessage("Match IP only"),
+    "routingNoResolveOnDesc": MessageLookupByLibrary.simpleMessage(
+      "Do not resolve domains (no-resolve)",
+    ),
+    "routingNoResolveTitle": MessageLookupByLibrary.simpleMessage(
+      "DNS resolution",
+    ),
+    "routingNoScenarios": MessageLookupByLibrary.simpleMessage(
+      "No scenarios yet",
+    ),
+    "routingNoServers": MessageLookupByLibrary.simpleMessage("No servers yet"),
+    "routingPasteHint": MessageLookupByLibrary.simpleMessage(
+      "One domain per line",
+    ),
+    "routingPickList": MessageLookupByLibrary.simpleMessage("Choose a list"),
+    "routingProxies": MessageLookupByLibrary.simpleMessage("Proxies"),
+    "routingProxiesSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Servers and subscriptions",
+    ),
+    "routingProxyNested": MessageLookupByLibrary.simpleMessage(
+      "Nested fields below are kept as-is; edit them in raw YAML.",
+    ),
+    "routingRawGroupHint": MessageLookupByLibrary.simpleMessage(
+      "This group is advanced; edit it in raw YAML",
+    ),
+    "routingRawYaml": MessageLookupByLibrary.simpleMessage("Edit raw YAML"),
+    "routingRawYamlSubtitle": MessageLookupByLibrary.simpleMessage(
+      "DNS, sniffer and other low-level blocks",
+    ),
+    "routingRename": MessageLookupByLibrary.simpleMessage("Rename"),
+    "routingRuleByList": MessageLookupByLibrary.simpleMessage("By list"),
+    "routingRuleByMatcher": MessageLookupByLibrary.simpleMessage("By matcher"),
+    "routingRuleCombined": MessageLookupByLibrary.simpleMessage(
+      "Combined condition",
+    ),
     "routingRules": MessageLookupByLibrary.simpleMessage("Routing rules"),
+    "routingScenarioCount": m27,
+    "routingScenarioName": MessageLookupByLibrary.simpleMessage(
+      "Scenario name",
+    ),
+    "routingScenarioRuleCount": m28,
+    "routingScenarios": MessageLookupByLibrary.simpleMessage("Scenarios"),
+    "routingSearchHint": MessageLookupByLibrary.simpleMessage("Search"),
+    "routingSendTo": MessageLookupByLibrary.simpleMessage("Send to"),
+    "routingServerAdded": MessageLookupByLibrary.simpleMessage("Server added"),
+    "routingServerCount": m29,
+    "routingServerHint": MessageLookupByLibrary.simpleMessage(
+      "Paste a link or subscription URL",
+    ),
+    "routingServers": MessageLookupByLibrary.simpleMessage("Servers"),
+    "routingServersSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Where your traffic exits",
+    ),
+    "routingSetAsExit": MessageLookupByLibrary.simpleMessage(
+      "Use as active exit",
+    ),
+    "routingSourceCountry": MessageLookupByLibrary.simpleMessage("By country"),
+    "routingSourceLink": MessageLookupByLibrary.simpleMessage("By link"),
+    "routingSourcePaste": MessageLookupByLibrary.simpleMessage("Paste domains"),
+    "routingSubscription": MessageLookupByLibrary.simpleMessage("Subscription"),
+    "routingSubscriptionAdded": MessageLookupByLibrary.simpleMessage(
+      "Subscription added",
+    ),
+    "routingSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "Subscription URL",
+    ),
+    "routingViaVpn": MessageLookupByLibrary.simpleMessage("Via VPN"),
+    "routingWhatToBlock": MessageLookupByLibrary.simpleMessage("What to block"),
     "ru": MessageLookupByLibrary.simpleMessage("Russian"),
     "rule": MessageLookupByLibrary.simpleMessage("Rule"),
     "ruleAddClause": MessageLookupByLibrary.simpleMessage("Add condition"),
@@ -1104,7 +1391,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Seconds"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
-    "selectedCountTitle": m24,
+    "selectedCountTitle": m30,
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
@@ -1139,7 +1426,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("New sub-rule"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("Rename sub-rule"),
-    "subRuleRuleCount": m25,
+    "subRuleRuleCount": m31,
     "subRules": MessageLookupByLibrary.simpleMessage("Sub-rules"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
@@ -1192,7 +1479,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m26,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
@@ -1215,7 +1502,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "years": MessageLookupByLibrary.simpleMessage("Years"),
-    "yearsAgo": m27,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
     "zoom": MessageLookupByLibrary.simpleMessage("Zoom"),
   };

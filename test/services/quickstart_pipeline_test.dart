@@ -20,7 +20,8 @@ void main() {
 
     // Encodes to valid YAML and re-parses losslessly (catches any
     // non-serializable value before the native validateConfig sees it).
-    final reparsed = loadYaml(yaml.encode(cfg));
+    final full = applyQuickStartRouting(yaml.encode(cfg));
+    final reparsed = loadYaml(full);
     expect(reparsed['proxies'][0]['type'], 'vless');
     expect(reparsed['proxies'][0]['reality-opts']['public-key'], 'PUBKEY');
     expect(reparsed['rules'][0], 'MATCH,PROXY');

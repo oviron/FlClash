@@ -277,6 +277,9 @@ abstract class VpnState with _$VpnState {
   const factory VpnState({
     required TunStack stack,
     required VpnProps vpnProps,
+    // Global mode captures every app (empty ACL). Part of the tun identity so
+    // toggling Global re-establishes the tunnel to apply the new app list.
+    @Default(false) bool captureAll,
   }) = _VpnState;
 }
 

@@ -269,7 +269,7 @@ final class VpnStateProvider
   }
 }
 
-String _$vpnStateHash() => r'128ddad03ce045ad1f8204e47aec3cb6cfa29f6e';
+String _$vpnStateHash() => r'f36a63d1991da9e19c70fd130674011551586936';
 
 @ProviderFor(navigationState)
 const navigationStateProvider = NavigationStateProvider._();
@@ -2432,4 +2432,4 @@ final class EffectiveAccessControlProvider
 }
 
 String _$effectiveAccessControlHash() =>
-    r'e8471429e5eee6c07c483186e1592cbbd92d88fb';
+    r'cf3ae5ab10300eadf87a494e09cabe035c33841c';

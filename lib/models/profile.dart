@@ -226,8 +226,8 @@ extension ProfileExtension on Profile {
         _ => <Map<String, dynamic>>[],
       };
       if (proxies.isEmpty) return raw;
-      final yamlString = await encodeYamlTask(synthesizeConfig(proxies));
-      return Uint8List.fromList(utf8.encode(yamlString));
+      final envelope = await encodeYamlTask(synthesizeConfig(proxies));
+      return Uint8List.fromList(utf8.encode(applyQuickStartRouting(envelope)));
     } catch (_) {
       return raw;
     }

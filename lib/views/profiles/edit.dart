@@ -10,7 +10,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/state.dart';
-import 'package:fl_clash/views/profiles/routing_hub.dart';
+import 'package:fl_clash/views/profiles/routing_constructor.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -293,7 +293,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
         trailing: const Icon(Icons.chevron_right),
         onTap: () => BaseNavigator.push(
           context,
-          RoutingHubView(profileId: widget.profile.id),
+          RoutingConstructorView(profileId: widget.profile.id),
         ),
       ),
       ValueListenableBuilder<FileInfo?>(

@@ -14,6 +14,7 @@ import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/services/profile_setup_service.dart';
 import 'package:fl_clash/services/quickstart_config_service.dart';
+import 'package:fl_clash/services/routing_model.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/dialog.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ part 'controllers/backup_controller.dart';
 part 'controllers/store_controller.dart';
 part 'controllers/common_controller.dart';
 part 'controllers/app_routing_controller.dart';
+part 'controllers/routing_constructor_controller.dart';
 
 class AppController {
   late WidgetRef _ref;

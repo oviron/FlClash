@@ -2,8 +2,15 @@
 
 Status: v1 implemented and verified on-device (emulator + pinned core); only a 204 through a live server remains
 Target line: 0.16 / 0.17
-Last updated: 2026-06-28
+Last updated: 2026-06-29 (Part II rewritten — user-extensible constructor, no-magic-values principle, catalog library, recognize-don't-rebuild bridge)
 Audience of the app: users on censored networks (RU / IR / CN), Android-first, no telemetry.
+
+This file now covers two adjacent features. Part I (sections 1-21) is the paste-and-go
+onboarding path: artifact in, verified full-tunnel connection out, zero vocabulary. Part II
+(at the end) is the next screen the same user opens: a user-extensible, plain-language routing
+constructor over the profile. The user connects their own lists, composes their own routing
+scenarios from those lists, and assigns them to apps, building from scratch — and every value
+they set is a CHOICE from an enumerable set, never a mihomo identifier they must know.
 
 This document is the single source for the onboarding redesign: the user pain, the
 findings that ground it, the design principles, the product flow, the generated-profile
@@ -758,3 +765,453 @@ Both passes used independent verifier agents; the corrections they forced are in
 changelog above. Key external grounding: the official mihomo wiki (proxy-providers content
 formats), upstream issues `chen08209/FlClash#128` and `#941`, and competitor docs for
 Karing, Hiddify, Clash Verge Rev, Mihomo Party, and ClashMi.
+
+---
+
+# Part II: The routing constructor (profile-settings redesign)
+
+Status: implemented in v0.16.0-rc3, including the server layer (the old II.10 boundary is lifted).
+Both parity paths are proven at config level by tests: (a) loading a full power-user profile
+(multi-node exit + subscriptions + fallback/url-test/provider-filter mesh + full routing) is
+recognized and round-trips verbatim (`test/services/profile_parity_test.dart`), the clean groups
+modeled as Auto/Failover/Manual and the filter-split mesh preserved raw under Advanced; (b) a
+from-zero pasted vless is configured through the model into that same doctrine
+(`test/services/end_to_end_journey_test.dart`). The Servers screen imports by link/subscription
+(auto-detect), lists nodes+subscriptions with latency, picks the exit (Auto-fastest / server /
+smart group), and builds Auto/Failover/Manual groups — no clash grammar on any primary screen.
+Shipped earlier (v0.16.0-rc2): the domain model + lossless bidirectional
+bridge (`lib/services/routing_model.dart`), the localized Catalog + country table
+(`lib/services/routing_catalog.dart`), the persistence controller
+(`lib/controllers/routing_constructor_controller.dart`), and the constructor UI
+(`lib/views/profiles/routing_constructor.dart`: Lists with all four sources + a Catalog browser,
+a Scenarios flat-row editor, the ad-block toggle, the unlisted-apps allow/block segment, a
+one-tap "RU smart split" preset, and the Advanced gate over the raw hub). Part I's synthesizer is
+refactored onto the shared writer (`applyQuickStartRouting`), so paste-and-go and edit share one
+mechanism. Backed by 30 unit tests (bridge round-trip on a sanitized reference profile,
+idempotence, from-zero == edit, catalog lookups) plus the full green gate set (dart format,
+analyze --fatal-infos, DCM check-unused, detekt, 266 tests). Remaining polish (not blocking):
+re-skinning the Apps step-2 vocabulary to plain intents (currently links to the existing
+AppRoutingView), a dedicated Server picker, themed empty-state illustrations, constructor widget
+tests, and the on-device end-to-end gate. Locked scope decisions: full constructor in v1; all four
+List sources in v1 (built-in Catalog / by URL / paste / by country); no manual node editor in v1.
+Grounded in a 7-reader multi-agent map of every existing profile-settings editor plus a full read
+of a real in-use power-user profile (provenance at the end of this part).
+
+## II.1 The job
+
+Part I gets a censored-network user from a pasted artifact to a verified full-tunnel connection
+with zero vocabulary. Part II is the next screen: the same user opens the profile and shapes
+routing as a plain-language constructor — never touching YAML, mihomo rule syntax, proxy-groups,
+`GEOSITE`/`GEOIP`/`PROCESS-NAME`/`RULE-SET`, or the words "sub-rule" / "provider".
+
+It is NOT a fixed menu of presets. The user builds from scratch: connects their own lists (by
+URL or by pasting domains), composes their own routing scenarios from those lists, and assigns
+them to apps. Pre-seeded defaults exist only as starting content already sitting in the library,
+never as the ceiling. The reference target — a real power-user mobile profile an ordinary user
+should be able to recreate ~80% of with ~20% effort — is the validation bar (section II.11), not
+a hardcoded template.
+
+## II.2 The load-bearing principle: no magic values
+
+The single hardest rule, the one every screen is measured against:
+
+> Every value the user sets is a CHOICE from an enumerable set the app already knows. There is
+> no field where the user must type a value they have to know — a geosite category, a country
+> code, a domain TLD, a provider `behavior`/`format`, a group or rule target. Free text is
+> allowed in exactly two places, and both are the user's OWN content, not knowledge of mihomo:
+> a name they give their own list/scenario, and a URL or domain list they paste.
+
+The "available options" come from three sources the app enumerates:
+
+1. **The app-shipped Catalog** — a browsable, versioned, localized library of human-named
+   matchers (Ads, Russian sites, Russian banks, YouTube, Telegram, Netflix, …), each backed by a
+   public rule set whose name the user never sees or types.
+2. **What already exists in the profile** — servers, lists, scenarios, apps — picked by
+   reference (shown by name/icon), never typed.
+3. **System / built-in enumerations** — the installed-app list (icons + names) and a country
+   picker (flags + names) for by-IP matching.
+
+Anything not in the Catalog is added by the user's own source (paste a URL / paste domains),
+never by knowing a mihomo identifier.
+
+## II.3 Architectural verdict: the engine is done
+
+Unanimous across all seven readers: the persistence + validate + apply backbone is clean,
+lossless, headless, and already exposes constructor-grade verbs. It is reused 100% with zero new
+native code. The redesign is a human-language front + a bidirectional model<->YAML bridge over
+the existing backend, not a rewrite.
+
+| Layer | What it gives |
+|---|---|
+| `ProfileRulesDocument` (`yaml_rules_io.dart`) | lossless yaml_edit round-trip; preserves every unmodeled key + comments |
+| `_writeValidatedApply` (`app_routing_controller.dart:311`) | validate -> commit -> hot-apply; file untouched on validation error |
+| `aclFromTunYaml` (`config.dart:128`) | `tun.include-package` -> whitelist -> `VpnService.Builder` allow-list; "which apps enter the VPN" already works |
+| `GroupSpec` / `ProviderSpec` / `rule_codec` | lossless codecs; generated strings round-trip and survive subscription refresh (`reapply.dart`); unmodeled grammar preserved read-only via `PassthroughRule` |
+| controller verbs | `setAppMembership`, `setTunnelMode`, `setAppTarget`, `withSubRules` / `withRules` / `withProxyGroups` / `withIncludedPackages` |
+
+## II.4 What is wrong with every current editor
+
+- **Total YAML leakage.** Every editor is a 1:1 skin over mihomo grammar: `DIRECT`/`REJECT`/
+  `GLOBAL`, `GEOSITE`, `PROCESS-NAME`, `RULE-SET`, "sub-rule", "provider", group types
+  `url-test`/`fallback`/`relay`, regex member filters, provider `behavior`
+  (domain/ipcidr/classical) and `format` (yaml/text/mrs), `AND`/`OR`/`NOT`, `src`/`no-resolve`,
+  raw `serialize()` rule lines in monospace, "Open YAML" as a first-class action.
+- **Three competing rule surfaces** write the same `rules:` with no precedence model: global
+  Added rules, the per-profile Override overlay, the real `routing_rules_editor`. The Override
+  overlay is the weakest (target hard-limited to DIRECT/REJECT/MATCH, cannot name a proxy-group)
+  yet also exposes a JavaScript "script" mode and a full-config YAML preview on its primary path.
+- **The routing hub presents five clash-noun siblings of mixed audience** (App routing =
+  consumer; Proxy groups / Sub-rules / Providers / raw rules = expert) with no separation; the
+  layperson whitelist control is five taps deep while the raw YAML editor is one tap away.
+
+## II.5 The object model (human entity -> engine primitive)
+
+Six human entities, each mapping losslessly onto an existing primitive:
+
+| Human entity | What the user does | Engine primitive |
+|---|---|---|
+| **List** | a named set of sites/IPs to match; pick a backing kind (below) | a rule-provider, a built-in geosite reference, inline domains, or a GEOIP country |
+| **Destination** | where matched traffic goes: Via VPN / Direct / Block | rule target: the VPN group / `DIRECT` / `REJECT` |
+| **Rule** | one row: List -> Destination | a `rules:` / `sub-rules:` line (`RULE-SET,<list>,<dest>`, etc.) |
+| **Scenario** | an ordered set of Rules + a default Destination | a named `sub-rules:` entry |
+| **App** | an installed app -> a Scenario, or a simple mode | `tun.include`/`exclude-package` + per-app `PROCESS-NAME -> sub-rule/target` |
+| **Server (exit)** | which node/group the VPN uses; ordinary user picks "Auto (fastest)" or one | `proxies:` / `proxy-groups:` (topology stays Advanced, see II.10) |
+
+A **List is a named matcher with four backing kinds**, all chosen from a set, never typed:
+- **from the Catalog** — a built-in public geosite set, picked by human name;
+- **by URL** — the user pastes a link to their own rule set; behavior/format are auto-detected,
+  never asked;
+- **by paste** — the user pastes domains/IPs, one per line;
+- **by country** — a country picker -> GEOIP (e.g. "Russia" -> `GEOIP,RU`).
+
+This unification is what the reference profile forced: its smart-split scenario mixes
+`RULE-SET`, `DOMAIN-SUFFIX,ru/su/xn--p1ai`, and `GEOIP,RU` in one ordered list, so "Russian
+TLDs" and "Russia by IP" must be first-class Lists too, not special cases.
+
+## II.6 Magic value -> picker (the no-magic rule, applied)
+
+| Where the user used to need to KNOW | Now a pick from |
+|---|---|
+| a geosite set name (`category-bank-ru`) | the browsable Catalog ("Russian banks") |
+| a country code (`GEOIP,RU`) | a country picker (flag + name) |
+| Russian TLDs (`.ru`/`.su`/`.xn--p1ai`) | a built-in "Russian domains" List |
+| a list's `behavior`/`format` | auto-detected on fetch; fallback human question only ("domains or IP addresses?") |
+| a destination (`DIRECT`/`VPN`/`REJECT`) | a three-way segment (Direct / Via VPN / Block) |
+| the VPN exit / a server or group name | the list of existing servers and groups, by name |
+| an app (`PROCESS-NAME,com.x`) | the installed-app list (icon + name) |
+| a scenario for an app | the list of existing scenarios |
+| rule order (first-match) | not typed, not explained; the app owns precedence, dangerous reorders are guarded |
+
+Free text only: a name the user gives their own List/Scenario, and a URL or domains they paste.
+
+## II.7 The Catalog is a real deliverable, not four seed rows
+
+Because every match value is a pick, the Catalog must be a real browsable library: a curated,
+versioned, localized (EN/RU/JA/ZH) map of human names + icons -> public rule sets — a useful
+subset of MetaCubeX meta-rules-dat geosite, the common GEOIP countries, and a few well-known
+blocklists. The user browses "what can I match?" and taps; anything missing is added by
+URL/paste. Pre-seeded content (a "Russia" bundle and a "Smart split" scenario) is just the most
+common picks already added, fully editable and removable — so the reference profile is
+reproducible by tapping, never by knowing that `category-bank-ru` exists. The underlying set
+data is fetched at runtime as ordinary rule-providers, only after a tunnel exists, never over the
+blocked cold path.
+
+## II.8 The bridge: recognize, don't rebuild
+
+The constructor reads and writes through the lossless backend, and on an imported power-user
+profile it is read-mostly:
+
+- **Recognize** modeled structures and let the user edit them in human terms: the load-bearing
+  `VPN` group is recognized as "the exit" (never renamed — its name is the target of every
+  per-app rule), an existing smart-split-shaped `sub-rule` is adopted as the "Smart split"
+  scenario (not duplicated), rule-providers become Lists, per-app `SUB-RULE`s become App
+  assignments, a top-level `RULE-SET,ads,REJECT` becomes the "Block ads" toggle, a terminal
+  `MATCH,REJECT` becomes "block unlisted apps".
+- **Preserve verbatim** everything not modeled: DNS / fake-ip / sniffer hardening, anti-loop
+  DIRECT rules, `GEOIP,private`, QUIC plugs, app-companion-API carveouts, and the entire
+  multi-group failover topology. These round-trip byte-for-byte and surface only under Advanced.
+- **Mark app-generated artifacts** (a name marker) so the reverse reader never mistakes a power
+  user's hand-authored rule for a preset and clobbers it; unrecognized shapes are shown as
+  "Custom / Advanced", never silently rewritten.
+
+## II.9 One universal mechanism: building new == editing existing
+
+Creating a fresh profile from a pasted link/subscription (Part I) and refining an existing
+profile (Part II) are NOT two code paths. They are one mechanism with two entry points:
+
+- **one model** — the Lists / Scenarios / Apps / Server object graph (II.5);
+- **one bridge** — read any profile -> model, write model -> YAML losslessly (II.8);
+- **one writer** — `_writeValidatedApply` (validate -> commit -> hot-apply).
+
+"Create new from a link, prefilled with defaults" = seed an empty model with the default Lists +
+the "Smart split" Scenario + sensible app assignments, attach the pasted node as the Server, then
+materialize through the same writer. "Edit existing" = read the profile into the same model,
+mutate, materialize through the same writer. Part I's synthesizer is refactored to a thin caller
+that seeds the model and writes; it keeps no separate YAML-assembly logic of its own.
+
+Consequences:
+- The default prefill is just one Preset applied to a fresh model; the identical Preset is
+  one-tap-applicable to any existing profile.
+- Every screen operates on the model identically whether the profile was born from a paste or
+  imported hand-authored; there is no "new-profile mode".
+- A fix in the writer fixes both paths; a List kind added is available in both; no drift.
+- The honest-fail + validate + revert contract is one pipeline (Part I's 204 gate and the
+  constructor's `validateConfigWithData` are stages of the same flow).
+
+This is the lazy-architect win: one seam (model + bridge), two doors (paste / edit), zero
+duplicated assembly.
+
+## II.10 The boundary: what the constructor democratizes
+
+The constructor makes Lists -> Scenarios -> Apps human and from-scratch buildable (the actual
+request). It does NOT democratize server topology. A real power-user exit is a multi-group
+failover mesh (manual pins, url-test/fallback tiers, provider-backed filter groups, relay and
+TURN fallbacks); an ordinary user sees only "VPN exit: Auto (fastest) / pick one", while the mesh
+is preserved and edited only under Advanced. Democratizing routing-by-lists is the goal;
+democratizing a failover mesh is not.
+
+## II.11 Validation against a real profile
+
+A full read of a real in-use power-user mobile profile confirms the model is reverse-engineered
+from how the file is already structured, not imposed:
+
+| Real structure | Constructor entity |
+|---|---|
+| `tun.include-package` whitelist | Apps "in VPN" set |
+| per-app `SUB-RULE,(PROCESS-NAME,…),vpn-app-route` | App -> "All via VPN" scenario |
+| per-app `SUB-RULE,(…),browser-route` | App -> "Smart split" scenario |
+| the `browser-route` sub-rule (ordered RULE-SET / DOMAIN-SUFFIX / GEOIP -> DIRECT/VPN + default) | a Scenario, exactly |
+| ~17 rule-providers (MetaCubeX `category-*` + a runetfreedom blocklist) | Lists |
+| top-level `RULE-SET,ads,REJECT` | "Block ads" toggle |
+| terminal `MATCH,REJECT` | "Unlisted apps: block" (fail closed) |
+| the load-bearing `VPN` select group atop a failover mesh | the Server exit (mesh stays Advanced) |
+| DNS / fake-ip / sniffer, anti-loop, companion-API carveouts | preserved verbatim, Advanced only |
+
+The strains the profile exposed are resolved above: a List is more than a rule-provider (II.5,
+four backing kinds); a pasted URL is ambiguous between a server-subscription and a rule-list, so
+the two live in different sections (Servers vs Lists) and are auto-detected; the exit is a tree,
+kept under Advanced (II.10).
+
+## II.12 The screens
+
+```
+LISTS                  SCENARIOS               APPS
+ Ads           [+]      Smart split     [+]     Telegram  [Through VPN v]
+ Russian sites          | Ads      -> Block      Chrome    [Smart split v]
+ Russian banks          | RU sites -> Direct     Sberbank  [Bypass VPN  v]
+ Blocked in RU          | Blocked  -> Via VPN     Game      [Block       v]
+ + add list             | default  -> Via VPN
+   from Catalog
+   by link              + new scenario          WHAT TO BLOCK
+   paste                                         Ads & trackers   [ on ]
+   by country
+                                                UNLISTED APPS
+                                                 ( Allow direct | * Block )
+
+                                                SERVER
+                                                 Auto (fastest)  [ change ]
+
+                                                Advanced (power users)  >
+```
+
+Per-app intent -> compilation:
+
+| Intent chip | Compiles to |
+|---|---|
+| Through VPN | include-package + app -> the VPN exit group |
+| Smart split (or any user scenario) | include-package + app -> the chosen scenario's sub-rule |
+| Bypass VPN | not in tunnel (`exclude-package`) |
+| Block | `PROCESS-NAME,<pkg>,REJECT` |
+
+"Unlisted apps -> Block" = whitelist + `MATCH,REJECT` (fail closed). The ad-block toggle and the
+unlisted-apps policy are profile-level. "Advanced" exposes the existing raw hub (groups /
+sub-rules / providers / raw rules / raw YAML), off by default.
+
+## II.13 UI/UX design
+
+The constructor must be indistinguishable from the existing routing screens — same squircle
+cards, color-coded chips, section headers, toasts — just speaking human and never showing a rule
+string. This section pins it to FlClash's real Flutter design language. (The workspace's web-UI
+skills — hallmark / impeccable / modern-web-guidance — do NOT apply; FlClash is Flutter /
+Material 3. The references are the app's own component library + Material 3.)
+
+**Design language to inherit (non-negotiable):**
+- Pure **Material 3, fully ColorScheme-role-driven**. Never a literal `Color()`; every color is a
+  `context.colorScheme.X` role or a centralized semantic token, so the constructor inherits
+  dynamic color, the user accent, and pure-black OLED mode for free.
+- **Semantic + opacity tokens** from `common/color.dart`: the `success`/`warning` extensions,
+  `delayColor` / `quotaColor`, and the `opacityNN` alpha tokens. Reuse; never re-threshold.
+- The **squircle shape** — `RoundedSuperellipseBorder` at the app radii (cards 14-16, chips 11,
+  inputs 12, grouped lists 18/24). Plain `RoundedRectangle` reads as foreign.
+- **Spacing** via the 16px base and the text-scale-aware `.ap` / `.mAp` multipliers + the
+  canonical inset constants, so text scale 0.8-1.4 stays correct.
+- **Typography** via stock M3 `TextTheme` roles (uppercase `labelMedium w800` section headers,
+  `titleSmall` titles, `bodySmall onSurfaceVariant` secondary, tabular `labelMedium` numerics).
+- **The mono rule:** `JetBrainsMono` means "raw mihomo/YAML" in this app. Never use it on a
+  plain-language label; reserve it only for echoing a literal the user typed (a domain / IP / SSID).
+
+**One route-color vocabulary (used everywhere):** reuse the existing `TargetChipKind` mapping so a
+destination badge looks identical app-wide — Via VPN / server group = `primary` (hub icon); Block =
+`error` (block icon); Direct / neutral = `onSurfaceVariant` (arrow icon); a Scenario / alt-route =
+`tertiary` (alt_route icon). Render each as `CommonChip(type: tonal, tonalColor, avatar: Icon)`.
+
+**Per-screen composition (all on existing components):**
+- Every screen = `CommonScaffold` (title, icon-only app-bar actions, an extended
+  `CommonFloatingActionButton` "Add" that auto-collapses on scroll); content structured with
+  `ListHeader` sections and `CommonCard(filled)` cards.
+- **Top-level entry** = a `RoutingHubView`-style list of chevron rows (Lists / Scenarios / Apps /
+  Server / Advanced), pushed via `BaseNavigator.push` (300ms SharedAxis).
+- **Lists:** add-FAB; each List a `ListItem` (kind icon + name + localized count subtitle +
+  chevron). Adding opens an intent sheet ("Browse catalog" / "Paste domains" / "By country" / "By
+  link"), then the List editor. Empty = `NullStatus` with a new themed illustration + an action CTA.
+- **Catalog browser:** a sectioned `ListView` of selectable `CommonCard`s grouped by category
+  (`ListHeader` per category), each card = icon + human name + one-line description + a tonal count
+  chip; inline search `CommonTextField`. Multi-add via the `_MemberPickerSheet` checkbox pattern
+  (Confirm disabled until >=1). Loading = centered spinner; fetch failure = `NullStatus` + retry.
+- **Scenarios:** modeled on `rule_card.dart` + `edit_rule_dialog.dart`. Each rule a plain human row
+  — "When [List] -> send [Via VPN / Direct / Block]" — left = a List/condition picker, right = the
+  color-coded destination chip opening the target sheet. `ReorderableListView` for priority + a
+  one-line "checked top to bottom" caption + a `_CollapsedFooter` "everything else -> default" card.
+  AND/OR/NOT hidden behind an optional Advanced expander, never default.
+- **Apps:** keep `AppRoutingView` essentially as-is (best-in-class: in-tunnel/bypass sections, app
+  rows with icon + target chip, inline search, settings sheet); re-skin only the step-2 vocabulary
+  to plain language, using the two-step `AppRoutingPickerSheet`.
+- **Server picker:** a near-copy of `NodeSelectorSheet` (latency badge + check + secondaryContainer
+  highlight), names via `EmojiText`; a fuller browser can reuse the proxies card-grid + delay-test
+  FAB.
+
+**Interaction surfaces (by depth):** full-page push for drill-downs; `showSheet` /
+`AdaptiveSheetScaffold` (drag handle, full width) for pickers and multi-step editors — never a
+`CommonDialog` for a multi-field editor (its 300px cap is exactly why `edit_rule_dialog` is a
+sheet); `showCommonDialog` / `InputDialog` only for naming and yes/no.
+
+**States (the honest contract):**
+- Loading: the `_loading` gate -> centered `CircularProgressIndicator`.
+- Empty: always `NullStatus` (never bare `Text`) with a themed StarBorder illustration + an action
+  CTA; ship new List / Scenario / Catalog illustrations in the family.
+- Success / honest-fail: standardize on `context.showNotifier` (top-right queued dismissible toast).
+  Keep the universal write contract: every mutation returns `String? error`; non-null -> toast +
+  revert the optimistic state. Persistent preconditions ("VPN is off, routing won't apply") use an
+  inline `MaterialBanner`, mirroring the `findProcessOff` banner.
+
+**Motion:** reuse `constant.dart` durations (100 / 200 / 300ms) and existing transitions (SharedAxis
+push, FadeScale dialogs, FadeThrough value swaps, the spring segmented thumb, FAB extend/collapse).
+Introduce no new transitions.
+
+**Localization / a11y:** localize every new string into all four arb files (en / ru / zh_CN / ja)
+with parameterized count strings (mirror `subRuleRuleCount` / `nullTip`). Use `EdgeInsetsDirectional`
+(RTL machinery exists but is unshipped). Improve on the app's thin a11y: add `Tooltip` / `Semantics`
+labels to icon-only controls and selectable cards.
+
+## II.14 Rework vs new
+
+- **Rework (re-skin / hide / unify):** collapse the 5-noun hub into the human Lists / Scenarios /
+  Apps screens; re-skin the per-app step-2 picker into plain intents + a scenario chooser;
+  re-skin `providers.dart` as the Lists screen and `sub_rules.dart` + the rules editor as the
+  Scenarios screen; remove the Override overlay + global Added rules from the ordinary path; fence
+  raw editors and raw YAML behind one off-by-default "Advanced" gate; relabel whitelist/blacklist
+  as the plain "block unlisted apps" choice.
+- **New (the thin layer):** the bidirectional model<->YAML bridge (the only substantial new
+  logic); the Catalog library (curated human-named sets + country data + localization); the four
+  List-source ingestion flows with auto-detect; the seed Lists/Scenarios + a small preset
+  library; the no-magic pickers (Catalog browser, country picker, app picker, server picker); the
+  universal materializer behind both paste-and-go and edit (II.9).
+- **Design system (reuse, not invent):** every screen is built from the existing components +
+  tokens catalogued in II.13 (CommonScaffold / CommonCard / CommonChip / NullStatus /
+  AdaptiveSheetScaffold / showNotifier + the route-color vocabulary); the genuinely new UI work is
+  the themed empty-state illustrations (List / Scenario / Catalog) and the all-new strings
+  localized into 4 locales.
+- **Out of v1 (decided):** a manual node editor. The pasted node stays read-only and
+  runtime-selectable; editing/adding a server by hand is deferred (pure Dart `proxies:` editing
+  when added, still no native code).
+
+## II.15 Staged plan
+
+- **Stage 1 — Domain model + bidirectional bridge (pure Dart, TDD, no UI).** New
+  `lib/services/routing_model.dart` (Lists / Destinations / Rules / Scenarios / App-assignments)
+  and a bridge that READS an arbitrary profile into the model (recognize-don't-rebuild,
+  marker-naming, unrecognized -> Custom) and WRITES it back through the existing `with*()`
+  losslessly. Tests assert: round-trip on the reference profile preserves it byte-for-byte; every
+  written shape passes `validateConfigWithData`; re-apply is idempotent. This model + bridge is the
+  single mechanism behind BOTH from-zero (Part I) and edit (II.9); the Part I synthesizer is
+  refactored to seed the model and write through it, with no separate assembly path.
+- **Stage 2 — Catalog + country data.** New `lib/services/routing_catalog.dart`: curated
+  human-named -> public-set map (MetaCubeX subset + blocklists), GEOIP country table, icons,
+  localized labels (EN/RU/JA/ZH). Pure data + lookups, unit-tested. Seed Lists + a "Smart split"
+  Scenario as starting content.
+- **Stage 3 — Lists screen.** Re-skin `providers.dart`: browse Catalog / add by URL (auto-detect
+  behavior/format) / paste domains / pick a country; human name + icon; disambiguate a
+  server-subscription URL from a rule-list URL by section + detection. No mihomo terms on screen.
+- **Stage 4 — Scenarios screen.** Re-skin `sub_rules.dart` + the rules editor: an ordered list of
+  "[List] -> [Direct/Via VPN/Block]" rows + a default; add a row by picking a List + a
+  Destination; the app owns precedence. Seed "Smart split" is an editable example.
+- **Stage 5 — Apps screen.** Re-skin the Apps tab: per-app intent chip (Through VPN / a scenario /
+  Bypass / Block) sourced from existing scenarios; the "Block ads" toggle; the "Unlisted apps:
+  allow / block" segment; the inline Server picker. New l10n; remove leakage strings.
+- **Stage 6 — Seeds, presets, prefill + Advanced gate.** Preset scenarios ("RU smart split",
+  "VPN only", "Direct + smart split") applied at onboarding (a pasted link yields a prefilled
+  profile) and one-tap on any profile; move Override + global Added rules + the raw hub behind the
+  Advanced gate (off by default); merge engine (`task.dart`) + drift storage untouched.
+- **Stage 7 — Verify.** Unit (bridge round-trip on the reference profile, catalog lookups,
+  per-source ingestion), widget tests (each picker writes the right model edit), an on-device gate
+  (paste -> build a List + Scenario + assign an app -> confirm domestic-direct + blocked-via-VPN +
+  ads-blocked + unlisted-no-internet, then tear down the emulator + Gradle daemon per the BUILD
+  teardown rule), and the full gate set (dart format, analyze --fatal-infos, DCM unused, detekt,
+  full test suite).
+
+All UI stages (3-6) build strictly on the components and tokens catalogued in II.13 (UI/UX),
+never bespoke widgets.
+
+Touched: new `routing_model.dart` / `routing_catalog.dart` + tests; re-skin `providers.dart`,
+`sub_rules.dart`, the rules editor, `app_routing.dart` (+ controller), `routing_hub.dart`,
+`edit.dart`, `profiles.dart`, l10n, the Part I quickstart synthesizer. Backend (`yaml_rules_io`,
+codecs, `aclFromTunYaml`, native) unchanged.
+
+## II.16 Risks / open points
+
+- **Reverse-mapping fidelity:** the bridge must distinguish app-generated artifacts from
+  hand-authored YAML so a power user's manual rules are never misread as a preset and clobbered.
+  Marker-naming + treating unrecognized shapes as "Custom / Advanced" is the guard; the
+  round-trip test on the reference profile is the gate.
+- **URL ingestion ambiguity:** a pasted URL may be a server-subscription (`proxy-providers`) or a
+  rule-list (`rule-providers`). Resolved by section (Servers vs Lists) + content auto-detection;
+  never ask the user to choose a mihomo container.
+- **List behavior/format auto-detect:** sniff `mrs`/`text`/`yaml` and domain-vs-ipcidr on fetch;
+  a single human fallback question ("domains or IP addresses?"), never the raw tokens.
+- **First-match ordering:** generated/edited rules must keep correct precedence (ads REJECT before
+  domestic DIRECT before region-blocked VPN before the default); the compiler owns ordering, the
+  user never reorders raw.
+- **Catalog drift + localization:** public set URLs/names can move and must be localized; the
+  Catalog is versioned in-app, refreshed only after a tunnel exists, never fetched on the blocked
+  cold path.
+- **GEOIP on from-zero IR/CN:** the "by country" List kind needs geoip data; default it off for
+  from-zero non-RU envelopes to avoid a geo-DB fetch on a blocked network (consistent with Part I).
+- **Subscription refresh:** model edits must survive `Profile.update()` so a sub refresh does not
+  drop generated Lists/Scenarios (the Part I reapply path is the hook).
+- **Unified-mechanism drift:** the Part I synthesizer must be refactored ONTO the shared model +
+  writer (II.9), not kept as a parallel path; a test that a from-zero seed and an equivalent edit
+  produce the same shapes is the guard.
+- **UX content cost:** new themed StarBorder illustrations (List / Scenario / Catalog) and
+  essentially all-new strings localized into 4 locales are real content work, not just code.
+
+## II.17 Links / external grounding
+
+- MetaCubeX `meta-rules-dat` (geosite/geoip `.mrs` sets) — the Catalog's backing data.
+- `runetfreedom/russia-blocked-geosite` — the RKN blocklist (a "by URL" List in the reference).
+- Official mihomo wiki — proxy-providers content formats, rule-providers `behavior`/`format`,
+  `sub-rules`, per-app `PROCESS-NAME` routing.
+- Reference profile doctrine (whitelist + browser smart-split + ad-block + fail-closed) — from a
+  real in-use mihomo mobile config; only public rule sets are named here, no private endpoints.
+
+## II.18 Provenance
+
+Part II is grounded in (1) a 7-reader multi-agent map (2026-06-29) of every profile-settings
+editor in the recovered branch — app-routing, proxy-groups, the rules editor, sub-rules +
+providers, the Override overlay, the hub / navigation / raw-YAML escape hatches, and the
+persistence/apply backbone, each returning a capability map (edited YAML keys, current UX,
+YAML-leakage points, strengths, redesign gaps, zero-YAML reuse verdict); and (2) a full read of a
+real in-use power-user mobile profile, which validated the object model and forced the four
+List-kinds, the URL-ambiguity split, and the Server-topology boundary; and (3) a 2-reader
+design-system + UX map (2026-06-29) of FlClash's Material 3 tokens, reusable widget library, and
+interaction / state / motion conventions, which grounds the UI/UX section (II.13). The reference RU
+profile doctrine was taken from that config; only public rule sets are named.

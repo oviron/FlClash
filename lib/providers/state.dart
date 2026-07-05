@@ -117,7 +117,10 @@ VpnState vpnState(Ref ref) {
   final stack = ref.watch(
     patchClashConfigProvider.select((state) => state.tun.stack),
   );
-  return VpnState(stack: stack, vpnProps: vpnProps);
+  final captureAll = ref.watch(
+    patchClashConfigProvider.select((state) => state.mode == Mode.global),
+  );
+  return VpnState(stack: stack, vpnProps: vpnProps, captureAll: captureAll);
 }
 
 @riverpod
@@ -630,6 +633,12 @@ class AccessControlState extends _$AccessControlState
 
 @riverpod
 Future<AccessControlProps> effectiveAccessControl(Ref ref) async {
+  // Global mode captures every app: a default (enable:false) ACL disables the
+  // per-app include/exclude filter so nothing is left off the tunnel.
+  if (ref.watch(patchClashConfigProvider.select((state) => state.mode)) ==
+      Mode.global) {
+    return const AccessControlProps();
+  }
   final guiAcl = ref.watch(
     vpnSettingProvider.select((state) => state.accessControlProps),
   );

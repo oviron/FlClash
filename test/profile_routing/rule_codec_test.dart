@@ -18,6 +18,9 @@ void main() {
       'OR,((NETWORK,UDP),(DOMAIN,a.com)),Proxy',
       'NOT,((DOMAIN,example.com)),Proxy',
       'SUB-RULE,(NETWORK,UDP),sub-name',
+      'SUB-RULE,(DOMAIN-SUFFIX,ya.ru),browser-route',
+      'SUB-RULE,(GEOIP,RU),browser-route',
+      'SUB-RULE,(RULE-SET,ads),browser-route',
     ];
     for (final line in corpus) {
       test('"$line"', () {
@@ -52,9 +55,23 @@ void main() {
       );
     });
 
-    test('non-PROCESS-NAME clause stays Passthrough', () {
-      final r = RoutingRule.parse('SUB-RULE,(NETWORK,UDP),sub-name');
-      expect(r, isA<PassthroughRule>());
+    test('non-PROCESS-NAME single clause parses as SubRuleRoute', () {
+      final r = RoutingRule.parse(
+        'SUB-RULE,(DOMAIN-SUFFIX,ya.ru),browser-route',
+      );
+      expect(r, isA<SubRuleRoute>());
+      r as SubRuleRoute;
+      expect(r.action, RuleAction.DOMAIN_SUFFIX);
+      expect(r.params, 'ya.ru');
+      expect(r.subRuleName, 'browser-route');
+      expect(r.serialize(), 'SUB-RULE,(DOMAIN-SUFFIX,ya.ru),browser-route');
+    });
+
+    test('a RULE-SET sub-rule clause parses as SubRuleRoute', () {
+      final r =
+          RoutingRule.parse('SUB-RULE,(RULE-SET,ads),route') as SubRuleRoute;
+      expect(r.action, RuleAction.RULE_SET);
+      expect(r.params, 'ads');
     });
 
     test('multi-clause AND payload stays Passthrough', () {
@@ -69,6 +86,40 @@ void main() {
       final r = RoutingRule.parse(line);
       expect(r, isA<PassthroughRule>());
       expect(r.serialize(), line);
+    });
+  });
+
+  group('wildcard matchers are typed (not Passthrough)', () {
+    test('DOMAIN-WILDCARD parses as TypedRule, not app-routing', () {
+      final r = RoutingRule.parse('DOMAIN-WILDCARD,*.example.com,DIRECT');
+      expect(r, isA<TypedRule>());
+      r as TypedRule;
+      expect(r.action, RuleAction.DOMAIN_WILDCARD);
+      expect(r.value, '*.example.com');
+      expect(r.target, 'DIRECT');
+      expect(r.isAppRouting, false);
+      expect(r.serialize(), 'DOMAIN-WILDCARD,*.example.com,DIRECT');
+    });
+
+    test('PROCESS-NAME-WILDCARD is a typed app-routing rule', () {
+      final r = RoutingRule.parse('PROCESS-NAME-WILDCARD,com.foo.*,Proxy');
+      expect(r, isA<TypedRule>());
+      r as TypedRule;
+      expect(r.action, RuleAction.PROCESS_NAME_WILDCARD);
+      expect(r.value, 'com.foo.*');
+      expect(r.isAppRouting, true);
+      expect(r.serialize(), 'PROCESS-NAME-WILDCARD,com.foo.*,Proxy');
+    });
+
+    test('PROCESS-PATH-WILDCARD is a typed app-routing rule', () {
+      final r = RoutingRule.parse(
+        'PROCESS-PATH-WILDCARD,/data/*/base.apk,DIRECT',
+      );
+      expect(r, isA<TypedRule>());
+      r as TypedRule;
+      expect(r.action, RuleAction.PROCESS_PATH_WILDCARD);
+      expect(r.isAppRouting, true);
+      expect(r.serialize(), 'PROCESS-PATH-WILDCARD,/data/*/base.apk,DIRECT');
     });
   });
 
@@ -116,7 +167,7 @@ void main() {
     expect(r.serialize(), line);
   });
 
-  test('nested logical, bad NOT arity, or SUB-RULE stay Passthrough', () {
+  test('nested logical or bad NOT arity stay Passthrough', () {
     expect(
       RoutingRule.parse('AND,((AND,((DOMAIN,a))),(NETWORK,UDP)),X'),
       isA<PassthroughRule>(),
@@ -126,7 +177,7 @@ void main() {
       isA<PassthroughRule>(),
     );
     expect(
-      RoutingRule.parse('SUB-RULE,(NETWORK,UDP),s'),
+      RoutingRule.parse('SUB-RULE,((DOMAIN,a),(NETWORK,UDP)),s'),
       isA<PassthroughRule>(),
     );
   });
@@ -186,26 +237,4 @@ void main() {
     const lines = ['PROCESS-NAME,a,X', 'AND,((DOMAIN,b)),Y', 'MATCH,Z'];
     expect(serializeRoutingRules(parseRoutingRules(lines)), lines);
   });
-
-  test(
-    'editableRuleActions excludes forms that need nested/special syntax',
-    () {
-      // The typed editor authors a flat TYPE,value,target; logical and special
-      // actions cannot be expressed that way and must not be offered.
-      for (final a in const [
-        RuleAction.AND,
-        RuleAction.OR,
-        RuleAction.NOT,
-        RuleAction.MATCH,
-        RuleAction.SUB_RULE,
-      ]) {
-        expect(editableRuleActions, isNot(contains(a)), reason: a.value);
-      }
-      expect(editableRuleActions, contains(RuleAction.PROCESS_NAME));
-      expect(editableRuleActions, contains(RuleAction.UID));
-      expect(editableRuleActions, contains(RuleAction.DOMAIN_SUFFIX));
-      // RULE-SET is flat, so it is offered (common inside sub-rules).
-      expect(editableRuleActions, contains(RuleAction.RULE_SET));
-    },
-  );
 }

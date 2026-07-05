@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fl_clash/common/yaml.dart';
+import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
 import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -43,7 +45,7 @@ void main() {
   });
 
   group('synthesizeConfig', () {
-    test('wraps proxies into a complete self-contained config', () {
+    test('wraps proxies into the node envelope (topology only)', () {
       final cfg = synthesizeConfig([
         {'name': 'n1', 'type': 'vless', 'server': '1.2.3.4', 'port': 443},
       ]);
@@ -55,9 +57,25 @@ void main() {
       expect(groups.first['type'], 'url-test');
       expect(groups.first['proxies'], ['n1']);
 
-      expect(cfg['rules'], ['MATCH,PROXY']);
+      // Routing is added by the model writer, not assembled here.
+      expect(cfg.containsKey('rules'), false);
       // No dns block: rely on the app's hardened model defaults.
       expect(cfg.containsKey('dns'), false);
+    });
+
+    test('applyQuickStartRouting adds the full-tunnel rule via the writer', () {
+      final envelope = yaml.encode(
+        synthesizeConfig([
+          {'name': 'n1', 'type': 'vless', 'server': '1.2.3.4', 'port': 443},
+        ]),
+      );
+      final full = applyQuickStartRouting(envelope);
+      expect(ProfileRulesDocument(full).rules.map((r) => r.serialize()), [
+        'MATCH,PROXY',
+      ]);
+      // The envelope's nodes and exit group survive untouched.
+      expect(full, contains('n1'));
+      expect(ProfileRulesDocument(full).proxyGroups.single.name, 'PROXY');
     });
 
     test('assigns unique non-empty names', () {

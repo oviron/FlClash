@@ -69,13 +69,25 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m23(n) => "${n} 秒ごと";
 
-  static String m24(count) => "${count} 項目が選択されています";
+  static String m24(count) => "${count} 件のルール";
 
-  static String m25(count) => "${count} 個のルール";
+  static String m25(source) => "${source} 経由";
 
-  static String m26(label) => "${label}はURLである必要があります";
+  static String m26(count) => "${count} 件のリスト";
 
-  static String m27(count) => "${count}年前";
+  static String m27(count) => "${count} 件のシナリオ";
+
+  static String m28(count) => "${count} 件のルール";
+
+  static String m29(count) => "${count} サーバー";
+
+  static String m30(count) => "${count} 項目が選択されています";
+
+  static String m31(count) => "${count} 個のルール";
+
+  static String m32(label) => "${label}はURLである必要があります";
+
+  static String m33(count) => "${count}年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -846,7 +858,218 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("設定を使用"),
     "routing": MessageLookupByLibrary.simpleMessage("ルーティング"),
+    "routingAddCondition": MessageLookupByLibrary.simpleMessage("条件を追加"),
+    "routingAddList": MessageLookupByLibrary.simpleMessage("リストを追加"),
+    "routingAddRule": MessageLookupByLibrary.simpleMessage("ルールを追加"),
+    "routingAddServer": MessageLookupByLibrary.simpleMessage("サーバーを追加"),
+    "routingAdvanced": MessageLookupByLibrary.simpleMessage("詳細設定"),
+    "routingAdvancedEditors": MessageLookupByLibrary.simpleMessage("上級者向けエディタ"),
+    "routingAdvancedKeys": MessageLookupByLibrary.simpleMessage("詳細設定キー"),
+    "routingAdvancedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "グループ、サブルール、生ルール、YAML",
+    ),
+    "routingAppBypass": MessageLookupByLibrary.simpleMessage("VPN を回避"),
+    "routingApplyFailed": MessageLookupByLibrary.simpleMessage("変更を適用できませんでした"),
+    "routingApps": MessageLookupByLibrary.simpleMessage("アプリ"),
+    "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(
+      "新規・未設定アプリのデフォルト:",
+    ),
+    "routingAppsRuleBlacklist": MessageLookupByLibrary.simpleMessage(
+      "すべてのアプリが VPN を通ります。下で指定したものだけが VPN を回避します。新規アプリは既定で VPN を通るため、銀行や行政アプリは手動で回避に設定してください。",
+    ),
+    "routingAppsRuleWhitelist": MessageLookupByLibrary.simpleMessage(
+      "下のリストのアプリだけが VPN を通ります。それ以外（新規アプリ含む）は VPN を通らず、VPN を認識しません。",
+    ),
+    "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage("変更済み"),
+    "routingAppsSectionRest": MessageLookupByLibrary.simpleMessage("その他 · 既定"),
+    "routingAppsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "どのアプリがVPNをどう使うか",
+    ),
+    "routingBehaviorClassical": MessageLookupByLibrary.simpleMessage("混合ルール"),
+    "routingBehaviorDomain": MessageLookupByLibrary.simpleMessage("ドメイン"),
+    "routingBehaviorIpcidr": MessageLookupByLibrary.simpleMessage("IP 範囲"),
+    "routingBlock": MessageLookupByLibrary.simpleMessage("ブロック"),
+    "routingBuild": MessageLookupByLibrary.simpleMessage("構成"),
+    "routingCheckedTopToBottom": MessageLookupByLibrary.simpleMessage(
+      "上から順に評価",
+    ),
+    "routingConditions": MessageLookupByLibrary.simpleMessage("条件"),
+    "routingConnection": MessageLookupByLibrary.simpleMessage("接続"),
+    "routingConstructor": MessageLookupByLibrary.simpleMessage("ルーティング"),
+    "routingCountryOther": MessageLookupByLibrary.simpleMessage("その他のコード"),
+    "routingCountryOtherHint": MessageLookupByLibrary.simpleMessage(
+      "ISO コードまたは geo タグ (例: private)",
+    ),
+    "routingCreateGroup": MessageLookupByLibrary.simpleMessage("グループを作成"),
+    "routingEditGroup": MessageLookupByLibrary.simpleMessage("グループを編集"),
+    "routingEditProxy": MessageLookupByLibrary.simpleMessage("サーバーを編集"),
+    "routingEverythingElse": MessageLookupByLibrary.simpleMessage("その他すべて"),
+    "routingGlobalRules": MessageLookupByLibrary.simpleMessage("グローバルルール"),
+    "routingGlobalRulesCount": m24,
+    "routingGroupAuto": MessageLookupByLibrary.simpleMessage("自動（最速）"),
+    "routingGroupBehavior": MessageLookupByLibrary.simpleMessage("モード"),
+    "routingGroupFailover": MessageLookupByLibrary.simpleMessage("フェイルオーバー"),
+    "routingGroupFilter": MessageLookupByLibrary.simpleMessage("フィルター（正規表現）"),
+    "routingGroupFilterHint": MessageLookupByLibrary.simpleMessage(
+      "例: main|premium",
+    ),
+    "routingGroupHidden": MessageLookupByLibrary.simpleMessage("非表示"),
+    "routingGroupInterval": MessageLookupByLibrary.simpleMessage("テスト間隔（秒）"),
+    "routingGroupLazy": MessageLookupByLibrary.simpleMessage("遅延テスト"),
+    "routingGroupManual": MessageLookupByLibrary.simpleMessage("手動選択"),
+    "routingGroupNameHint": MessageLookupByLibrary.simpleMessage("グループ名"),
+    "routingGroupSource": MessageLookupByLibrary.simpleMessage("ソース"),
+    "routingGroupSourceServers": MessageLookupByLibrary.simpleMessage(
+      "サーバーを選択",
+    ),
+    "routingGroupSourceSubscription": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションから",
+    ),
+    "routingGroupTestUrl": MessageLookupByLibrary.simpleMessage("ヘルスチェック URL"),
+    "routingGroupTolerance": MessageLookupByLibrary.simpleMessage("許容差 (ms)"),
+    "routingGroupVia": m25,
+    "routingGroups": MessageLookupByLibrary.simpleMessage("グループ"),
+    "routingGroupsSubtitle": MessageLookupByLibrary.simpleMessage("サーバーの選び方"),
+    "routingImportFailed": MessageLookupByLibrary.simpleMessage("リンクを読めませんでした"),
+    "routingListBehavior": MessageLookupByLibrary.simpleMessage("マッチ種別"),
+    "routingListByCountry": MessageLookupByLibrary.simpleMessage("国別"),
+    "routingListCount": m26,
+    "routingListFromLink": MessageLookupByLibrary.simpleMessage("カスタムリンク"),
+    "routingListName": MessageLookupByLibrary.simpleMessage("リスト名"),
+    "routingListPasted": MessageLookupByLibrary.simpleMessage("貼り付けたドメイン"),
+    "routingLists": MessageLookupByLibrary.simpleMessage("リスト"),
+    "routingLogicAll": MessageLookupByLibrary.simpleMessage("すべて"),
+    "routingLogicAny": MessageLookupByLibrary.simpleMessage("いずれか"),
+    "routingLogicNone": MessageLookupByLibrary.simpleMessage("いずれも該当しない"),
+    "routingLogicOperator": MessageLookupByLibrary.simpleMessage("マッチ条件"),
+    "routingMatchValueHint": MessageLookupByLibrary.simpleMessage(
+      "ドメイン、IP 範囲、国、アプリ",
+    ),
+    "routingMatcherApp": MessageLookupByLibrary.simpleMessage("アプリ"),
+    "routingMatcherAppPath": MessageLookupByLibrary.simpleMessage("アプリのパス"),
+    "routingMatcherAppPathRegex": MessageLookupByLibrary.simpleMessage(
+      "アプリのパス (正規表現)",
+    ),
+    "routingMatcherAppPathWildcard": MessageLookupByLibrary.simpleMessage(
+      "アプリのパス (ワイルドカード)",
+    ),
+    "routingMatcherAppRegex": MessageLookupByLibrary.simpleMessage(
+      "アプリ名 (正規表現)",
+    ),
+    "routingMatcherAppWildcard": MessageLookupByLibrary.simpleMessage(
+      "アプリ名 (ワイルドカード)",
+    ),
+    "routingMatcherAsn": MessageLookupByLibrary.simpleMessage(
+      "ネットワーク事業者 (ASN)",
+    ),
+    "routingMatcherCatApp": MessageLookupByLibrary.simpleMessage("アプリ / プロセス"),
+    "routingMatcherCatConnection": MessageLookupByLibrary.simpleMessage("接続"),
+    "routingMatcherCatDestIp": MessageLookupByLibrary.simpleMessage("宛先 IP"),
+    "routingMatcherCatDomain": MessageLookupByLibrary.simpleMessage(
+      "ドメイン / サイト",
+    ),
+    "routingMatcherCatSource": MessageLookupByLibrary.simpleMessage("送信元"),
+    "routingMatcherDomain": MessageLookupByLibrary.simpleMessage("ドメイン"),
+    "routingMatcherDomainKeyword": MessageLookupByLibrary.simpleMessage(
+      "ドメインキーワード",
+    ),
+    "routingMatcherDomainRegex": MessageLookupByLibrary.simpleMessage(
+      "ドメイン (正規表現)",
+    ),
+    "routingMatcherDomainSuffix": MessageLookupByLibrary.simpleMessage(
+      "ドメインサフィックス",
+    ),
+    "routingMatcherDomainWildcard": MessageLookupByLibrary.simpleMessage(
+      "ドメイン (ワイルドカード)",
+    ),
+    "routingMatcherDstPort": MessageLookupByLibrary.simpleMessage("宛先ポート"),
+    "routingMatcherGeoip": MessageLookupByLibrary.simpleMessage("国 (GeoIP)"),
+    "routingMatcherGeosite": MessageLookupByLibrary.simpleMessage("地域カテゴリ"),
+    "routingMatcherIp": MessageLookupByLibrary.simpleMessage("IP範囲"),
+    "routingMatcherIpSuffix": MessageLookupByLibrary.simpleMessage("IP サフィックス"),
+    "routingMatcherIpV6": MessageLookupByLibrary.simpleMessage("IP 範囲 (IPv6)"),
+    "routingMatcherNetwork": MessageLookupByLibrary.simpleMessage(
+      "ネットワーク（tcp/udp）",
+    ),
+    "routingMatcherSrcAsn": MessageLookupByLibrary.simpleMessage("送信元 ASN"),
+    "routingMatcherSrcGeoip": MessageLookupByLibrary.simpleMessage("送信元の国"),
+    "routingMatcherSrcIp": MessageLookupByLibrary.simpleMessage("送信元 IP 範囲"),
+    "routingMatcherSrcIpSuffix": MessageLookupByLibrary.simpleMessage(
+      "送信元 IP サフィックス",
+    ),
+    "routingMatcherSrcPort": MessageLookupByLibrary.simpleMessage("送信元ポート"),
+    "routingMatcherType": MessageLookupByLibrary.simpleMessage("マッチ方法"),
+    "routingMatcherUid": MessageLookupByLibrary.simpleMessage("ユーザー ID (UID)"),
+    "routingModeSwitchTitle": MessageLookupByLibrary.simpleMessage(
+      "モードを切り替えますか？",
+    ),
+    "routingModeSwitchToBypassBody": MessageLookupByLibrary.simpleMessage(
+      "切り替え後、指定したアプリだけが VPN を通り、それ以外は回避します。接続が一瞬切れます。続けますか？",
+    ),
+    "routingModeSwitchToVpnBody": MessageLookupByLibrary.simpleMessage(
+      "切り替え後、未設定の新規アプリ（回避に設定していない銀行・行政アプリを含む）は VPN を通ります。接続が一瞬切れます。続けますか？",
+    ),
+    "routingNewScenario": MessageLookupByLibrary.simpleMessage("新しいシナリオ"),
+    "routingNoGroups": MessageLookupByLibrary.simpleMessage("グループがありません"),
+    "routingNoLists": MessageLookupByLibrary.simpleMessage("リストはまだありません"),
+    "routingNoResolveOff": MessageLookupByLibrary.simpleMessage("先にドメインを解決"),
+    "routingNoResolveOffDesc": MessageLookupByLibrary.simpleMessage(
+      "照合前に IP を解決",
+    ),
+    "routingNoResolveOn": MessageLookupByLibrary.simpleMessage("IP のみ照合"),
+    "routingNoResolveOnDesc": MessageLookupByLibrary.simpleMessage(
+      "ドメインを解決しない (no-resolve)",
+    ),
+    "routingNoResolveTitle": MessageLookupByLibrary.simpleMessage("DNS 解決"),
+    "routingNoScenarios": MessageLookupByLibrary.simpleMessage("シナリオはまだありません"),
+    "routingNoServers": MessageLookupByLibrary.simpleMessage("サーバーがありません"),
+    "routingPasteHint": MessageLookupByLibrary.simpleMessage("1行に1ドメイン"),
+    "routingPickList": MessageLookupByLibrary.simpleMessage("リストを選択"),
+    "routingProxies": MessageLookupByLibrary.simpleMessage("プロキシ"),
+    "routingProxiesSubtitle": MessageLookupByLibrary.simpleMessage(
+      "サーバーとサブスクリプション",
+    ),
+    "routingProxyNested": MessageLookupByLibrary.simpleMessage(
+      "以下のネスト項目はそのまま保持されます。raw YAML で編集してください。",
+    ),
+    "routingRawGroupHint": MessageLookupByLibrary.simpleMessage(
+      "この高度なグループは YAML で編集してください",
+    ),
+    "routingRawYaml": MessageLookupByLibrary.simpleMessage("YAML を編集"),
+    "routingRawYamlSubtitle": MessageLookupByLibrary.simpleMessage(
+      "DNS、sniffer などの低レベル設定",
+    ),
+    "routingRename": MessageLookupByLibrary.simpleMessage("名前を変更"),
+    "routingRuleByList": MessageLookupByLibrary.simpleMessage("リストで"),
+    "routingRuleByMatcher": MessageLookupByLibrary.simpleMessage("条件で"),
+    "routingRuleCombined": MessageLookupByLibrary.simpleMessage("複合条件"),
     "routingRules": MessageLookupByLibrary.simpleMessage("ルーティングルール"),
+    "routingScenarioCount": m27,
+    "routingScenarioName": MessageLookupByLibrary.simpleMessage("シナリオ名"),
+    "routingScenarioRuleCount": m28,
+    "routingScenarios": MessageLookupByLibrary.simpleMessage("シナリオ"),
+    "routingSearchHint": MessageLookupByLibrary.simpleMessage("検索"),
+    "routingSendTo": MessageLookupByLibrary.simpleMessage("送信先"),
+    "routingServerAdded": MessageLookupByLibrary.simpleMessage("サーバーを追加しました"),
+    "routingServerCount": m29,
+    "routingServerHint": MessageLookupByLibrary.simpleMessage(
+      "リンクかサブスクリプションURLを貼り付け",
+    ),
+    "routingServers": MessageLookupByLibrary.simpleMessage("サーバー"),
+    "routingServersSubtitle": MessageLookupByLibrary.simpleMessage("トラフィックの出口"),
+    "routingSetAsExit": MessageLookupByLibrary.simpleMessage("アクティブな出口にする"),
+    "routingSourceCountry": MessageLookupByLibrary.simpleMessage("国から"),
+    "routingSourceLink": MessageLookupByLibrary.simpleMessage("リンクから"),
+    "routingSourcePaste": MessageLookupByLibrary.simpleMessage("ドメインを貼り付け"),
+    "routingSubscription": MessageLookupByLibrary.simpleMessage("サブスクリプション"),
+    "routingSubscriptionAdded": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションを追加しました",
+    ),
+    "routingSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプション URL",
+    ),
+    "routingViaVpn": MessageLookupByLibrary.simpleMessage("VPN 経由"),
+    "routingWhatToBlock": MessageLookupByLibrary.simpleMessage("ブロック対象"),
     "ru": MessageLookupByLibrary.simpleMessage("ロシア語"),
     "rule": MessageLookupByLibrary.simpleMessage("ルール"),
     "ruleAddClause": MessageLookupByLibrary.simpleMessage("条件を追加"),
@@ -876,7 +1099,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
     "selectAll": MessageLookupByLibrary.simpleMessage("すべて選択"),
     "selected": MessageLookupByLibrary.simpleMessage("選択済み"),
-    "selectedCountTitle": m24,
+    "selectedCountTitle": m30,
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "show": MessageLookupByLibrary.simpleMessage("表示"),
     "shrink": MessageLookupByLibrary.simpleMessage("縮小"),
@@ -909,7 +1132,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("新しいサブルール"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("サブルールの名前を変更"),
-    "subRuleRuleCount": m25,
+    "subRuleRuleCount": m31,
     "subRules": MessageLookupByLibrary.simpleMessage("サブルール"),
     "submit": MessageLookupByLibrary.simpleMessage("送信"),
     "sync": MessageLookupByLibrary.simpleMessage("同期"),
@@ -952,7 +1175,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL経由でプロファイルを取得"),
-    "urlTip": m26,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
     "userInterface": MessageLookupByLibrary.simpleMessage("ユーザーインターフェース"),
@@ -971,7 +1194,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m27,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
     "zoom": MessageLookupByLibrary.simpleMessage("ズーム"),
   };

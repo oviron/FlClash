@@ -135,4 +135,22 @@ void main() {
   test('unparseable document yields empty rules', () {
     expect(ProfileRulesDocument(':\n  bad: [').rules, isEmpty);
   });
+
+  // yaml_edit escapes `/` as `\/` (YAML 1.1 JSON-compat) in double-quoted
+  // scalars; mihomo's Go yaml.v3 rejects `\/` ("unknown escape character").
+  // Dart's parser accepts it, so this asserts the raw string, not a re-parse.
+  test('output never emits an invalid \\/ escape (mihomo yaml.v3)', () {
+    const doc = 'rules:\n  - MATCH,DIRECT\n';
+    final out = ProfileRulesDocument(doc).withRules(const [
+      TypedRule(
+        action: RuleAction.IP_CIDR,
+        value: '45.142.164.71/32',
+        target: 'DIRECT',
+        noResolve: true,
+      ),
+      TypedRule(action: RuleAction.MATCH, value: '', target: 'DIRECT'),
+    ]);
+    expect(out.contains(r'\/'), isFalse, reason: 'invalid YAML escape: $out');
+    expect(out, contains('45.142.164.71/32'));
+  });
 }

@@ -9,7 +9,6 @@ import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/profiles/overwrite.dart';
 import 'package:fl_clash/views/profiles/profile_card_state.dart';
-import 'package:fl_clash/views/profiles/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -279,7 +278,7 @@ class ProfileItem extends StatelessWidget {
     return [
       const SizedBox(height: 8),
       updated,
-      _ProfileStatLine(profileId: profile.id, showProvidersLink: true),
+      _ProfileStatLine(profileId: profile.id),
     ];
   }
 
@@ -290,7 +289,7 @@ class ProfileItem extends StatelessWidget {
         profile.lastUpdateDate?.lastUpdateTimeDesc ?? '',
         style: context.textTheme.labelMedium?.toLight,
       ),
-      _ProfileStatLine(profileId: profile.id, showProvidersLink: false),
+      _ProfileStatLine(profileId: profile.id),
     ];
   }
 
@@ -460,16 +459,11 @@ class ProfileItem extends StatelessWidget {
   }
 }
 
-/// Group/node stats for a card without a profile-level quota; the providers
-/// link (URL profiles) jumps to where per-provider limits live.
+/// Group/node stats for a card without a profile-level quota.
 class _ProfileStatLine extends StatefulWidget {
   final int profileId;
-  final bool showProvidersLink;
 
-  const _ProfileStatLine({
-    required this.profileId,
-    required this.showProvidersLink,
-  });
+  const _ProfileStatLine({required this.profileId});
 
   @override
   State<_ProfileStatLine> createState() => _ProfileStatLineState();
@@ -487,17 +481,6 @@ class _ProfileStatLineState extends State<_ProfileStatLine> {
     if (old.profileId != widget.profileId) {
       _stats = appController.readProfileStats(widget.profileId);
     }
-  }
-
-  void _openProviders(BuildContext context) {
-    showExtend(
-      context,
-      builder: (_, type) => AdaptiveSheetScaffold(
-        type: type,
-        title: appLocalizations.providers,
-        body: ProfileProvidersView(profileId: widget.profileId),
-      ),
-    );
   }
 
   @override
@@ -540,18 +523,6 @@ class _ProfileStatLineState extends State<_ProfileStatLine> {
                   ),
                 ],
               ),
-              if (widget.showProvidersLink && stats.providers > 0) ...[
-                const SizedBox(height: 8),
-                CommonChip(
-                  type: ChipType.tonal,
-                  tonalColor: context.colorScheme.primary,
-                  avatar: const Icon(Icons.cloud_sync_outlined, size: 15),
-                  label: appLocalizations.profileProvidersLimits(
-                    stats.providers,
-                  ),
-                  onPressed: () => _openProviders(context),
-                ),
-              ],
             ],
           ),
         );

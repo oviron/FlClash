@@ -77,13 +77,25 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m23(n) => "каждые ${n} с";
 
-  static String m24(count) => "Выбрано ${count} элементов";
+  static String m24(count) => "${count} правил";
 
-  static String m25(count) => "${count} правил";
+  static String m25(source) => "через ${source}";
 
-  static String m26(label) => "${label} должен быть URL";
+  static String m26(count) => "${count} списков";
 
-  static String m27(count) =>
+  static String m27(count) => "${count} сценариев";
+
+  static String m28(count) => "${count} правил";
+
+  static String m29(count) => "Серверов: ${count}";
+
+  static String m30(count) => "Выбрано ${count} элементов";
+
+  static String m31(count) => "${count} правил";
+
+  static String m32(label) => "${label} должен быть URL";
+
+  static String m33(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -613,30 +625,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "libNeedsUpdate": MessageLookupByLibrary.simpleMessage(
       "Требуется обновление приложения",
     ),
-    "quickStartPasteKey": MessageLookupByLibrary.simpleMessage("Вставьте ключ"),
-    "quickStartPasteHint": MessageLookupByLibrary.simpleMessage(
-      "Вставьте ссылку, QR или код от провайдера",
-    ),
-    "quickStartNoServers": MessageLookupByLibrary.simpleMessage(
-      "В том, что вы вставили, серверы не найдены",
-    ),
-    "quickStartImported": MessageLookupByLibrary.simpleMessage("Импортировано"),
-    "quickStartVerifying": MessageLookupByLibrary.simpleMessage(
-      "Проверяем подключение...",
-    ),
-    "quickStartVerified": MessageLookupByLibrary.simpleMessage("проверено"),
-    "quickStartFailedTitle": MessageLookupByLibrary.simpleMessage(
-      "Не удалось выйти в интернет через этот ключ",
-    ),
-    "quickStartFailedBody": MessageLookupByLibrary.simpleMessage(
-      "Ключ подключился, но страницы не открываются.",
-    ),
-    "quickStartTryAgain": MessageLookupByLibrary.simpleMessage(
-      "Попробовать снова",
-    ),
-    "quickStartUseDifferent": MessageLookupByLibrary.simpleMessage(
-      "Другой ключ",
-    ),
     "libRefresh": MessageLookupByLibrary.simpleMessage("Обновить"),
     "libReset": MessageLookupByLibrary.simpleMessage("Сбросить на встроенное"),
     "libSwitchBody": MessageLookupByLibrary.simpleMessage(
@@ -1035,6 +1023,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Сканируйте QR-код для получения профиля",
     ),
+    "quickStartFailedBody": MessageLookupByLibrary.simpleMessage(
+      "Ключ подключился, но страницы не открываются.",
+    ),
+    "quickStartFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "Не удалось выйти в интернет через этот ключ",
+    ),
+    "quickStartImported": MessageLookupByLibrary.simpleMessage("Импортировано"),
+    "quickStartNoServers": MessageLookupByLibrary.simpleMessage(
+      "В том, что вы вставили, серверы не найдены",
+    ),
+    "quickStartPasteHint": MessageLookupByLibrary.simpleMessage(
+      "Вставьте ссылку, QR или код от провайдера",
+    ),
+    "quickStartPasteKey": MessageLookupByLibrary.simpleMessage("Вставьте ключ"),
+    "quickStartTryAgain": MessageLookupByLibrary.simpleMessage(
+      "Попробовать снова",
+    ),
+    "quickStartUseDifferent": MessageLookupByLibrary.simpleMessage(
+      "Другой ключ",
+    ),
+    "quickStartVerified": MessageLookupByLibrary.simpleMessage("проверено"),
+    "quickStartVerifying": MessageLookupByLibrary.simpleMessage(
+      "Проверяем подключение...",
+    ),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Радужные"),
     "recovery": MessageLookupByLibrary.simpleMessage("Восстановление"),
     "recoveryAll": MessageLookupByLibrary.simpleMessage(
@@ -1135,8 +1147,317 @@ class MessageLookup extends MessageLookupByLibrary {
       "Использовать конфигурацию",
     ),
     "routing": MessageLookupByLibrary.simpleMessage("Маршрутизация"),
+    "routingAddCondition": MessageLookupByLibrary.simpleMessage(
+      "Добавить условие",
+    ),
+    "routingAddList": MessageLookupByLibrary.simpleMessage("Добавить список"),
+    "routingAddRule": MessageLookupByLibrary.simpleMessage("Добавить правило"),
+    "routingAddServer": MessageLookupByLibrary.simpleMessage("Добавить сервер"),
+    "routingAdvanced": MessageLookupByLibrary.simpleMessage("Дополнительно"),
+    "routingAdvancedEditors": MessageLookupByLibrary.simpleMessage(
+      "Экспертные редакторы",
+    ),
+    "routingAdvancedKeys": MessageLookupByLibrary.simpleMessage(
+      "Доп. параметры",
+    ),
+    "routingAdvancedSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Группы, суб-правила, правила и YAML",
+    ),
+    "routingAppBypass": MessageLookupByLibrary.simpleMessage("Мимо VPN"),
+    "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
+      "Не удалось применить изменение",
+    ),
+    "routingApps": MessageLookupByLibrary.simpleMessage("Приложения"),
+    "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(
+      "По умолчанию для новых и незаданных приложений:",
+    ),
+    "routingAppsRuleBlacklist": MessageLookupByLibrary.simpleMessage(
+      "Через VPN идут все приложения. Мимо VPN идут только отмеченные ниже. Новые приложения по умолчанию идут через VPN, банк и Госуслуги уводите мимо вручную.",
+    ),
+    "routingAppsRuleWhitelist": MessageLookupByLibrary.simpleMessage(
+      "Через VPN идут только приложения из списка ниже. Все остальные, включая новые, идут мимо VPN и не видят его.",
+    ),
+    "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage(
+      "Изменённые",
+    ),
+    "routingAppsSectionRest": MessageLookupByLibrary.simpleMessage(
+      "Остальные · по умолчанию",
+    ),
+    "routingAppsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Какие приложения идут через VPN и как",
+    ),
+    "routingBehaviorClassical": MessageLookupByLibrary.simpleMessage(
+      "Смешанные правила",
+    ),
+    "routingBehaviorDomain": MessageLookupByLibrary.simpleMessage("Домены"),
+    "routingBehaviorIpcidr": MessageLookupByLibrary.simpleMessage(
+      "Диапазоны IP",
+    ),
+    "routingBlock": MessageLookupByLibrary.simpleMessage("Блокировать"),
+    "routingBuild": MessageLookupByLibrary.simpleMessage("Конструктор"),
+    "routingCheckedTopToBottom": MessageLookupByLibrary.simpleMessage(
+      "Проверяется сверху вниз",
+    ),
+    "routingConditions": MessageLookupByLibrary.simpleMessage("Условия"),
+    "routingConnection": MessageLookupByLibrary.simpleMessage("Подключение"),
+    "routingConstructor": MessageLookupByLibrary.simpleMessage("Маршрутизация"),
+    "routingCountryOther": MessageLookupByLibrary.simpleMessage("Другой код"),
+    "routingCountryOtherHint": MessageLookupByLibrary.simpleMessage(
+      "ISO-код или гео-тег (напр. private)",
+    ),
+    "routingCreateGroup": MessageLookupByLibrary.simpleMessage(
+      "Создать группу",
+    ),
+    "routingEditGroup": MessageLookupByLibrary.simpleMessage(
+      "Редактировать группу",
+    ),
+    "routingEditProxy": MessageLookupByLibrary.simpleMessage(
+      "Редактировать сервер",
+    ),
+    "routingEverythingElse": MessageLookupByLibrary.simpleMessage(
+      "Всё остальное",
+    ),
+    "routingGlobalRules": MessageLookupByLibrary.simpleMessage("Общие правила"),
+    "routingGlobalRulesCount": m24,
+    "routingGroupAuto": MessageLookupByLibrary.simpleMessage(
+      "Авто (быстрейший)",
+    ),
+    "routingGroupBehavior": MessageLookupByLibrary.simpleMessage("Режим"),
+    "routingGroupFailover": MessageLookupByLibrary.simpleMessage("Резерв"),
+    "routingGroupFilter": MessageLookupByLibrary.simpleMessage(
+      "Фильтр (regex)",
+    ),
+    "routingGroupFilterHint": MessageLookupByLibrary.simpleMessage(
+      "напр. main|premium",
+    ),
+    "routingGroupHidden": MessageLookupByLibrary.simpleMessage("Скрытая"),
+    "routingGroupInterval": MessageLookupByLibrary.simpleMessage(
+      "Интервал проверки (сек)",
+    ),
+    "routingGroupLazy": MessageLookupByLibrary.simpleMessage(
+      "Ленивая проверка",
+    ),
+    "routingGroupManual": MessageLookupByLibrary.simpleMessage("Вручную"),
+    "routingGroupNameHint": MessageLookupByLibrary.simpleMessage(
+      "Название группы",
+    ),
+    "routingGroupSource": MessageLookupByLibrary.simpleMessage("Источник"),
+    "routingGroupSourceServers": MessageLookupByLibrary.simpleMessage(
+      "Выбрать серверы",
+    ),
+    "routingGroupSourceSubscription": MessageLookupByLibrary.simpleMessage(
+      "Из подписки",
+    ),
+    "routingGroupTestUrl": MessageLookupByLibrary.simpleMessage("URL проверки"),
+    "routingGroupTolerance": MessageLookupByLibrary.simpleMessage(
+      "Допуск (мс)",
+    ),
+    "routingGroupVia": m25,
+    "routingGroups": MessageLookupByLibrary.simpleMessage("Группы"),
+    "routingGroupsSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Как выбираются серверы",
+    ),
+    "routingImportFailed": MessageLookupByLibrary.simpleMessage(
+      "Не удалось прочитать ссылку",
+    ),
+    "routingListBehavior": MessageLookupByLibrary.simpleMessage(
+      "Тип совпадения",
+    ),
+    "routingListByCountry": MessageLookupByLibrary.simpleMessage("По стране"),
+    "routingListCount": m26,
+    "routingListFromLink": MessageLookupByLibrary.simpleMessage("Своя ссылка"),
+    "routingListName": MessageLookupByLibrary.simpleMessage("Название списка"),
+    "routingListPasted": MessageLookupByLibrary.simpleMessage(
+      "Вставленные домены",
+    ),
+    "routingLists": MessageLookupByLibrary.simpleMessage("Списки"),
+    "routingLogicAll": MessageLookupByLibrary.simpleMessage("Все из"),
+    "routingLogicAny": MessageLookupByLibrary.simpleMessage("Любое из"),
+    "routingLogicNone": MessageLookupByLibrary.simpleMessage("Ни одно из"),
+    "routingLogicOperator": MessageLookupByLibrary.simpleMessage(
+      "Совпадение, когда",
+    ),
+    "routingMatchValueHint": MessageLookupByLibrary.simpleMessage(
+      "домен, IP-диапазон, страна или приложение",
+    ),
+    "routingMatcherApp": MessageLookupByLibrary.simpleMessage("Приложение"),
+    "routingMatcherAppPath": MessageLookupByLibrary.simpleMessage(
+      "Путь приложения",
+    ),
+    "routingMatcherAppPathRegex": MessageLookupByLibrary.simpleMessage(
+      "Путь приложения (regex)",
+    ),
+    "routingMatcherAppPathWildcard": MessageLookupByLibrary.simpleMessage(
+      "Путь приложения (маска)",
+    ),
+    "routingMatcherAppRegex": MessageLookupByLibrary.simpleMessage(
+      "Имя приложения (regex)",
+    ),
+    "routingMatcherAppWildcard": MessageLookupByLibrary.simpleMessage(
+      "Имя приложения (маска)",
+    ),
+    "routingMatcherAsn": MessageLookupByLibrary.simpleMessage(
+      "Оператор сети (ASN)",
+    ),
+    "routingMatcherCatApp": MessageLookupByLibrary.simpleMessage(
+      "Приложение / процесс",
+    ),
+    "routingMatcherCatConnection": MessageLookupByLibrary.simpleMessage(
+      "Соединение",
+    ),
+    "routingMatcherCatDestIp": MessageLookupByLibrary.simpleMessage(
+      "IP назначения",
+    ),
+    "routingMatcherCatDomain": MessageLookupByLibrary.simpleMessage(
+      "Домен / сайт",
+    ),
+    "routingMatcherCatSource": MessageLookupByLibrary.simpleMessage("Источник"),
+    "routingMatcherDomain": MessageLookupByLibrary.simpleMessage("Домен"),
+    "routingMatcherDomainKeyword": MessageLookupByLibrary.simpleMessage(
+      "Ключевое слово домена",
+    ),
+    "routingMatcherDomainRegex": MessageLookupByLibrary.simpleMessage(
+      "Домен (regex)",
+    ),
+    "routingMatcherDomainSuffix": MessageLookupByLibrary.simpleMessage(
+      "Суффикс домена",
+    ),
+    "routingMatcherDomainWildcard": MessageLookupByLibrary.simpleMessage(
+      "Домен (маска)",
+    ),
+    "routingMatcherDstPort": MessageLookupByLibrary.simpleMessage(
+      "Порт назначения",
+    ),
+    "routingMatcherGeoip": MessageLookupByLibrary.simpleMessage(
+      "Страна (GeoIP)",
+    ),
+    "routingMatcherGeosite": MessageLookupByLibrary.simpleMessage(
+      "Гео-категория",
+    ),
+    "routingMatcherIp": MessageLookupByLibrary.simpleMessage("Диапазон IP"),
+    "routingMatcherIpSuffix": MessageLookupByLibrary.simpleMessage(
+      "IP-суффикс",
+    ),
+    "routingMatcherIpV6": MessageLookupByLibrary.simpleMessage(
+      "IP-диапазон (IPv6)",
+    ),
+    "routingMatcherNetwork": MessageLookupByLibrary.simpleMessage(
+      "Сеть (tcp/udp)",
+    ),
+    "routingMatcherSrcAsn": MessageLookupByLibrary.simpleMessage(
+      "ASN источника",
+    ),
+    "routingMatcherSrcGeoip": MessageLookupByLibrary.simpleMessage(
+      "Страна источника",
+    ),
+    "routingMatcherSrcIp": MessageLookupByLibrary.simpleMessage("IP источника"),
+    "routingMatcherSrcIpSuffix": MessageLookupByLibrary.simpleMessage(
+      "IP-суффикс источника",
+    ),
+    "routingMatcherSrcPort": MessageLookupByLibrary.simpleMessage(
+      "Порт источника",
+    ),
+    "routingMatcherType": MessageLookupByLibrary.simpleMessage("Совпадать по"),
+    "routingMatcherUid": MessageLookupByLibrary.simpleMessage(
+      "ID пользователя (UID)",
+    ),
+    "routingModeSwitchTitle": MessageLookupByLibrary.simpleMessage(
+      "Сменить режим?",
+    ),
+    "routingModeSwitchToBypassBody": MessageLookupByLibrary.simpleMessage(
+      "После смены через VPN пойдут только отмеченные приложения, остальные останутся мимо. Соединения прервутся на секунду. Продолжить?",
+    ),
+    "routingModeSwitchToVpnBody": MessageLookupByLibrary.simpleMessage(
+      "После смены новые и неотмеченные приложения, включая банк и Госуслуги, если вы их не увели, пойдут через VPN. Соединения прервутся на секунду. Продолжить?",
+    ),
+    "routingNewScenario": MessageLookupByLibrary.simpleMessage(
+      "Новый сценарий",
+    ),
+    "routingNoGroups": MessageLookupByLibrary.simpleMessage("Пока нет групп"),
+    "routingNoLists": MessageLookupByLibrary.simpleMessage("Пока нет списков"),
+    "routingNoResolveOff": MessageLookupByLibrary.simpleMessage(
+      "Сначала резолвить домены",
+    ),
+    "routingNoResolveOffDesc": MessageLookupByLibrary.simpleMessage(
+      "Определить IP перед сопоставлением",
+    ),
+    "routingNoResolveOn": MessageLookupByLibrary.simpleMessage("Только по IP"),
+    "routingNoResolveOnDesc": MessageLookupByLibrary.simpleMessage(
+      "Не резолвить домены (no-resolve)",
+    ),
+    "routingNoResolveTitle": MessageLookupByLibrary.simpleMessage(
+      "DNS-резолвинг",
+    ),
+    "routingNoScenarios": MessageLookupByLibrary.simpleMessage(
+      "Пока нет сценариев",
+    ),
+    "routingNoServers": MessageLookupByLibrary.simpleMessage(
+      "Пока нет серверов",
+    ),
+    "routingPasteHint": MessageLookupByLibrary.simpleMessage(
+      "По одному домену в строке",
+    ),
+    "routingPickList": MessageLookupByLibrary.simpleMessage("Выберите список"),
+    "routingProxies": MessageLookupByLibrary.simpleMessage("Прокси"),
+    "routingProxiesSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Серверы и подписки",
+    ),
+    "routingProxyNested": MessageLookupByLibrary.simpleMessage(
+      "Вложенные поля ниже сохраняются как есть, правь их в raw YAML.",
+    ),
+    "routingRawGroupHint": MessageLookupByLibrary.simpleMessage(
+      "Это продвинутая группа, правьте её в YAML",
+    ),
+    "routingRawYaml": MessageLookupByLibrary.simpleMessage("Править YAML"),
+    "routingRawYamlSubtitle": MessageLookupByLibrary.simpleMessage(
+      "DNS, sniffer и другие низкоуровневые блоки",
+    ),
+    "routingRename": MessageLookupByLibrary.simpleMessage("Переименовать"),
+    "routingRuleByList": MessageLookupByLibrary.simpleMessage("По списку"),
+    "routingRuleByMatcher": MessageLookupByLibrary.simpleMessage("По условию"),
+    "routingRuleCombined": MessageLookupByLibrary.simpleMessage(
+      "Составное условие",
+    ),
     "routingRules": MessageLookupByLibrary.simpleMessage(
       "Правила маршрутизации",
+    ),
+    "routingScenarioCount": m27,
+    "routingScenarioName": MessageLookupByLibrary.simpleMessage(
+      "Название сценария",
+    ),
+    "routingScenarioRuleCount": m28,
+    "routingScenarios": MessageLookupByLibrary.simpleMessage("Сценарии"),
+    "routingSearchHint": MessageLookupByLibrary.simpleMessage("Поиск"),
+    "routingSendTo": MessageLookupByLibrary.simpleMessage("Отправить в"),
+    "routingServerAdded": MessageLookupByLibrary.simpleMessage(
+      "Сервер добавлен",
+    ),
+    "routingServerCount": m29,
+    "routingServerHint": MessageLookupByLibrary.simpleMessage(
+      "Вставьте ссылку или URL подписки",
+    ),
+    "routingServers": MessageLookupByLibrary.simpleMessage("Серверы"),
+    "routingServersSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Через что выходит трафик",
+    ),
+    "routingSetAsExit": MessageLookupByLibrary.simpleMessage(
+      "Сделать активным выходом",
+    ),
+    "routingSourceCountry": MessageLookupByLibrary.simpleMessage("По стране"),
+    "routingSourceLink": MessageLookupByLibrary.simpleMessage("По ссылке"),
+    "routingSourcePaste": MessageLookupByLibrary.simpleMessage(
+      "Вставить домены",
+    ),
+    "routingSubscription": MessageLookupByLibrary.simpleMessage("Подписка"),
+    "routingSubscriptionAdded": MessageLookupByLibrary.simpleMessage(
+      "Подписка добавлена",
+    ),
+    "routingSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
+      "URL подписки",
+    ),
+    "routingViaVpn": MessageLookupByLibrary.simpleMessage("Через VPN"),
+    "routingWhatToBlock": MessageLookupByLibrary.simpleMessage(
+      "Что блокировать",
     ),
     "ru": MessageLookupByLibrary.simpleMessage("Русский"),
     "rule": MessageLookupByLibrary.simpleMessage("Правило"),
@@ -1171,7 +1492,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "seconds": MessageLookupByLibrary.simpleMessage("Секунд"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать все"),
     "selected": MessageLookupByLibrary.simpleMessage("Выбрано"),
-    "selectedCountTitle": m24,
+    "selectedCountTitle": m30,
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "show": MessageLookupByLibrary.simpleMessage("Показать"),
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
@@ -1210,7 +1531,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subRuleRename": MessageLookupByLibrary.simpleMessage(
       "Переименовать подправило",
     ),
-    "subRuleRuleCount": m25,
+    "subRuleRuleCount": m31,
     "subRules": MessageLookupByLibrary.simpleMessage("Подправила"),
     "submit": MessageLookupByLibrary.simpleMessage("Отправить"),
     "sync": MessageLookupByLibrary.simpleMessage("Синхронизация"),
@@ -1265,7 +1586,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Получить профиль через URL",
     ),
-    "urlTip": m26,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
@@ -1292,7 +1613,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Режим белого списка",
     ),
     "years": MessageLookupByLibrary.simpleMessage("Лет"),
-    "yearsAgo": m27,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
     "zoom": MessageLookupByLibrary.simpleMessage("Масштаб"),
   };

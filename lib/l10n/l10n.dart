@@ -5403,6 +5403,1341 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Routing`
+  String get routingConstructor {
+    return Intl.message(
+      'Routing',
+      name: 'routingConstructor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Build`
+  String get routingBuild {
+    return Intl.message('Build', name: 'routingBuild', desc: '', args: []);
+  }
+
+  /// `Lists`
+  String get routingLists {
+    return Intl.message('Lists', name: 'routingLists', desc: '', args: []);
+  }
+
+  /// `Scenarios`
+  String get routingScenarios {
+    return Intl.message(
+      'Scenarios',
+      name: 'routingScenarios',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apps`
+  String get routingApps {
+    return Intl.message('Apps', name: 'routingApps', desc: '', args: []);
+  }
+
+  /// `Which apps use the VPN and how`
+  String get routingAppsSubtitle {
+    return Intl.message(
+      'Which apps use the VPN and how',
+      name: 'routingAppsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default for new and unset apps:`
+  String get routingAppsCardTitle {
+    return Intl.message(
+      'Default for new and unset apps:',
+      name: 'routingAppsCardTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only apps in the list below go through the VPN. Everything else, including new apps, stays off the VPN and cannot see it.`
+  String get routingAppsRuleWhitelist {
+    return Intl.message(
+      'Only apps in the list below go through the VPN. Everything else, including new apps, stays off the VPN and cannot see it.',
+      name: 'routingAppsRuleWhitelist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All apps go through the VPN. Only the ones marked below bypass it. New apps go through the VPN by default; move banking and government apps off it manually.`
+  String get routingAppsRuleBlacklist {
+    return Intl.message(
+      'All apps go through the VPN. Only the ones marked below bypass it. New apps go through the VPN by default; move banking and government apps off it manually.',
+      name: 'routingAppsRuleBlacklist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Changed`
+  String get routingAppsSectionChanged {
+    return Intl.message(
+      'Changed',
+      name: 'routingAppsSectionChanged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Others · default`
+  String get routingAppsSectionRest {
+    return Intl.message(
+      'Others · default',
+      name: 'routingAppsSectionRest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Switch mode?`
+  String get routingModeSwitchTitle {
+    return Intl.message(
+      'Switch mode?',
+      name: 'routingModeSwitchTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `After the switch, new and unmarked apps, including banking and government apps you haven't moved off, will go through the VPN. Connections drop for a second. Continue?`
+  String get routingModeSwitchToVpnBody {
+    return Intl.message(
+      'After the switch, new and unmarked apps, including banking and government apps you haven\'t moved off, will go through the VPN. Connections drop for a second. Continue?',
+      name: 'routingModeSwitchToVpnBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `After the switch, only apps you mark go through the VPN; everything else stays off it. Connections drop for a second. Continue?`
+  String get routingModeSwitchToBypassBody {
+    return Intl.message(
+      'After the switch, only apps you mark go through the VPN; everything else stays off it. Connections drop for a second. Continue?',
+      name: 'routingModeSwitchToBypassBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What to block`
+  String get routingWhatToBlock {
+    return Intl.message(
+      'What to block',
+      name: 'routingWhatToBlock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't apply the change`
+  String get routingApplyFailed {
+    return Intl.message(
+      'Couldn\'t apply the change',
+      name: 'routingApplyFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Advanced`
+  String get routingAdvanced {
+    return Intl.message(
+      'Advanced',
+      name: 'routingAdvanced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Power-user editors`
+  String get routingAdvancedEditors {
+    return Intl.message(
+      'Power-user editors',
+      name: 'routingAdvancedEditors',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Groups, sub-rules, raw rules and YAML`
+  String get routingAdvancedSubtitle {
+    return Intl.message(
+      'Groups, sub-rules, raw rules and YAML',
+      name: 'routingAdvancedSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Via VPN`
+  String get routingViaVpn {
+    return Intl.message('Via VPN', name: 'routingViaVpn', desc: '', args: []);
+  }
+
+  /// `Block`
+  String get routingBlock {
+    return Intl.message('Block', name: 'routingBlock', desc: '', args: []);
+  }
+
+  /// `{count} lists`
+  String routingListCount(Object count) {
+    return Intl.message(
+      '$count lists',
+      name: 'routingListCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count} scenarios`
+  String routingScenarioCount(Object count) {
+    return Intl.message(
+      '$count scenarios',
+      name: 'routingScenarioCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count} rules`
+  String routingScenarioRuleCount(Object count) {
+    return Intl.message(
+      '$count rules',
+      name: 'routingScenarioRuleCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Add list`
+  String get routingAddList {
+    return Intl.message('Add list', name: 'routingAddList', desc: '', args: []);
+  }
+
+  /// `No lists yet`
+  String get routingNoLists {
+    return Intl.message(
+      'No lists yet',
+      name: 'routingNoLists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By link`
+  String get routingSourceLink {
+    return Intl.message(
+      'By link',
+      name: 'routingSourceLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paste domains`
+  String get routingSourcePaste {
+    return Intl.message(
+      'Paste domains',
+      name: 'routingSourcePaste',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By country`
+  String get routingSourceCountry {
+    return Intl.message(
+      'By country',
+      name: 'routingSourceCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `List name`
+  String get routingListName {
+    return Intl.message(
+      'List name',
+      name: 'routingListName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One domain per line`
+  String get routingPasteHint {
+    return Intl.message(
+      'One domain per line',
+      name: 'routingPasteHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom link`
+  String get routingListFromLink {
+    return Intl.message(
+      'Custom link',
+      name: 'routingListFromLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pasted domains`
+  String get routingListPasted {
+    return Intl.message(
+      'Pasted domains',
+      name: 'routingListPasted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By country`
+  String get routingListByCountry {
+    return Intl.message(
+      'By country',
+      name: 'routingListByCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New scenario`
+  String get routingNewScenario {
+    return Intl.message(
+      'New scenario',
+      name: 'routingNewScenario',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No scenarios yet`
+  String get routingNoScenarios {
+    return Intl.message(
+      'No scenarios yet',
+      name: 'routingNoScenarios',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scenario name`
+  String get routingScenarioName {
+    return Intl.message(
+      'Scenario name',
+      name: 'routingScenarioName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add rule`
+  String get routingAddRule {
+    return Intl.message('Add rule', name: 'routingAddRule', desc: '', args: []);
+  }
+
+  /// `Choose a list`
+  String get routingPickList {
+    return Intl.message(
+      'Choose a list',
+      name: 'routingPickList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send to`
+  String get routingSendTo {
+    return Intl.message('Send to', name: 'routingSendTo', desc: '', args: []);
+  }
+
+  /// `Everything else`
+  String get routingEverythingElse {
+    return Intl.message(
+      'Everything else',
+      name: 'routingEverythingElse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checked top to bottom`
+  String get routingCheckedTopToBottom {
+    return Intl.message(
+      'Checked top to bottom',
+      name: 'routingCheckedTopToBottom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bypass VPN`
+  String get routingAppBypass {
+    return Intl.message(
+      'Bypass VPN',
+      name: 'routingAppBypass',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Servers`
+  String get routingServers {
+    return Intl.message('Servers', name: 'routingServers', desc: '', args: []);
+  }
+
+  /// `Where your traffic exits`
+  String get routingServersSubtitle {
+    return Intl.message(
+      'Where your traffic exits',
+      name: 'routingServersSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add server`
+  String get routingAddServer {
+    return Intl.message(
+      'Add server',
+      name: 'routingAddServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paste a link or subscription URL`
+  String get routingServerHint {
+    return Intl.message(
+      'Paste a link or subscription URL',
+      name: 'routingServerHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No servers yet`
+  String get routingNoServers {
+    return Intl.message(
+      'No servers yet',
+      name: 'routingNoServers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Couldn't read that link`
+  String get routingImportFailed {
+    return Intl.message(
+      'Couldn\'t read that link',
+      name: 'routingImportFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Server added`
+  String get routingServerAdded {
+    return Intl.message(
+      'Server added',
+      name: 'routingServerAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription added`
+  String get routingSubscriptionAdded {
+    return Intl.message(
+      'Subscription added',
+      name: 'routingSubscriptionAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription`
+  String get routingSubscription {
+    return Intl.message(
+      'Subscription',
+      name: 'routingSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create group`
+  String get routingCreateGroup {
+    return Intl.message(
+      'Create group',
+      name: 'routingCreateGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto (fastest)`
+  String get routingGroupAuto {
+    return Intl.message(
+      'Auto (fastest)',
+      name: 'routingGroupAuto',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failover`
+  String get routingGroupFailover {
+    return Intl.message(
+      'Failover',
+      name: 'routingGroupFailover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manual pick`
+  String get routingGroupManual {
+    return Intl.message(
+      'Manual pick',
+      name: 'routingGroupManual',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Group name`
+  String get routingGroupNameHint {
+    return Intl.message(
+      'Group name',
+      name: 'routingGroupNameHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection`
+  String get routingConnection {
+    return Intl.message(
+      'Connection',
+      name: 'routingConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Global rules`
+  String get routingGlobalRules {
+    return Intl.message(
+      'Global rules',
+      name: 'routingGlobalRules',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} rules`
+  String routingGlobalRulesCount(Object count) {
+    return Intl.message(
+      '$count rules',
+      name: 'routingGlobalRulesCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Domain`
+  String get routingMatcherDomain {
+    return Intl.message(
+      'Domain',
+      name: 'routingMatcherDomain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Domain suffix`
+  String get routingMatcherDomainSuffix {
+    return Intl.message(
+      'Domain suffix',
+      name: 'routingMatcherDomainSuffix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Domain keyword`
+  String get routingMatcherDomainKeyword {
+    return Intl.message(
+      'Domain keyword',
+      name: 'routingMatcherDomainKeyword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IP range`
+  String get routingMatcherIp {
+    return Intl.message(
+      'IP range',
+      name: 'routingMatcherIp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App`
+  String get routingMatcherApp {
+    return Intl.message('App', name: 'routingMatcherApp', desc: '', args: []);
+  }
+
+  /// `Proxies`
+  String get routingProxies {
+    return Intl.message('Proxies', name: 'routingProxies', desc: '', args: []);
+  }
+
+  /// `Servers and subscriptions`
+  String get routingProxiesSubtitle {
+    return Intl.message(
+      'Servers and subscriptions',
+      name: 'routingProxiesSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Groups`
+  String get routingGroups {
+    return Intl.message('Groups', name: 'routingGroups', desc: '', args: []);
+  }
+
+  /// `How servers are chosen`
+  String get routingGroupsSubtitle {
+    return Intl.message(
+      'How servers are chosen',
+      name: 'routingGroupsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} servers`
+  String routingServerCount(Object count) {
+    return Intl.message(
+      '$count servers',
+      name: 'routingServerCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Edit raw YAML`
+  String get routingRawYaml {
+    return Intl.message(
+      'Edit raw YAML',
+      name: 'routingRawYaml',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DNS, sniffer and other low-level blocks`
+  String get routingRawYamlSubtitle {
+    return Intl.message(
+      'DNS, sniffer and other low-level blocks',
+      name: 'routingRawYamlSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rename`
+  String get routingRename {
+    return Intl.message('Rename', name: 'routingRename', desc: '', args: []);
+  }
+
+  /// `This group is advanced; edit it in raw YAML`
+  String get routingRawGroupHint {
+    return Intl.message(
+      'This group is advanced; edit it in raw YAML',
+      name: 'routingRawGroupHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No groups yet`
+  String get routingNoGroups {
+    return Intl.message(
+      'No groups yet',
+      name: 'routingNoGroups',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `via {source}`
+  String routingGroupVia(Object source) {
+    return Intl.message(
+      'via $source',
+      name: 'routingGroupVia',
+      desc: '',
+      args: [source],
+    );
+  }
+
+  /// `Edit group`
+  String get routingEditGroup {
+    return Intl.message(
+      'Edit group',
+      name: 'routingEditGroup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source`
+  String get routingGroupSource {
+    return Intl.message(
+      'Source',
+      name: 'routingGroupSource',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mode`
+  String get routingGroupBehavior {
+    return Intl.message(
+      'Mode',
+      name: 'routingGroupBehavior',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick servers`
+  String get routingGroupSourceServers {
+    return Intl.message(
+      'Pick servers',
+      name: 'routingGroupSourceServers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From a subscription`
+  String get routingGroupSourceSubscription {
+    return Intl.message(
+      'From a subscription',
+      name: 'routingGroupSourceSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter (regex)`
+  String get routingGroupFilter {
+    return Intl.message(
+      'Filter (regex)',
+      name: 'routingGroupFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `e.g. main|premium`
+  String get routingGroupFilterHint {
+    return Intl.message(
+      'e.g. main|premium',
+      name: 'routingGroupFilterHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Test interval (seconds)`
+  String get routingGroupInterval {
+    return Intl.message(
+      'Test interval (seconds)',
+      name: 'routingGroupInterval',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lazy testing`
+  String get routingGroupLazy {
+    return Intl.message(
+      'Lazy testing',
+      name: 'routingGroupLazy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use as active exit`
+  String get routingSetAsExit {
+    return Intl.message(
+      'Use as active exit',
+      name: 'routingSetAsExit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Advanced keys`
+  String get routingAdvancedKeys {
+    return Intl.message(
+      'Advanced keys',
+      name: 'routingAdvancedKeys',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Match type`
+  String get routingListBehavior {
+    return Intl.message(
+      'Match type',
+      name: 'routingListBehavior',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Domains`
+  String get routingBehaviorDomain {
+    return Intl.message(
+      'Domains',
+      name: 'routingBehaviorDomain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IP ranges`
+  String get routingBehaviorIpcidr {
+    return Intl.message(
+      'IP ranges',
+      name: 'routingBehaviorIpcidr',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mixed rules`
+  String get routingBehaviorClassical {
+    return Intl.message(
+      'Mixed rules',
+      name: 'routingBehaviorClassical',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By list`
+  String get routingRuleByList {
+    return Intl.message(
+      'By list',
+      name: 'routingRuleByList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By matcher`
+  String get routingRuleByMatcher {
+    return Intl.message(
+      'By matcher',
+      name: 'routingRuleByMatcher',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Combined condition`
+  String get routingRuleCombined {
+    return Intl.message(
+      'Combined condition',
+      name: 'routingRuleCombined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Match by`
+  String get routingMatcherType {
+    return Intl.message(
+      'Match by',
+      name: 'routingMatcherType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `domain, IP range, country or app`
+  String get routingMatchValueHint {
+    return Intl.message(
+      'domain, IP range, country or app',
+      name: 'routingMatchValueHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network (tcp/udp)`
+  String get routingMatcherNetwork {
+    return Intl.message(
+      'Network (tcp/udp)',
+      name: 'routingMatcherNetwork',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Geo category`
+  String get routingMatcherGeosite {
+    return Intl.message(
+      'Geo category',
+      name: 'routingMatcherGeosite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Domain wildcard`
+  String get routingMatcherDomainWildcard {
+    return Intl.message(
+      'Domain wildcard',
+      name: 'routingMatcherDomainWildcard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Domain regex`
+  String get routingMatcherDomainRegex {
+    return Intl.message(
+      'Domain regex',
+      name: 'routingMatcherDomainRegex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IP range (IPv6)`
+  String get routingMatcherIpV6 {
+    return Intl.message(
+      'IP range (IPv6)',
+      name: 'routingMatcherIpV6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IP suffix`
+  String get routingMatcherIpSuffix {
+    return Intl.message(
+      'IP suffix',
+      name: 'routingMatcherIpSuffix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network operator (ASN)`
+  String get routingMatcherAsn {
+    return Intl.message(
+      'Network operator (ASN)',
+      name: 'routingMatcherAsn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country (GeoIP)`
+  String get routingMatcherGeoip {
+    return Intl.message(
+      'Country (GeoIP)',
+      name: 'routingMatcherGeoip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Destination port`
+  String get routingMatcherDstPort {
+    return Intl.message(
+      'Destination port',
+      name: 'routingMatcherDstPort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source IP range`
+  String get routingMatcherSrcIp {
+    return Intl.message(
+      'Source IP range',
+      name: 'routingMatcherSrcIp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source IP suffix`
+  String get routingMatcherSrcIpSuffix {
+    return Intl.message(
+      'Source IP suffix',
+      name: 'routingMatcherSrcIpSuffix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source ASN`
+  String get routingMatcherSrcAsn {
+    return Intl.message(
+      'Source ASN',
+      name: 'routingMatcherSrcAsn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source country`
+  String get routingMatcherSrcGeoip {
+    return Intl.message(
+      'Source country',
+      name: 'routingMatcherSrcGeoip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source port`
+  String get routingMatcherSrcPort {
+    return Intl.message(
+      'Source port',
+      name: 'routingMatcherSrcPort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App name wildcard`
+  String get routingMatcherAppWildcard {
+    return Intl.message(
+      'App name wildcard',
+      name: 'routingMatcherAppWildcard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App name regex`
+  String get routingMatcherAppRegex {
+    return Intl.message(
+      'App name regex',
+      name: 'routingMatcherAppRegex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App path`
+  String get routingMatcherAppPath {
+    return Intl.message(
+      'App path',
+      name: 'routingMatcherAppPath',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App path wildcard`
+  String get routingMatcherAppPathWildcard {
+    return Intl.message(
+      'App path wildcard',
+      name: 'routingMatcherAppPathWildcard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App path regex`
+  String get routingMatcherAppPathRegex {
+    return Intl.message(
+      'App path regex',
+      name: 'routingMatcherAppPathRegex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User ID (UID)`
+  String get routingMatcherUid {
+    return Intl.message(
+      'User ID (UID)',
+      name: 'routingMatcherUid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Domain / website`
+  String get routingMatcherCatDomain {
+    return Intl.message(
+      'Domain / website',
+      name: 'routingMatcherCatDomain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Destination IP`
+  String get routingMatcherCatDestIp {
+    return Intl.message(
+      'Destination IP',
+      name: 'routingMatcherCatDestIp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source`
+  String get routingMatcherCatSource {
+    return Intl.message(
+      'Source',
+      name: 'routingMatcherCatSource',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App / process`
+  String get routingMatcherCatApp {
+    return Intl.message(
+      'App / process',
+      name: 'routingMatcherCatApp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection`
+  String get routingMatcherCatConnection {
+    return Intl.message(
+      'Connection',
+      name: 'routingMatcherCatConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get routingSearchHint {
+    return Intl.message(
+      'Search',
+      name: 'routingSearchHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Other code`
+  String get routingCountryOther {
+    return Intl.message(
+      'Other code',
+      name: 'routingCountryOther',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ISO code or geo tag (e.g. private)`
+  String get routingCountryOtherHint {
+    return Intl.message(
+      'ISO code or geo tag (e.g. private)',
+      name: 'routingCountryOtherHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DNS resolution`
+  String get routingNoResolveTitle {
+    return Intl.message(
+      'DNS resolution',
+      name: 'routingNoResolveTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Match IP only`
+  String get routingNoResolveOn {
+    return Intl.message(
+      'Match IP only',
+      name: 'routingNoResolveOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do not resolve domains (no-resolve)`
+  String get routingNoResolveOnDesc {
+    return Intl.message(
+      'Do not resolve domains (no-resolve)',
+      name: 'routingNoResolveOnDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resolve domains first`
+  String get routingNoResolveOff {
+    return Intl.message(
+      'Resolve domains first',
+      name: 'routingNoResolveOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Look up the IP before matching`
+  String get routingNoResolveOffDesc {
+    return Intl.message(
+      'Look up the IP before matching',
+      name: 'routingNoResolveOffDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All of`
+  String get routingLogicAll {
+    return Intl.message('All of', name: 'routingLogicAll', desc: '', args: []);
+  }
+
+  /// `Any of`
+  String get routingLogicAny {
+    return Intl.message('Any of', name: 'routingLogicAny', desc: '', args: []);
+  }
+
+  /// `None of`
+  String get routingLogicNone {
+    return Intl.message(
+      'None of',
+      name: 'routingLogicNone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Match when`
+  String get routingLogicOperator {
+    return Intl.message(
+      'Match when',
+      name: 'routingLogicOperator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Conditions`
+  String get routingConditions {
+    return Intl.message(
+      'Conditions',
+      name: 'routingConditions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add condition`
+  String get routingAddCondition {
+    return Intl.message(
+      'Add condition',
+      name: 'routingAddCondition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit server`
+  String get routingEditProxy {
+    return Intl.message(
+      'Edit server',
+      name: 'routingEditProxy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription URL`
+  String get routingSubscriptionUrl {
+    return Intl.message(
+      'Subscription URL',
+      name: 'routingSubscriptionUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nested fields below are kept as-is; edit them in raw YAML.`
+  String get routingProxyNested {
+    return Intl.message(
+      'Nested fields below are kept as-is; edit them in raw YAML.',
+      name: 'routingProxyNested',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Health-check URL`
+  String get routingGroupTestUrl {
+    return Intl.message(
+      'Health-check URL',
+      name: 'routingGroupTestUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tolerance (ms)`
+  String get routingGroupTolerance {
+    return Intl.message(
+      'Tolerance (ms)',
+      name: 'routingGroupTolerance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hidden`
+  String get routingGroupHidden {
+    return Intl.message(
+      'Hidden',
+      name: 'routingGroupHidden',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

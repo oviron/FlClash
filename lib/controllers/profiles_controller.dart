@@ -168,8 +168,8 @@ extension ProfilesControllerExt on AppController {
       _ => <Map<String, dynamic>>[],
     };
     if (proxies.isEmpty) return null;
-    final yamlString = await encodeYamlTask(synthesizeConfig(proxies));
-    return Uint8List.fromList(utf8.encode(yamlString));
+    final envelope = await encodeYamlTask(synthesizeConfig(proxies));
+    return Uint8List.fromList(utf8.encode(applyQuickStartRouting(envelope)));
   }
 
   String _quickStartLabel(String text, ArtifactKind kind) {

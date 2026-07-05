@@ -61,6 +61,8 @@ List<String> danglingTargets(List<RoutingRule> rules, Set<String> valid) {
         check(r.target);
       case AppToSubRuleRoute():
         check(r.subRuleName);
+      case SubRuleRoute():
+        check(r.subRuleName);
       case PassthroughRule():
         break;
     }

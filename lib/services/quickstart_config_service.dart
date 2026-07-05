@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/share_link.dart';
+import 'package:fl_clash/services/routing_model.dart';
 
 /// The kind of artifact a user pasted, decided without any network call.
 enum ArtifactKind { clashYaml, subscriptionUrl, shareLink, base64List, unknown }
@@ -30,10 +31,14 @@ ArtifactKind classifyArtifact(String text) {
   return ArtifactKind.unknown;
 }
 
-/// Wrap parsed proxies into a complete, self-contained mihomo config: inline
-/// `proxies:`, a single url-test `PROXY` group that auto-picks the fastest
-/// node, and a full-tunnel `MATCH,PROXY` rule. Intentionally emits no `dns:`
-/// block so the app's hardened model defaults apply (see docs/onboarding.md).
+/// The full-tunnel exit group every quick-start profile routes through.
+const quickStartExitGroup = 'PROXY';
+
+/// Wrap parsed proxies into the node envelope: inline `proxies:` and a single
+/// url-test [quickStartExitGroup] group that auto-picks the fastest node. Routing
+/// is NOT assembled here; [applyQuickStartRouting] adds it through the shared
+/// writer. Intentionally emits no `dns:` block so the app's hardened model
+/// defaults apply (see docs/onboarding.md).
 Map<String, dynamic> synthesizeConfig(List<Map<String, dynamic>> proxies) {
   if (proxies.isEmpty) {
     throw ArgumentError('cannot synthesize a config without proxies');
@@ -44,7 +49,7 @@ Map<String, dynamic> synthesizeConfig(List<Map<String, dynamic>> proxies) {
     'proxies': named,
     'proxy-groups': [
       {
-        'name': 'PROXY',
+        'name': quickStartExitGroup,
         'type': 'url-test',
         'proxies': names,
         'url': 'http://cp.cloudflare.com/generate_204',
@@ -52,9 +57,19 @@ Map<String, dynamic> synthesizeConfig(List<Map<String, dynamic>> proxies) {
         'tolerance': 50,
       },
     ],
-    'rules': ['MATCH,PROXY'],
   };
 }
+
+/// Applies the full-tunnel routing overlay onto an encoded [envelopeYaml] through
+/// the same [RoutingModel] writer that powers the edit path (docs II.9): one
+/// mechanism, no separate assembly, so paste-and-go and edit never drift.
+String applyQuickStartRouting(String envelopeYaml) => const RoutingModel(
+  exitGroup: quickStartExitGroup,
+  lists: [],
+  scenarios: [],
+  apps: [],
+  defaultRoute: toVpn,
+).toYaml(envelopeYaml);
 
 List<Map<String, dynamic>> _ensureUniqueNames(
   List<Map<String, dynamic>> proxies,

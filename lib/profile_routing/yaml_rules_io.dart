@@ -1,5 +1,6 @@
 library;
 
+import 'package:fl_clash/common/yaml.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
@@ -40,7 +41,7 @@ class ProfileRulesDocument {
   String withRules(List<RoutingRule> rules) {
     final editor = _mapEditor();
     editor.update(['rules'], serializeRoutingRules(rules));
-    return editor.toString();
+    return _render(editor);
   }
 
   /// Packages under `tun.exclude-package` (the blacklist: these bypass the
@@ -82,13 +83,13 @@ class ProfileRulesDocument {
     final root = editor.parseAt([]) as YamlMap;
     if (subRules.isEmpty) {
       if (root.containsKey('sub-rules')) editor.remove(['sub-rules']);
-      return editor.toString();
+      return _render(editor);
     }
     editor.update(
       ['sub-rules'],
       {for (final e in subRules.entries) e.key: serializeRoutingRules(e.value)},
     );
-    return editor.toString();
+    return _render(editor);
   }
 
   /// Names declared under `proxies:`; empty when absent. Candidate members for
@@ -117,6 +118,30 @@ class ProfileRulesDocument {
     ];
   }
 
+  /// Each `proxies:` entry as a lossless dart map; empty when absent. Preserves
+  /// every protocol field verbatim so an imported node round-trips.
+  List<Map<String, dynamic>> get proxies {
+    final node = _root?['proxies'];
+    if (node is! YamlList) return const [];
+    return [
+      for (final p in node)
+        if (p is YamlMap) (yamlToDart(p) as Map).cast<String, dynamic>(),
+    ];
+  }
+
+  /// New document with `proxies:` replaced by [proxies] (an empty list removes
+  /// the key); every field preserved. Other keys/comments are kept.
+  String withProxies(List<Map<String, dynamic>> proxies) {
+    final editor = _mapEditor();
+    final root = editor.parseAt([]) as YamlMap;
+    if (proxies.isEmpty) {
+      if (root.containsKey('proxies')) editor.remove(['proxies']);
+      return _render(editor);
+    }
+    editor.update(['proxies'], proxies);
+    return _render(editor);
+  }
+
   /// Each `proxy-groups:` entry as a lossless [GroupSpec]; empty when absent.
   List<GroupSpec> get proxyGroups {
     final node = _root?['proxy-groups'];
@@ -132,7 +157,7 @@ class ProfileRulesDocument {
   String withProxyGroups(List<GroupSpec> groups) {
     final editor = _mapEditor();
     editor.update(['proxy-groups'], [for (final g in groups) g.raw]);
-    return editor.toString();
+    return _render(editor);
   }
 
   /// Each `proxy-providers:` entry (a name->config map) as a lossless
@@ -172,14 +197,20 @@ class ProfileRulesDocument {
     final root = editor.parseAt([]) as YamlMap;
     if (providers.isEmpty) {
       if (root.containsKey(key)) editor.remove([key]);
-      return editor.toString();
+      return _render(editor);
     }
     editor.update(
       [key],
       {for (final e in providers.entries) e.key: e.value.raw},
     );
-    return editor.toString();
+    return _render(editor);
   }
+
+  // yaml_edit emits `/` as YAML-1.1 `\/` in double-quoted scalars; mihomo's Go
+  // yaml.v3 rejects `\/` (unknown escape) though it decodes to the same `/`.
+  // Dart's lenient parser accepts `\/`, so a re-parse round-trip never sees it.
+  static String _render(YamlEditor editor) =>
+      editor.toString().replaceAll(r'\/', '/');
 
   // A YamlEditor over a map-rooted config, or a ProfileRulesWriteException the
   // controller already catches — so a malformed file surfaces as a message
@@ -227,14 +258,14 @@ class ProfileRulesDocument {
       if (tun is YamlMap && tun.containsKey(key)) {
         editor.remove(['tun', key]);
       }
-      return editor.toString();
+      return _render(editor);
     }
     if (tun is YamlMap) {
       editor.update(['tun', key], packages);
     } else {
       editor.update(['tun'], {key: packages});
     }
-    return editor.toString();
+    return _render(editor);
   }
 }
 

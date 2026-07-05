@@ -3,7 +3,6 @@ import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/views/about.dart';
-import 'package:fl_clash/views/access.dart';
 import 'package:fl_clash/views/application_setting.dart';
 import 'package:fl_clash/views/backup_and_restore.dart';
 import 'package:fl_clash/views/config/config.dart';
@@ -66,11 +65,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
   List<Widget> _connectionSection() {
     return generateSection(
       title: context.appLocalizations.connection,
-      items: [
-        const _VpnSettingsItem(),
-        const _AccessItem(),
-        const _NetworkRulesItem(),
-      ],
+      items: [const _VpnSettingsItem(), const _NetworkRulesItem()],
     );
   }
 
@@ -201,20 +196,6 @@ class _BackupItem extends StatelessWidget {
       title: Text(context.appLocalizations.backupAndRestore),
       subtitle: Text(context.appLocalizations.backupAndRestoreDesc),
       delegate: const OpenDelegate(widget: BackupAndRestore()),
-    );
-  }
-}
-
-class _AccessItem extends StatelessWidget {
-  const _AccessItem();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListItem.open(
-      leading: const Icon(Icons.view_list),
-      title: Text(context.appLocalizations.accessControl),
-      subtitle: Text(context.appLocalizations.accessControlDesc),
-      delegate: const OpenDelegate(widget: AccessView()),
     );
   }
 }
