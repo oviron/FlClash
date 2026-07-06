@@ -9,6 +9,7 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';
 import 'package:fl_clash/profile_routing/provider_spec.dart';
 import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
+import 'package:fl_clash/providers/provider_quota.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/providers/quickstart_verification.dart';
 import 'package:fl_clash/services/profile_setup_service.dart';

@@ -247,7 +247,10 @@ extension SetupControllerExt on AppController {
     if (keys.isEmpty) return;
 
     await Future.wait(
-      keys.map((k) => _prefetchOneXrayProvider(providers[k], onDisk[k]!, k)),
+      keys.map(
+        (k) =>
+            _prefetchOneXrayProvider(providers[k], onDisk[k]!, k, profile.id),
+      ),
     );
   }
 
@@ -255,6 +258,7 @@ extension SetupControllerExt on AppController {
     dynamic entry,
     ProviderSpec spec,
     String key,
+    int profileId,
   ) async {
     if (entry is! Map) return;
     final path = (entry['path'] ?? spec.path)?.toString();
@@ -289,6 +293,12 @@ extension SetupControllerExt on AppController {
     if (url != null && url.isNotEmpty) {
       try {
         final resp = await request.getTextResponseForUrl(url, headers: headers);
+        final userinfo = resp.headers.value('subscription-userinfo');
+        if (userinfo != null) {
+          _ref
+              .read(providerQuotaProvider.notifier)
+              .set(profileId, key, SubscriptionInfo.formHString(userinfo));
+        }
         proxies = parseXrayJson(
           resp.data ?? '',
           prefix: key,

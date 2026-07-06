@@ -5,6 +5,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/profile_routing/rule_codec.dart';
+import 'package:fl_clash/providers/provider_quota.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/services/country_codes.dart';
 import 'package:fl_clash/services/quickstart_config_service.dart';
@@ -1690,9 +1691,21 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
     ],
   );
 
+  Widget _subscriptionSubtitle(
+    SubscriptionSource s,
+    Map<String, SubscriptionInfo> quota,
+  ) {
+    final info = quota[providerQuotaKey(profileId, s.name)];
+    if (info != null && info.total != 0) {
+      return SubscriptionInfoView(subscriptionInfo: info);
+    }
+    return Text(appLocalizations.routingSubscription);
+  }
+
   @override
   Widget build(BuildContext context) {
     final m = _model;
+    final quota = ref.watch(providerQuotaProvider);
     return CommonScaffold(
       title: appLocalizations.routingProxies,
       floatingActionButton: CommonFloatingActionButton(
@@ -1734,7 +1747,7 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
                     ListItem(
                       leading: const Icon(Icons.cloud_outlined),
                       title: Text(s.name),
-                      subtitle: Text(appLocalizations.routingSubscription),
+                      subtitle: _subscriptionSubtitle(s, quota),
                       onTap: () => _editSubscription(s),
                       trailing: _rowActions(
                         s,
