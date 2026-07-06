@@ -50,6 +50,16 @@ mixin _RoutingSectionState<T extends StatefulWidget> on State<T> {
       setState(() => _model = next);
     }
   }
+
+  // A destructive edit writes to the YAML immediately (no staging, no undo), so
+  // guard every delete/reset with one confirm.
+  Future<bool> _confirmDelete(String label) async {
+    final res = await globalState.showMessage(
+      title: appLocalizations.tip,
+      message: TextSpan(text: appLocalizations.deleteTip(label)),
+    );
+    return res == true;
+  }
 }
 
 class _RoutingSectionsState extends State<RoutingSections>
@@ -175,6 +185,7 @@ class _ListsViewState extends State<_ListsView>
   }
 
   Future<void> _removeList(RoutingList list) async {
+    if (!await _confirmDelete(list.name)) return;
     final model = _model!;
     await _write(
       model.copyWith(lists: model.lists.where((l) => l.id != list.id).toList()),
@@ -1606,6 +1617,7 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
   }
 
   Future<void> _removeServer(ServerSource s) async {
+    if (!await _confirmDelete(s.name)) return;
     final m = _model!;
     await _write(
       m.copyWith(servers: m.servers.where((x) => x.name != s.name).toList()),
@@ -1863,6 +1875,7 @@ class _GroupsViewState extends ConsumerState<_GroupsView>
   }
 
   Future<void> _delete(ServerGroup g) async {
+    if (!await _confirmDelete(g.name)) return;
     final m = _model!;
     await _write(
       m.copyWith(groups: m.groups.where((x) => x.name != g.name).toList()),
@@ -2313,6 +2326,7 @@ class _AppsViewState extends State<_AppsView>
   Future<void> _resetApps() async {
     final model = _model;
     if (model == null || model.apps.isEmpty) return;
+    if (!await _confirmDelete(appLocalizations.routingApps)) return;
     await _write(model.copyWith(apps: const []));
   }
 
