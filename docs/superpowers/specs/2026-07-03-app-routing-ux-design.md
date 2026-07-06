@@ -2,9 +2,14 @@
 
 Date: 2026-07-03. Scope: the profile-scoped **Apps** screen (`_AppsView` in
 `routing_constructor.dart`) plus the `RoutingModel` write/read paths that back it.
-Threat model is load-bearing: RU banking / Gosuslugi / Max must never see the VPN
-exit IP; `exclude-package` (OS-level tunnel exclusion) is the only guarantee, an
-in-tunnel `PROCESS-NAME,pkg,DIRECT` is not.
+Threat model is load-bearing **in the whitelist/blacklist tunnel modes**: RU
+banking / Gosuslugi / Max must never see the VPN exit IP; there `exclude-package`
+(OS-level tunnel exclusion) is the only guarantee, an in-tunnel
+`PROCESS-NAME,pkg,DIRECT` is not. **Global outbound mode is the deliberate
+exception** (shipped in `Global mode captures all apps`): it drops the per-app
+VpnService whitelist and re-establishes the tunnel so every app, banks included,
+is captured. That is the intended meaning of Global — choosing it is choosing to
+tunnel everything. An optional Global-entry warning is out of scope unless asked.
 
 ## Decisions (from brainstorm)
 
@@ -26,8 +31,10 @@ in-tunnel `PROCESS-NAME,pkg,DIRECT` is not.
 
 **Governing card** (top, only mode control): label "По умолчанию для новых и незаданных
 приложений:", segmented `[ Через VPN | Мимо VPN ]` bound to `tunnelMode`, plus a one-sentence
-rule that rewrites live on flip. Mode switch is destructive (VpnService allow XOR disallow) →
-one security-honest confirm naming banks/Gosuslugi; the VPN-down window is fail-safe for banks.
+rule that rewrites live on flip. A mode switch re-establishes the tunnel (VpnService
+allow XOR disallow); the brief VPN-down window is fail-safe for banks. No mandatory
+confirm dialog is shipped — the live rule text states the new default, which is the
+honest surface; a naming-banks confirm can be added later if the flip proves surprising.
 
 **Per-app sheet** (stable order both modes; only the "· по умолчанию" tag moves): Через VPN 🟢 /
 Мимо VPN 🔒 ("работает как без VPN, приложение и его DNS не видят VPN. Надёжно для банка,
@@ -44,8 +51,10 @@ colorblind safe). Empty state: "Сейчас все приложения иду�
    is empty, write `[<ownPackage>]` (never `[]`, which removes the key and captures all apps).
 2. **Membership on read**: an `include-package` pkg with no `PROCESS-NAME` rule reads as `ToVpn`
    (never drop tunnel membership → fail-open on rewrite).
-3. **OS-membership authoritative**: a pkg in `exclude-package` reads as `ToBypass` even if it also
-   carries a rule (an OS-excluded bank is never upgraded to `ToVpn`).
+3. **OS-membership authoritative** (whitelist/blacklist only): a pkg in `exclude-package` reads as
+   `ToBypass` even if it also carries a rule (an OS-excluded bank is never upgraded to `ToVpn`).
+   Global outbound mode overrides this at the VpnService layer, not in the model: it drops the
+   whitelist entirely and captures every app by design.
 4. **Both lists present → fail-closed**: normalize to the interpretation that tunnels the fewest apps.
 5. **Dedup by package**: a package holds exactly one outcome (never both a rule and an exclusion).
 6. **Terminal never bypass**: the "everything else" default is `ToVpn` or `ToBlock`, never `ToBypass`

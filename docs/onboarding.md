@@ -1,6 +1,6 @@
 # Onboarding and Zero-to-Profile: Paste-and-Go Design
 
-Status: v1 implemented and verified on-device (emulator + pinned core); only a 204 through a live server remains
+Status: v1 implemented and verified on-device (emulator + pinned core). The connect-time 204 honesty gate (section 11) is now wired into the app: a pasted key auto-connects and `QuickStartVerifyOverlay`/`decideVerifyStatus` probe the tunnel, showing verifying -> verified / honest-fail. Only a 204 **success** through a live operator server remains to be exercised end-to-end.
 Target line: 0.16 / 0.17
 Last updated: 2026-06-29 (Part II rewritten — user-extensible constructor, no-magic-values principle, catalog library, recognize-don't-rebuild bridge)
 Audience of the app: users on censored networks (RU / IR / CN), Android-first, no telemetry.
@@ -454,6 +454,11 @@ decisions.
 
 The honesty thesis is only real if the failure path is as disciplined as the success path.
 Green is earned by a 204, or it is not shown.
+
+Implemented (0.16): `decideVerifyStatus` maps the through-tunnel `request.checkIp()` probe to
+verified/failed (a null result or a REJECT default route is an honest failure, never a false
+green); `QuickStartVerifyCard`/`QuickStartVerifyOverlay` render the states below and wire the
+`quickStart*` l10n keys. The fail screen and its two CTAs are exactly the design that follows.
 
 The single v1 failure state: if the functional url-test fails after the handshake, full-bleed:
 
