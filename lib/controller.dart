@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/manager/effects/geo_refresh_effect.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';
 import 'package:fl_clash/profile_routing/provider_spec.dart';
@@ -40,6 +41,7 @@ part 'controllers/store_controller.dart';
 part 'controllers/common_controller.dart';
 part 'controllers/app_routing_controller.dart';
 part 'controllers/routing_constructor_controller.dart';
+part 'controllers/geo_controller.dart';
 
 class AppController {
   late WidgetRef _ref;

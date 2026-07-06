@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppSettingProps {
 
- String? get locale;@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> get dashboardWidgets; bool get autoRun;@JsonKey(name: 'openLogs') bool get inAppLogsEnabled; LogLevel get logcatLevel; LogLevel get fileLogLevel; bool get fileLogEnabled; bool get closeConnections; String get testUrl; bool get isAnimateToPage; bool get disclaimerAccepted; bool get minimizeOnExit; bool get hidden; bool get developerMode; RestoreStrategy get restoreStrategy; bool get includeDavCredsInBackup;
+ String? get locale;@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> get dashboardWidgets; bool get autoRun;@JsonKey(name: 'openLogs') bool get inAppLogsEnabled; LogLevel get logcatLevel; LogLevel get fileLogLevel; bool get fileLogEnabled; bool get closeConnections; String get testUrl; bool get isAnimateToPage; bool get disclaimerAccepted; bool get minimizeOnExit; bool get hidden; bool get developerMode; RestoreStrategy get restoreStrategy; bool get includeDavCredsInBackup; GeoUpdateInterval get geoUpdateInterval; DateTime? get lastGeoUpdate;
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AppSettingPropsCopyWith<AppSettingProps> get copyWith => _$AppSettingPropsCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other.dashboardWidgets, dashboardWidgets)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.inAppLogsEnabled, inAppLogsEnabled) || other.inAppLogsEnabled == inAppLogsEnabled)&&(identical(other.logcatLevel, logcatLevel) || other.logcatLevel == logcatLevel)&&(identical(other.fileLogLevel, fileLogLevel) || other.fileLogLevel == fileLogLevel)&&(identical(other.fileLogEnabled, fileLogEnabled) || other.fileLogEnabled == fileLogEnabled)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other.dashboardWidgets, dashboardWidgets)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.inAppLogsEnabled, inAppLogsEnabled) || other.inAppLogsEnabled == inAppLogsEnabled)&&(identical(other.logcatLevel, logcatLevel) || other.logcatLevel == logcatLevel)&&(identical(other.fileLogLevel, fileLogLevel) || other.fileLogLevel == fileLogLevel)&&(identical(other.fileLogEnabled, fileLogEnabled) || other.fileLogEnabled == fileLogEnabled)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup)&&(identical(other.geoUpdateInterval, geoUpdateInterval) || other.geoUpdateInterval == geoUpdateInterval)&&(identical(other.lastGeoUpdate, lastGeoUpdate) || other.lastGeoUpdate == lastGeoUpdate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,locale,const DeepCollectionEquality().hash(dashboardWidgets),autoRun,inAppLogsEnabled,logcatLevel,fileLogLevel,fileLogEnabled,closeConnections,testUrl,isAnimateToPage,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,includeDavCredsInBackup);
+int get hashCode => Object.hash(runtimeType,locale,const DeepCollectionEquality().hash(dashboardWidgets),autoRun,inAppLogsEnabled,logcatLevel,fileLogLevel,fileLogEnabled,closeConnections,testUrl,isAnimateToPage,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,includeDavCredsInBackup,geoUpdateInterval,lastGeoUpdate);
 
 @override
 String toString() {
-  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoRun: $autoRun, inAppLogsEnabled: $inAppLogsEnabled, logcatLevel: $logcatLevel, fileLogLevel: $fileLogLevel, fileLogEnabled: $fileLogEnabled, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, includeDavCredsInBackup: $includeDavCredsInBackup)';
+  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoRun: $autoRun, inAppLogsEnabled: $inAppLogsEnabled, logcatLevel: $logcatLevel, fileLogLevel: $fileLogLevel, fileLogEnabled: $fileLogEnabled, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, includeDavCredsInBackup: $includeDavCredsInBackup, geoUpdateInterval: $geoUpdateInterval, lastGeoUpdate: $lastGeoUpdate)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AppSettingPropsCopyWith<$Res>  {
   factory $AppSettingPropsCopyWith(AppSettingProps value, $Res Function(AppSettingProps) _then) = _$AppSettingPropsCopyWithImpl;
 @useResult
 $Res call({
- String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoRun,@JsonKey(name: 'openLogs') bool inAppLogsEnabled, LogLevel logcatLevel, LogLevel fileLogLevel, bool fileLogEnabled, bool closeConnections, String testUrl, bool isAnimateToPage, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool includeDavCredsInBackup
+ String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoRun,@JsonKey(name: 'openLogs') bool inAppLogsEnabled, LogLevel logcatLevel, LogLevel fileLogLevel, bool fileLogEnabled, bool closeConnections, String testUrl, bool isAnimateToPage, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool includeDavCredsInBackup, GeoUpdateInterval geoUpdateInterval, DateTime? lastGeoUpdate
 });
 
 
@@ -65,7 +65,7 @@ class _$AppSettingPropsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoRun = null,Object? inAppLogsEnabled = null,Object? logcatLevel = null,Object? fileLogLevel = null,Object? fileLogEnabled = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? includeDavCredsInBackup = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoRun = null,Object? inAppLogsEnabled = null,Object? logcatLevel = null,Object? fileLogLevel = null,Object? fileLogEnabled = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? includeDavCredsInBackup = null,Object? geoUpdateInterval = null,Object? lastGeoUpdate = freezed,}) {
   return _then(_self.copyWith(
 locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,dashboardWidgets: null == dashboardWidgets ? _self.dashboardWidgets : dashboardWidgets // ignore: cast_nullable_to_non_nullable
@@ -83,7 +83,9 @@ as bool,hidden: null == hidden ? _self.hidden : hidden // ignore: cast_nullable_
 as bool,developerMode: null == developerMode ? _self.developerMode : developerMode // ignore: cast_nullable_to_non_nullable
 as bool,restoreStrategy: null == restoreStrategy ? _self.restoreStrategy : restoreStrategy // ignore: cast_nullable_to_non_nullable
 as RestoreStrategy,includeDavCredsInBackup: null == includeDavCredsInBackup ? _self.includeDavCredsInBackup : includeDavCredsInBackup // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,geoUpdateInterval: null == geoUpdateInterval ? _self.geoUpdateInterval : geoUpdateInterval // ignore: cast_nullable_to_non_nullable
+as GeoUpdateInterval,lastGeoUpdate: freezed == lastGeoUpdate ? _self.lastGeoUpdate : lastGeoUpdate // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -168,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool includeDavCredsInBackup)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool includeDavCredsInBackup,  GeoUpdateInterval geoUpdateInterval,  DateTime? lastGeoUpdate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettingProps() when $default != null:
-return $default(_that.locale,_that.dashboardWidgets,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.includeDavCredsInBackup);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.includeDavCredsInBackup,_that.geoUpdateInterval,_that.lastGeoUpdate);case _:
   return orElse();
 
 }
@@ -189,10 +191,10 @@ return $default(_that.locale,_that.dashboardWidgets,_that.autoRun,_that.inAppLog
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool includeDavCredsInBackup)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool includeDavCredsInBackup,  GeoUpdateInterval geoUpdateInterval,  DateTime? lastGeoUpdate)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettingProps():
-return $default(_that.locale,_that.dashboardWidgets,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.includeDavCredsInBackup);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.includeDavCredsInBackup,_that.geoUpdateInterval,_that.lastGeoUpdate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +211,10 @@ return $default(_that.locale,_that.dashboardWidgets,_that.autoRun,_that.inAppLog
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool includeDavCredsInBackup)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool autoRun, @JsonKey(name: 'openLogs')  bool inAppLogsEnabled,  LogLevel logcatLevel,  LogLevel fileLogLevel,  bool fileLogEnabled,  bool closeConnections,  String testUrl,  bool isAnimateToPage,  bool disclaimerAccepted,  bool minimizeOnExit,  bool hidden,  bool developerMode,  RestoreStrategy restoreStrategy,  bool includeDavCredsInBackup,  GeoUpdateInterval geoUpdateInterval,  DateTime? lastGeoUpdate)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettingProps() when $default != null:
-return $default(_that.locale,_that.dashboardWidgets,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.includeDavCredsInBackup);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.autoRun,_that.inAppLogsEnabled,_that.logcatLevel,_that.fileLogLevel,_that.fileLogEnabled,_that.closeConnections,_that.testUrl,_that.isAnimateToPage,_that.disclaimerAccepted,_that.minimizeOnExit,_that.hidden,_that.developerMode,_that.restoreStrategy,_that.includeDavCredsInBackup,_that.geoUpdateInterval,_that.lastGeoUpdate);case _:
   return null;
 
 }
@@ -224,7 +226,7 @@ return $default(_that.locale,_that.dashboardWidgets,_that.autoRun,_that.inAppLog
 @JsonSerializable()
 
 class _AppSettingProps implements AppSettingProps {
-  const _AppSettingProps({this.locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson) final  List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets, this.autoRun = false, @JsonKey(name: 'openLogs') this.inAppLogsEnabled = false, this.logcatLevel = LogLevel.info, this.fileLogLevel = LogLevel.info, this.fileLogEnabled = false, this.closeConnections = true, this.testUrl = defaultTestUrl, this.isAnimateToPage = true, this.disclaimerAccepted = false, this.minimizeOnExit = true, this.hidden = false, this.developerMode = false, this.restoreStrategy = RestoreStrategy.compatible, this.includeDavCredsInBackup = false}): _dashboardWidgets = dashboardWidgets;
+  const _AppSettingProps({this.locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson) final  List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets, this.autoRun = false, @JsonKey(name: 'openLogs') this.inAppLogsEnabled = false, this.logcatLevel = LogLevel.info, this.fileLogLevel = LogLevel.info, this.fileLogEnabled = false, this.closeConnections = true, this.testUrl = defaultTestUrl, this.isAnimateToPage = true, this.disclaimerAccepted = false, this.minimizeOnExit = true, this.hidden = false, this.developerMode = false, this.restoreStrategy = RestoreStrategy.compatible, this.includeDavCredsInBackup = false, this.geoUpdateInterval = GeoUpdateInterval.weekly, this.lastGeoUpdate}): _dashboardWidgets = dashboardWidgets;
   factory _AppSettingProps.fromJson(Map<String, dynamic> json) => _$AppSettingPropsFromJson(json);
 
 @override final  String? locale;
@@ -249,6 +251,8 @@ class _AppSettingProps implements AppSettingProps {
 @override@JsonKey() final  bool developerMode;
 @override@JsonKey() final  RestoreStrategy restoreStrategy;
 @override@JsonKey() final  bool includeDavCredsInBackup;
+@override@JsonKey() final  GeoUpdateInterval geoUpdateInterval;
+@override final  DateTime? lastGeoUpdate;
 
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
@@ -263,16 +267,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other._dashboardWidgets, _dashboardWidgets)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.inAppLogsEnabled, inAppLogsEnabled) || other.inAppLogsEnabled == inAppLogsEnabled)&&(identical(other.logcatLevel, logcatLevel) || other.logcatLevel == logcatLevel)&&(identical(other.fileLogLevel, fileLogLevel) || other.fileLogLevel == fileLogLevel)&&(identical(other.fileLogEnabled, fileLogEnabled) || other.fileLogEnabled == fileLogEnabled)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other._dashboardWidgets, _dashboardWidgets)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.inAppLogsEnabled, inAppLogsEnabled) || other.inAppLogsEnabled == inAppLogsEnabled)&&(identical(other.logcatLevel, logcatLevel) || other.logcatLevel == logcatLevel)&&(identical(other.fileLogLevel, fileLogLevel) || other.fileLogLevel == fileLogLevel)&&(identical(other.fileLogEnabled, fileLogEnabled) || other.fileLogEnabled == fileLogEnabled)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.includeDavCredsInBackup, includeDavCredsInBackup) || other.includeDavCredsInBackup == includeDavCredsInBackup)&&(identical(other.geoUpdateInterval, geoUpdateInterval) || other.geoUpdateInterval == geoUpdateInterval)&&(identical(other.lastGeoUpdate, lastGeoUpdate) || other.lastGeoUpdate == lastGeoUpdate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,locale,const DeepCollectionEquality().hash(_dashboardWidgets),autoRun,inAppLogsEnabled,logcatLevel,fileLogLevel,fileLogEnabled,closeConnections,testUrl,isAnimateToPage,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,includeDavCredsInBackup);
+int get hashCode => Object.hash(runtimeType,locale,const DeepCollectionEquality().hash(_dashboardWidgets),autoRun,inAppLogsEnabled,logcatLevel,fileLogLevel,fileLogEnabled,closeConnections,testUrl,isAnimateToPage,disclaimerAccepted,minimizeOnExit,hidden,developerMode,restoreStrategy,includeDavCredsInBackup,geoUpdateInterval,lastGeoUpdate);
 
 @override
 String toString() {
-  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoRun: $autoRun, inAppLogsEnabled: $inAppLogsEnabled, logcatLevel: $logcatLevel, fileLogLevel: $fileLogLevel, fileLogEnabled: $fileLogEnabled, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, includeDavCredsInBackup: $includeDavCredsInBackup)';
+  return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, autoRun: $autoRun, inAppLogsEnabled: $inAppLogsEnabled, logcatLevel: $logcatLevel, fileLogLevel: $fileLogLevel, fileLogEnabled: $fileLogEnabled, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, restoreStrategy: $restoreStrategy, includeDavCredsInBackup: $includeDavCredsInBackup, geoUpdateInterval: $geoUpdateInterval, lastGeoUpdate: $lastGeoUpdate)';
 }
 
 
@@ -283,7 +287,7 @@ abstract mixin class _$AppSettingPropsCopyWith<$Res> implements $AppSettingProps
   factory _$AppSettingPropsCopyWith(_AppSettingProps value, $Res Function(_AppSettingProps) _then) = __$AppSettingPropsCopyWithImpl;
 @override @useResult
 $Res call({
- String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoRun,@JsonKey(name: 'openLogs') bool inAppLogsEnabled, LogLevel logcatLevel, LogLevel fileLogLevel, bool fileLogEnabled, bool closeConnections, String testUrl, bool isAnimateToPage, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool includeDavCredsInBackup
+ String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool autoRun,@JsonKey(name: 'openLogs') bool inAppLogsEnabled, LogLevel logcatLevel, LogLevel fileLogLevel, bool fileLogEnabled, bool closeConnections, String testUrl, bool isAnimateToPage, bool disclaimerAccepted, bool minimizeOnExit, bool hidden, bool developerMode, RestoreStrategy restoreStrategy, bool includeDavCredsInBackup, GeoUpdateInterval geoUpdateInterval, DateTime? lastGeoUpdate
 });
 
 
@@ -300,7 +304,7 @@ class __$AppSettingPropsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoRun = null,Object? inAppLogsEnabled = null,Object? logcatLevel = null,Object? fileLogLevel = null,Object? fileLogEnabled = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? includeDavCredsInBackup = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? autoRun = null,Object? inAppLogsEnabled = null,Object? logcatLevel = null,Object? fileLogLevel = null,Object? fileLogEnabled = null,Object? closeConnections = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? hidden = null,Object? developerMode = null,Object? restoreStrategy = null,Object? includeDavCredsInBackup = null,Object? geoUpdateInterval = null,Object? lastGeoUpdate = freezed,}) {
   return _then(_AppSettingProps(
 locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,dashboardWidgets: null == dashboardWidgets ? _self._dashboardWidgets : dashboardWidgets // ignore: cast_nullable_to_non_nullable
@@ -318,7 +322,9 @@ as bool,hidden: null == hidden ? _self.hidden : hidden // ignore: cast_nullable_
 as bool,developerMode: null == developerMode ? _self.developerMode : developerMode // ignore: cast_nullable_to_non_nullable
 as bool,restoreStrategy: null == restoreStrategy ? _self.restoreStrategy : restoreStrategy // ignore: cast_nullable_to_non_nullable
 as RestoreStrategy,includeDavCredsInBackup: null == includeDavCredsInBackup ? _self.includeDavCredsInBackup : includeDavCredsInBackup // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,geoUpdateInterval: null == geoUpdateInterval ? _self.geoUpdateInterval : geoUpdateInterval // ignore: cast_nullable_to_non_nullable
+as GeoUpdateInterval,lastGeoUpdate: freezed == lastGeoUpdate ? _self.lastGeoUpdate : lastGeoUpdate // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

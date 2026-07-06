@@ -798,6 +798,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.",
     ),
     "routingBothNormalize": MessageLookupByLibrary.simpleMessage("Normalize"),
+    "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("Auto-update"),
+    "geoUpdateOff": MessageLookupByLibrary.simpleMessage("Off"),
+    "geoUpdateDaily": MessageLookupByLibrary.simpleMessage("Daily"),
+    "geoUpdateEvery3Days": MessageLookupByLibrary.simpleMessage("Every 3 days"),
+    "geoUpdateWeekly": MessageLookupByLibrary.simpleMessage("Weekly"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage("无法应用更改"),
     "routingApps": MessageLookupByLibrary.simpleMessage("应用"),
     "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(

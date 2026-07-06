@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/core/core.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
@@ -83,7 +84,36 @@ class _ResourcesViewState extends ConsumerState<ResourcesView> {
         ),
       );
     }
+    ref
+        .read(appSettingProvider.notifier)
+        .update((state) => state.copyWith(lastGeoUpdate: DateTime.now()));
     if (mounted) setState(() {});
+  }
+
+  String _intervalLabel(GeoUpdateInterval interval) => switch (interval) {
+    GeoUpdateInterval.off => appLocalizations.geoUpdateOff,
+    GeoUpdateInterval.daily => appLocalizations.geoUpdateDaily,
+    GeoUpdateInterval.every3Days => appLocalizations.geoUpdateEvery3Days,
+    GeoUpdateInterval.weekly => appLocalizations.geoUpdateWeekly,
+  };
+
+  Future<void> _pickInterval() async {
+    final current = ref.read(
+      appSettingProvider.select((state) => state.geoUpdateInterval),
+    );
+    final picked = await globalState.showCommonDialog<GeoUpdateInterval>(
+      child: OptionsDialog<GeoUpdateInterval>(
+        title: appLocalizations.geoAutoUpdate,
+        options: GeoUpdateInterval.values,
+        value: current,
+        textBuilder: _intervalLabel,
+      ),
+    );
+    if (picked != null) {
+      ref
+          .read(appSettingProvider.notifier)
+          .update((state) => state.copyWith(geoUpdateInterval: picked));
+    }
   }
 
   @override
@@ -93,15 +123,35 @@ class _ResourcesViewState extends ConsumerState<ResourcesView> {
       actions: [
         IconButton(onPressed: _updateAllGeoData, icon: const Icon(Icons.sync)),
       ],
-      body: ListView.separated(
-        itemBuilder: (_, index) {
-          final geoItem = _geoItems[index];
-          return GeoDataListItem(geoItem: geoItem);
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return const Divider(height: 0);
-        },
-        itemCount: _geoItems.length,
+      body: Column(
+        children: [
+          Consumer(
+            builder: (_, ref, _) {
+              final interval = ref.watch(
+                appSettingProvider.select((state) => state.geoUpdateInterval),
+              );
+              return ListItem(
+                leading: const Icon(Icons.schedule),
+                title: Text(appLocalizations.geoAutoUpdate),
+                subtitle: Text(_intervalLabel(interval)),
+                onTap: _pickInterval,
+              );
+            },
+          ),
+          const Divider(height: 0),
+          Expanded(
+            child: ListView.separated(
+              itemBuilder: (_, index) {
+                final geoItem = _geoItems[index];
+                return GeoDataListItem(geoItem: geoItem);
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const Divider(height: 0);
+              },
+              itemCount: _geoItems.length,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -12,8 +12,10 @@ extension InitControllerExt on AppController {
     await _handleFailedPreference();
     await _handlerDisclaimer();
     await _connectCore();
+    await seedGeositeIfMissing();
     await _initCore();
     await _initStatus();
+    unawaited(autoUpdateGeo());
     _ref.read(initProvider.notifier).value = true;
   }
 

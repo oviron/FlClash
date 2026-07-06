@@ -213,7 +213,20 @@ extension SetupControllerExt on AppController {
       preloadInvoke: preloadInvoke,
     );
     if (message.isNotEmpty) {
-      throw message;
+      final lower = message.toLowerCase();
+      final geoWarning =
+          lower.contains('geosite data error') ||
+          lower.contains('geoip data error') ||
+          (lower.contains('decode') && lower.contains('geo'));
+      if (!geoWarning) throw message;
+      // A GeoSite/GeoIP rule couldn't resolve (missing/stale/corrupt database);
+      // the rest of the config still applied, so heal the geo data in the
+      // background instead of alarming the user with the raw core error.
+      commonPrint.log(
+        'geo data warning on setup: $message',
+        logLevel: LogLevel.warning,
+      );
+      unawaited(seedGeositeIfMissing().then((_) => updateGeoDatabases()));
     }
     addCheckIp();
   }

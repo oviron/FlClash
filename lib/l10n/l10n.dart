@@ -5853,6 +5853,41 @@ class AppLocalizations {
     );
   }
 
+  /// `Auto-update`
+  String get geoAutoUpdate {
+    return Intl.message(
+      'Auto-update',
+      name: 'geoAutoUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Off`
+  String get geoUpdateOff {
+    return Intl.message('Off', name: 'geoUpdateOff', desc: '', args: []);
+  }
+
+  /// `Daily`
+  String get geoUpdateDaily {
+    return Intl.message('Daily', name: 'geoUpdateDaily', desc: '', args: []);
+  }
+
+  /// `Every 3 days`
+  String get geoUpdateEvery3Days {
+    return Intl.message(
+      'Every 3 days',
+      name: 'geoUpdateEvery3Days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Weekly`
+  String get geoUpdateWeekly {
+    return Intl.message('Weekly', name: 'geoUpdateWeekly', desc: '', args: []);
+  }
+
   /// `Servers`
   String get routingServers {
     return Intl.message('Servers', name: 'routingServers', desc: '', args: []);

@@ -1179,6 +1179,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingBothNormalize": MessageLookupByLibrary.simpleMessage(
       "Нормализовать",
     ),
+    "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("Автообновление"),
+    "geoUpdateOff": MessageLookupByLibrary.simpleMessage("Выкл"),
+    "geoUpdateDaily": MessageLookupByLibrary.simpleMessage("Ежедневно"),
+    "geoUpdateEvery3Days": MessageLookupByLibrary.simpleMessage("Каждые 3 дня"),
+    "geoUpdateWeekly": MessageLookupByLibrary.simpleMessage("Еженедельно"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
       "Не удалось применить изменение",
     ),

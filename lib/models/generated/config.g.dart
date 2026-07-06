@@ -33,29 +33,41 @@ _AppSettingProps _$AppSettingPropsFromJson(
       $enumDecodeNullable(_$RestoreStrategyEnumMap, json['restoreStrategy']) ??
       RestoreStrategy.compatible,
   includeDavCredsInBackup: json['includeDavCredsInBackup'] as bool? ?? false,
+  geoUpdateInterval:
+      $enumDecodeNullable(
+        _$GeoUpdateIntervalEnumMap,
+        json['geoUpdateInterval'],
+      ) ??
+      GeoUpdateInterval.weekly,
+  lastGeoUpdate: json['lastGeoUpdate'] == null
+      ? null
+      : DateTime.parse(json['lastGeoUpdate'] as String),
 );
 
-Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
-    <String, dynamic>{
-      'locale': instance.locale,
-      'dashboardWidgets': instance.dashboardWidgets
-          .map((e) => _$DashboardWidgetEnumMap[e]!)
-          .toList(),
-      'autoRun': instance.autoRun,
-      'openLogs': instance.inAppLogsEnabled,
-      'logcatLevel': _$LogLevelEnumMap[instance.logcatLevel]!,
-      'fileLogLevel': _$LogLevelEnumMap[instance.fileLogLevel]!,
-      'fileLogEnabled': instance.fileLogEnabled,
-      'closeConnections': instance.closeConnections,
-      'testUrl': instance.testUrl,
-      'isAnimateToPage': instance.isAnimateToPage,
-      'disclaimerAccepted': instance.disclaimerAccepted,
-      'minimizeOnExit': instance.minimizeOnExit,
-      'hidden': instance.hidden,
-      'developerMode': instance.developerMode,
-      'restoreStrategy': _$RestoreStrategyEnumMap[instance.restoreStrategy]!,
-      'includeDavCredsInBackup': instance.includeDavCredsInBackup,
-    };
+Map<String, dynamic> _$AppSettingPropsToJson(
+  _AppSettingProps instance,
+) => <String, dynamic>{
+  'locale': instance.locale,
+  'dashboardWidgets': instance.dashboardWidgets
+      .map((e) => _$DashboardWidgetEnumMap[e]!)
+      .toList(),
+  'autoRun': instance.autoRun,
+  'openLogs': instance.inAppLogsEnabled,
+  'logcatLevel': _$LogLevelEnumMap[instance.logcatLevel]!,
+  'fileLogLevel': _$LogLevelEnumMap[instance.fileLogLevel]!,
+  'fileLogEnabled': instance.fileLogEnabled,
+  'closeConnections': instance.closeConnections,
+  'testUrl': instance.testUrl,
+  'isAnimateToPage': instance.isAnimateToPage,
+  'disclaimerAccepted': instance.disclaimerAccepted,
+  'minimizeOnExit': instance.minimizeOnExit,
+  'hidden': instance.hidden,
+  'developerMode': instance.developerMode,
+  'restoreStrategy': _$RestoreStrategyEnumMap[instance.restoreStrategy]!,
+  'includeDavCredsInBackup': instance.includeDavCredsInBackup,
+  'geoUpdateInterval': _$GeoUpdateIntervalEnumMap[instance.geoUpdateInterval]!,
+  'lastGeoUpdate': instance.lastGeoUpdate?.toIso8601String(),
+};
 
 const _$LogLevelEnumMap = {
   LogLevel.debug: 'debug',
@@ -68,6 +80,13 @@ const _$LogLevelEnumMap = {
 const _$RestoreStrategyEnumMap = {
   RestoreStrategy.compatible: 'compatible',
   RestoreStrategy.override: 'override',
+};
+
+const _$GeoUpdateIntervalEnumMap = {
+  GeoUpdateInterval.off: 'off',
+  GeoUpdateInterval.daily: 'daily',
+  GeoUpdateInterval.every3Days: 'every3Days',
+  GeoUpdateInterval.weekly: 'weekly',
 };
 
 const _$DashboardWidgetEnumMap = {

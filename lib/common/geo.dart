@@ -1,10 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/common/path.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
+
+/// Geo databases the app manages: (mihomo geoType label, on-disk file name).
+const geoFileItems = <(String, String)>[
+  ('GEOIP', GEOIP),
+  ('GEOSITE', GEOSITE),
+  ('MMDB', MMDB),
+  ('ASN', ASN),
+];
 
 (int, int) _varint(Uint8List b, int i) {
   var shift = 0;
@@ -71,4 +79,18 @@ Future<List<String>> loadGeositeCategories() async {
   } catch (_) {
     return const [];
   }
+}
+
+/// Copies the bundled baseline GEOSITE.dat into the core home dir when the
+/// on-device file is missing or unreadable (empty categories). Offline-safe
+/// first-run guard so a GEOSITE-rule profile never fails to apply on a fresh
+/// install before the network updater has run.
+Future<void> seedGeositeIfMissing() async {
+  if ((await loadGeositeCategories()).isNotEmpty) return;
+  try {
+    final data = await rootBundle.load('assets/geo/geosite.dat');
+    final file = File(join(await appPath.homeDirPath, GEOSITE));
+    await file.parent.create(recursive: true);
+    await file.writeAsBytes(data.buffer.asUint8List(), flush: true);
+  } catch (_) {}
 }

@@ -791,5 +791,10 @@
   "routingModeAllExcept": "All except selected",
   "routingBothBannerBody": "This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.",
   "routingBothNormalize": "Normalize",
+  "geoAutoUpdate": "Auto-update",
+  "geoUpdateOff": "Off",
+  "geoUpdateDaily": "Daily",
+  "geoUpdateEvery3Days": "Every 3 days",
+  "geoUpdateWeekly": "Weekly",
   "routingGroupHidden": "隐藏"
 }

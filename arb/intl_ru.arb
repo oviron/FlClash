@@ -801,5 +801,10 @@
   "routingModeAllExcept": "Все, кроме выбранных",
   "routingBothBannerBody": "Профиль задаёт оба списка (include и exclude). Работает как whitelist: include минус exclude. Нормализуйте, чтобы редактировать.",
   "routingBothNormalize": "Нормализовать",
+  "geoAutoUpdate": "Автообновление",
+  "geoUpdateOff": "Выкл",
+  "geoUpdateDaily": "Ежедневно",
+  "geoUpdateEvery3Days": "Каждые 3 дня",
+  "geoUpdateWeekly": "Еженедельно",
   "routingGroupHidden": "Скрытая"
 }

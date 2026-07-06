@@ -79,6 +79,8 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(false) bool developerMode,
     @Default(RestoreStrategy.compatible) RestoreStrategy restoreStrategy,
     @Default(false) bool includeDavCredsInBackup,
+    @Default(GeoUpdateInterval.weekly) GeoUpdateInterval geoUpdateInterval,
+    DateTime? lastGeoUpdate,
   }) = _AppSettingProps;
 
   factory AppSettingProps.fromJson(Map<String, Object?> json) =>
