@@ -186,6 +186,7 @@ sealed class ServerSource {
   const factory ServerSource.subscription({
     required String name,
     required String? url,
+    Map<String, dynamic>? xray,
   }) = SubscriptionSource;
 }
 
@@ -198,7 +199,11 @@ final class NodeSource extends ServerSource {
 final class SubscriptionSource extends ServerSource {
   final String? url;
 
-  const SubscriptionSource({required String name, required this.url})
+  /// Non-null marks a Happ/xray subscription: [_subToProvider] emits the `xray:`
+  /// provider marker so setup's prefetch converts it to a file provider.
+  final Map<String, dynamic>? xray;
+
+  const SubscriptionSource({required String name, required this.url, this.xray})
     : super(name);
 }
 
@@ -404,10 +409,8 @@ class RoutingModel {
                 name: to,
                 proxy: {...proxy, 'name': to},
               ),
-              SubscriptionSource(:final url) => ServerSource.subscription(
-                name: to,
-                url: url,
-              ),
+              SubscriptionSource(:final url, :final xray) =>
+                ServerSource.subscription(name: to, url: url, xray: xray),
             },
       ],
       groups: [
@@ -473,7 +476,7 @@ class RoutingModel {
     servers: [
       for (final s in servers)
         if (s is SubscriptionSource && s.name == name)
-          ServerSource.subscription(name: name, url: url)
+          ServerSource.subscription(name: name, url: url, xray: s.xray)
         else
           s,
     ],
@@ -573,11 +576,15 @@ String _writeServers(RoutingModel m, String base) {
   return out;
 }
 
-ProviderSpec _subToProvider(SubscriptionSource s, ProviderSpec? existing) =>
-    (existing ?? ProviderSpec.create(type: 'http')).copyWith(
-      type: 'http',
-      url: s.url,
-    );
+ProviderSpec _subToProvider(SubscriptionSource s, ProviderSpec? existing) {
+  final base = (existing ?? ProviderSpec.create(type: 'http')).copyWith(
+    type: 'http',
+    url: s.url,
+  );
+  // An xray/Happ subscription carries the `xray:` marker so setup's prefetch
+  // fetches + converts it; a plain http subscription stays as-is.
+  return s.xray == null ? base : ProviderSpec({...base.raw, 'xray': s.xray});
+}
 
 GroupSpec _groupToSpec(ServerGroup g, Map<String, GroupSpec> baseGroups) =>
     switch (g) {
@@ -799,7 +806,13 @@ RoutingModel _read(String raw) {
       if (p['name'] != null)
         ServerSource.node(name: p['name'].toString(), proxy: p),
     for (final e in doc.proxyProviders.entries)
-      ServerSource.subscription(name: e.key, url: e.value.url),
+      ServerSource.subscription(
+        name: e.key,
+        url: e.value.url,
+        xray: e.value.raw['xray'] is Map
+            ? (e.value.raw['xray'] as Map).cast<String, dynamic>()
+            : null,
+      ),
   ];
   final groups = [for (final g in doc.proxyGroups) _readGroup(g)];
 

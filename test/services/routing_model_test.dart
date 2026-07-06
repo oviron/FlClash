@@ -698,4 +698,59 @@ rules:
       );
     });
   });
+
+  group('xray subscription marker (V1)', () {
+    const withXray = '''
+mode: rule
+proxies: []
+proxy-providers:
+  happ-sub:
+    type: http
+    url: https://sub.example/happ
+    path: ./providers/happ-sub.yaml
+    xray:
+      fingerprint: chrome
+''';
+
+    SubscriptionSource subNamed(RoutingModel m, String name) => m.servers
+        .whereType<SubscriptionSource>()
+        .firstWhere((s) => s.name == name);
+
+    test('fromYaml reads the xray marker onto the SubscriptionSource', () {
+      final sub = subNamed(RoutingModel.fromYaml(withXray), 'happ-sub');
+      expect(sub.xray, isNotNull);
+      expect(sub.xray!['fingerprint'], 'chrome');
+    });
+
+    test('a plain http subscription carries no xray marker', () {
+      expect(
+        subNamed(RoutingModel.fromYaml(_reference), 'sub-one').xray,
+        isNull,
+      );
+    });
+
+    test('toYaml emits the xray marker for an xray subscription', () {
+      final out = RoutingModel.fromYaml(withXray).toYaml(withXray);
+      expect(
+        ProfileRulesDocument(out).proxyProviders['happ-sub']!.raw['xray'],
+        isNotNull,
+      );
+    });
+
+    test('an added xray subscription round-trips its marker losslessly', () {
+      final base = RoutingModel.fromYaml(_reference);
+      final edited = base.copyWith(
+        servers: [
+          ...base.servers,
+          const ServerSource.subscription(
+            name: 'added-xray',
+            url: 'https://sub.example/x',
+            xray: {},
+          ),
+        ],
+      );
+      final back = RoutingModel.fromYaml(edited.toYaml(_reference));
+      expect(subNamed(back, 'added-xray').xray, isNotNull);
+    });
+  });
 }

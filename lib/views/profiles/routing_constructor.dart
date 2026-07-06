@@ -1560,6 +1560,10 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
     while (used.contains(name)) {
       name = 'sub-${n++}';
     }
+    // Fetch-classify: a Happ/xray subscription becomes an xray file-provider
+    // (setup's prefetch converts it); anything else stays a plain http provider.
+    final xray = await _classifyXraySubscription(url);
+    if (!mounted) return;
     // A fresh subscription gets an auto (url-test) group over it, so it is
     // usable as an exit immediately; the user can refine it in Groups.
     final group = SmartGroup(
@@ -1573,7 +1577,7 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
       m.copyWith(
         servers: [
           ...m.servers,
-          ServerSource.subscription(name: name, url: url),
+          ServerSource.subscription(name: name, url: url, xray: xray),
         ],
         groups: [...m.groups, group],
         exitGroup: m.exitGroup.isEmpty ? group.name : m.exitGroup,
@@ -1581,6 +1585,22 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
     );
     if (mounted) {
       context.showNotifier(appLocalizations.routingSubscriptionAdded);
+    }
+  }
+
+  // Returns an empty xray marker when the subscription body classifies as
+  // xray/Happ JSON, else null (plain http). A fetch failure degrades to null.
+  Future<Map<String, dynamic>?> _classifyXraySubscription(String url) async {
+    try {
+      final resp = await request.getTextResponseForUrl(
+        url,
+        headers: await happHeaders(),
+      );
+      return classifyArtifact(resp.data ?? '') == ArtifactKind.xrayJson
+          ? const <String, dynamic>{}
+          : null;
+    } catch (_) {
+      return null;
     }
   }
 
