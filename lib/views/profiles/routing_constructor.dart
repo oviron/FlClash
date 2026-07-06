@@ -2372,7 +2372,11 @@ class _AppsViewState extends State<_AppsView>
   Future<void> _switchMode(TunnelMode mode) async {
     final model = _model!;
     if (model.tunnelMode == mode) return;
-    final toWhitelist = mode == TunnelMode.whitelist;
+    final body = switch (mode) {
+      TunnelMode.all => appLocalizations.routingSwitchBodyAll,
+      TunnelMode.whitelist => appLocalizations.routingSwitchBodyOnlySelected,
+      TunnelMode.blacklist => appLocalizations.routingSwitchBodyAllExcept,
+    };
     final ok = await globalState.showCommonDialog<bool>(
       child: CommonDialog(
         title: appLocalizations.routingModeSwitchTitle,
@@ -2386,22 +2390,17 @@ class _AppsViewState extends State<_AppsView>
             child: Text(appLocalizations.confirm),
           ),
         ],
-        child: Text(
-          toWhitelist
-              ? appLocalizations.routingModeSwitchToBypassBody
-              : appLocalizations.routingModeSwitchToVpnBody,
-        ),
+        child: Text(body),
       ),
     );
     if (ok != true) return;
-    // Blacklist and all promise "everything else via VPN": pin the terminal to
-    // the exit. Whitelist keeps the current terminal.
-    await _write(
-      model.copyWith(
-        tunnelMode: mode,
-        defaultRoute: toWhitelist ? model.defaultRoute : toVpn,
-      ),
-    );
+    final error = await appController.applyTunnelModeSwitch(profileId, mode);
+    if (!mounted) return;
+    if (error != null) {
+      context.showNotifier('${appLocalizations.routingApplyFailed}: $error');
+    }
+    // Reload strictly from YAML so the screen always mirrors the file.
+    await _load();
   }
 
   // Collapse the unrepresentable both-lists state to the whitelist that actually
@@ -2528,23 +2527,43 @@ class _AppsViewState extends State<_AppsView>
     ];
     final degenerate = model.degenerateBoth;
     final allMode = _mode == TunnelMode.all;
-    final modes = <(TunnelMode, String, String)>[
-      (
-        TunnelMode.all,
-        appLocalizations.routingModeAll,
-        appLocalizations.routingModeAllDesc,
-      ),
-      (
-        TunnelMode.whitelist,
-        appLocalizations.routingModeOnlySelected,
-        appLocalizations.routingAppsRuleWhitelist,
-      ),
-      (
-        TunnelMode.blacklist,
-        appLocalizations.routingModeAllExcept,
-        appLocalizations.routingAppsRuleBlacklist,
-      ),
+    final modes = <(TunnelMode, String)>[
+      (TunnelMode.all, appLocalizations.routingModeAll),
+      (TunnelMode.whitelist, appLocalizations.routingModeOnlySelected),
+      (TunnelMode.blacklist, appLocalizations.routingModeAllExcept),
     ];
+    final caption = switch (_mode) {
+      TunnelMode.all => appLocalizations.routingModeAllDesc,
+      TunnelMode.whitelist => appLocalizations.routingModeOnlySelectedDesc,
+      TunnelMode.blacklist => appLocalizations.routingModeAllExceptDesc,
+    };
+    // Horizontal segments + one concise caption for the active mode; the caption
+    // carries the meaning so the segment labels stay short.
+    final picker = Padding(
+      padding: EdgeInsets.fromLTRB(16.mAp, 12.mAp, 16.mAp, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SegmentedButton<TunnelMode>(
+            showSelectedIcon: false,
+            segments: [
+              for (final (mode, label) in modes)
+                ButtonSegment(value: mode, label: Text(label)),
+            ],
+            selected: {_mode},
+            onSelectionChanged: (s) => _switchMode(s.first),
+          ),
+          SizedBox(height: 8.mAp),
+          Text(
+            caption,
+            style: context.textTheme.bodySmall?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+    final bodyLen = allMode ? 0 : (filtered.isEmpty ? 1 : rows.length);
     return CommonScaffold(
       title: appLocalizations.routingApps,
       actions: [
@@ -2566,55 +2585,11 @@ class _AppsViewState extends State<_AppsView>
       body: Column(
         children: [
           if (degenerate) _bothBanner(model),
-          _dim(
-            degenerate,
-            Card(
-              margin: EdgeInsets.fromLTRB(16.mAp, 16.mAp, 16.mAp, 8.mAp),
-              child: Padding(
-                padding: EdgeInsets.all(16.mAp),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      appLocalizations.routingAppsCardTitle,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    SizedBox(height: 4.mAp),
-                    RadioGroup<TunnelMode>(
-                      groupValue: _mode,
-                      onChanged: (m) {
-                        if (m != null) _switchMode(m);
-                      },
-                      child: Column(
-                        children: [
-                          for (final (mode, label, desc) in modes)
-                            ListItem.radio(
-                              delegate: RadioDelegate(
-                                value: mode,
-                                onTab: () => _switchMode(mode),
-                              ),
-                              title: Text(label),
-                              subtitle: Text(desc),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (allMode)
-            Expanded(
-              child: Center(
-                child: NullStatus(label: appLocalizations.routingModeAllDesc),
-              ),
-            )
-          else ...[
+          if (!allMode)
             _dim(
               degenerate,
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.mAp),
+                padding: EdgeInsets.fromLTRB(16.mAp, 12.mAp, 16.mAp, 8.mAp),
                 child: TextField(
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.search),
@@ -2625,30 +2600,36 @@ class _AppsViewState extends State<_AppsView>
                 ),
               ),
             ),
-            SizedBox(height: 8.mAp),
-            Expanded(
-              child: _dim(
-                degenerate,
-                filtered.isEmpty
-                    ? Center(
+          // Picker rides at the top of the scroll so it frees the screen for the
+          // app list on short displays instead of pinning a header.
+          Expanded(
+            child: _dim(
+              degenerate,
+              ListView.builder(
+                itemCount: 1 + (allMode ? 0 : 1) + bodyLen,
+                itemBuilder: (_, i) {
+                  if (i == 0) return picker;
+                  if (i == 1) return const Divider(height: 0);
+                  if (filtered.isEmpty) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 48.mAp),
+                      child: Center(
                         child: NullStatus(
                           label: appLocalizations.nullTip(
                             appLocalizations.routingApps,
                           ),
                         ),
-                      )
-                    : ListView.builder(
-                        itemCount: rows.length,
-                        itemBuilder: (_, i) {
-                          final row = rows[i];
-                          return row.header != null
-                              ? ListHeader(title: row.header!)
-                              : _appRow(row.pkg!);
-                        },
                       ),
+                    );
+                  }
+                  final row = rows[i - 2];
+                  return row.header != null
+                      ? ListHeader(title: row.header!)
+                      : _appRow(row.pkg!);
+                },
               ),
             ),
-          ],
+          ),
         ],
       ),
     );

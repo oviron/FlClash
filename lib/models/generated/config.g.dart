@@ -145,6 +145,20 @@ const _$AccessSortTypeEnumMap = {
   AccessSortType.time: 'time',
 };
 
+_AppFilterStash _$AppFilterStashFromJson(
+  Map<String, dynamic> json,
+) => _AppFilterStash(
+  include:
+      (json['include'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  exclude:
+      (json['exclude'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$AppFilterStashToJson(_AppFilterStash instance) =>
+    <String, dynamic>{'include': instance.include, 'exclude': instance.exclude};
+
 _VpnProps _$VpnPropsFromJson(Map<String, dynamic> json) => _VpnProps(
   enable: json['enable'] as bool? ?? true,
   systemProxy: json['systemProxy'] as bool? ?? false,

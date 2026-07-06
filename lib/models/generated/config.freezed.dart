@@ -626,6 +626,284 @@ as bool,
 
 
 /// @nodoc
+mixin _$AppFilterStash {
+
+ List<String> get include; List<String> get exclude;
+/// Create a copy of AppFilterStash
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AppFilterStashCopyWith<AppFilterStash> get copyWith => _$AppFilterStashCopyWithImpl<AppFilterStash>(this as AppFilterStash, _$identity);
+
+  /// Serializes this AppFilterStash to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppFilterStash&&const DeepCollectionEquality().equals(other.include, include)&&const DeepCollectionEquality().equals(other.exclude, exclude));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(include),const DeepCollectionEquality().hash(exclude));
+
+@override
+String toString() {
+  return 'AppFilterStash(include: $include, exclude: $exclude)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AppFilterStashCopyWith<$Res>  {
+  factory $AppFilterStashCopyWith(AppFilterStash value, $Res Function(AppFilterStash) _then) = _$AppFilterStashCopyWithImpl;
+@useResult
+$Res call({
+ List<String> include, List<String> exclude
+});
+
+
+
+
+}
+/// @nodoc
+class _$AppFilterStashCopyWithImpl<$Res>
+    implements $AppFilterStashCopyWith<$Res> {
+  _$AppFilterStashCopyWithImpl(this._self, this._then);
+
+  final AppFilterStash _self;
+  final $Res Function(AppFilterStash) _then;
+
+/// Create a copy of AppFilterStash
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? include = null,Object? exclude = null,}) {
+  return _then(_self.copyWith(
+include: null == include ? _self.include : include // ignore: cast_nullable_to_non_nullable
+as List<String>,exclude: null == exclude ? _self.exclude : exclude // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [AppFilterStash].
+extension AppFilterStashPatterns on AppFilterStash {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AppFilterStash value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AppFilterStash() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AppFilterStash value)  $default,){
+final _that = this;
+switch (_that) {
+case _AppFilterStash():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AppFilterStash value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AppFilterStash() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<String> include,  List<String> exclude)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AppFilterStash() when $default != null:
+return $default(_that.include,_that.exclude);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> include,  List<String> exclude)  $default,) {final _that = this;
+switch (_that) {
+case _AppFilterStash():
+return $default(_that.include,_that.exclude);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<String> include,  List<String> exclude)?  $default,) {final _that = this;
+switch (_that) {
+case _AppFilterStash() when $default != null:
+return $default(_that.include,_that.exclude);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _AppFilterStash implements AppFilterStash {
+  const _AppFilterStash({final  List<String> include = const [], final  List<String> exclude = const []}): _include = include,_exclude = exclude;
+  factory _AppFilterStash.fromJson(Map<String, dynamic> json) => _$AppFilterStashFromJson(json);
+
+ final  List<String> _include;
+@override@JsonKey() List<String> get include {
+  if (_include is EqualUnmodifiableListView) return _include;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_include);
+}
+
+ final  List<String> _exclude;
+@override@JsonKey() List<String> get exclude {
+  if (_exclude is EqualUnmodifiableListView) return _exclude;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_exclude);
+}
+
+
+/// Create a copy of AppFilterStash
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AppFilterStashCopyWith<_AppFilterStash> get copyWith => __$AppFilterStashCopyWithImpl<_AppFilterStash>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$AppFilterStashToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppFilterStash&&const DeepCollectionEquality().equals(other._include, _include)&&const DeepCollectionEquality().equals(other._exclude, _exclude));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_include),const DeepCollectionEquality().hash(_exclude));
+
+@override
+String toString() {
+  return 'AppFilterStash(include: $include, exclude: $exclude)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AppFilterStashCopyWith<$Res> implements $AppFilterStashCopyWith<$Res> {
+  factory _$AppFilterStashCopyWith(_AppFilterStash value, $Res Function(_AppFilterStash) _then) = __$AppFilterStashCopyWithImpl;
+@override @useResult
+$Res call({
+ List<String> include, List<String> exclude
+});
+
+
+
+
+}
+/// @nodoc
+class __$AppFilterStashCopyWithImpl<$Res>
+    implements _$AppFilterStashCopyWith<$Res> {
+  __$AppFilterStashCopyWithImpl(this._self, this._then);
+
+  final _AppFilterStash _self;
+  final $Res Function(_AppFilterStash) _then;
+
+/// Create a copy of AppFilterStash
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? include = null,Object? exclude = null,}) {
+  return _then(_AppFilterStash(
+include: null == include ? _self._include : include // ignore: cast_nullable_to_non_nullable
+as List<String>,exclude: null == exclude ? _self._exclude : exclude // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$VpnProps {
 
  bool get enable; bool get systemProxy; bool get ipv6; bool get allowBypass; bool get dnsHijacking; AccessControlProps get accessControlProps;

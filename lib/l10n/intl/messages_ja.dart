@@ -386,10 +386,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("フルーツサラダ"),
     "general": MessageLookupByLibrary.simpleMessage("一般"),
     "generalSettings": MessageLookupByLibrary.simpleMessage("一般設定"),
+    "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("自動更新"),
     "geoDatabases": MessageLookupByLibrary.simpleMessage("Geo データベース"),
     "geoDatabasesDesc": MessageLookupByLibrary.simpleMessage(
       "GeoIP, GeoSite, MMDB, ASN の更新",
     ),
+    "geoUpdateDaily": MessageLookupByLibrary.simpleMessage("毎日"),
+    "geoUpdateEvery3Days": MessageLookupByLibrary.simpleMessage("3 日ごと"),
+    "geoUpdateOff": MessageLookupByLibrary.simpleMessage("オフ"),
+    "geoUpdateWeekly": MessageLookupByLibrary.simpleMessage("毎週"),
     "geodataLoader": MessageLookupByLibrary.simpleMessage("Geo低メモリモード"),
     "geodataLoaderDesc": MessageLookupByLibrary.simpleMessage(
       "有効化するとGeo低メモリローダーを使用",
@@ -868,36 +873,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "グループ、サブルール、生ルール、YAML",
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("VPN を回避"),
-    "routingModeAll": MessageLookupByLibrary.simpleMessage("すべてのアプリ"),
-    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
-      "すべてのアプリが VPN を経由します。アプリごとの例外はありません。",
-    ),
-    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage(
-      "選択したアプリのみ",
-    ),
-    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage(
-      "選択以外のすべて",
-    ),
-    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
-      "このプロファイルは include と exclude の両方のリストを設定しています。include から exclude を引いたホワイトリストとして動作します。編集するには正規化してください。",
-    ),
-    "routingBothNormalize": MessageLookupByLibrary.simpleMessage("正規化"),
-    "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("自動更新"),
-    "geoUpdateOff": MessageLookupByLibrary.simpleMessage("オフ"),
-    "geoUpdateDaily": MessageLookupByLibrary.simpleMessage("毎日"),
-    "geoUpdateEvery3Days": MessageLookupByLibrary.simpleMessage("3 日ごと"),
-    "geoUpdateWeekly": MessageLookupByLibrary.simpleMessage("毎週"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage("変更を適用できませんでした"),
     "routingApps": MessageLookupByLibrary.simpleMessage("アプリ"),
-    "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(
-      "新規・未設定アプリのデフォルト:",
-    ),
-    "routingAppsRuleBlacklist": MessageLookupByLibrary.simpleMessage(
-      "すべてのアプリが VPN を通ります。下で指定したものだけが VPN を回避します。新規アプリは既定で VPN を通るため、銀行や行政アプリは手動で回避に設定してください。",
-    ),
-    "routingAppsRuleWhitelist": MessageLookupByLibrary.simpleMessage(
-      "下のリストのアプリだけが VPN を通ります。それ以外（新規アプリ含む）は VPN を通らず、VPN を認識しません。",
-    ),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage("変更済み"),
     "routingAppsSectionRest": MessageLookupByLibrary.simpleMessage("その他 · 既定"),
     "routingAppsSubtitle": MessageLookupByLibrary.simpleMessage(
@@ -907,6 +884,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingBehaviorDomain": MessageLookupByLibrary.simpleMessage("ドメイン"),
     "routingBehaviorIpcidr": MessageLookupByLibrary.simpleMessage("IP 範囲"),
     "routingBlock": MessageLookupByLibrary.simpleMessage("ブロック"),
+    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
+      "このプロファイルは include と exclude の両方のリストを設定しています。include から exclude を引いたホワイトリストとして動作します。編集するには正規化してください。",
+    ),
+    "routingBothNormalize": MessageLookupByLibrary.simpleMessage("正規化"),
     "routingBuild": MessageLookupByLibrary.simpleMessage("構成"),
     "routingCheckedTopToBottom": MessageLookupByLibrary.simpleMessage(
       "上から順に評価",
@@ -1017,14 +998,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingMatcherSrcPort": MessageLookupByLibrary.simpleMessage("送信元ポート"),
     "routingMatcherType": MessageLookupByLibrary.simpleMessage("マッチ方法"),
     "routingMatcherUid": MessageLookupByLibrary.simpleMessage("ユーザー ID (UID)"),
+    "routingModeAll": MessageLookupByLibrary.simpleMessage("すべて"),
+    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
+      "すべてのアプリが VPN を経由します。アプリごとの例外はありません。",
+    ),
+    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage("除外"),
+    "routingModeAllExceptDesc": MessageLookupByLibrary.simpleMessage(
+      "選択したアプリ以外のすべてが VPN を経由します。",
+    ),
+    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage("選択"),
+    "routingModeOnlySelectedDesc": MessageLookupByLibrary.simpleMessage(
+      "選択したアプリだけが VPN を経由します。ほかは経由しません。",
+    ),
     "routingModeSwitchTitle": MessageLookupByLibrary.simpleMessage(
       "モードを切り替えますか？",
-    ),
-    "routingModeSwitchToBypassBody": MessageLookupByLibrary.simpleMessage(
-      "切り替え後、指定したアプリだけが VPN を通り、それ以外は回避します。接続が一瞬切れます。続けますか？",
-    ),
-    "routingModeSwitchToVpnBody": MessageLookupByLibrary.simpleMessage(
-      "切り替え後、未設定の新規アプリ（回避に設定していない銀行・行政アプリを含む）は VPN を通ります。接続が一瞬切れます。続けますか？",
     ),
     "routingNewScenario": MessageLookupByLibrary.simpleMessage("新しいシナリオ"),
     "routingNoGroups": MessageLookupByLibrary.simpleMessage("グループがありません"),
@@ -1080,6 +1067,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
       "サブスクリプション URL",
+    ),
+    "routingSwitchBodyAll": MessageLookupByLibrary.simpleMessage(
+      "すべてのアプリが VPN を経由します（例外なし）。切り替え時に接続が一瞬途切れます。",
+    ),
+    "routingSwitchBodyAllExcept": MessageLookupByLibrary.simpleMessage(
+      "選択したアプリ以外のすべてが VPN を経由します。切り替え時に接続が一瞬途切れます。",
+    ),
+    "routingSwitchBodyOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "選択したアプリだけが VPN を経由し、ほかは直接接続します。切り替え時に接続が一瞬途切れます。",
     ),
     "routingViaVpn": MessageLookupByLibrary.simpleMessage("VPN 経由"),
     "routingWhatToBlock": MessageLookupByLibrary.simpleMessage("ブロック対象"),
@@ -1196,11 +1192,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("ビブラント"),
     "view": MessageLookupByLibrary.simpleMessage("表示"),
     "vpn": MessageLookupByLibrary.simpleMessage("VPN"),
-    "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
-      "VPN設定の変更が検出されました",
-    ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "VpnService経由で全システムトラフィックをルーティング",
+    ),
+    "vpnReestablishing": MessageLookupByLibrary.simpleMessage(
+      "変更を適用するため再接続しています。アクティブな接続が一瞬途切れます。",
     ),
     "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN設定"),
     "vpnTip": MessageLookupByLibrary.simpleMessage("変更はVPN再起動後に有効"),

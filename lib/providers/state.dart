@@ -114,13 +114,26 @@ ProxyState proxyState(Ref ref) {
 @riverpod
 VpnState vpnState(Ref ref) {
   final vpnProps = ref.watch(vpnSettingProvider);
-  final stack = ref.watch(
-    patchClashConfigProvider.select((state) => state.tun.stack),
+  final routeMode = ref.watch(
+    networkSettingProvider.select((state) => state.routeMode),
   );
+  final bypassDomain = ref.watch(
+    networkSettingProvider.select((state) => state.bypassDomain),
+  );
+  final tun = ref.watch(patchClashConfigProvider.select((state) => state.tun));
   final captureAll = ref.watch(
     patchClashConfigProvider.select((state) => state.mode == Mode.global),
   );
-  return VpnState(stack: stack, vpnProps: vpnProps, captureAll: captureAll);
+  final realTun = tun.getRealTun(routeMode);
+  return VpnState(
+    stack: realTun.stack,
+    vpnProps: vpnProps,
+    captureAll: captureAll,
+    routeAddress: realTun.routeAddress,
+    // Only baked into the Builder when the system HTTP proxy is on; otherwise it
+    // is inert and must not trigger a needless re-establish.
+    bypassDomain: vpnProps.systemProxy ? bypassDomain : const [],
+  );
 }
 
 @riverpod

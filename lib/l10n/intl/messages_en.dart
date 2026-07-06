@@ -454,10 +454,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("FruitSalad"),
     "general": MessageLookupByLibrary.simpleMessage("General"),
     "generalSettings": MessageLookupByLibrary.simpleMessage("General settings"),
+    "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("Auto-update"),
     "geoDatabases": MessageLookupByLibrary.simpleMessage("Geo databases"),
     "geoDatabasesDesc": MessageLookupByLibrary.simpleMessage(
       "GeoIP, GeoSite, MMDB, ASN updaters",
     ),
+    "geoUpdateDaily": MessageLookupByLibrary.simpleMessage("Daily"),
+    "geoUpdateEvery3Days": MessageLookupByLibrary.simpleMessage("Every 3 days"),
+    "geoUpdateOff": MessageLookupByLibrary.simpleMessage("Off"),
+    "geoUpdateWeekly": MessageLookupByLibrary.simpleMessage("Weekly"),
     "geodataLoader": MessageLookupByLibrary.simpleMessage(
       "Geo Low Memory Mode",
     ),
@@ -1100,44 +1105,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Groups, sub-rules, raw rules and YAML",
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("Bypass VPN"),
-    "routingModeAll": MessageLookupByLibrary.simpleMessage("All apps"),
-    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
-      "Every app goes through the VPN. No per-app exceptions.",
-    ),
-    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage(
-      "Only selected",
-    ),
-    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage(
-      "All except selected",
-    ),
-    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
-      "This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.",
-    ),
-    "routingBothNormalize": MessageLookupByLibrary.simpleMessage("Normalize"),
-    "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("Auto-update"),
-    "geoUpdateOff": MessageLookupByLibrary.simpleMessage("Off"),
-    "geoUpdateDaily": MessageLookupByLibrary.simpleMessage("Daily"),
-    "geoUpdateEvery3Days": MessageLookupByLibrary.simpleMessage("Every 3 days"),
-    "geoUpdateWeekly": MessageLookupByLibrary.simpleMessage("Weekly"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t apply the change",
     ),
     "routingApps": MessageLookupByLibrary.simpleMessage("Apps"),
-    "routingHideSystemApps": MessageLookupByLibrary.simpleMessage(
-      "Hide system apps",
-    ),
-    "routingSkippedNodes": MessageLookupByLibrary.simpleMessage(
-      "Some nodes of an unsupported type were skipped",
-    ),
-    "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(
-      "Default for new and unset apps:",
-    ),
-    "routingAppsRuleBlacklist": MessageLookupByLibrary.simpleMessage(
-      "All apps go through the VPN. Only the ones marked below bypass it. New apps go through the VPN by default; move banking and government apps off it manually.",
-    ),
-    "routingAppsRuleWhitelist": MessageLookupByLibrary.simpleMessage(
-      "Only apps in the list below go through the VPN. Everything else, including new apps, stays off the VPN and cannot see it.",
-    ),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage(
       "Changed",
     ),
@@ -1153,6 +1124,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingBehaviorDomain": MessageLookupByLibrary.simpleMessage("Domains"),
     "routingBehaviorIpcidr": MessageLookupByLibrary.simpleMessage("IP ranges"),
     "routingBlock": MessageLookupByLibrary.simpleMessage("Block"),
+    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
+      "This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.",
+    ),
+    "routingBothNormalize": MessageLookupByLibrary.simpleMessage("Normalize"),
     "routingBuild": MessageLookupByLibrary.simpleMessage("Build"),
     "routingCheckedTopToBottom": MessageLookupByLibrary.simpleMessage(
       "Checked top to bottom",
@@ -1204,6 +1179,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingGroups": MessageLookupByLibrary.simpleMessage("Groups"),
     "routingGroupsSubtitle": MessageLookupByLibrary.simpleMessage(
       "How servers are chosen",
+    ),
+    "routingHideSystemApps": MessageLookupByLibrary.simpleMessage(
+      "Hide system apps",
     ),
     "routingImportFailed": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t read that link",
@@ -1297,14 +1275,20 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingMatcherType": MessageLookupByLibrary.simpleMessage("Match by"),
     "routingMatcherUid": MessageLookupByLibrary.simpleMessage("User ID (UID)"),
+    "routingModeAll": MessageLookupByLibrary.simpleMessage("All"),
+    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
+      "Every app goes through the VPN. No per-app exceptions.",
+    ),
+    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage("Except"),
+    "routingModeAllExceptDesc": MessageLookupByLibrary.simpleMessage(
+      "Every app uses the VPN except the ones you pick.",
+    ),
+    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage("Selected"),
+    "routingModeOnlySelectedDesc": MessageLookupByLibrary.simpleMessage(
+      "Only the apps you pick use the VPN. The rest stay off it.",
+    ),
     "routingModeSwitchTitle": MessageLookupByLibrary.simpleMessage(
       "Switch mode?",
-    ),
-    "routingModeSwitchToBypassBody": MessageLookupByLibrary.simpleMessage(
-      "After the switch, only apps you mark go through the VPN; everything else stays off it. Connections drop for a second. Continue?",
-    ),
-    "routingModeSwitchToVpnBody": MessageLookupByLibrary.simpleMessage(
-      "After the switch, new and unmarked apps, including banking and government apps you haven\'t moved off, will go through the VPN. Connections drop for a second. Continue?",
     ),
     "routingNewScenario": MessageLookupByLibrary.simpleMessage("New scenario"),
     "routingNoGroups": MessageLookupByLibrary.simpleMessage("No groups yet"),
@@ -1367,6 +1351,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingSetAsExit": MessageLookupByLibrary.simpleMessage(
       "Use as active exit",
     ),
+    "routingSkippedNodes": MessageLookupByLibrary.simpleMessage(
+      "Some nodes of an unsupported type were skipped",
+    ),
     "routingSourceCountry": MessageLookupByLibrary.simpleMessage("By country"),
     "routingSourceLink": MessageLookupByLibrary.simpleMessage("By link"),
     "routingSourcePaste": MessageLookupByLibrary.simpleMessage("Paste domains"),
@@ -1376,6 +1363,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
       "Subscription URL",
+    ),
+    "routingSwitchBodyAll": MessageLookupByLibrary.simpleMessage(
+      "All apps will use the VPN, with no exceptions. The connection drops for a second.",
+    ),
+    "routingSwitchBodyAllExcept": MessageLookupByLibrary.simpleMessage(
+      "All apps will use the VPN except the ones you pick. The connection drops for a second.",
+    ),
+    "routingSwitchBodyOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "Only the apps you pick will use the VPN; the rest go direct. The connection drops for a second.",
     ),
     "routingViaVpn": MessageLookupByLibrary.simpleMessage("Via VPN"),
     "routingWhatToBlock": MessageLookupByLibrary.simpleMessage("What to block"),
@@ -1506,11 +1502,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("Vibrant"),
     "view": MessageLookupByLibrary.simpleMessage("View"),
     "vpn": MessageLookupByLibrary.simpleMessage("VPN"),
-    "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
-      "VPN configuration change detected",
-    ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "Auto routes all system traffic through VpnService",
+    ),
+    "vpnReestablishing": MessageLookupByLibrary.simpleMessage(
+      "Reconnecting to apply the change. Active connections briefly drop.",
     ),
     "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN settings"),
     "vpnTip": MessageLookupByLibrary.simpleMessage(

@@ -269,7 +269,7 @@ final class VpnStateProvider
   }
 }
 
-String _$vpnStateHash() => r'f36a63d1991da9e19c70fd130674011551586936';
+String _$vpnStateHash() => r'41b25d4db5d4e4601f05d0f7b4fe2870a281eb4f';
 
 @ProviderFor(navigationState)
 const navigationStateProvider = NavigationStateProvider._();
@@ -2039,7 +2039,7 @@ final class OverlayTopOffsetProvider
   }
 }
 
-String _$overlayTopOffsetHash() => r'67ca70e4dc150282b83ac042f5b9305cecb8dc7f';
+String _$overlayTopOffsetHash() => r'65766b849410d9a8e9d6caa56b7f935d9b3964df';
 
 @ProviderFor(profile)
 const profileProvider = ProfileFamily._();

@@ -280,6 +280,10 @@ abstract class VpnState with _$VpnState {
     // Global mode captures every app (empty ACL). Part of the tun identity so
     // toggling Global re-establishes the tunnel to apply the new app list.
     @Default(false) bool captureAll,
+    // Establish-only OS route table + system-proxy bypass list, baked into
+    // VpnService.Builder; changing them must re-establish, not just hot-apply.
+    @Default([]) List<String> routeAddress,
+    @Default([]) List<String> bypassDomain,
   }) = _VpnState;
 }
 

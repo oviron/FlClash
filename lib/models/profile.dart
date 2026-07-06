@@ -65,6 +65,7 @@ abstract class Profile with _$Profile {
     int? scriptId,
     int? order,
     AccessControlProps? accessControlProps,
+    AppFilterStash? appFilterStash,
   }) = _Profile;
 
   factory Profile.fromJson(Map<String, Object?> json) =>

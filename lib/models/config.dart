@@ -121,6 +121,21 @@ extension AccessControlPropsExt on AccessControlProps {
   };
 }
 
+/// Per-profile memory of each filtering mode's app selection, kept so switching
+/// through `all` (which clears the tun package keys) never loses the lists. Not
+/// a routing source: the profile YAML stays authoritative; this only feeds a
+/// YAML write when a mode is re-entered.
+@freezed
+abstract class AppFilterStash with _$AppFilterStash {
+  const factory AppFilterStash({
+    @Default([]) List<String> include,
+    @Default([]) List<String> exclude,
+  }) = _AppFilterStash;
+
+  factory AppFilterStash.fromJson(Map<String, Object?> json) =>
+      _$AppFilterStashFromJson(json);
+}
+
 // VpnService.Builder is allow XOR disallow. With both YAML keys non-empty
 // we mirror mihomo sing-tun: acceptList = include \ exclude, fall back to
 // include if subtraction empties the set (else only FlClash itself routes).

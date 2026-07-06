@@ -57,6 +57,9 @@ _Profile _$ProfileFromJson(Map<String, dynamic> json) => _Profile(
       : AccessControlProps.fromJson(
           json['accessControlProps'] as Map<String, dynamic>,
         ),
+  appFilterStash: json['appFilterStash'] == null
+      ? null
+      : AppFilterStash.fromJson(json['appFilterStash'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$ProfileToJson(_Profile instance) => <String, dynamic>{
@@ -74,6 +77,7 @@ Map<String, dynamic> _$ProfileToJson(_Profile instance) => <String, dynamic>{
   'scriptId': instance.scriptId,
   'order': instance.order,
   'accessControlProps': instance.accessControlProps,
+  'appFilterStash': instance.appFilterStash,
 };
 
 const _$OverwriteTypeEnumMap = {

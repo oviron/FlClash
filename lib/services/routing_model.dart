@@ -492,6 +492,70 @@ class RoutingModel {
   );
 }
 
+/// Switches [current] to [newMode] without losing either filtering mode's own
+/// app selection. Leaving whitelist/blacklist captures that mode's package set
+/// into the returned stash; entering one restores its stashed set when the
+/// profile carries none (e.g. coming back from `all`). The caller writes and
+/// re-reads only the returned model, so the profile YAML stays authoritative.
+({RoutingModel model, List<String> stashInclude, List<String> stashExclude})
+switchTunnelMode({
+  required RoutingModel current,
+  required List<String> stashInclude,
+  required List<String> stashExclude,
+  required TunnelMode newMode,
+}) {
+  List<String> includeOf(RoutingModel m) => [
+    for (final a in m.apps)
+      if (a.dest is! ToBypass) a.packageName,
+  ];
+  List<String> excludeOf(RoutingModel m) => [
+    for (final a in m.apps)
+      if (a.dest is ToBypass) a.packageName,
+  ];
+
+  var nextInclude = stashInclude;
+  var nextExclude = stashExclude;
+  switch (current.tunnelMode) {
+    case TunnelMode.whitelist:
+      nextInclude = includeOf(current);
+    case TunnelMode.blacklist:
+      nextExclude = excludeOf(current);
+    case TunnelMode.all:
+      break;
+  }
+
+  final List<AppAssignment> apps;
+  switch (newMode) {
+    case TunnelMode.whitelist:
+      final cur = includeOf(current);
+      apps = [
+        for (final p in cur.isNotEmpty ? cur : nextInclude)
+          AppAssignment(packageName: p, dest: toVpn),
+      ];
+    case TunnelMode.blacklist:
+      final cur = excludeOf(current);
+      apps = [
+        for (final p in cur.isNotEmpty ? cur : nextExclude)
+          AppAssignment(packageName: p, dest: toBypass),
+      ];
+    case TunnelMode.all:
+      apps = current.apps;
+  }
+
+  return (
+    model: current.copyWith(
+      tunnelMode: newMode,
+      apps: apps,
+      degenerateBoth: false,
+      defaultRoute: newMode == TunnelMode.whitelist
+          ? current.defaultRoute
+          : toVpn,
+    ),
+    stashInclude: nextInclude,
+    stashExclude: nextExclude,
+  );
+}
+
 List<String> _replaceName(List<String> xs, String from, String to) => [
   for (final x in xs) x == from ? to : x,
 ];

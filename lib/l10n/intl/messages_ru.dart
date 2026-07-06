@@ -477,10 +477,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("Фруктовый микс"),
     "general": MessageLookupByLibrary.simpleMessage("Общие"),
     "generalSettings": MessageLookupByLibrary.simpleMessage("Общие настройки"),
+    "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("Автообновление"),
     "geoDatabases": MessageLookupByLibrary.simpleMessage("Гео-базы"),
     "geoDatabasesDesc": MessageLookupByLibrary.simpleMessage(
       "Обновление GeoIP, GeoSite, MMDB, ASN",
     ),
+    "geoUpdateDaily": MessageLookupByLibrary.simpleMessage("Ежедневно"),
+    "geoUpdateEvery3Days": MessageLookupByLibrary.simpleMessage("Каждые 3 дня"),
+    "geoUpdateOff": MessageLookupByLibrary.simpleMessage("Выкл"),
+    "geoUpdateWeekly": MessageLookupByLibrary.simpleMessage("Еженедельно"),
     "geodataLoader": MessageLookupByLibrary.simpleMessage(
       "Режим низкого потребления памяти для геоданных",
     ),
@@ -1163,40 +1168,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Группы, суб-правила, правила и YAML",
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("Мимо VPN"),
-    "routingModeAll": MessageLookupByLibrary.simpleMessage("Все приложения"),
-    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
-      "Через VPN идут все приложения. Без исключений по приложениям.",
-    ),
-    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage(
-      "Только выбранные",
-    ),
-    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage(
-      "Все, кроме выбранных",
-    ),
-    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
-      "Профиль задаёт оба списка (include и exclude). Работает как whitelist: include минус exclude. Нормализуйте, чтобы редактировать.",
-    ),
-    "routingBothNormalize": MessageLookupByLibrary.simpleMessage(
-      "Нормализовать",
-    ),
-    "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("Автообновление"),
-    "geoUpdateOff": MessageLookupByLibrary.simpleMessage("Выкл"),
-    "geoUpdateDaily": MessageLookupByLibrary.simpleMessage("Ежедневно"),
-    "geoUpdateEvery3Days": MessageLookupByLibrary.simpleMessage("Каждые 3 дня"),
-    "geoUpdateWeekly": MessageLookupByLibrary.simpleMessage("Еженедельно"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
       "Не удалось применить изменение",
     ),
     "routingApps": MessageLookupByLibrary.simpleMessage("Приложения"),
-    "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(
-      "По умолчанию для новых и незаданных приложений:",
-    ),
-    "routingAppsRuleBlacklist": MessageLookupByLibrary.simpleMessage(
-      "Через VPN идут все приложения. Мимо VPN идут только отмеченные ниже. Новые приложения по умолчанию идут через VPN, банк и Госуслуги уводите мимо вручную.",
-    ),
-    "routingAppsRuleWhitelist": MessageLookupByLibrary.simpleMessage(
-      "Через VPN идут только приложения из списка ниже. Все остальные, включая новые, идут мимо VPN и не видят его.",
-    ),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage(
       "Изменённые",
     ),
@@ -1214,6 +1189,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Диапазоны IP",
     ),
     "routingBlock": MessageLookupByLibrary.simpleMessage("Блокировать"),
+    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
+      "Профиль задаёт оба списка (include и exclude). Работает как whitelist: include минус exclude. Нормализуйте, чтобы редактировать.",
+    ),
+    "routingBothNormalize": MessageLookupByLibrary.simpleMessage(
+      "Нормализовать",
+    ),
     "routingBuild": MessageLookupByLibrary.simpleMessage("Конструктор"),
     "routingCheckedTopToBottom": MessageLookupByLibrary.simpleMessage(
       "Проверяется сверху вниз",
@@ -1380,14 +1361,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingMatcherUid": MessageLookupByLibrary.simpleMessage(
       "ID пользователя (UID)",
     ),
+    "routingModeAll": MessageLookupByLibrary.simpleMessage("Все"),
+    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
+      "Через VPN идут все приложения. Без исключений по приложениям.",
+    ),
+    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage("Кроме"),
+    "routingModeAllExceptDesc": MessageLookupByLibrary.simpleMessage(
+      "Через VPN идут все приложения, кроме выбранных.",
+    ),
+    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "Выбранные",
+    ),
+    "routingModeOnlySelectedDesc": MessageLookupByLibrary.simpleMessage(
+      "Через VPN идут только выбранные приложения. Остальные идут мимо.",
+    ),
     "routingModeSwitchTitle": MessageLookupByLibrary.simpleMessage(
       "Сменить режим?",
-    ),
-    "routingModeSwitchToBypassBody": MessageLookupByLibrary.simpleMessage(
-      "После смены через VPN пойдут только отмеченные приложения, остальные останутся мимо. Соединения прервутся на секунду. Продолжить?",
-    ),
-    "routingModeSwitchToVpnBody": MessageLookupByLibrary.simpleMessage(
-      "После смены новые и неотмеченные приложения, включая банк и Госуслуги, если вы их не увели, пойдут через VPN. Соединения прервутся на секунду. Продолжить?",
     ),
     "routingNewScenario": MessageLookupByLibrary.simpleMessage(
       "Новый сценарий",
@@ -1469,6 +1458,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingSubscriptionUrl": MessageLookupByLibrary.simpleMessage(
       "URL подписки",
+    ),
+    "routingSwitchBodyAll": MessageLookupByLibrary.simpleMessage(
+      "Все приложения пойдут через VPN, без исключений. Соединение на секунду прервётся.",
+    ),
+    "routingSwitchBodyAllExcept": MessageLookupByLibrary.simpleMessage(
+      "Через VPN пойдут все приложения, кроме выбранных. Соединение на секунду прервётся.",
+    ),
+    "routingSwitchBodyOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "Через VPN пойдут только выбранные приложения, остальные напрямую. Соединение на секунду прервётся.",
     ),
     "routingViaVpn": MessageLookupByLibrary.simpleMessage("Через VPN"),
     "routingWhatToBlock": MessageLookupByLibrary.simpleMessage(
@@ -1611,11 +1609,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("Яркие"),
     "view": MessageLookupByLibrary.simpleMessage("Просмотр"),
     "vpn": MessageLookupByLibrary.simpleMessage("VPN"),
-    "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
-      "Обнаружено изменение конфигурации VPN",
-    ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "Автоматически направляет весь системный трафик через VpnService",
+    ),
+    "vpnReestablishing": MessageLookupByLibrary.simpleMessage(
+      "Переподключение для применения изменения. Активные соединения ненадолго прервутся.",
     ),
     "vpnSettings": MessageLookupByLibrary.simpleMessage("Настройки VPN"),
     "vpnTip": MessageLookupByLibrary.simpleMessage(

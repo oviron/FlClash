@@ -358,10 +358,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("果缤纷"),
     "general": MessageLookupByLibrary.simpleMessage("常规"),
     "generalSettings": MessageLookupByLibrary.simpleMessage("通用设置"),
+    "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("自动更新"),
     "geoDatabases": MessageLookupByLibrary.simpleMessage("地理数据库"),
     "geoDatabasesDesc": MessageLookupByLibrary.simpleMessage(
       "GeoIP、GeoSite、MMDB、ASN 更新",
     ),
+    "geoUpdateDaily": MessageLookupByLibrary.simpleMessage("每天"),
+    "geoUpdateEvery3Days": MessageLookupByLibrary.simpleMessage("每 3 天"),
+    "geoUpdateOff": MessageLookupByLibrary.simpleMessage("关闭"),
+    "geoUpdateWeekly": MessageLookupByLibrary.simpleMessage("每周"),
     "geodataLoader": MessageLookupByLibrary.simpleMessage("Geo低内存模式"),
     "geodataLoaderDesc": MessageLookupByLibrary.simpleMessage("开启将使用Geo低内存加载器"),
     "global": MessageLookupByLibrary.simpleMessage("全局"),
@@ -784,36 +789,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "分组、子规则、原始规则和 YAML",
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("绕过 VPN"),
-    "routingModeAll": MessageLookupByLibrary.simpleMessage("所有应用"),
-    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
-      "所有应用都通过 VPN，没有按应用设置的例外。",
-    ),
-    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage(
-      "仅所选应用",
-    ),
-    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage(
-      "除所选外的全部",
-    ),
-    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
-      "此配置同时设置了 include 和 exclude 列表，将作为 include 减 exclude 的白名单运行。规范化后方可编辑。",
-    ),
-    "routingBothNormalize": MessageLookupByLibrary.simpleMessage("规范化"),
-    "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("自动更新"),
-    "geoUpdateOff": MessageLookupByLibrary.simpleMessage("关闭"),
-    "geoUpdateDaily": MessageLookupByLibrary.simpleMessage("每天"),
-    "geoUpdateEvery3Days": MessageLookupByLibrary.simpleMessage("每 3 天"),
-    "geoUpdateWeekly": MessageLookupByLibrary.simpleMessage("每周"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage("无法应用更改"),
     "routingApps": MessageLookupByLibrary.simpleMessage("应用"),
-    "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(
-      "新应用和未设置应用的默认行为：",
-    ),
-    "routingAppsRuleBlacklist": MessageLookupByLibrary.simpleMessage(
-      "所有应用都走 VPN。只有下面标记的应用绕过。新应用默认走 VPN，请手动将银行和政务应用移出。",
-    ),
-    "routingAppsRuleWhitelist": MessageLookupByLibrary.simpleMessage(
-      "只有下面列表中的应用走 VPN。其余应用（包括新应用）不走 VPN，也看不到 VPN。",
-    ),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage("已更改"),
     "routingAppsSectionRest": MessageLookupByLibrary.simpleMessage("其余 · 默认"),
     "routingAppsSubtitle": MessageLookupByLibrary.simpleMessage("哪些应用如何使用VPN"),
@@ -821,6 +798,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingBehaviorDomain": MessageLookupByLibrary.simpleMessage("域名"),
     "routingBehaviorIpcidr": MessageLookupByLibrary.simpleMessage("IP 段"),
     "routingBlock": MessageLookupByLibrary.simpleMessage("屏蔽"),
+    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
+      "此配置同时设置了 include 和 exclude 列表，将作为 include 减 exclude 的白名单运行。规范化后方可编辑。",
+    ),
+    "routingBothNormalize": MessageLookupByLibrary.simpleMessage("规范化"),
     "routingBuild": MessageLookupByLibrary.simpleMessage("构建"),
     "routingCheckedTopToBottom": MessageLookupByLibrary.simpleMessage("自上而下匹配"),
     "routingConditions": MessageLookupByLibrary.simpleMessage("条件"),
@@ -915,13 +896,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingMatcherSrcPort": MessageLookupByLibrary.simpleMessage("来源端口"),
     "routingMatcherType": MessageLookupByLibrary.simpleMessage("匹配方式"),
     "routingMatcherUid": MessageLookupByLibrary.simpleMessage("用户 ID (UID)"),
+    "routingModeAll": MessageLookupByLibrary.simpleMessage("全部"),
+    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
+      "所有应用都通过 VPN，没有按应用设置的例外。",
+    ),
+    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage("排除"),
+    "routingModeAllExceptDesc": MessageLookupByLibrary.simpleMessage(
+      "除所选应用外，全部通过 VPN。",
+    ),
+    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage("所选"),
+    "routingModeOnlySelectedDesc": MessageLookupByLibrary.simpleMessage(
+      "只有所选应用通过 VPN，其余不通过。",
+    ),
     "routingModeSwitchTitle": MessageLookupByLibrary.simpleMessage("切换模式？"),
-    "routingModeSwitchToBypassBody": MessageLookupByLibrary.simpleMessage(
-      "切换后，只有你标记的应用走 VPN，其余绕过。连接会中断一秒。继续？",
-    ),
-    "routingModeSwitchToVpnBody": MessageLookupByLibrary.simpleMessage(
-      "切换后，未标记的新应用（包括你未移出的银行和政务应用）将走 VPN。连接会中断一秒。继续？",
-    ),
     "routingNewScenario": MessageLookupByLibrary.simpleMessage("新建场景"),
     "routingNoGroups": MessageLookupByLibrary.simpleMessage("暂无分组"),
     "routingNoLists": MessageLookupByLibrary.simpleMessage("暂无列表"),
@@ -969,6 +956,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingSubscription": MessageLookupByLibrary.simpleMessage("订阅"),
     "routingSubscriptionAdded": MessageLookupByLibrary.simpleMessage("已添加订阅"),
     "routingSubscriptionUrl": MessageLookupByLibrary.simpleMessage("订阅 URL"),
+    "routingSwitchBodyAll": MessageLookupByLibrary.simpleMessage(
+      "所有应用都将通过 VPN，没有例外。切换时连接会中断一秒。",
+    ),
+    "routingSwitchBodyAllExcept": MessageLookupByLibrary.simpleMessage(
+      "除所选应用外，全部通过 VPN。切换时连接会中断一秒。",
+    ),
+    "routingSwitchBodyOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "只有所选应用通过 VPN，其余直连。切换时连接会中断一秒。",
+    ),
     "routingViaVpn": MessageLookupByLibrary.simpleMessage("经 VPN"),
     "routingWhatToBlock": MessageLookupByLibrary.simpleMessage("屏蔽内容"),
     "ru": MessageLookupByLibrary.simpleMessage("俄语"),
@@ -1076,11 +1072,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("活力"),
     "view": MessageLookupByLibrary.simpleMessage("查看"),
     "vpn": MessageLookupByLibrary.simpleMessage("VPN"),
-    "vpnConfigChangeDetected": MessageLookupByLibrary.simpleMessage(
-      "检测到VPN相关配置改动",
-    ),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "通过VpnService自动路由系统所有流量",
+    ),
+    "vpnReestablishing": MessageLookupByLibrary.simpleMessage(
+      "正在重新连接以应用更改。当前连接会短暂中断。",
     ),
     "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN 设置"),
     "vpnTip": MessageLookupByLibrary.simpleMessage("重启VPN后改变生效"),

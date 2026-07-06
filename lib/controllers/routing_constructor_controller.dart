@@ -40,6 +40,42 @@ extension RoutingConstructorController on AppController {
     return error;
   }
 
+  /// Switches [profileId]'s tunnel mode while preserving each mode's own app
+  /// selection through the per-profile stash, so passing through `all` never
+  /// loses a list. Writes only the resulting model (YAML stays the single source
+  /// of truth) and updates the stash after a successful write. Returns a
+  /// validation error (nothing persisted) or null.
+  Future<String?> applyTunnelModeSwitch(
+    int profileId,
+    TunnelMode newMode,
+  ) async {
+    final current = await readRoutingModel(profileId);
+    if (current.tunnelMode == newMode) return null;
+    final stash =
+        _ref.read(profilesProvider).getProfile(profileId)?.appFilterStash ??
+        const AppFilterStash();
+    final result = switchTunnelMode(
+      current: current,
+      stashInclude: stash.include,
+      stashExclude: stash.exclude,
+      newMode: newMode,
+    );
+    final error = await writeRoutingModel(profileId, result.model);
+    if (error != null) return error;
+    _ref
+        .read(profilesProvider.notifier)
+        .updateProfile(
+          profileId,
+          (p) => p.copyWith(
+            appFilterStash: AppFilterStash(
+              include: result.stashInclude,
+              exclude: result.stashExclude,
+            ),
+          ),
+        );
+    return null;
+  }
+
   // Validate the candidate config, persist it, and hot-apply when it targets the
   // active profile. Returns a validation error (file untouched) or null.
   Future<String?> _writeValidatedApply(

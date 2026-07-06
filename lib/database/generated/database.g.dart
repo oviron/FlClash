@@ -153,6 +153,15 @@ class $ProfilesTable extends Profiles
         $ProfilesTable.$converteraccessControlProps,
       );
   @override
+  late final GeneratedColumnWithTypeConverter<AppFilterStash?, String>
+  appFilterStash = GeneratedColumn<String>(
+    'app_filter_stash',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<AppFilterStash?>($ProfilesTable.$converterappFilterStash);
+  @override
   List<GeneratedColumn> get $columns => [
     id,
     label,
@@ -168,6 +177,7 @@ class $ProfilesTable extends Profiles
     unfoldSet,
     order,
     accessControlProps,
+    appFilterStash,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -324,6 +334,12 @@ class $ProfilesTable extends Profiles
           data['${effectivePrefix}access_control_props'],
         ),
       ),
+      appFilterStash: $ProfilesTable.$converterappFilterStash.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}app_filter_stash'],
+        ),
+      ),
     );
   }
 
@@ -344,6 +360,8 @@ class $ProfilesTable extends Profiles
       const StringSetConverter();
   static TypeConverter<AccessControlProps?, String?>
   $converteraccessControlProps = const AccessControlPropsConverter();
+  static TypeConverter<AppFilterStash?, String?> $converterappFilterStash =
+      const AppFilterStashConverter();
 }
 
 class RawProfile extends DataClass implements Insertable<RawProfile> {
@@ -361,6 +379,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
   final Set<String> unfoldSet;
   final int? order;
   final AccessControlProps? accessControlProps;
+  final AppFilterStash? appFilterStash;
   const RawProfile({
     required this.id,
     required this.label,
@@ -376,6 +395,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     required this.unfoldSet,
     this.order,
     this.accessControlProps,
+    this.appFilterStash,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -424,6 +444,11 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
         $ProfilesTable.$converteraccessControlProps.toSql(accessControlProps),
       );
     }
+    if (!nullToAbsent || appFilterStash != null) {
+      map['app_filter_stash'] = Variable<String>(
+        $ProfilesTable.$converterappFilterStash.toSql(appFilterStash),
+      );
+    }
     return map;
   }
 
@@ -455,6 +480,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       accessControlProps: accessControlProps == null && nullToAbsent
           ? const Value.absent()
           : Value(accessControlProps),
+      appFilterStash: appFilterStash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(appFilterStash),
     );
   }
 
@@ -488,6 +516,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       accessControlProps: serializer.fromJson<AccessControlProps?>(
         json['accessControlProps'],
       ),
+      appFilterStash: serializer.fromJson<AppFilterStash?>(
+        json['appFilterStash'],
+      ),
     );
   }
   @override
@@ -516,6 +547,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       'accessControlProps': serializer.toJson<AccessControlProps?>(
         accessControlProps,
       ),
+      'appFilterStash': serializer.toJson<AppFilterStash?>(appFilterStash),
     };
   }
 
@@ -534,6 +566,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     Set<String>? unfoldSet,
     Value<int?> order = const Value.absent(),
     Value<AccessControlProps?> accessControlProps = const Value.absent(),
+    Value<AppFilterStash?> appFilterStash = const Value.absent(),
   }) => RawProfile(
     id: id ?? this.id,
     label: label ?? this.label,
@@ -558,6 +591,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     accessControlProps: accessControlProps.present
         ? accessControlProps.value
         : this.accessControlProps,
+    appFilterStash: appFilterStash.present
+        ? appFilterStash.value
+        : this.appFilterStash,
   );
   RawProfile copyWithCompanion(ProfilesCompanion data) {
     return RawProfile(
@@ -591,6 +627,9 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
       accessControlProps: data.accessControlProps.present
           ? data.accessControlProps.value
           : this.accessControlProps,
+      appFilterStash: data.appFilterStash.present
+          ? data.appFilterStash.value
+          : this.appFilterStash,
     );
   }
 
@@ -610,7 +649,8 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
           ..write('selectedMap: $selectedMap, ')
           ..write('unfoldSet: $unfoldSet, ')
           ..write('order: $order, ')
-          ..write('accessControlProps: $accessControlProps')
+          ..write('accessControlProps: $accessControlProps, ')
+          ..write('appFilterStash: $appFilterStash')
           ..write(')'))
         .toString();
   }
@@ -631,6 +671,7 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
     unfoldSet,
     order,
     accessControlProps,
+    appFilterStash,
   );
   @override
   bool operator ==(Object other) =>
@@ -649,7 +690,8 @@ class RawProfile extends DataClass implements Insertable<RawProfile> {
           other.selectedMap == this.selectedMap &&
           other.unfoldSet == this.unfoldSet &&
           other.order == this.order &&
-          other.accessControlProps == this.accessControlProps);
+          other.accessControlProps == this.accessControlProps &&
+          other.appFilterStash == this.appFilterStash);
 }
 
 class ProfilesCompanion extends UpdateCompanion<RawProfile> {
@@ -667,6 +709,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
   final Value<Set<String>> unfoldSet;
   final Value<int?> order;
   final Value<AccessControlProps?> accessControlProps;
+  final Value<AppFilterStash?> appFilterStash;
   const ProfilesCompanion({
     this.id = const Value.absent(),
     this.label = const Value.absent(),
@@ -682,6 +725,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     this.unfoldSet = const Value.absent(),
     this.order = const Value.absent(),
     this.accessControlProps = const Value.absent(),
+    this.appFilterStash = const Value.absent(),
   });
   ProfilesCompanion.insert({
     this.id = const Value.absent(),
@@ -698,6 +742,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     required Set<String> unfoldSet,
     this.order = const Value.absent(),
     this.accessControlProps = const Value.absent(),
+    this.appFilterStash = const Value.absent(),
   }) : label = Value(label),
        url = Value(url),
        overwriteType = Value(overwriteType),
@@ -720,6 +765,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     Expression<String>? unfoldSet,
     Expression<int>? order,
     Expression<String>? accessControlProps,
+    Expression<String>? appFilterStash,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -738,6 +784,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
       if (order != null) 'order': order,
       if (accessControlProps != null)
         'access_control_props': accessControlProps,
+      if (appFilterStash != null) 'app_filter_stash': appFilterStash,
     });
   }
 
@@ -756,6 +803,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
     Value<Set<String>>? unfoldSet,
     Value<int?>? order,
     Value<AccessControlProps?>? accessControlProps,
+    Value<AppFilterStash?>? appFilterStash,
   }) {
     return ProfilesCompanion(
       id: id ?? this.id,
@@ -773,6 +821,7 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
       unfoldSet: unfoldSet ?? this.unfoldSet,
       order: order ?? this.order,
       accessControlProps: accessControlProps ?? this.accessControlProps,
+      appFilterStash: appFilterStash ?? this.appFilterStash,
     );
   }
 
@@ -835,6 +884,11 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
         ),
       );
     }
+    if (appFilterStash.present) {
+      map['app_filter_stash'] = Variable<String>(
+        $ProfilesTable.$converterappFilterStash.toSql(appFilterStash.value),
+      );
+    }
     return map;
   }
 
@@ -854,7 +908,8 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
           ..write('selectedMap: $selectedMap, ')
           ..write('unfoldSet: $unfoldSet, ')
           ..write('order: $order, ')
-          ..write('accessControlProps: $accessControlProps')
+          ..write('accessControlProps: $accessControlProps, ')
+          ..write('appFilterStash: $appFilterStash')
           ..write(')'))
         .toString();
   }
@@ -2240,6 +2295,7 @@ typedef $$ProfilesTableCreateCompanionBuilder =
       required Set<String> unfoldSet,
       Value<int?> order,
       Value<AccessControlProps?> accessControlProps,
+      Value<AppFilterStash?> appFilterStash,
     });
 typedef $$ProfilesTableUpdateCompanionBuilder =
     ProfilesCompanion Function({
@@ -2257,6 +2313,7 @@ typedef $$ProfilesTableUpdateCompanionBuilder =
       Value<Set<String>> unfoldSet,
       Value<int?> order,
       Value<AccessControlProps?> accessControlProps,
+      Value<AppFilterStash?> appFilterStash,
     });
 
 final class $$ProfilesTableReferences
@@ -2379,6 +2436,12 @@ class $$ProfilesTableFilterComposer
     builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
+  ColumnWithTypeConverterFilters<AppFilterStash?, AppFilterStash, String>
+  get appFilterStash => $composableBuilder(
+    column: $table.appFilterStash,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
   Expression<bool> profileRuleLinksRefs(
     Expression<bool> Function($$ProfileRuleLinksTableFilterComposer f) f,
   ) {
@@ -2483,6 +2546,11 @@ class $$ProfilesTableOrderingComposer
     column: $table.accessControlProps,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get appFilterStash => $composableBuilder(
+    column: $table.appFilterStash,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ProfilesTableAnnotationComposer
@@ -2556,6 +2624,12 @@ class $$ProfilesTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumnWithTypeConverter<AppFilterStash?, String>
+  get appFilterStash => $composableBuilder(
+    column: $table.appFilterStash,
+    builder: (column) => column,
+  );
+
   Expression<T> profileRuleLinksRefs<T extends Object>(
     Expression<T> Function($$ProfileRuleLinksTableAnnotationComposer a) f,
   ) {
@@ -2626,6 +2700,7 @@ class $$ProfilesTableTableManager
                 Value<int?> order = const Value.absent(),
                 Value<AccessControlProps?> accessControlProps =
                     const Value.absent(),
+                Value<AppFilterStash?> appFilterStash = const Value.absent(),
               }) => ProfilesCompanion(
                 id: id,
                 label: label,
@@ -2641,6 +2716,7 @@ class $$ProfilesTableTableManager
                 unfoldSet: unfoldSet,
                 order: order,
                 accessControlProps: accessControlProps,
+                appFilterStash: appFilterStash,
               ),
           createCompanionCallback:
               ({
@@ -2660,6 +2736,7 @@ class $$ProfilesTableTableManager
                 Value<int?> order = const Value.absent(),
                 Value<AccessControlProps?> accessControlProps =
                     const Value.absent(),
+                Value<AppFilterStash?> appFilterStash = const Value.absent(),
               }) => ProfilesCompanion.insert(
                 id: id,
                 label: label,
@@ -2675,6 +2752,7 @@ class $$ProfilesTableTableManager
                 unfoldSet: unfoldSet,
                 order: order,
                 accessControlProps: accessControlProps,
+                appFilterStash: appFilterStash,
               ),
           withReferenceMapper: (p0) => p0
               .map(

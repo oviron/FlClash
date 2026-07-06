@@ -3549,11 +3549,11 @@ class AppLocalizations {
     return Intl.message('Turn Off', name: 'turnOff', desc: '', args: []);
   }
 
-  /// `VPN configuration change detected`
-  String get vpnConfigChangeDetected {
+  /// `Reconnecting to apply the change. Active connections briefly drop.`
+  String get vpnReestablishing {
     return Intl.message(
-      'VPN configuration change detected',
-      name: 'vpnConfigChangeDetected',
+      'Reconnecting to apply the change. Active connections briefly drop.',
+      name: 'vpnReestablishing',
       desc: '',
       args: [],
     );
@@ -5424,6 +5424,7 @@ class AppLocalizations {
     return Intl.message('Apps', name: 'routingApps', desc: '', args: []);
   }
 
+  /// `Hide system apps`
   String get routingHideSystemApps {
     return Intl.message(
       'Hide system apps',
@@ -5433,6 +5434,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Some nodes of an unsupported type were skipped`
   String get routingSkippedNodes {
     return Intl.message(
       'Some nodes of an unsupported type were skipped',
@@ -5447,36 +5449,6 @@ class AppLocalizations {
     return Intl.message(
       'Which apps use the VPN and how',
       name: 'routingAppsSubtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Default for new and unset apps:`
-  String get routingAppsCardTitle {
-    return Intl.message(
-      'Default for new and unset apps:',
-      name: 'routingAppsCardTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Only apps in the list below go through the VPN. Everything else, including new apps, stays off the VPN and cannot see it.`
-  String get routingAppsRuleWhitelist {
-    return Intl.message(
-      'Only apps in the list below go through the VPN. Everything else, including new apps, stays off the VPN and cannot see it.',
-      name: 'routingAppsRuleWhitelist',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `All apps go through the VPN. Only the ones marked below bypass it. New apps go through the VPN by default; move banking and government apps off it manually.`
-  String get routingAppsRuleBlacklist {
-    return Intl.message(
-      'All apps go through the VPN. Only the ones marked below bypass it. New apps go through the VPN by default; move banking and government apps off it manually.',
-      name: 'routingAppsRuleBlacklist',
       desc: '',
       args: [],
     );
@@ -5512,21 +5484,31 @@ class AppLocalizations {
     );
   }
 
-  /// `After the switch, new and unmarked apps, including banking and government apps you haven't moved off, will go through the VPN. Connections drop for a second. Continue?`
-  String get routingModeSwitchToVpnBody {
+  /// `All apps will use the VPN, with no exceptions. The connection drops for a second.`
+  String get routingSwitchBodyAll {
     return Intl.message(
-      'After the switch, new and unmarked apps, including banking and government apps you haven\'t moved off, will go through the VPN. Connections drop for a second. Continue?',
-      name: 'routingModeSwitchToVpnBody',
+      'All apps will use the VPN, with no exceptions. The connection drops for a second.',
+      name: 'routingSwitchBodyAll',
       desc: '',
       args: [],
     );
   }
 
-  /// `After the switch, only apps you mark go through the VPN; everything else stays off it. Connections drop for a second. Continue?`
-  String get routingModeSwitchToBypassBody {
+  /// `Only the apps you pick will use the VPN; the rest go direct. The connection drops for a second.`
+  String get routingSwitchBodyOnlySelected {
     return Intl.message(
-      'After the switch, only apps you mark go through the VPN; everything else stays off it. Connections drop for a second. Continue?',
-      name: 'routingModeSwitchToBypassBody',
+      'Only the apps you pick will use the VPN; the rest go direct. The connection drops for a second.',
+      name: 'routingSwitchBodyOnlySelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All apps will use the VPN except the ones you pick. The connection drops for a second.`
+  String get routingSwitchBodyAllExcept {
+    return Intl.message(
+      'All apps will use the VPN except the ones you pick. The connection drops for a second.',
+      name: 'routingSwitchBodyAllExcept',
       desc: '',
       args: [],
     );
@@ -5795,97 +5777,6 @@ class AppLocalizations {
       desc: '',
       args: [],
     );
-  }
-
-  /// `All apps`
-  String get routingModeAll {
-    return Intl.message('All apps', name: 'routingModeAll', desc: '', args: []);
-  }
-
-  /// `Every app goes through the VPN. No per-app exceptions.`
-  String get routingModeAllDesc {
-    return Intl.message(
-      'Every app goes through the VPN. No per-app exceptions.',
-      name: 'routingModeAllDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Only selected`
-  String get routingModeOnlySelected {
-    return Intl.message(
-      'Only selected',
-      name: 'routingModeOnlySelected',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `All except selected`
-  String get routingModeAllExcept {
-    return Intl.message(
-      'All except selected',
-      name: 'routingModeAllExcept',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.`
-  String get routingBothBannerBody {
-    return Intl.message(
-      'This profile sets both an include and an exclude list. It runs as a '
-      'whitelist of include minus exclude. Normalize to edit.',
-      name: 'routingBothBannerBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Normalize`
-  String get routingBothNormalize {
-    return Intl.message(
-      'Normalize',
-      name: 'routingBothNormalize',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Auto-update`
-  String get geoAutoUpdate {
-    return Intl.message(
-      'Auto-update',
-      name: 'geoAutoUpdate',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Off`
-  String get geoUpdateOff {
-    return Intl.message('Off', name: 'geoUpdateOff', desc: '', args: []);
-  }
-
-  /// `Daily`
-  String get geoUpdateDaily {
-    return Intl.message('Daily', name: 'geoUpdateDaily', desc: '', args: []);
-  }
-
-  /// `Every 3 days`
-  String get geoUpdateEvery3Days {
-    return Intl.message(
-      'Every 3 days',
-      name: 'geoUpdateEvery3Days',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Weekly`
-  String get geoUpdateWeekly {
-    return Intl.message('Weekly', name: 'geoUpdateWeekly', desc: '', args: []);
   }
 
   /// `Servers`
@@ -6801,6 +6692,116 @@ class AppLocalizations {
       desc: '',
       args: [],
     );
+  }
+
+  /// `All`
+  String get routingModeAll {
+    return Intl.message('All', name: 'routingModeAll', desc: '', args: []);
+  }
+
+  /// `Every app goes through the VPN. No per-app exceptions.`
+  String get routingModeAllDesc {
+    return Intl.message(
+      'Every app goes through the VPN. No per-app exceptions.',
+      name: 'routingModeAllDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selected`
+  String get routingModeOnlySelected {
+    return Intl.message(
+      'Selected',
+      name: 'routingModeOnlySelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only the apps you pick use the VPN. The rest stay off it.`
+  String get routingModeOnlySelectedDesc {
+    return Intl.message(
+      'Only the apps you pick use the VPN. The rest stay off it.',
+      name: 'routingModeOnlySelectedDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Except`
+  String get routingModeAllExcept {
+    return Intl.message(
+      'Except',
+      name: 'routingModeAllExcept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Every app uses the VPN except the ones you pick.`
+  String get routingModeAllExceptDesc {
+    return Intl.message(
+      'Every app uses the VPN except the ones you pick.',
+      name: 'routingModeAllExceptDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.`
+  String get routingBothBannerBody {
+    return Intl.message(
+      'This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.',
+      name: 'routingBothBannerBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Normalize`
+  String get routingBothNormalize {
+    return Intl.message(
+      'Normalize',
+      name: 'routingBothNormalize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto-update`
+  String get geoAutoUpdate {
+    return Intl.message(
+      'Auto-update',
+      name: 'geoAutoUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Off`
+  String get geoUpdateOff {
+    return Intl.message('Off', name: 'geoUpdateOff', desc: '', args: []);
+  }
+
+  /// `Daily`
+  String get geoUpdateDaily {
+    return Intl.message('Daily', name: 'geoUpdateDaily', desc: '', args: []);
+  }
+
+  /// `Every 3 days`
+  String get geoUpdateEvery3Days {
+    return Intl.message(
+      'Every 3 days',
+      name: 'geoUpdateEvery3Days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Weekly`
+  String get geoUpdateWeekly {
+    return Intl.message('Weekly', name: 'geoUpdateWeekly', desc: '', args: []);
   }
 
   /// `Hidden`

@@ -35,8 +35,27 @@ class Profiles extends Table {
   TextColumn get accessControlProps =>
       text().map(const AccessControlPropsConverter()).nullable()();
 
+  TextColumn get appFilterStash =>
+      text().map(const AppFilterStashConverter()).nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
+}
+
+class AppFilterStashConverter extends TypeConverter<AppFilterStash?, String?> {
+  const AppFilterStashConverter();
+
+  @override
+  AppFilterStash? fromSql(String? fromDb) {
+    if (fromDb == null) return null;
+    return AppFilterStash.fromJson(json.decode(fromDb));
+  }
+
+  @override
+  String? toSql(AppFilterStash? value) {
+    if (value == null) return null;
+    return json.encode(value.toJson());
+  }
 }
 
 class AccessControlPropsConverter
@@ -164,6 +183,7 @@ extension RawProfilExt on RawProfile {
       scriptId: scriptId,
       order: order,
       accessControlProps: accessControlProps,
+      appFilterStash: appFilterStash,
     );
   }
 }
@@ -185,6 +205,7 @@ extension ProfilesCompanionExt on Profile {
       scriptId: Value(scriptId),
       order: Value(order ?? this.order),
       accessControlProps: Value(accessControlProps),
+      appFilterStash: Value(appFilterStash),
     );
   }
 }
