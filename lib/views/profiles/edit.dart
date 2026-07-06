@@ -85,7 +85,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
           profile = profile.copyWith(autoUpdate: false);
         }
       }
-      appController.putProfile(await profile.saveFile(_fileData!));
+      await appController.saveProfileFile(profile, _fileData!);
     } else if (!hasUpdate) {
       appController.putProfile(profile);
     } else {

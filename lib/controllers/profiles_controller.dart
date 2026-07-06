@@ -60,6 +60,39 @@ extension ProfilesControllerExt on AppController {
     _ref.read(currentProfileIdProvider.notifier).value = profile.id;
   }
 
+  Future<String> _readProfileYaml(int profileId) async {
+    try {
+      return await File(
+        await appPath.getProfilePath(profileId.toString()),
+      ).readAsString();
+    } catch (_) {
+      return '';
+    }
+  }
+
+  // Establish-only ACL guard for the file-rewriting paths outside the routing
+  // constructor (raw editor, upload, url re-download, sync): the per-app tun
+  // allow/disallow list is baked at establish, so a plain hot-apply never
+  // re-applies it. Re-establish when the active profile's package set changed.
+  Future<void> _reestablishIfTunChanged(
+    int profileId,
+    String beforeYaml,
+  ) async {
+    if (profileId != _ref.read(currentProfileIdProvider)) return;
+    final after = await _readProfileYaml(profileId);
+    if (tunPackagesChanged(beforeYaml, after)) {
+      _ref.read(vpnReestablishSignalProvider.notifier).bump();
+    }
+  }
+
+  /// Persists new profile bytes (raw editor / upload) and re-establishes the
+  /// tunnel when the active profile's app ACL changed.
+  Future<void> saveProfileFile(Profile profile, Uint8List bytes) async {
+    final before = await _readProfileYaml(profile.id);
+    putProfile(await profile.saveFile(bytes));
+    await _reestablishIfTunChanged(profile.id, before);
+  }
+
   Future<void> updateProfiles() async {
     for (final profile in _ref.read(profilesProvider)) {
       if (profile.type == ProfileType.file) {
@@ -78,10 +111,12 @@ extension ProfilesControllerExt on AppController {
         _ref.read(isUpdatingProvider(profile.updatingKey).notifier).value =
             true;
       }
+      final before = await _readProfileYaml(profile.id);
       final newProfile = await profile.update();
       _ref.read(profilesProvider.notifier).put(newProfile);
       if (profile.id == _ref.read(currentProfileIdProvider)) {
         applyProfileDebounce(silence: true);
+        await _reestablishIfTunChanged(profile.id, before);
       }
     } finally {
       _ref.read(isUpdatingProvider(profile.updatingKey).notifier).value = false;
