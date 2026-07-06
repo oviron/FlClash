@@ -20,22 +20,26 @@ void main() {
     expect(generateHwid() == generateHwid(), false, reason: 'must be random');
   });
 
-  test('ensureHwid persists and reuses the same id (never burns a slot)',
-      () async {
-    final a = await ensureHwid();
-    final b = await ensureHwid();
-    expect(a, b);
-    expect(_uuidV4.hasMatch(a), true);
-  });
+  test(
+    'ensureHwid persists and reuses the same id (never burns a slot)',
+    () async {
+      final a = await ensureHwid();
+      final b = await ensureHwid();
+      expect(a, b);
+      expect(_uuidV4.hasMatch(a), true);
+    },
+  );
 
-  test('happHeaders fills the Happ UA + self hwid but never clobbers base',
-      () async {
-    final merged = await happHeaders(base: {'User-Agent': 'Custom/1.0'});
-    expect(merged['User-Agent'], 'Custom/1.0');
-    expect(merged[happHwidHeader], isNotEmpty);
+  test(
+    'happHeaders fills the Happ UA + self hwid but never clobbers base',
+    () async {
+      final merged = await happHeaders(base: {'User-Agent': 'Custom/1.0'});
+      expect(merged['User-Agent'], 'Custom/1.0');
+      expect(merged[happHwidHeader], isNotEmpty);
 
-    final bare = await happHeaders();
-    expect(bare['User-Agent'], 'Happ/3.6.0');
-    expect(_uuidV4.hasMatch(bare[happHwidHeader]!), true);
-  });
+      final bare = await happHeaders();
+      expect(bare['User-Agent'], 'Happ/3.6.0');
+      expect(_uuidV4.hasMatch(bare[happHwidHeader]!), true);
+    },
+  );
 }

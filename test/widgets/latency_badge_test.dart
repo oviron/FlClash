@@ -44,17 +44,19 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  testWidgets('renders the timeout label for a real timeout (-1) in error color',
-      (tester) async {
-    await tester.pumpWidget(_host(const LatencyBadge(-1)));
-    await tester.pumpAndSettle();
-    final finder = find.text('timeout');
-    expect(finder, findsOneWidget);
-    expect(
-      tester.widget<Text>(finder).style!.color,
-      const ColorScheme.dark().error,
-    );
-  });
+  testWidgets(
+    'renders the timeout label for a real timeout (-1) in error color',
+    (tester) async {
+      await tester.pumpWidget(_host(const LatencyBadge(-1)));
+      await tester.pumpAndSettle();
+      final finder = find.text('timeout');
+      expect(finder, findsOneWidget);
+      expect(
+        tester.widget<Text>(finder).style!.color,
+        const ColorScheme.dark().error,
+      );
+    },
+  );
 
   testWidgets('hides the unit when asked', (tester) async {
     await tester.pumpWidget(_host(const LatencyBadge(88, showUnit: false)));

@@ -172,16 +172,18 @@ void main() {
       expect(parseSubscriptionContent(body).proxies.length, 2);
     });
 
-    test('counts recognized-but-unsupported links as skipped, ignores garbage',
-        () {
-      const body =
-          'vless://uuid@1.2.3.4:443?security=tls&type=tcp#a\n'
-          'hysteria2://x@h:443#hy\n'
-          'tuic://y@h:443#tu\n'
-          'plain-garbage-line';
-      final res = parseSubscriptionContent(body);
-      expect(res.proxies.length, 1);
-      expect(res.skipped, 2);
-    });
+    test(
+      'counts recognized-but-unsupported links as skipped, ignores garbage',
+      () {
+        const body =
+            'vless://uuid@1.2.3.4:443?security=tls&type=tcp#a\n'
+            'hysteria2://x@h:443#hy\n'
+            'tuic://y@h:443#tu\n'
+            'plain-garbage-line';
+        final res = parseSubscriptionContent(body);
+        expect(res.proxies.length, 1);
+        expect(res.skipped, 2);
+      },
+    );
   });
 }
