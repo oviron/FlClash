@@ -173,7 +173,18 @@ extension ProfilesControllerExt on AppController {
     }, title: appLocalizations.addProfile);
     if (profile != null) {
       putProfile(profile);
+      await _connectAndVerifyQuickStart(profile);
     }
+  }
+
+  // Quick-start onboarding: a freshly pasted key auto-connects and the 204
+  // honesty gate probes the tunnel, so the user sees a real "verified" (or an
+  // honest failure) instead of a green light that never loads a page.
+  Future<void> _connectAndVerifyQuickStart(Profile profile) async {
+    _ref.read(currentProfileIdProvider.notifier).value = profile.id;
+    await applyProfile(force: true);
+    await updateStatus(true);
+    unawaited(_ref.read(quickStartVerificationProvider.notifier).run());
   }
 
   Future<Uint8List?> _quickStartBytes(String text, ArtifactKind kind) async {
