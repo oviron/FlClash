@@ -41,9 +41,10 @@ const toVpn = ToVpn();
 const toBypass = ToBypass();
 const toBlock = ToBlock();
 
-/// Whether the profile tunnels a whitelist (`include-package`, only these apps
-/// enter) or a blacklist (`exclude-package`, all except these).
-enum TunnelMode { whitelist, blacklist }
+/// How apps reach the tunnel. `whitelist` (`include-package`, only these enter),
+/// `blacklist` (`exclude-package`, all except these), or `all` (neither key: no
+/// per-app filter, every app enters).
+enum TunnelMode { whitelist, blacklist, all }
 
 /// How a [RoutingList] is backed. Every list is the user's own: a rule-set URL,
 /// pasted domains, or a country (GEOIP). No curated/catalog content.
@@ -320,9 +321,14 @@ class RoutingModel {
   final List<ServerSource> servers;
   final List<ServerGroup> groups;
 
-  /// Whether apps tunnel by whitelist (`include-package`) or blacklist
-  /// (`exclude-package`). Default whitelist (fail-closed).
+  /// Whether apps tunnel by whitelist (`include-package`), blacklist
+  /// (`exclude-package`), or `all` (no per-app filter). Default whitelist.
   final TunnelMode tunnelMode;
+
+  /// Read-only signal that the source YAML set BOTH include- and exclude-package
+  /// (unrepresentable as one mode; runs as whitelist `include − exclude`). The UI
+  /// blocks edits and offers Normalize until it is cleared.
+  final bool degenerateBoth;
 
   const RoutingModel({
     required this.exitGroup,
@@ -334,6 +340,7 @@ class RoutingModel {
     this.servers = const [],
     this.groups = const [],
     this.tunnelMode = TunnelMode.whitelist,
+    this.degenerateBoth = false,
   });
 
   /// Reads an arbitrary profile into the model: recognizes modeled shapes, keeps
@@ -355,6 +362,7 @@ class RoutingModel {
     List<ServerSource>? servers,
     List<ServerGroup>? groups,
     TunnelMode? tunnelMode,
+    bool? degenerateBoth,
   }) => RoutingModel(
     exitGroup: exitGroup ?? this.exitGroup,
     lists: lists ?? this.lists,
@@ -365,6 +373,7 @@ class RoutingModel {
     servers: servers ?? this.servers,
     groups: groups ?? this.groups,
     tunnelMode: tunnelMode ?? this.tunnelMode,
+    degenerateBoth: degenerateBoth ?? this.degenerateBoth,
   );
 
   /// Renames a group, cascading the new name into the exit selection and any
@@ -525,6 +534,12 @@ const routingOwnPackageSentinel = 'com.follow.clash';
 // `tun.exclude-package` (apps that bypass it). The unused key is cleared so a
 // mode switch never leaves a stale package list behind.
 String _writeTunnelPackages(RoutingModel m, String base) {
+  if (m.tunnelMode == TunnelMode.all) {
+    // No per-app filter: drop both keys so Android VpnService captures every app
+    // (an absent key = capture all). This is the neither state.
+    final out = ProfileRulesDocument(base).withIncludedPackages(const []);
+    return ProfileRulesDocument(out).withExcludedPackages(const []);
+  }
   if (m.tunnelMode == TunnelMode.blacklist) {
     final exclude = [
       for (final a in m.apps)
@@ -842,8 +857,17 @@ RoutingModel _read(String raw) {
     }
   }
 
-  final tunnelMode =
-      doc.excludedPackages.isNotEmpty && doc.includedPackages.isEmpty
+  // Mode from the tun keys: neither present -> all (no filter); exclude-only ->
+  // blacklist; otherwise whitelist. Both present is unrepresentable as one mode,
+  // so it reads as whitelist (include - exclude) and raises `degenerateBoth`.
+  // The sentinel keeps a deliberately-empty whitelist non-absent, so it stays
+  // whitelist rather than collapsing to `all`.
+  final hasInclude = doc.includedPackages.isNotEmpty;
+  final hasExclude = doc.excludedPackages.isNotEmpty;
+  final degenerateBoth = hasInclude && hasExclude;
+  final tunnelMode = !hasInclude && !hasExclude
+      ? TunnelMode.all
+      : hasExclude && !hasInclude
       ? TunnelMode.blacklist
       : TunnelMode.whitelist;
 
@@ -877,6 +901,7 @@ RoutingModel _read(String raw) {
     servers: servers,
     groups: groups,
     tunnelMode: tunnelMode,
+    degenerateBoth: degenerateBoth,
   );
 }
 

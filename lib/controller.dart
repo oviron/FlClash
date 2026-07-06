@@ -12,6 +12,7 @@ import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
 import 'package:fl_clash/providers/provider_quota.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/providers/quickstart_verification.dart';
+import 'package:fl_clash/providers/vpn_reestablish_signal.dart';
 import 'package:fl_clash/services/profile_setup_service.dart';
 import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:fl_clash/services/routing_model.dart';

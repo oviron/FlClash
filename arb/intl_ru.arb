@@ -795,5 +795,11 @@
   "routingProxyNested": "Вложенные поля ниже сохраняются как есть, правь их в raw YAML.",
   "routingGroupTestUrl": "URL проверки",
   "routingGroupTolerance": "Допуск (мс)",
+  "routingModeAll": "Все приложения",
+  "routingModeAllDesc": "Через VPN идут все приложения. Без исключений по приложениям.",
+  "routingModeOnlySelected": "Только выбранные",
+  "routingModeAllExcept": "Все, кроме выбранных",
+  "routingBothBannerBody": "Профиль задаёт оба списка (include и exclude). Работает как whitelist: include минус exclude. Нормализуйте, чтобы редактировать.",
+  "routingBothNormalize": "Нормализовать",
   "routingGroupHidden": "Скрытая"
 }

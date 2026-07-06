@@ -1163,6 +1163,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "Группы, суб-правила, правила и YAML",
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("Мимо VPN"),
+    "routingModeAll": MessageLookupByLibrary.simpleMessage("Все приложения"),
+    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
+      "Через VPN идут все приложения. Без исключений по приложениям.",
+    ),
+    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "Только выбранные",
+    ),
+    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage(
+      "Все, кроме выбранных",
+    ),
+    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
+      "Профиль задаёт оба списка (include и exclude). Работает как whitelist: include минус exclude. Нормализуйте, чтобы редактировать.",
+    ),
+    "routingBothNormalize": MessageLookupByLibrary.simpleMessage(
+      "Нормализовать",
+    ),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
       "Не удалось применить изменение",
     ),

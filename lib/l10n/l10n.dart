@@ -5797,6 +5797,62 @@ class AppLocalizations {
     );
   }
 
+  /// `All apps`
+  String get routingModeAll {
+    return Intl.message('All apps', name: 'routingModeAll', desc: '', args: []);
+  }
+
+  /// `Every app goes through the VPN. No per-app exceptions.`
+  String get routingModeAllDesc {
+    return Intl.message(
+      'Every app goes through the VPN. No per-app exceptions.',
+      name: 'routingModeAllDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only selected`
+  String get routingModeOnlySelected {
+    return Intl.message(
+      'Only selected',
+      name: 'routingModeOnlySelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All except selected`
+  String get routingModeAllExcept {
+    return Intl.message(
+      'All except selected',
+      name: 'routingModeAllExcept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.`
+  String get routingBothBannerBody {
+    return Intl.message(
+      'This profile sets both an include and an exclude list. It runs as a '
+      'whitelist of include minus exclude. Normalize to edit.',
+      name: 'routingBothBannerBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Normalize`
+  String get routingBothNormalize {
+    return Intl.message(
+      'Normalize',
+      name: 'routingBothNormalize',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Servers`
   String get routingServers {
     return Intl.message('Servers', name: 'routingServers', desc: '', args: []);

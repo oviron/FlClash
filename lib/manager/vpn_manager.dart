@@ -4,6 +4,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/manager/effects/vpn_reestablish_effect.dart';
 import 'package:fl_clash/providers/state.dart';
+import 'package:fl_clash/providers/vpn_reestablish_signal.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,6 +33,11 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     super.initState();
     ref.listenManual(vpnStateProvider, (prev, next) {
       if (prev != next) _schedule();
+    });
+    // A per-profile app-set change doesn't move vpnState, so force a scheduled
+    // re-establish (bypasses the vpnState-equality gate) when it ticks.
+    ref.listenManual(vpnReestablishSignalProvider, (prev, next) {
+      if (prev != next) _schedule(force: true);
     });
   }
 

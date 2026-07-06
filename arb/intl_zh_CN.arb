@@ -785,5 +785,11 @@
   "routingProxyNested": "以下嵌套字段原样保留，请在 raw YAML 中编辑。",
   "routingGroupTestUrl": "健康检查 URL",
   "routingGroupTolerance": "容差 (ms)",
+  "routingModeAll": "All apps",
+  "routingModeAllDesc": "Every app goes through the VPN. No per-app exceptions.",
+  "routingModeOnlySelected": "Only selected",
+  "routingModeAllExcept": "All except selected",
+  "routingBothBannerBody": "This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.",
+  "routingBothNormalize": "Normalize",
   "routingGroupHidden": "隐藏"
 }

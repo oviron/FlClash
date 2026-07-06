@@ -784,6 +784,20 @@ class MessageLookup extends MessageLookupByLibrary {
       "分组、子规则、原始规则和 YAML",
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("绕过 VPN"),
+    "routingModeAll": MessageLookupByLibrary.simpleMessage("All apps"),
+    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
+      "Every app goes through the VPN. No per-app exceptions.",
+    ),
+    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "Only selected",
+    ),
+    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage(
+      "All except selected",
+    ),
+    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
+      "This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.",
+    ),
+    "routingBothNormalize": MessageLookupByLibrary.simpleMessage("Normalize"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage("无法应用更改"),
     "routingApps": MessageLookupByLibrary.simpleMessage("应用"),
     "routingAppsCardTitle": MessageLookupByLibrary.simpleMessage(

@@ -1100,6 +1100,20 @@ class MessageLookup extends MessageLookupByLibrary {
       "Groups, sub-rules, raw rules and YAML",
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("Bypass VPN"),
+    "routingModeAll": MessageLookupByLibrary.simpleMessage("All apps"),
+    "routingModeAllDesc": MessageLookupByLibrary.simpleMessage(
+      "Every app goes through the VPN. No per-app exceptions.",
+    ),
+    "routingModeOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "Only selected",
+    ),
+    "routingModeAllExcept": MessageLookupByLibrary.simpleMessage(
+      "All except selected",
+    ),
+    "routingBothBannerBody": MessageLookupByLibrary.simpleMessage(
+      "This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.",
+    ),
+    "routingBothNormalize": MessageLookupByLibrary.simpleMessage("Normalize"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t apply the change",
     ),

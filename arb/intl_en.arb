@@ -797,5 +797,11 @@
   "routingProxyNested": "Nested fields below are kept as-is; edit them in raw YAML.",
   "routingGroupTestUrl": "Health-check URL",
   "routingGroupTolerance": "Tolerance (ms)",
+  "routingModeAll": "All apps",
+  "routingModeAllDesc": "Every app goes through the VPN. No per-app exceptions.",
+  "routingModeOnlySelected": "Only selected",
+  "routingModeAllExcept": "All except selected",
+  "routingBothBannerBody": "This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.",
+  "routingBothNormalize": "Normalize",
   "routingGroupHidden": "Hidden"
 }

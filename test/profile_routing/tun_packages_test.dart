@@ -1,6 +1,7 @@
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/config.dart';
 import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
+import 'package:fl_clash/services/routing_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:yaml/yaml.dart';
 
@@ -91,5 +92,101 @@ void main() {
     final back = ProfileRulesDocument(out);
     expect(back.includedPackages, ['com.in']);
     expect(back.excludedPackages, ['com.keep']);
+  });
+
+  group('3-way tunnel mode', () {
+    test('neither include- nor exclude-package reads back as all mode', () {
+      const doc = 'tun:\n  enable: true\nmode: rule\n';
+      expect(RoutingModel.fromYaml(doc).tunnelMode, TunnelMode.all);
+    });
+
+    test('all mode writes neither include- nor exclude-package', () {
+      const doc = 'tun:\n  enable: true\n';
+      final out = RoutingModel.fromYaml(
+        doc,
+      ).copyWith(tunnelMode: TunnelMode.all).toYaml(doc);
+      final back = ProfileRulesDocument(out);
+      expect(back.includedPackages, isEmpty);
+      expect(back.excludedPackages, isEmpty);
+    });
+
+    test('all mode round-trips', () {
+      const doc = 'tun:\n  enable: true\n';
+      final out = RoutingModel.fromYaml(
+        doc,
+      ).copyWith(tunnelMode: TunnelMode.all).toYaml(doc);
+      expect(RoutingModel.fromYaml(out).tunnelMode, TunnelMode.all);
+    });
+
+    test('include-only still reads as whitelist', () {
+      const doc = 'tun:\n  include-package:\n    - com.a\n';
+      expect(RoutingModel.fromYaml(doc).tunnelMode, TunnelMode.whitelist);
+    });
+
+    test('exclude-only still reads as blacklist', () {
+      const doc = 'tun:\n  exclude-package:\n    - com.a\n';
+      expect(RoutingModel.fromYaml(doc).tunnelMode, TunnelMode.blacklist);
+    });
+
+    test('sentinel-only whitelist is not all mode', () {
+      const doc = 'tun:\n  include-package:\n    - com.follow.clash\n';
+      final model = RoutingModel.fromYaml(doc);
+      expect(model.tunnelMode, TunnelMode.whitelist);
+      expect(model.degenerateBoth, isFalse);
+    });
+
+    test('both keys present read as whitelist and flag degenerateBoth', () {
+      const doc =
+          'tun:\n'
+          '  include-package:\n    - com.a\n    - com.b\n'
+          '  exclude-package:\n    - com.b\n';
+      final model = RoutingModel.fromYaml(doc);
+      expect(model.tunnelMode, TunnelMode.whitelist);
+      expect(model.degenerateBoth, isTrue);
+    });
+
+    test('normalizing a both profile writes include minus exclude', () {
+      const doc =
+          'tun:\n'
+          '  include-package:\n    - com.a\n    - com.b\n'
+          '  exclude-package:\n    - com.b\n    - com.c\n';
+      final normalized = RoutingModel.fromYaml(
+        doc,
+      ).copyWith(tunnelMode: TunnelMode.whitelist, degenerateBoth: false);
+      final back = ProfileRulesDocument(normalized.toYaml(doc));
+      expect(back.includedPackages, ['com.a']);
+      expect(back.excludedPackages, isEmpty);
+    });
+  });
+
+  group('tunPackagesChanged', () {
+    test('identical documents are unchanged', () {
+      const doc = 'tun:\n  include-package:\n    - com.a\n    - com.b\n';
+      expect(tunPackagesChanged(doc, doc), isFalse);
+    });
+
+    test('reordering the same set is not a change', () {
+      const a = 'tun:\n  include-package:\n    - com.a\n    - com.b\n';
+      const b = 'tun:\n  include-package:\n    - com.b\n    - com.a\n';
+      expect(tunPackagesChanged(a, b), isFalse);
+    });
+
+    test('adding an included package is a change', () {
+      const a = 'tun:\n  include-package:\n    - com.a\n';
+      const b = 'tun:\n  include-package:\n    - com.a\n    - com.b\n';
+      expect(tunPackagesChanged(a, b), isTrue);
+    });
+
+    test('dropping to no keys (all mode) is a change', () {
+      const a = 'tun:\n  exclude-package:\n    - com.a\n';
+      const b = 'tun:\n  enable: true\n';
+      expect(tunPackagesChanged(a, b), isTrue);
+    });
+
+    test('switching include to exclude is a change', () {
+      const a = 'tun:\n  include-package:\n    - com.a\n';
+      const b = 'tun:\n  exclude-package:\n    - com.a\n';
+      expect(tunPackagesChanged(a, b), isTrue);
+    });
   });
 }

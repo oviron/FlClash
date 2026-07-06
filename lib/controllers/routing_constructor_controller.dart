@@ -29,7 +29,15 @@ extension RoutingConstructorController on AppController {
     } on ProfileRulesWriteException catch (e) {
       return e.message;
     }
-    return _writeValidatedApply(file, profileId, next);
+    final isActive = profileId == _ref.read(currentProfileIdProvider);
+    final error = await _writeValidatedApply(file, profileId, next);
+    // The tunnel's per-app allow/disallow list is establish-only; a hot apply
+    // reloads the core config but never re-applies it. Signal a re-establish
+    // when the active profile's tun package set actually changed.
+    if (error == null && isActive && tunPackagesChanged(raw, next)) {
+      _ref.read(vpnReestablishSignalProvider.notifier).bump();
+    }
+    return error;
   }
 
   // Validate the candidate config, persist it, and hot-apply when it targets the

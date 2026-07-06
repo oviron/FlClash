@@ -2340,9 +2340,9 @@ class _AppsViewState extends State<_AppsView>
   TunnelMode get _mode => _model!.tunnelMode;
 
   // The outcome an untouched app gets in the current mode. Whitelist -> bypass
-  // (OS-excluded, fail-closed); blacklist -> via VPN (enters tunnel -> exit).
+  // (OS-excluded, fail-closed); blacklist and all -> via VPN (enters tunnel).
   Destination get _defaultDest =>
-      _mode == TunnelMode.blacklist ? toVpn : toBypass;
+      _mode == TunnelMode.whitelist ? toBypass : toVpn;
 
   Future<void> _setDest(String pkg, Destination dest) async {
     final model = _model!;
@@ -2372,7 +2372,7 @@ class _AppsViewState extends State<_AppsView>
   Future<void> _switchMode(TunnelMode mode) async {
     final model = _model!;
     if (model.tunnelMode == mode) return;
-    final toBlacklist = mode == TunnelMode.blacklist;
+    final toWhitelist = mode == TunnelMode.whitelist;
     final ok = await globalState.showCommonDialog<bool>(
       child: CommonDialog(
         title: appLocalizations.routingModeSwitchTitle,
@@ -2387,21 +2387,70 @@ class _AppsViewState extends State<_AppsView>
           ),
         ],
         child: Text(
-          toBlacklist
-              ? appLocalizations.routingModeSwitchToVpnBody
-              : appLocalizations.routingModeSwitchToBypassBody,
+          toWhitelist
+              ? appLocalizations.routingModeSwitchToBypassBody
+              : appLocalizations.routingModeSwitchToVpnBody,
         ),
       ),
     );
     if (ok != true) return;
-    // Blacklist promises "everything else via VPN": pin the terminal to the exit.
+    // Blacklist and all promise "everything else via VPN": pin the terminal to
+    // the exit. Whitelist keeps the current terminal.
     await _write(
       model.copyWith(
         tunnelMode: mode,
-        defaultRoute: toBlacklist ? toVpn : model.defaultRoute,
+        defaultRoute: toWhitelist ? model.defaultRoute : toVpn,
       ),
     );
   }
+
+  // Collapse the unrepresentable both-lists state to the whitelist that actually
+  // runs (include - exclude): keep the via-VPN apps, drop the rest, clear both.
+  Future<void> _normalizeBoth(RoutingModel model) async {
+    final kept = [
+      for (final a in model.apps)
+        if (a.dest is! ToBypass) a,
+    ];
+    await _write(
+      model.copyWith(
+        tunnelMode: TunnelMode.whitelist,
+        degenerateBoth: false,
+        apps: kept,
+      ),
+    );
+  }
+
+  Widget _dim(bool active, Widget child) => active
+      ? IgnorePointer(child: Opacity(opacity: 0.5, child: child))
+      : child;
+
+  Widget _bothBanner(RoutingModel model) => Container(
+    margin: EdgeInsets.fromLTRB(16.mAp, 16.mAp, 16.mAp, 0),
+    padding: EdgeInsets.all(12.mAp),
+    decoration: BoxDecoration(
+      color: context.colorScheme.errorContainer,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      children: [
+        Icon(
+          Icons.warning_amber_rounded,
+          color: context.colorScheme.onErrorContainer,
+        ),
+        SizedBox(width: 12.mAp),
+        Expanded(
+          child: Text(
+            appLocalizations.routingBothBannerBody,
+            style: TextStyle(color: context.colorScheme.onErrorContainer),
+          ),
+        ),
+        TextButton(
+          onPressed: () => _normalizeBoth(model),
+          child: Text(appLocalizations.routingBothNormalize),
+        ),
+      ],
+    ),
+  );
 
   Widget _appChip(AppAssignment? a) {
     final dest = a?.dest ?? _defaultDest;
@@ -2477,7 +2526,25 @@ class _AppsViewState extends State<_AppsView>
       ),
       for (final p in rest) (header: null, pkg: p),
     ];
-    final whitelist = _mode == TunnelMode.whitelist;
+    final degenerate = model.degenerateBoth;
+    final allMode = _mode == TunnelMode.all;
+    final modes = <(TunnelMode, String, String)>[
+      (
+        TunnelMode.all,
+        appLocalizations.routingModeAll,
+        appLocalizations.routingModeAllDesc,
+      ),
+      (
+        TunnelMode.whitelist,
+        appLocalizations.routingModeOnlySelected,
+        appLocalizations.routingAppsRuleWhitelist,
+      ),
+      (
+        TunnelMode.blacklist,
+        appLocalizations.routingModeAllExcept,
+        appLocalizations.routingAppsRuleBlacklist,
+      ),
+    ];
     return CommonScaffold(
       title: appLocalizations.routingApps,
       actions: [
@@ -2498,76 +2565,90 @@ class _AppsViewState extends State<_AppsView>
       ],
       body: Column(
         children: [
-          Card(
-            margin: EdgeInsets.fromLTRB(16.mAp, 16.mAp, 16.mAp, 8.mAp),
-            child: Padding(
-              padding: EdgeInsets.all(16.mAp),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    appLocalizations.routingAppsCardTitle,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  SizedBox(height: 12.mAp),
-                  SegmentedButton<TunnelMode>(
-                    segments: [
-                      ButtonSegment(
-                        value: TunnelMode.blacklist,
-                        label: Text(appLocalizations.routingViaVpn),
-                      ),
-                      ButtonSegment(
-                        value: TunnelMode.whitelist,
-                        label: Text(appLocalizations.routingAppBypass),
-                      ),
-                    ],
-                    selected: {_mode},
-                    onSelectionChanged: (s) => _switchMode(s.first),
-                  ),
-                  SizedBox(height: 12.mAp),
-                  Text(
-                    whitelist
-                        ? appLocalizations.routingAppsRuleWhitelist
-                        : appLocalizations.routingAppsRuleBlacklist,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
+          if (degenerate) _bothBanner(model),
+          _dim(
+            degenerate,
+            Card(
+              margin: EdgeInsets.fromLTRB(16.mAp, 16.mAp, 16.mAp, 8.mAp),
+              child: Padding(
+                padding: EdgeInsets.all(16.mAp),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      appLocalizations.routingAppsCardTitle,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                  ),
-                ],
+                    SizedBox(height: 4.mAp),
+                    RadioGroup<TunnelMode>(
+                      groupValue: _mode,
+                      onChanged: (m) {
+                        if (m != null) _switchMode(m);
+                      },
+                      child: Column(
+                        children: [
+                          for (final (mode, label, desc) in modes)
+                            ListItem.radio(
+                              delegate: RadioDelegate(
+                                value: mode,
+                                onTab: () => _switchMode(mode),
+                              ),
+                              title: Text(label),
+                              subtitle: Text(desc),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.mAp),
-            child: TextField(
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: appLocalizations.appRoutingSearchHint,
-                border: const OutlineInputBorder(),
+          if (allMode)
+            Expanded(
+              child: Center(
+                child: NullStatus(label: appLocalizations.routingModeAllDesc),
               ),
-              onChanged: (v) => setState(() => _query = v),
-            ),
-          ),
-          SizedBox(height: 8.mAp),
-          Expanded(
-            child: filtered.isEmpty
-                ? Center(
-                    child: NullStatus(
-                      label: appLocalizations.nullTip(
-                        appLocalizations.routingApps,
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: rows.length,
-                    itemBuilder: (_, i) {
-                      final row = rows[i];
-                      return row.header != null
-                          ? ListHeader(title: row.header!)
-                          : _appRow(row.pkg!);
-                    },
+            )
+          else ...[
+            _dim(
+              degenerate,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.mAp),
+                child: TextField(
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    hintText: appLocalizations.appRoutingSearchHint,
+                    border: const OutlineInputBorder(),
                   ),
-          ),
+                  onChanged: (v) => setState(() => _query = v),
+                ),
+              ),
+            ),
+            SizedBox(height: 8.mAp),
+            Expanded(
+              child: _dim(
+                degenerate,
+                filtered.isEmpty
+                    ? Center(
+                        child: NullStatus(
+                          label: appLocalizations.nullTip(
+                            appLocalizations.routingApps,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: rows.length,
+                        itemBuilder: (_, i) {
+                          final row = rows[i];
+                          return row.header != null
+                              ? ListHeader(title: row.header!)
+                              : _appRow(row.pkg!);
+                        },
+                      ),
+              ),
+            ),
+          ],
         ],
       ),
     );

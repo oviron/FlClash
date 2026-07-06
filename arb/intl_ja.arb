@@ -785,5 +785,11 @@
   "routingProxyNested": "以下のネスト項目はそのまま保持されます。raw YAML で編集してください。",
   "routingGroupTestUrl": "ヘルスチェック URL",
   "routingGroupTolerance": "許容差 (ms)",
+  "routingModeAll": "All apps",
+  "routingModeAllDesc": "Every app goes through the VPN. No per-app exceptions.",
+  "routingModeOnlySelected": "Only selected",
+  "routingModeAllExcept": "All except selected",
+  "routingBothBannerBody": "This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.",
+  "routingBothNormalize": "Normalize",
   "routingGroupHidden": "非表示"
 }

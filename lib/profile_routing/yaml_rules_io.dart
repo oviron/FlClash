@@ -275,3 +275,15 @@ class ProfileRulesWriteException implements Exception {
   @override
   String toString() => 'ProfileRulesWriteException: $message';
 }
+
+/// Whether the tun include/exclude-package SETS differ between two profile
+/// documents (order-insensitive). A routing write only needs a tunnel
+/// re-establish when this is true, since everything else hot-reloads.
+bool tunPackagesChanged(String before, String after) {
+  bool sameSet(List<String> x, List<String> y) =>
+      x.length == y.length && x.toSet().containsAll(y);
+  final a = ProfileRulesDocument(before);
+  final b = ProfileRulesDocument(after);
+  return !sameSet(a.includedPackages, b.includedPackages) ||
+      !sameSet(a.excludedPackages, b.excludedPackages);
+}
