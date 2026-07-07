@@ -127,4 +127,75 @@ void main() {
       expect(() => synthesizeConfig([]), throwsArgumentError);
     });
   });
+
+  group('deriveSubscriptionName', () {
+    test('base64: profile-title is decoded', () {
+      expect(
+        deriveSubscriptionName(
+          profileTitle: 'base64:${_b64('GoVPN')}',
+          url: '',
+        ),
+        'GoVPN',
+      );
+    });
+
+    test('plain profile-title is verbatim, never base64-decoded', () {
+      expect(deriveSubscriptionName(profileTitle: 'GoVPN', url: ''), 'GoVPN');
+      // A plain title that happens to be valid base64 stays literal.
+      expect(
+        deriveSubscriptionName(profileTitle: 'R29WUE4=', url: ''),
+        'R29WUE4',
+      );
+    });
+
+    test('malformed base64: title falls through to filename', () {
+      expect(
+        deriveSubscriptionName(
+          profileTitle: 'base64:@@@not-base64',
+          dispositionFilename: 'GoVPN',
+          url: '',
+        ),
+        'GoVPN',
+      );
+    });
+
+    test('non-alphanumeric title (emoji/flag) falls through, not "sub"', () {
+      expect(
+        deriveSubscriptionName(
+          profileTitle: '🇷🇺',
+          dispositionFilename: 'GoVPN',
+          url: '',
+        ),
+        'GoVPN',
+      );
+    });
+
+    test('disposition filename when no title (key-safe)', () {
+      expect(
+        deriveSubscriptionName(
+          dispositionFilename: 'GoVPN_7416285898',
+          url: '',
+        ),
+        'GoVPN-7416285898',
+      );
+    });
+
+    test('host fallback when no title or filename', () {
+      expect(
+        deriveSubscriptionName(url: 'https://m7.gosapi.com/sub/abc'),
+        'm7-gosapi-com',
+      );
+    });
+
+    test('all empty -> "sub"', () {
+      expect(deriveSubscriptionName(url: ''), 'sub');
+    });
+
+    test('normalizeSubKey keeps case, collapses runs, trims edges', () {
+      expect(normalizeSubKey('My Sub | Main'), 'My-Sub-Main');
+      expect(normalizeSubKey('  -Go VPN-  '), 'Go-VPN');
+      expect(normalizeSubKey('🎉'), isNull);
+      expect(normalizeSubKey(''), isNull);
+    });
+  });
 }

@@ -54,6 +54,49 @@ ArtifactKind classifyArtifact(String text) {
   return ArtifactKind.unknown;
 }
 
+// Subscription display name + provider key, derived without a second fetch:
+// profile-title (plain or `base64:`) -> Content-Disposition filename -> URL host
+// -> 'sub'. Also the per-remark slug prefix, so it must be key-safe; normalized
+// per candidate so a title with no letter/digit (emoji, separator) falls through
+// instead of collapsing everything to 'sub'.
+String deriveSubscriptionName({
+  String? profileTitle,
+  String? dispositionFilename,
+  required String url,
+}) {
+  final candidates = [
+    _decodeProfileTitle(profileTitle),
+    dispositionFilename,
+    Uri.tryParse(url)?.host,
+  ];
+  for (final raw in candidates) {
+    final key = normalizeSubKey(raw ?? '');
+    if (key != null) return key;
+  }
+  return 'sub';
+}
+
+String? _decodeProfileTitle(String? v) {
+  if (v == null || v.trim().isEmpty) return null;
+  if (!v.startsWith('base64:')) return v;
+  try {
+    return utf8.decode(base64.decode(base64.normalize(v.substring(7).trim())));
+  } catch (_) {
+    return null; // malformed base64: marker -> fall through to filename/host
+  }
+}
+
+// Case-preserving key: letters/digits kept, every other run -> '-', edge '-'
+// trimmed; null when nothing usable remains. Distinct from _slug (lowercases);
+// RegExp.escape at xray_json covers residual punctuation in the slug filter.
+String? normalizeSubKey(String raw) {
+  final s = raw
+      .trim()
+      .replaceAll(RegExp(r'[^\p{L}\p{N}]+', unicode: true), '-')
+      .replaceAll(RegExp(r'^-+|-+$'), '');
+  return s.isEmpty ? null : s;
+}
+
 const quickStartExitGroup = 'PROXY';
 
 // Node envelope only (inline proxies + one auto-fastest PROXY group); routing is
