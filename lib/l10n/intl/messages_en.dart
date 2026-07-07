@@ -92,11 +92,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m30(count) => "${count} items have been selected";
 
-  static String m31(count) => "${count} rules";
+  static String m31(count) =>
+      "${Intl.plural(count, one: '1 day left', other: '${count} days left')}";
 
-  static String m32(label) => "${label} must be a url";
+  static String m32(count) =>
+      "${Intl.plural(count, one: '1 hour left', other: '${count} hours left')}";
 
-  static String m33(count) =>
+  static String m33(value) => "${value} left";
+
+  static String m34(count) => "${count} rules";
+
+  static String m35(label) => "${label} must be a url";
+
+  static String m36(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -593,6 +601,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "libBundledTag": MessageLookupByLibrary.simpleMessage("Bundled"),
     "libDelete": MessageLookupByLibrary.simpleMessage("Delete"),
     "libInUse": MessageLookupByLibrary.simpleMessage("In use"),
+    "libIncompatibleOld": MessageLookupByLibrary.simpleMessage(
+      "Incompatible (older core)",
+    ),
     "libInstalled": MessageLookupByLibrary.simpleMessage("Installed"),
     "libInstalledTag": MessageLookupByLibrary.simpleMessage("Installed"),
     "libLoadError": MessageLookupByLibrary.simpleMessage(
@@ -1433,6 +1444,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "stop": MessageLookupByLibrary.simpleMessage("Stop"),
     "stopVpn": MessageLookupByLibrary.simpleMessage("Stopping VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("Style"),
+    "subDaysLeft": m31,
+    "subExpired": MessageLookupByLibrary.simpleMessage("Expired"),
+    "subHoursLeft": m32,
+    "subRemaining": m33,
     "subRule": MessageLookupByLibrary.simpleMessage("Sub rule"),
     "subRuleDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "Delete this sub-rule?",
@@ -1442,7 +1457,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("New sub-rule"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("Rename sub-rule"),
-    "subRuleRuleCount": m31,
+    "subRuleRuleCount": m34,
     "subRules": MessageLookupByLibrary.simpleMessage("Sub-rules"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
@@ -1495,7 +1510,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m32,
+    "urlTip": m35,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
@@ -1518,7 +1533,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "years": MessageLookupByLibrary.simpleMessage("Years"),
-    "yearsAgo": m33,
+    "yearsAgo": m36,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
     "zoom": MessageLookupByLibrary.simpleMessage("Zoom"),
   };

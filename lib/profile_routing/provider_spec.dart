@@ -3,10 +3,8 @@ import 'package:yaml/yaml.dart';
 
 const _unset = Object();
 
-/// One `proxy-providers:`/`rule-providers:` entry as a lossless ordered map.
-/// Typed accessors cover the fields the editor manages; every other key
-/// (`size-limit`, `proxy`, `override`, ...) is preserved verbatim so a
-/// round-trip never drops a mihomo option the model does not know about.
+// Lossless ordered map: unmodeled keys are preserved verbatim so a
+// fresh write never drops a mihomo option the model does not know.
 class ProviderSpec {
   final Map<String, dynamic> raw;
 
@@ -28,7 +26,7 @@ class ProviderSpec {
     'health-check',
   };
 
-  /// `http` (subscription), `file`, or `inline`.
+  // `http` (subscription), `file`, or `inline`.
   String get type => (raw['type'] ?? 'http').toString();
 
   String? get url => raw['url']?.toString();
@@ -37,10 +35,10 @@ class ProviderSpec {
 
   int? get interval => asInt(raw['interval']);
 
-  /// rule-providers only: `domain` | `ipcidr` | `classical`.
+  // rule-providers only: `domain` | `ipcidr` | `classical`.
   String? get behavior => raw['behavior']?.toString();
 
-  /// rule-providers only: `yaml` | `text` | `mrs`.
+  // rule-providers only: `yaml` | `text` | `mrs`.
   String? get format => raw['format']?.toString();
 
   Map<String, dynamic>? get healthCheck {
@@ -48,7 +46,6 @@ class ProviderSpec {
     return v is Map ? v.cast<String, dynamic>() : null;
   }
 
-  /// Keys not surfaced as typed fields; shown to the user as preserved-as-is.
   List<String> get extraKeys =>
       raw.keys.where((k) => !_known.contains(k)).toList();
 

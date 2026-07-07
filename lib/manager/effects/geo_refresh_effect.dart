@@ -1,9 +1,7 @@
 import 'package:fl_clash/enum/enum.dart';
 
-/// Whether a background geo refresh should run now: always on a missing or
-/// unreadable database, otherwise only when the chosen interval has elapsed
-/// since [lastGeoUpdate]. `GeoUpdateInterval.off` disables the scheduled
-/// refresh but a missing database is still healed.
+// Runs on a missing/unreadable DB always; otherwise only after the interval
+// elapsed. `off` disables the scheduled refresh but a missing DB is still healed.
 bool shouldRefreshGeo({
   required GeoUpdateInterval interval,
   required DateTime? lastGeoUpdate,

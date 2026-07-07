@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fl_clash/common/share_link.dart';
+import 'package:fl_clash/common/xray_json.dart';
 import 'package:fl_clash/common/yaml.dart';
 import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -42,5 +43,44 @@ void main() {
     final reparsed = loadYaml(yaml.encode(synthesizeConfig(proxies)));
     expect((reparsed['proxies'] as List).length, 2);
     expect((reparsed['proxy-groups'][0]['proxies'] as List).length, 2);
+  });
+
+  test('xray-JSON -> one group per remark-profile under a PROXY select', () {
+    const sub = '''
+[
+  {"remarks":"Main","outbounds":[
+    {"protocol":"vless","settings":{"vnext":[{"address":"1.1.1.1","port":443,"users":[{"id":"u1"}]}]},
+      "streamSettings":{"network":"grpc","security":"reality",
+        "grpcSettings":{"serviceName":"g"},
+        "realitySettings":{"serverName":"s","publicKey":"P","shortId":"a"}}}]},
+  {"remarks":"Antiblock","outbounds":[
+    {"protocol":"hysteria","settings":{"address":"2.2.2.2","port":443,"version":2},
+      "streamSettings":{"hysteriaSettings":{"version":2,"auth":"pw"},
+        "security":"tls","tlsSettings":{"alpn":["h3"]}}}]}
+]
+''';
+    expect(classifyArtifact(sub), ArtifactKind.xrayJson);
+    final cfg = synthesizeGroupedConfig(parseXrayJsonGroups(sub));
+    final reparsed = loadYaml(applyQuickStartRouting(yaml.encode(cfg)));
+
+    final groups = reparsed['proxy-groups'] as List;
+    final proxyGroup = groups.firstWhere((g) => g['name'] == 'PROXY');
+    expect(proxyGroup['type'], 'select');
+    expect(List<String>.from(proxyGroup['proxies'] as List), [
+      'Main',
+      'Antiblock',
+    ]);
+    // Each remark-profile is its own url-test group.
+    final main = groups.firstWhere((g) => g['name'] == 'Main');
+    expect(main['type'], 'url-test');
+    expect((main['proxies'] as List).single, 'Main 01');
+    final anti = groups.firstWhere((g) => g['name'] == 'Antiblock');
+    expect((anti['proxies'] as List).single, 'Antiblock 01');
+    // hysteria2 survived end to end.
+    final hy = (reparsed['proxies'] as List).firstWhere(
+      (p) => p['type'] == 'hysteria2',
+    );
+    expect(hy['password'], 'pw');
+    expect(reparsed['rules'].last, 'MATCH,PROXY');
   });
 }

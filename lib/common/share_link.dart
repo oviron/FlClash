@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:fl_clash/common/yaml.dart';
 
-/// Single-proxy share-link schemes we recognize. Parsing is implemented for
-/// vless/vmess/ss/trojan; the rest are recognized (so the artifact classifies
-/// as a share link) but parse to null, surfacing the honest "no servers" state.
+// Recognized single-proxy schemes; only vless/vmess/ss/trojan/hysteria2 parse,
+// the rest return null so the artifact still classifies as a share link.
 const shareLinkSchemes = [
   'vless',
   'vmess',
@@ -17,8 +16,7 @@ const shareLinkSchemes = [
   'anytls',
 ];
 
-/// Decode a base64 string (standard or url-safe, padding optional) to UTF-8
-/// text. Returns null if the input is not valid base64 / not UTF-8.
+// base64 (standard or url-safe, padding optional) -> UTF-8, null if invalid.
 String? decodeBase64Text(String input) {
   var s = input
       .replaceAll('-', '+')
@@ -34,9 +32,7 @@ String? decodeBase64Text(String input) {
   }
 }
 
-/// Parse a single share link into a clash/mihomo proxy map, or null if the
-/// scheme is unsupported or the link is malformed. vless reality maps
-/// pbk/sid/fp/sni/flow to the mihomo schema (see docs/onboarding.md).
+// One share link -> a clash/mihomo proxy map, or null if unsupported/malformed.
 Map<String, dynamic>? parseShareLink(String raw) {
   final text = raw.trim();
   final schemeIdx = text.indexOf('://');
@@ -52,6 +48,9 @@ Map<String, dynamic>? parseShareLink(String raw) {
         return _parseSs(text);
       case 'trojan':
         return _parseTrojan(text);
+      case 'hysteria2':
+      case 'hy2':
+        return _parseHysteria2(text);
       default:
         return null;
     }
@@ -60,9 +59,8 @@ Map<String, dynamic>? parseShareLink(String raw) {
   }
 }
 
-/// Decode a v2ray subscription body (a base64 blob, or a plain newline list of
-/// share links) into clash proxy maps. `skipped` counts links whose scheme is
-/// recognized but not parseable (e.g. hy2/tuic), so the loss is not silent.
+// v2ray subscription (base64 blob or newline list) -> proxy maps; `skipped`
+// counts recognized-but-unparseable links (hy2/tuic) so the loss is not silent.
 ({List<Map<String, dynamic>> proxies, int skipped}) parseSubscriptionContent(
   String body,
 ) {
@@ -104,10 +102,24 @@ String _network(String? type) {
     case 'grpc':
     case 'h2':
     case 'http':
+    case 'xhttp':
+    case 'httpupgrade':
       return type!;
+    case 'splithttp': // legacy xray name for xhttp
+      return 'xhttp';
     default:
       return 'tcp';
   }
+}
+
+List<String>? _alpnList(String? raw) {
+  if (raw == null || raw.isEmpty) return null;
+  final list = raw
+      .split(',')
+      .map((e) => e.trim())
+      .where((e) => e.isNotEmpty)
+      .toList();
+  return list.isEmpty ? null : list;
 }
 
 void _applyTransport(
@@ -115,13 +127,20 @@ void _applyTransport(
   String network,
   Map<String, String> q,
 ) {
-  if (network == 'ws') {
+  if (network == 'ws' || network == 'httpupgrade') {
     proxy['ws-opts'] = {
       'path': q['path']?.isNotEmpty == true ? q['path'] : '/',
       'headers': {'Host': q['host'] ?? q['sni'] ?? ''},
     };
   } else if (network == 'grpc') {
     proxy['grpc-opts'] = {'grpc-service-name': q['serviceName'] ?? ''};
+  } else if (network == 'xhttp') {
+    final opts = <String, dynamic>{
+      'path': q['path']?.isNotEmpty == true ? q['path'] : '/',
+      'mode': q['mode']?.isNotEmpty == true ? q['mode'] : 'auto',
+    };
+    if ((q['host'] ?? '').isNotEmpty) opts['host'] = q['host'];
+    proxy['xhttp-opts'] = opts;
   }
 }
 
@@ -145,9 +164,18 @@ Map<String, dynamic>? _parseVless(String text) {
   };
   if ((q['sni'] ?? '').isNotEmpty) proxy['servername'] = q['sni'];
   if ((q['fp'] ?? '').isNotEmpty) proxy['client-fingerprint'] = q['fp'];
-  if ((q['flow'] ?? '').isNotEmpty) proxy['flow'] = q['flow'];
+  // vision flow is tcp/raw-only; mihomo rejects it on ws/grpc/xhttp.
+  if ((q['flow'] ?? '').isNotEmpty && network == 'tcp') {
+    proxy['flow'] = q['flow'];
+  }
+  final enc = q['encryption'] ?? '';
+  if (enc.isNotEmpty && enc != 'none') proxy['encryption'] = enc;
+  final alpn = _alpnList(q['alpn']);
+  if (alpn != null) proxy['alpn'] = alpn;
   if (security == 'reality') {
-    final reality = <String, dynamic>{'public-key': q['pbk'] ?? ''};
+    final pbk = q['pbk'] ?? '';
+    if (pbk.isEmpty) return null; // a reality node with no key is dead
+    final reality = <String, dynamic>{'public-key': pbk};
     if ((q['sid'] ?? '').isNotEmpty) reality['short-id'] = q['sid'];
     proxy['reality-opts'] = reality;
   }
@@ -180,6 +208,8 @@ Map<String, dynamic>? _parseVmess(String text) {
   _applyTransport(proxy, network, {
     'path': '${json['path'] ?? ''}',
     'host': '${json['host'] ?? ''}',
+    'serviceName':
+        '${json['path'] ?? ''}', // vmess grpc puts serviceName in path
   });
   return proxy;
 }
@@ -245,8 +275,8 @@ Map<String, dynamic>? _parseSs(String text) {
   return proxy;
 }
 
-/// Maps a SIP002 `plugin=` spec (`name;k=v;flag;...`) to mihomo `plugin` +
-/// `plugin-opts`; null for a plugin mihomo has no clash mapping for.
+// SIP002 `plugin=` spec (`name;k=v;flag;...`) -> mihomo plugin + plugin-opts;
+// null for a plugin mihomo has no mapping for.
 Map<String, dynamic>? _ssPlugin(String param) {
   final parts = param.split(';');
   final opts = <String, String>{};
@@ -300,7 +330,39 @@ Map<String, dynamic>? _parseTrojan(String text) {
   };
   if ((q['sni'] ?? '').isNotEmpty) proxy['sni'] = q['sni'];
   if ((q['fp'] ?? '').isNotEmpty) proxy['client-fingerprint'] = q['fp'];
+  if ((q['flow'] ?? '').isNotEmpty && network == 'tcp') {
+    proxy['flow'] = q['flow'];
+  }
+  final alpn = _alpnList(q['alpn']);
+  if (alpn != null) proxy['alpn'] = alpn;
   if (network != 'tcp') proxy['network'] = network;
   _applyTransport(proxy, network, q);
+  return proxy;
+}
+
+Map<String, dynamic>? _parseHysteria2(String text) {
+  final uri = Uri.parse(text);
+  final server = uri.host;
+  final port = uri.port;
+  if (server.isEmpty || port == 0 || uri.userInfo.isEmpty) return null;
+  final q = uri.queryParameters;
+  final proxy = <String, dynamic>{
+    'name': _nameFromFragment(uri),
+    'type': 'hysteria2',
+    'server': server,
+    'port': port,
+    'password': Uri.decodeComponent(uri.userInfo),
+    'udp': true,
+  };
+  if ((q['sni'] ?? '').isNotEmpty) proxy['sni'] = q['sni'];
+  final alpn = _alpnList(q['alpn']);
+  if (alpn != null) proxy['alpn'] = alpn;
+  final obfs = q['obfs'] ?? '';
+  if (obfs.isNotEmpty) {
+    proxy['obfs'] = obfs;
+    final op = q['obfs-password'] ?? '';
+    if (op.isNotEmpty) proxy['obfs-password'] = op;
+  }
+  if (q['insecure'] == '1') proxy['skip-cert-verify'] = true;
   return proxy;
 }

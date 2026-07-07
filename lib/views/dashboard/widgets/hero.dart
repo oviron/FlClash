@@ -12,9 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-/// The resting-state home: a connect button, status, the active node pill, live
-/// speed and the outbound-mode segment. The customizable widget grid lives
-/// below it, under "details".
 class DashboardHero extends ConsumerWidget {
   const DashboardHero({super.key});
 

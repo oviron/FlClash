@@ -644,39 +644,29 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
 }
 
 @riverpod
-class AccessControlState extends _$AccessControlState
-    with AutoDisposeNotifierMixin {
-  @override
-  AccessControlProps build() => const AccessControlProps();
-}
-
-@riverpod
 Future<AccessControlProps> effectiveAccessControl(Ref ref) async {
-  // Global mode captures every app: a default (enable:false) ACL disables the
-  // per-app include/exclude filter so nothing is left off the tunnel.
-  if (ref.watch(patchClashConfigProvider.select((state) => state.mode)) ==
-      Mode.global) {
-    return const AccessControlProps();
-  }
+  final isGlobalMode =
+      ref.watch(patchClashConfigProvider.select((state) => state.mode)) ==
+      Mode.global;
   final guiAcl = ref.watch(
     vpnSettingProvider.select((state) => state.accessControlProps),
   );
   final profile = ref.watch(currentProfileProvider);
-
   final profileAcl = profile?.accessControlProps;
-  if (profileAcl != null && profileAcl.enable) {
-    return profileAcl;
-  }
 
-  if (profile != null) {
+  Map<String, dynamic>? profileConfig;
+  if (!isGlobalMode && profile != null && !(profileAcl?.enable ?? false)) {
     try {
-      final raw = await coreController.getConfig(profile.id);
-      final yamlAcl = aclFromTunYaml(raw, base: guiAcl);
-      if (yamlAcl != null) return yamlAcl;
+      profileConfig = await coreController.getConfig(profile.id);
     } catch (e) {
       commonPrint.log('effectiveAccessControl: yaml read failed: $e');
     }
   }
 
-  return guiAcl;
+  return resolveEffectiveAccessControl(
+    isGlobalMode: isGlobalMode,
+    guiAcl: guiAcl,
+    profileAcl: profileAcl,
+    profileConfig: profileConfig,
+  );
 }

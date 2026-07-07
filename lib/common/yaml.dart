@@ -1,8 +1,8 @@
 import 'package:yaml/yaml.dart';
 import 'package:yaml_writer/yaml_writer.dart';
 
-/// Recursively unwraps `package:yaml` nodes into plain Dart maps/lists/scalars,
-/// so downstream code never re-encodes a YamlScalar as a quoted string.
+// Recursively unwraps `package:yaml` nodes into plain Dart maps/lists/scalars,
+// so downstream code never re-encodes a YamlScalar as a quoted string.
 Object? yamlToDart(Object? node) {
   if (node is YamlMap) {
     return {
@@ -14,7 +14,7 @@ Object? yamlToDart(Object? node) {
   return node;
 }
 
-/// Coerces a YAML/JSON-decoded scalar to int (int, num, or numeric String).
+// Coerces a YAML/JSON-decoded scalar to int (int, num, or numeric String).
 int? asInt(Object? v) {
   if (v is int) return v;
   if (v is num) return v.toInt();

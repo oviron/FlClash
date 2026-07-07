@@ -8,6 +8,7 @@ import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/models/core.dart';
 import 'package:fl_clash/providers/app.dart';
+import 'package:fl_clash/providers/provider_quota.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -126,8 +127,24 @@ class ProviderItem extends StatelessWidget {
           if (provider.updateAt.microsecondsSinceEpoch > 0)
             Text(_buildProviderDesc()),
           const SizedBox(height: 4),
-          if (provider.subscriptionInfo != null)
-            SubscriptionInfoView(subscriptionInfo: provider.subscriptionInfo),
+          // A file-provider (e.g. a converted embedded xray sub) carries no
+          // core subscription-info; fall back to the quota captured at prefetch.
+          Consumer(
+            builder: (_, ref, _) {
+              final pid = appController.currentProfile?.id;
+              final info =
+                  provider.subscriptionInfo ??
+                  (pid == null
+                      ? null
+                      : ref.watch(providerQuotaProvider)[providerQuotaKey(
+                          pid,
+                          provider.name,
+                        )]);
+              return info == null
+                  ? const SizedBox.shrink()
+                  : SubscriptionInfoView(subscriptionInfo: info);
+            },
+          ),
           const SizedBox(height: 8),
           Wrap(
             runSpacing: 6,

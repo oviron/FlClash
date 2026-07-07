@@ -1,8 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:flutter/material.dart';
 
-/// Usage progress bar with a semantic color (primary → warn → over-limit) and
-/// an optional caption. Currently drives the subscription quota UI.
 class QuotaBar extends StatelessWidget {
   final double value;
   final String? label;

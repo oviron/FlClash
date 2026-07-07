@@ -1,8 +1,8 @@
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/network_rules/model.dart';
 
-/// Display label for the profile [id]: its non-empty label, else `#id`, else
-/// [nullLabel] when [id] is null.
+// Profile display label: non-empty label, else `#id`, else [nullLabel] when
+// [id] is null.
 String profileLabel(
   List<Profile> profiles,
   int? id, {
@@ -15,7 +15,7 @@ String profileLabel(
       : '#$id';
 }
 
-/// A Wi-Fi SSID matcher label: exact / prefix (`ssid…`) / contains (`…ssid…`).
+// A Wi-Fi SSID matcher label: exact / prefix (`ssid…`) / contains (`…ssid…`).
 String wifiPatternLabel(WifiNamed c) => switch (c.match) {
   WifiMatch.exact => c.ssid,
   WifiMatch.prefix => '${c.ssid}…',

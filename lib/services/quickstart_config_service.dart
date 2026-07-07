@@ -6,7 +6,7 @@ import 'package:fl_clash/common/task.dart';
 import 'package:fl_clash/common/xray_json.dart';
 import 'package:fl_clash/services/routing_model.dart';
 
-/// The kind of artifact a user pasted, decided without any network call.
+// The kind of artifact a user pasted, decided without any network call.
 enum ArtifactKind {
   clashYaml,
   subscriptionUrl,
@@ -54,14 +54,10 @@ ArtifactKind classifyArtifact(String text) {
   return ArtifactKind.unknown;
 }
 
-/// The full-tunnel exit group every quick-start profile routes through.
 const quickStartExitGroup = 'PROXY';
 
-/// Wrap parsed proxies into the node envelope: inline `proxies:` and a single
-/// url-test [quickStartExitGroup] group that auto-picks the fastest node. Routing
-/// is NOT assembled here; [applyQuickStartRouting] adds it through the shared
-/// writer. Intentionally emits no `dns:` block so the app's hardened model
-/// defaults apply (see docs/onboarding.md).
+// Node envelope only (inline proxies + one auto-fastest PROXY group); routing is
+// added by applyQuickStartRouting. No dns block, so hardened DNS defaults apply.
 Map<String, dynamic> synthesizeConfig(List<Map<String, dynamic>> proxies) {
   if (proxies.isEmpty) {
     throw ArgumentError('cannot synthesize a config without proxies');
@@ -83,9 +79,47 @@ Map<String, dynamic> synthesizeConfig(List<Map<String, dynamic>> proxies) {
   };
 }
 
-/// Applies the full-tunnel routing overlay onto an encoded [envelopeYaml] through
-/// the same [RoutingModel] writer that powers the edit path (docs II.9): one
-/// mechanism, no separate assembly, so paste-and-go and edit never drift.
+// Happ layout: inline proxies, one url-test group per remark, and a PROXY select
+// over them so the user picks a profile (Main / Anti-block / ...) as in Happ.
+Map<String, dynamic> synthesizeGroupedConfig(List<XrayGroup> groups) {
+  if (groups.isEmpty) {
+    throw ArgumentError('cannot synthesize a config without proxies');
+  }
+  final proxies = <Map<String, dynamic>>[];
+  final specs = <Map<String, dynamic>>[];
+  final groupNames = <String>[];
+  final used = <String>{};
+  for (final g in groups) {
+    var name = g.remark.trim().isEmpty ? 'Group' : g.remark.trim();
+    final base = name;
+    var n = 2;
+    while (used.contains(name)) {
+      name = '$base ($n)';
+      n++;
+    }
+    used.add(name);
+    proxies.addAll(g.proxies);
+    groupNames.add(name);
+    specs.add({
+      'name': name,
+      'type': 'url-test',
+      'proxies': g.proxies.map((p) => p['name'] as String).toList(),
+      'url': 'http://cp.cloudflare.com/generate_204',
+      'interval': 300,
+      'tolerance': 50,
+    });
+  }
+  return {
+    'proxies': proxies,
+    'proxy-groups': [
+      {'name': quickStartExitGroup, 'type': 'select', 'proxies': groupNames},
+      ...specs,
+    ],
+  };
+}
+
+// Full-tunnel routing overlay via the same RoutingModel writer as the edit path
+// (docs II.9), so paste-and-go and edit never drift.
 String applyQuickStartRouting(String envelopeYaml) => const RoutingModel(
   exitGroup: quickStartExitGroup,
   lists: [],
@@ -94,20 +128,27 @@ String applyQuickStartRouting(String envelopeYaml) => const RoutingModel(
   defaultRoute: toVpn,
 ).toYaml(envelopeYaml);
 
-/// Converts a non-clash artifact (share link, base64 v2ray list, xray-JSON) into
-/// hardened quick-start config bytes, or null when it yields no proxies. One
-/// owner for the import switch, shared by first-run paste and refresh conversion.
+// Converts a non-clash artifact (share link, base64 list, xray-JSON) to hardened
+// config bytes, or null when it yields no proxies. One owner for the import switch.
 Future<Uint8List?> artifactToConfigBytes(String text, ArtifactKind kind) async {
-  final proxies = switch (kind) {
-    ArtifactKind.shareLink => [
-      parseShareLink(text.trim()),
-    ].whereType<Map<String, dynamic>>().toList(),
-    ArtifactKind.base64List => parseSubscriptionContent(text).proxies,
-    ArtifactKind.xrayJson => parseXrayJson(text),
-    _ => <Map<String, dynamic>>[],
-  };
-  if (proxies.isEmpty) return null;
-  final envelope = await encodeYamlTask(synthesizeConfig(proxies));
+  final Map<String, dynamic> config;
+  if (kind == ArtifactKind.xrayJson) {
+    // Keep the panel's profile structure (Happ layout: group per remark-profile).
+    final groups = parseXrayJsonGroups(text);
+    if (groups.isEmpty) return null;
+    config = synthesizeGroupedConfig(groups);
+  } else {
+    final proxies = switch (kind) {
+      ArtifactKind.shareLink => [
+        parseShareLink(text.trim()),
+      ].whereType<Map<String, dynamic>>().toList(),
+      ArtifactKind.base64List => parseSubscriptionContent(text).proxies,
+      _ => <Map<String, dynamic>>[],
+    };
+    if (proxies.isEmpty) return null;
+    config = synthesizeConfig(proxies);
+  }
+  final envelope = await encodeYamlTask(config);
   return Uint8List.fromList(utf8.encode(applyQuickStartRouting(envelope)));
 }
 

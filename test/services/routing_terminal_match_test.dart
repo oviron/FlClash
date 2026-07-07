@@ -36,4 +36,29 @@ rules:
     expect(m.defaultRoute, toVpn);
     expect(m.toYaml(profile), contains('MATCH,PROXY'));
   });
+
+  test('terminal MATCH to a non-exit group is written last, below per-app '
+      'rules (never shadows them)', () {
+    const profile = '''
+proxies: []
+proxy-groups:
+  - {name: PROXY, type: select, proxies: [DIRECT]}
+  - {name: Final, type: select, proxies: [PROXY, DIRECT]}
+rules:
+  - PROCESS-NAME,com.foo.app,PROXY
+  - MATCH,Final
+''';
+    final m = RoutingModel.fromYaml(profile);
+    expect(m.defaultRoute, isNull);
+
+    final out = m.toYaml(profile);
+    final app = out.indexOf('PROCESS-NAME,com.foo.app');
+    final terminal = out.indexOf('MATCH,Final');
+    expect(app, greaterThanOrEqualTo(0));
+    expect(
+      terminal,
+      greaterThan(app),
+      reason: 'the catch-all terminal must stay below the per-app rule',
+    );
+  });
 }

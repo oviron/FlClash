@@ -1,8 +1,5 @@
 import 'routing_model.dart';
 
-/// A country for the "by IP" (GEOIP) List source. This is standard ISO-3166
-/// reference data for the country picker (a system enumeration, like the
-/// installed-app list), not curated content. The matcher value is the code.
 class CountryEntry {
   final String code;
   final String flag;
@@ -95,12 +92,9 @@ CountryEntry? countryEntry(String code) {
   return null;
 }
 
-/// The display label for [labels] in [localeCode], falling back to `en`.
 String localeLabel(Map<String, String> labels, String localeCode) =>
     labels[localeCode] ?? labels['en'] ?? '';
 
-/// A country-backed List (a `GEOIP,<code>` matcher, no provider). The name is
-/// the country's own name, not curated content.
 RoutingList countryList(String code, {String locale = 'en'}) {
   final c = countryEntry(code)!;
   return RoutingList(

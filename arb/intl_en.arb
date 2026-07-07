@@ -809,5 +809,10 @@
   "geoUpdateDaily": "Daily",
   "geoUpdateEvery3Days": "Every 3 days",
   "geoUpdateWeekly": "Weekly",
-  "routingGroupHidden": "Hidden"
+  "routingGroupHidden": "Hidden",
+  "libIncompatibleOld": "Incompatible (older core)",
+  "subDaysLeft": "{count, plural, =1{1 day left} other{{count} days left}}",
+  "subHoursLeft": "{count, plural, =1{1 hour left} other{{count} hours left}}",
+  "subExpired": "Expired",
+  "subRemaining": "{value} left"
 }

@@ -191,6 +191,10 @@ extension SetupControllerExt on AppController {
     final setupState = await _ref.read(setupStateProvider(profile?.id).future);
     globalState.lastSetupState = setupState;
     if (system.isAndroid) {
+      // Per-app ACL is off-graph (getConfig) and baked only at establish; resolve
+      // it before snapshotting sharedState, or a just-edited (invalidated) set
+      // reads a stale `.value` and the tunnel re-establishes with the old list.
+      await _ref.read(effectiveAccessControlProvider.future);
       globalState.lastVpnState = _ref.read(vpnStateProvider);
       unawaited(preferences.saveShareState(this.sharedState));
     }
@@ -259,28 +263,34 @@ extension SetupControllerExt on AppController {
         .toList();
     if (keys.isEmpty) return;
 
-    await Future.wait(
+    // Single-writer group injection: mutating the shared config['proxy-groups']
+    // concurrently would race, so collect per-provider remarks and inject after.
+    final injects = await Future.wait(
       keys.map(
         (k) =>
             _prefetchOneXrayProvider(providers[k], onDisk[k]!, k, profile.id),
       ),
     );
+    for (final inj in injects) {
+      if (inj != null) injectRemarkGroups(config, inj.key, inj.remarks);
+    }
   }
 
-  Future<void> _prefetchOneXrayProvider(
+  Future<({String key, List<RemarkGroup> remarks})?> _prefetchOneXrayProvider(
     dynamic entry,
     ProviderSpec spec,
     String key,
     int profileId,
   ) async {
-    if (entry is! Map) return;
+    if (entry is! Map) return null;
     final path = (entry['path'] ?? spec.path)?.toString();
-    if (path == null) return;
+    if (path == null) return null;
 
     final buckets = <String, List<String>>{};
     var fingerprint = 'upstream';
     var dropUnmatched = false;
     final xray = spec.raw['xray'];
+    final byRemark = xray is Map && '${xray['groups'] ?? ''}' == 'by-remark';
     if (xray is Map) {
       final b = xray['buckets'];
       if (b is Map) {
@@ -302,6 +312,7 @@ extension SetupControllerExt on AppController {
     final headers = await happHeaders(base: base);
 
     var proxies = const <Map<String, dynamic>>[];
+    var remarks = const <RemarkGroup>[];
     final url = spec.url;
     if (url != null && url.isNotEmpty) {
       try {
@@ -312,29 +323,57 @@ extension SetupControllerExt on AppController {
               .read(providerQuotaProvider.notifier)
               .set(profileId, key, SubscriptionInfo.formHString(userinfo));
         }
-        proxies = parseXrayJson(
-          resp.data ?? '',
-          prefix: key,
-          buckets: buckets,
-          fingerprint: fingerprint,
-          dropUnmatched: dropUnmatched,
-        );
+        if (byRemark) {
+          final slugged = slugXrayGroups(
+            resp.data ?? '',
+            key,
+            fingerprint: fingerprint,
+          );
+          proxies = slugged.proxies;
+          remarks = slugged.remarks;
+        } else {
+          proxies = parseXrayJson(
+            resp.data ?? '',
+            prefix: key,
+            buckets: buckets,
+            fingerprint: fingerprint,
+            dropUnmatched: dropUnmatched,
+          );
+        }
       } catch (e) {
         commonPrint.log('xray provider $key fetch failed: $e');
       }
     }
 
     final file = File(path);
+    final metaFile = File('$path.remarks.json');
     if (proxies.isNotEmpty) {
       await file.safeWriteAsStringAtomic(
         await encodeYamlTask({'proxies': proxies}),
       );
+      if (byRemark) {
+        // Config is rebuilt each apply; persist the group descriptors so a later
+        // apply whose fetch fails restores them from cache instead of reverting
+        // Go to a flat list (mirrors the node sidecar's cache failover).
+        await metaFile.safeWriteAsStringAtomic(
+          jsonEncode([
+            for (final r in remarks)
+              {'label': r.label, 'slug': r.slug, 'count': r.count},
+          ]),
+        );
+      }
     } else if (!await file.exists()) {
       // First fetch failed with no cache: write a valid empty provider (never a
       // dangling path) and surface the failure rather than a silent empty group.
       await file.safeWriteAsStringAtomic('proxies: []\n');
       globalState.showNotifier('$key: ${appLocalizations.networkException}');
     } // else: upstream unreachable but a cache exists -> serve it (failover).
+
+    // Failed/empty by-remark fetch but a cached sidecar exists: recover the
+    // remark descriptors from the meta cache so the grouping survives.
+    if (byRemark && remarks.isEmpty) {
+      remarks = await _readCachedRemarks(metaFile);
+    }
 
     entry['type'] = 'file';
     entry
@@ -343,5 +382,25 @@ extension SetupControllerExt on AppController {
       ..remove('header')
       ..remove('xray')
       ..remove('format');
+
+    return remarks.isEmpty ? null : (key: key, remarks: remarks);
+  }
+
+  Future<List<RemarkGroup>> _readCachedRemarks(File metaFile) async {
+    try {
+      final decoded = jsonDecode(await metaFile.readAsString());
+      if (decoded is! List) return const [];
+      return [
+        for (final e in decoded)
+          if (e is Map)
+            (
+              label: '${e['label']}',
+              slug: '${e['slug']}',
+              count: (e['count'] as num?)?.toInt() ?? 0,
+            ),
+      ];
+    } catch (_) {
+      return const [];
+    }
   }
 }

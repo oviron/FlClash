@@ -5,8 +5,8 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Connect-time verification banner: pure on [status] so it can be widget-tested
-/// without a ProviderScope. [QuickStartVerifyOverlay] wires it to the provider.
+// Connect-time verification banner: pure on [status] so it can be widget-tested
+// without a ProviderScope. [QuickStartVerifyOverlay] wires it to the provider.
 class QuickStartVerifyCard extends StatelessWidget {
   final QuickStartVerifyStatus status;
   final VoidCallback onRetry;
@@ -136,25 +136,14 @@ class _FailCard extends StatelessWidget {
   }
 }
 
-/// Mounts [QuickStartVerifyCard] against the provider: auto-dismisses the
-/// success banner after a beat, retries on demand, and routes "use a different
-/// key" back through the paste on-ramp.
+// Mounts QuickStartVerifyCard against the provider: retries on demand and routes
+// "use a different key" back through the paste on-ramp. Auto-dismiss lives in the
+// notifier so it survives this widget being disposed.
 class QuickStartVerifyOverlay extends ConsumerWidget {
   const QuickStartVerifyOverlay({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.listen(quickStartVerificationProvider, (previous, next) {
-      if (next == QuickStartVerifyStatus.verified) {
-        Future.delayed(const Duration(seconds: 2), () {
-          final notifier = ref.read(quickStartVerificationProvider.notifier);
-          if (ref.read(quickStartVerificationProvider) ==
-              QuickStartVerifyStatus.verified) {
-            notifier.dismiss();
-          }
-        });
-      }
-    });
     final status = ref.watch(quickStartVerificationProvider);
     return QuickStartVerifyCard(
       status: status,

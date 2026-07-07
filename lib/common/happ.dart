@@ -2,13 +2,13 @@ import 'dart:math';
 
 import 'preferences.dart';
 
-/// The Happ client identity a panel needs to serve its xray-JSON subscription:
-/// this UA (some panels gate the format on it) plus a stable device id header.
+// The Happ client identity a panel needs to serve its xray-JSON subscription:
+// this UA (some panels gate the format on it) plus a stable device id header.
 const happUserAgent = 'Happ/3.6.0';
 const happHwidHeader = 'x-hwid';
 
-/// RFC 4122 v4 UUID from 16 secure-random bytes; the device id Happ invents
-/// per install; a panel counts it as one device slot.
+// RFC 4122 v4 UUID; the device id Happ invents per install. A panel counts
+// it as one device slot.
 String generateHwid() {
   final r = Random.secure();
   final b = List<int>.generate(16, (_) => r.nextInt(256));
@@ -29,9 +29,8 @@ Future<String> ensureHwid() async {
   return id;
 }
 
-/// Headers that make FlClash look like Happ to a panel: the Happ UA plus the
-/// app's device id. Entries already in [base] win, so a panel spec can pin its
-/// own UA/x-hwid without being clobbered.
+// Makes FlClash look like Happ to a panel (Happ UA + device id). Entries in
+// `base` win, so a panel spec pins its own UA/x-hwid without being clobbered.
 Future<Map<String, String>> happHeaders({Map<String, String>? base}) async {
   final headers = {...?base};
   headers.putIfAbsent('User-Agent', () => happUserAgent);

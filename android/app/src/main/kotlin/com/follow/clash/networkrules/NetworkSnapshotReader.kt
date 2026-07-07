@@ -43,14 +43,16 @@ class NetworkSnapshotReader(context: Context) {
     }
 
     companion object {
+        // Mirrors Dart sanitizeSsid byte-for-byte: check the stub on the raw
+        // value, strip a surrounding quote pair, then trim, then empty -> null.
         fun sanitizeSsid(raw: String?): String? {
             if (raw == null) return null
-            var value = raw.trim()
-            if (value == WifiManager.UNKNOWN_SSID || value == "<unknown ssid>") return null
+            if (raw == WifiManager.UNKNOWN_SSID || raw == "<unknown ssid>") return null
+            var value = raw
             if (value.length >= 2 && value.startsWith("\"") && value.endsWith("\"")) {
                 value = value.substring(1, value.length - 1)
             }
-            return value.ifEmpty { null }
+            return value.trim().ifEmpty { null }
         }
 
         // Stable per-network token; the override window resets when it changes.

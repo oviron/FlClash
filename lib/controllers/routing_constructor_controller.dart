@@ -1,9 +1,7 @@
 part of '../controller.dart';
 
-/// Bridges the human-language [RoutingModel] to persistence. Reads a profile
-/// into the model and writes an edited model back through the same validated
-/// hot-apply path the raw editors use, so the constructor and the Advanced
-/// editors never diverge (docs/onboarding.md II.9).
+// Constructor and Advanced editors share one validated hot-apply write path so
+// they never diverge (docs/onboarding.md II.9).
 extension RoutingConstructorController on AppController {
   Future<RoutingModel> readRoutingModel(int profileId) async {
     final file = File(await appPath.getProfilePath(profileId.toString()));
@@ -18,8 +16,8 @@ extension RoutingConstructorController on AppController {
     return RoutingModel.fromYaml(await file.readAsString());
   }
 
-  /// Materializes [model] onto the live profile (rest preserved) and hot-applies
-  /// on the active profile. Returns a validation error (file untouched) or null.
+  // Materializes [model] onto the live profile (rest preserved) and hot-applies
+  // on the active profile. Returns a validation error (file untouched) or null.
   Future<String?> writeRoutingModel(int profileId, RoutingModel model) async {
     final file = File(await appPath.getProfilePath(profileId.toString()));
     final raw = await file.exists() ? await file.readAsString() : 'rules: []\n';
@@ -29,22 +27,24 @@ extension RoutingConstructorController on AppController {
     } on ProfileRulesWriteException catch (e) {
       return e.message;
     }
-    final isActive = profileId == _ref.read(currentProfileIdProvider);
     final error = await _writeValidatedApply(file, profileId, next);
-    // The tunnel's per-app allow/disallow list is establish-only; a hot apply
-    // reloads the core config but never re-applies it. Signal a re-establish
-    // when the active profile's tun package set actually changed.
-    if (error == null && isActive && tunPackagesChanged(raw, next)) {
-      _ref.read(vpnReestablishSignalProvider.notifier).bump();
-    }
+    if (error == null) _signalTunAclChanged(profileId, raw, next);
     return error;
   }
 
-  /// Switches [profileId]'s tunnel mode while preserving each mode's own app
-  /// selection through the per-profile stash, so passing through `all` never
-  /// loses a list. Writes only the resulting model (YAML stays the single source
-  /// of truth) and updates the stash after a successful write. Returns a
-  /// validation error (nothing persisted) or null.
+  // Establish-only ACL: the tunnel bakes the allow/disallow list at establish, a
+  // hot-apply never re-applies it, and effectiveAccessControl reads YAML
+  // off-graph -> invalidate it and re-establish on an active-profile tun change.
+  void _signalTunAclChanged(int profileId, String before, String after) {
+    if (profileId != _ref.read(currentProfileIdProvider)) return;
+    if (!tunPackagesChanged(before, after)) return;
+    _ref.invalidate(effectiveAccessControlProvider);
+    _ref.read(vpnReestablishSignalProvider.notifier).bump();
+  }
+
+  // Switches tunnel mode, preserving each mode's app selection via the
+  // per-profile stash so passing through `all` never loses a list. Returns a
+  // validation error (nothing persisted) or null.
   Future<String?> applyTunnelModeSwitch(
     int profileId,
     TunnelMode newMode,

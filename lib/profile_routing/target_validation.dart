@@ -11,8 +11,8 @@ const _builtinTargets = {
   'COMPATIBLE',
 };
 
-/// Names a rule target may legitimately reference in [yaml]: every proxy-group
-/// name plus every proxy name. Empty when the document fails to parse.
+// Names a rule target may legitimately reference in [yaml]: every proxy-group
+// name plus every proxy name. Empty when the document fails to parse.
 Set<String> configTargets(String yaml) {
   final Object? doc;
   try {
@@ -40,9 +40,9 @@ Set<String> configTargets(String yaml) {
   return names;
 }
 
-/// Targets of typed and logical rules that resolve to neither a builtin policy
-/// nor a name in [valid], i.e. dangling after a subscription renamed/removed a
-/// group. De-duplicated, order-preserving. Passthrough rules are skipped.
+// Targets of typed and logical rules that resolve to neither a builtin policy
+// nor a name in [valid], i.e. dangling after a subscription renamed/removed a
+// group. De-duplicated, order-preserving. Passthrough rules are skipped.
 List<String> danglingTargets(List<RoutingRule> rules, Set<String> valid) {
   final out = <String>[];
   void check(String target) {

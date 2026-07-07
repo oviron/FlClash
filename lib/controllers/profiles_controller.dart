@@ -70,23 +70,21 @@ extension ProfilesControllerExt on AppController {
     }
   }
 
-  // Establish-only ACL guard for the file-rewriting paths outside the routing
-  // constructor (raw editor, upload, url re-download, sync): the per-app tun
-  // allow/disallow list is baked at establish, so a plain hot-apply never
-  // re-applies it. Re-establish when the active profile's package set changed.
+  // Re-establish when a file-rewriting save (raw editor, upload, url re-download,
+  // sync) changed the active profile's tun package set.
   Future<void> _reestablishIfTunChanged(
     int profileId,
     String beforeYaml,
   ) async {
-    if (profileId != _ref.read(currentProfileIdProvider)) return;
-    final after = await _readProfileYaml(profileId);
-    if (tunPackagesChanged(beforeYaml, after)) {
-      _ref.read(vpnReestablishSignalProvider.notifier).bump();
-    }
+    _signalTunAclChanged(
+      profileId,
+      beforeYaml,
+      await _readProfileYaml(profileId),
+    );
   }
 
-  /// Persists new profile bytes (raw editor / upload) and re-establishes the
-  /// tunnel when the active profile's app ACL changed.
+  // Re-establishes the tunnel if a raw-editor/upload save changed the active
+  // profile's app ACL.
   Future<void> saveProfileFile(Profile profile, Uint8List bytes) async {
     final before = await _readProfileYaml(profile.id);
     putProfile(await profile.saveFile(bytes));
@@ -183,10 +181,9 @@ extension ProfilesControllerExt on AppController {
     }
   }
 
-  /// Single funnel for any pasted/scanned artifact (bare share link, base64
-  /// v2ray list, subscription URL, clash YAML). A subscription URL keeps the
-  /// existing http/quota path; everything else is converted in-app to a
-  /// self-contained config and saved as a local profile.
+  // Funnel for any pasted/scanned artifact. A subscription URL keeps the
+  // http/quota path; share link / base64 list / clash YAML are converted in-app
+  // to a self-contained local profile.
   Future<void> addProfileFromText(String raw) async {
     final text = raw.trim();
     final kind = classifyArtifact(text);

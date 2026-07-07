@@ -121,10 +121,9 @@ extension AccessControlPropsExt on AccessControlProps {
   };
 }
 
-/// Per-profile memory of each filtering mode's app selection, kept so switching
-/// through `all` (which clears the tun package keys) never loses the lists. Not
-/// a routing source: the profile YAML stays authoritative; this only feeds a
-/// YAML write when a mode is re-entered.
+// Per-profile memory of each mode's app selection so switching through `all`
+// (which clears the tun keys) never loses the lists. Not a routing source; the
+// YAML stays authoritative, this only feeds a write when a mode is re-entered.
 @freezed
 abstract class AppFilterStash with _$AppFilterStash {
   const factory AppFilterStash({
@@ -202,6 +201,24 @@ AccessControlProps? aclFromTunYaml(
   }
 
   return null;
+}
+
+// Pure (host-testable) resolver for the ACL the VpnService.Builder enforces:
+// all-mode and legacy profiles with no tun packages (null aclFromTunYaml) resolve
+// to DISABLED = every app tunneled, never the vestigial global filter.
+AccessControlProps resolveEffectiveAccessControl({
+  required bool isGlobalMode,
+  required AccessControlProps guiAcl,
+  required AccessControlProps? profileAcl,
+  required Map<String, dynamic>? profileConfig,
+}) {
+  if (isGlobalMode) return const AccessControlProps();
+  if (profileAcl != null && profileAcl.enable) return profileAcl;
+  if (profileConfig != null) {
+    final yamlAcl = aclFromTunYaml(profileConfig, base: guiAcl);
+    if (yamlAcl != null) return yamlAcl;
+  }
+  return const AccessControlProps();
 }
 
 @freezed

@@ -3,15 +3,32 @@ import 'dart:io';
 
 import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/common/path.dart';
+import 'package:fl_clash/common/print.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 
-/// Geo databases the app manages: (mihomo geoType label, on-disk file name).
-const geoFileItems = <(String, String)>[
-  ('GEOIP', GEOIP),
-  ('GEOSITE', GEOSITE),
-  ('MMDB', MMDB),
-  ('ASN', ASN),
+// One geo database. Filenames are scrambled (MMDB=GEOIP.metadb, ASN=ASN.mmdb),
+// so the config key is explicit, never derived from the name.
+class GeoItem {
+  final String label;
+  final String key;
+  final String fileName;
+
+  const GeoItem({
+    required this.label,
+    required this.key,
+    required this.fileName,
+  });
+
+  String get updatingKey => 'geodata_$key';
+}
+
+const geoItems = <GeoItem>[
+  GeoItem(label: 'GEOIP', fileName: GEOIP, key: 'geoip'),
+  GeoItem(label: 'GEOSITE', fileName: GEOSITE, key: 'geosite'),
+  GeoItem(label: 'MMDB', fileName: MMDB, key: 'mmdb'),
+  GeoItem(label: 'ASN', fileName: ASN, key: 'asn'),
 ];
 
 (int, int) _varint(Uint8List b, int i) {
@@ -27,10 +44,9 @@ const geoFileItems = <(String, String)>[
   return (result, i);
 }
 
-/// Category codes (`country_code`) of every entry in a v2ray / MetaCubeX
-/// GEOSITE.dat, lowercased and sorted. Walks the protobuf directly (no generated
-/// bindings): GeoSiteList { repeated GeoSite entry = 1 }, GeoSite reads its
-/// first field, the `string country_code = 1`, then skips the rest of the entry.
+// GEOSITE.dat category codes, lowercased + sorted. Walks the protobuf directly:
+// GeoSiteList { repeated GeoSite entry=1 }, each GeoSite's first field is
+// `string country_code=1`; the rest of the entry is skipped.
 List<String> parseGeositeCategories(Uint8List data) {
   final codes = <String>[];
   final n = data.length;
@@ -69,8 +85,8 @@ List<String> parseGeositeCategories(Uint8List data) {
   return codes;
 }
 
-/// [parseGeositeCategories] loaded from the on-device GEOSITE.dat; empty when the
-/// geo database has not been downloaded yet or cannot be read.
+// parseGeositeCategories from the on-device GEOSITE.dat; empty when it has not
+// been downloaded yet or cannot be read. Only the routing picker needs a parse.
 Future<List<String>> loadGeositeCategories() async {
   try {
     final file = File(join(await appPath.homeDirPath, GEOSITE));
@@ -81,16 +97,21 @@ Future<List<String>> loadGeositeCategories() async {
   }
 }
 
-/// Copies the bundled baseline GEOSITE.dat into the core home dir when the
-/// on-device file is missing or unreadable (empty categories). Offline-safe
-/// first-run guard so a GEOSITE-rule profile never fails to apply on a fresh
-/// install before the network updater has run.
+// Cheap presence check (no full parse) for the seed guard and the updater's
+// missing-DB gate.
+Future<bool> geositeReady() async {
+  final file = File(join(await appPath.homeDirPath, GEOSITE));
+  return file.existsSync() && await file.length() > 0;
+}
+
 Future<void> seedGeositeIfMissing() async {
-  if ((await loadGeositeCategories()).isNotEmpty) return;
+  if (await geositeReady()) return;
   try {
     final data = await rootBundle.load('assets/geo/geosite.dat');
     final file = File(join(await appPath.homeDirPath, GEOSITE));
     await file.parent.create(recursive: true);
     await file.writeAsBytes(data.buffer.asUint8List(), flush: true);
-  } catch (_) {}
+  } catch (e) {
+    commonPrint.log('geosite seed: $e', logLevel: LogLevel.warning);
+  }
 }

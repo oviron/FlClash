@@ -1,8 +1,8 @@
 import 'package:fl_clash/enum/enum.dart';
 
-/// A single mihomo `rules:` entry: [TypedRule] when it parses into typed
-/// fields, else [PassthroughRule] (logical/nested/odd grammar kept verbatim).
-/// Round-trips byte-for-byte for the canonical comma-joined form.
+// A single mihomo `rules:` entry: [TypedRule] when it parses into typed
+// fields, else [PassthroughRule] (logical/nested/odd grammar kept verbatim).
+// Round-trips byte-for-byte for the canonical comma-joined form.
 sealed class RoutingRule {
   const RoutingRule();
 
@@ -88,9 +88,9 @@ final class PassthroughRule extends RoutingRule {
   int get hashCode => raw.hashCode;
 }
 
-/// The single-clause `SUB-RULE,(PROCESS-NAME,<pkg>),<name>` shape. Modeled apart
-/// from [TypedRule] because a plain PROCESS-NAME rule cannot target a sub-rule;
-/// multi-clause SUB-RULEs (AND/OR payloads) stay [PassthroughRule].
+// The single-clause `SUB-RULE,(PROCESS-NAME,<pkg>),<name>` shape. Modeled apart
+// from [TypedRule] because a plain PROCESS-NAME rule cannot target a sub-rule;
+// multi-clause SUB-RULEs (AND/OR payloads) stay [PassthroughRule].
 final class AppToSubRuleRoute extends RoutingRule {
   final String packageName;
   final String subRuleName;
@@ -113,9 +113,9 @@ final class AppToSubRuleRoute extends RoutingRule {
   int get hashCode => Object.hash(packageName, subRuleName);
 }
 
-/// A `SUB-RULE,(<TYPE>,<params>),<name>` with a single flat non-logical clause
-/// that is not PROCESS-NAME (those are [AppToSubRuleRoute]); round-trips
-/// byte-for-byte. Multi-clause or logical payloads stay [PassthroughRule].
+// A `SUB-RULE,(<TYPE>,<params>),<name>` with a single flat non-logical clause
+// that is not PROCESS-NAME (those are [AppToSubRuleRoute]); round-trips
+// byte-for-byte. Multi-clause or logical payloads stay [PassthroughRule].
 final class SubRuleRoute extends RoutingRule {
   final RuleAction action;
   final String
@@ -145,8 +145,8 @@ final class SubRuleRoute extends RoutingRule {
   int get hashCode => Object.hash(action, params, subRuleName);
 }
 
-/// One clause inside a [LogicalRule]: a non-logical condition type plus its raw
-/// remaining params, kept verbatim so an unedited clause re-serializes exactly.
+// One clause inside a [LogicalRule]: a non-logical condition type plus its raw
+// remaining params, kept verbatim so an unedited clause re-serializes exactly.
 final class LogicalClause {
   final RuleAction action;
   final String
@@ -167,9 +167,9 @@ final class LogicalClause {
   int get hashCode => Object.hash(action, params);
 }
 
-/// A flat-clause logical rule (`AND`/`OR`/`NOT` over parenthesized clauses),
-/// round-tripped byte-for-byte. A clause that is itself logical or nested keeps
-/// the whole rule as [PassthroughRule] (deep nesting is not modeled).
+// A flat-clause logical rule (`AND`/`OR`/`NOT` over parenthesized clauses),
+// round-tripped byte-for-byte. A clause that is itself logical or nested keeps
+// the whole rule as [PassthroughRule] (deep nesting is not modeled).
 final class LogicalRule extends RoutingRule {
   final RuleAction op; // AND, OR, or NOT
   final List<LogicalClause> clauses;

@@ -62,9 +62,9 @@ class Request {
     }
   }
 
-  /// Fetches [url] following redirects manually so identity headers (x-hwid,
-  /// Authorization) are stripped on a cross-host hop and never leak to another
-  /// origin (see [redirectSafeHeaders]).
+  // Follows redirects manually so identity headers (x-hwid, Authorization) are
+  // stripped on a cross-host hop and never leak to another origin (see
+  // [redirectSafeHeaders]).
   Future<Response<T>> _fetch<T>(
     String url,
     ResponseType responseType,
@@ -260,9 +260,9 @@ class Request {
   }
 }
 
-/// Headers safe to carry to [to] when a request to [from] redirects: on a
-/// cross-host hop the device id (x-hwid) and Authorization are dropped so they
-/// never leak to another origin.
+// Headers safe to carry to [to] when a request to [from] redirects: on a
+// cross-host hop the device id (x-hwid) and Authorization are dropped so they
+// never leak to another origin.
 Map<String, String>? redirectSafeHeaders(
   Map<String, String>? headers,
   Uri from,

@@ -23,6 +23,12 @@ void main() {
       expect(sanitizeSsid('" Home "'), 'Home');
     });
 
+    // Cross-engine parity anchor: the Kotlin NetworkSnapshotReader.sanitizeSsid
+    // must produce the identical result (strip a quote pair, then trim).
+    test('quoted and inner-padded normalizes to the bare name (parity)', () {
+      expect(sanitizeSsid('"  Home  "'), 'Home');
+    });
+
     test('empty or whitespace-only becomes null', () {
       expect(sanitizeSsid(''), isNull);
       expect(sanitizeSsid('   '), isNull);

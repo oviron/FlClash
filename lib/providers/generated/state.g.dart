@@ -269,7 +269,7 @@ final class VpnStateProvider
   }
 }
 
-String _$vpnStateHash() => r'41b25d4db5d4e4601f05d0f7b4fe2870a281eb4f';
+String _$vpnStateHash() => r'8e2e67245c73436280a7def069f9ffadfc772092';
 
 @ProviderFor(navigationState)
 const navigationStateProvider = NavigationStateProvider._();
@@ -1998,7 +1998,7 @@ final class SharedStateProvider
   }
 }
 
-String _$sharedStateHash() => r'cf648cc5bb9c1c471ed1cac1d148d8aeb4e06731';
+String _$sharedStateHash() => r'35de5179b458fa5c6d8da4ef56c6eb79d4122e30';
 
 @ProviderFor(overlayTopOffset)
 const overlayTopOffsetProvider = OverlayTopOffsetProvider._();
@@ -2338,60 +2338,6 @@ final class SetupStateFamily extends $Family
   String toString() => r'setupStateProvider';
 }
 
-@ProviderFor(AccessControlState)
-const accessControlStateProvider = AccessControlStateProvider._();
-
-final class AccessControlStateProvider
-    extends $NotifierProvider<AccessControlState, AccessControlProps> {
-  const AccessControlStateProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'accessControlStateProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$accessControlStateHash();
-
-  @$internal
-  @override
-  AccessControlState create() => AccessControlState();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AccessControlProps value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AccessControlProps>(value),
-    );
-  }
-}
-
-String _$accessControlStateHash() =>
-    r'a496770f99975b1bcd7f3f50c55f50726971c749';
-
-abstract class _$AccessControlState extends $Notifier<AccessControlProps> {
-  AccessControlProps build();
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<AccessControlProps, AccessControlProps>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AccessControlProps, AccessControlProps>,
-              AccessControlProps,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
-  }
-}
-
 @ProviderFor(effectiveAccessControl)
 const effectiveAccessControlProvider = EffectiveAccessControlProvider._();
 
@@ -2432,4 +2378,4 @@ final class EffectiveAccessControlProvider
 }
 
 String _$effectiveAccessControlHash() =>
-    r'cf3ae5ab10300eadf87a494e09cabe035c33841c';
+    r'06b534837686d03c196aede70a7877fea69aa1fa';

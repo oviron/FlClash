@@ -5,13 +5,6 @@ extension DateTimeExtension on DateTime {
     return isBefore(DateTime.now());
   }
 
-  bool isBeforeSecure(DateTime? dateTime) {
-    if (dateTime == null) {
-      return false;
-    }
-    return true;
-  }
-
   String get lastUpdateTimeDesc {
     final currentDateTime = DateTime.now();
     final difference = currentDateTime.difference(this);
@@ -36,6 +29,15 @@ extension DateTimeExtension on DateTime {
       return appLocalizations.minutesAgo(minutes);
     }
     return appLocalizations.justNow;
+  }
+
+  String get expiresInDesc {
+    final now = DateTime.now();
+    if (isBefore(now)) return appLocalizations.subExpired;
+    final diff = difference(now);
+    if (diff.inDays >= 1) return appLocalizations.subDaysLeft(diff.inDays);
+    // A sub-hour remainder still has time left; show 1h, never "0 hours left".
+    return appLocalizations.subHoursLeft(diff.inHours < 1 ? 1 : diff.inHours);
   }
 
   String get show {

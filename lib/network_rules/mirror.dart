@@ -53,11 +53,9 @@ String encodeNetworkRulesMirror({
   });
 }
 
-/// Serializes mirror writes so the newest state always commits last: while a
-/// write runs, further requests coalesce into a single trailing run that reads
-/// the freshest state. [schedule]'s future resolves once that state (or newer)
-/// is committed. [rebake] flags a request that needs the expensive cache
-/// rebuild; the trailing run inherits it if any coalesced request set it.
+// Serializes mirror writes so the newest state commits last: while a write
+// runs, further requests coalesce into one trailing run that reads the
+// freshest state; `rebake` (expensive cache rebuild) sticks if any set it.
 class MirrorWriteQueue {
   Future<void>? _running;
   bool _pending = false;
@@ -89,18 +87,13 @@ class MirrorWriteQueue {
   }
 }
 
-int _mirrorWriteSeq = 0;
-
 Future<void> writeNetworkRulesMirror(String homeDir, String content) async {
   final dir = Directory(homeDir);
   if (!await dir.exists()) {
     await dir.create(recursive: true);
   }
-  // Unique temp per write: concurrent _onRulesChanged calls would otherwise
-  // share one `.tmp`, and the second rename fails (the source was already moved).
-  final tmp = File(
-    join(homeDir, '$networkRulesMirrorFileName.${_mirrorWriteSeq++}.tmp'),
-  );
+  // MirrorWriteQueue serializes writes, so a single reusable temp is race-free.
+  final tmp = File(join(homeDir, '$networkRulesMirrorFileName.tmp'));
   try {
     await tmp.writeAsString(content, flush: true);
     await tmp.rename(join(homeDir, networkRulesMirrorFileName));

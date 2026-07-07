@@ -179,19 +179,21 @@ class VpnService : SystemVpnService(), IBaseService,
             Logger.d(
                 "addAddress", "address: ${cidr.address} prefixLength:${cidr.prefixLength}"
             )
-            val routeAddress = options.getIpv4RouteAddress()
-            if (routeAddress.isNotEmpty()) {
-                try {
+            try {
+                val routeAddress = options.getIpv4RouteAddress()
+                if (routeAddress.isNotEmpty()) {
                     routeAddress.forEach { i ->
                         Logger.d(
                             "addRoute4", "address: ${i.address} prefixLength:${i.prefixLength}"
                         )
                         addRoute(i.address, i.prefixLength)
                     }
-                } catch (_: Exception) {
+                } else {
                     addRoute(NET_ANY, 0)
                 }
-            } else {
+            } catch (_: Exception) {
+                // A malformed user-entered route must fall back to route-all,
+                // never throw and kill the tunnel (mirrors the IPv6 branch).
                 addRoute(NET_ANY, 0)
             }
             if (options.ipv6) {

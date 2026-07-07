@@ -404,9 +404,9 @@ class _AddedContainerState extends State<_AddedContainer> {
   }
 }
 
-/// "More" toggle that reveals the customizable widget grid beneath the hero;
-/// the grid keeps its full reorder/add editing (reached via the app-bar edit
-/// action), so power users lose nothing to the simpler default.
+// "More" toggle revealing the customizable widget grid beneath the hero. Full
+// reorder/add editing still lives on the app-bar edit action, so the simpler
+// default costs power users nothing.
 class DashboardDetailsSection extends StatelessWidget {
   final ValueNotifier<bool> openNotifier;
   final Widget grid;

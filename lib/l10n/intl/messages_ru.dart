@@ -91,11 +91,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m30(count) => "Выбрано ${count} элементов";
 
-  static String m31(count) => "${count} правил";
+  static String m31(count) =>
+      "${Intl.plural(count, one: 'остался ${count} день', few: 'осталось ${count} дня', many: 'осталось ${count} дней', other: 'осталось ${count} дня')}";
 
-  static String m32(label) => "${label} должен быть URL";
+  static String m32(count) =>
+      "${Intl.plural(count, one: 'остался ${count} час', few: 'осталось ${count} часа', many: 'осталось ${count} часов', other: 'осталось ${count} часа')}";
 
-  static String m33(count) =>
+  static String m33(value) => "осталось ${value}";
+
+  static String m34(count) => "${count} правил";
+
+  static String m35(label) => "${label} должен быть URL";
+
+  static String m36(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -622,6 +630,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "libBundledTag": MessageLookupByLibrary.simpleMessage("Встроенное"),
     "libDelete": MessageLookupByLibrary.simpleMessage("Удалить"),
     "libInUse": MessageLookupByLibrary.simpleMessage("Используется"),
+    "libIncompatibleOld": MessageLookupByLibrary.simpleMessage(
+      "Несовместимо (устаревшее ядро)",
+    ),
     "libInstalled": MessageLookupByLibrary.simpleMessage("Установлено"),
     "libInstalledTag": MessageLookupByLibrary.simpleMessage("Установлено"),
     "libLoadError": MessageLookupByLibrary.simpleMessage(
@@ -1258,6 +1269,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingGroupsSubtitle": MessageLookupByLibrary.simpleMessage(
       "Как выбираются серверы",
     ),
+    "routingHideSystemApps": MessageLookupByLibrary.simpleMessage(
+      "Скрыть системные приложения",
+    ),
     "routingImportFailed": MessageLookupByLibrary.simpleMessage(
       "Не удалось прочитать ссылку",
     ),
@@ -1448,6 +1462,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingSetAsExit": MessageLookupByLibrary.simpleMessage(
       "Сделать активным выходом",
     ),
+    "routingSkippedNodes": MessageLookupByLibrary.simpleMessage(
+      "Некоторые узлы неподдерживаемого типа пропущены",
+    ),
     "routingSourceCountry": MessageLookupByLibrary.simpleMessage("По стране"),
     "routingSourceLink": MessageLookupByLibrary.simpleMessage("По ссылке"),
     "routingSourcePaste": MessageLookupByLibrary.simpleMessage(
@@ -1534,6 +1551,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "stop": MessageLookupByLibrary.simpleMessage("Стоп"),
     "stopVpn": MessageLookupByLibrary.simpleMessage("Остановка VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("Стиль"),
+    "subDaysLeft": m31,
+    "subExpired": MessageLookupByLibrary.simpleMessage("Истекла"),
+    "subHoursLeft": m32,
+    "subRemaining": m33,
     "subRule": MessageLookupByLibrary.simpleMessage("Подправило"),
     "subRuleDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "Удалить это подправило?",
@@ -1545,7 +1566,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subRuleRename": MessageLookupByLibrary.simpleMessage(
       "Переименовать подправило",
     ),
-    "subRuleRuleCount": m31,
+    "subRuleRuleCount": m34,
     "subRules": MessageLookupByLibrary.simpleMessage("Подправила"),
     "submit": MessageLookupByLibrary.simpleMessage("Отправить"),
     "sync": MessageLookupByLibrary.simpleMessage("Синхронизация"),
@@ -1600,7 +1621,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Получить профиль через URL",
     ),
-    "urlTip": m32,
+    "urlTip": m35,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
@@ -1627,7 +1648,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Режим белого списка",
     ),
     "years": MessageLookupByLibrary.simpleMessage("Лет"),
-    "yearsAgo": m33,
+    "yearsAgo": m36,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
     "zoom": MessageLookupByLibrary.simpleMessage("Масштаб"),
   };

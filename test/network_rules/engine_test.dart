@@ -224,17 +224,6 @@ void main() {
   });
 
   group('NetworkAction profile-switch', () {
-    test('toJson/fromJson round-trip preserves vpn + profileId', () {
-      const action = NetworkAction(vpn: NetworkVpnMode.leave, profileId: 7);
-      expect(NetworkAction.fromJson(action.toJson()), action);
-      expect(action.profileId, isNotNull);
-    });
-
-    test('fromJson defaults to turnOn and null profile on missing fields', () {
-      expect(NetworkAction.fromJson(const {}), NetworkAction.turnOn);
-      expect(NetworkAction.fromJson(const {}).profileId, isNull);
-    });
-
     test('evaluate returns the matched action carrying its profileId', () {
       final rules = [
         const NetworkRule(

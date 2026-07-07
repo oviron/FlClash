@@ -28,16 +28,18 @@ abstract class SubscriptionInfo with _$SubscriptionInfo {
     @Default(0) int expire,
   }) = _SubscriptionInfo;
 
+  const SubscriptionInfo._();
+
   factory SubscriptionInfo.fromJson(Map<String, Object?> json) =>
       _$SubscriptionInfoFromJson(json);
 
   factory SubscriptionInfo.formHString(String? info) {
     if (info == null) return const SubscriptionInfo();
-    final list = info.split(';');
-    final Map<String, int?> map = {};
-    for (final i in list) {
-      final keyValue = i.trim().split('=');
-      map[keyValue[0]] = int.tryParse(keyValue[1]);
+    final map = <String, int?>{};
+    for (final part in info.split(';')) {
+      final kv = part.trim().split('=');
+      if (kv.length < 2) continue; // a bare token or the trailing ';'
+      map[kv[0].trim()] = int.tryParse(kv[1].trim());
     }
     return SubscriptionInfo(
       upload: map['upload'] ?? 0,
@@ -46,6 +48,10 @@ abstract class SubscriptionInfo with _$SubscriptionInfo {
       expire: map['expire'] ?? 0,
     );
   }
+
+  int get used => upload + download;
+
+  int get remaining => total > used ? total - used : 0;
 }
 
 @freezed
@@ -195,18 +201,23 @@ extension ProfileExtension on Profile {
   }
 
   Future<Profile> update() async {
-    var response = await request.getFileResponseForUrl(url);
-    // A Happ/xray panel gates its subscription on the Happ client (UA + x-hwid):
-    // a plain request is redirected to an instruction page, not the nodes. If
-    // the body is not a recognizable profile, retry pretending to be Happ.
+    // A Happ/xray panel gates its subscription on the Happ client (UA + x-hwid)
+    // and serves clash UAs a stripped body; fetch as Happ first so the full node
+    // set arrives deterministically, falling back to a plain request otherwise.
+    var response = await request.getFileResponseForUrl(
+      url,
+      headers: await happHeaders(),
+    );
     if (_looksUnusable(response.data)) {
-      response = await request.getFileResponseForUrl(
-        url,
-        headers: await happHeaders(),
-      );
+      response = await request.getFileResponseForUrl(url);
     }
     final disposition = response.headers.value('content-disposition');
     final userinfo = response.headers.value('subscription-userinfo');
+    // Clash convention: the panel's refresh cadence in hours. Honor it so the
+    // app polls exactly like Happ instead of on its own fixed schedule.
+    final serverHours = int.tryParse(
+      response.headers.value('profile-update-interval') ?? '',
+    );
     final converted = await _maybeConvertSubscriptionBody(
       response.data ?? Uint8List.fromList([]),
     );
@@ -218,6 +229,9 @@ extension ProfileExtension on Profile {
         id.toString(),
       ]),
       subscriptionInfo: SubscriptionInfo.formHString(userinfo),
+      autoUpdateDuration: serverHours != null && serverHours > 0
+          ? Duration(hours: serverHours)
+          : autoUpdateDuration,
     ).saveFile(bytes);
   }
 

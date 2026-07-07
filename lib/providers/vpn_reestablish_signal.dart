@@ -1,10 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Monotonic tick bumped whenever the ACTIVE profile's per-app tun package set
-/// changes on disk. `VpnManager` listens and force-re-establishes the tunnel:
-/// `VpnService.Builder` allow/disallow lists are baked at establish and cannot
-/// be hot-reloaded, and `vpnState` does not otherwise reflect a per-profile ACL
-/// change, so nothing else would re-apply the new app list.
+// Bumped when the active profile's tun package set changes: VpnService.Builder
+// allow/disallow is baked at establish (not hot-reloadable) and vpnState doesn't
+// reflect a per-profile ACL change, so VpnManager watches this to re-establish.
 class VpnReestablishSignal extends Notifier<int> {
   @override
   int build() => 0;

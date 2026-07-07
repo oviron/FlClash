@@ -6,15 +6,14 @@ import 'group_spec.dart';
 import 'provider_spec.dart';
 import 'rule_codec.dart';
 
-/// Reads/rewrites the `rules:` block of a raw mihomo config via `yaml_edit`,
-/// preserving other keys, ordering, and comments. Comments *inside* the rules
-/// block are best-effort (the block is rewritten whole).
+// yaml_edit rewrites a block whole: comments inside it are best-effort, but
+// keys/ordering/comments outside the block survive.
 class ProfileRulesDocument {
   final String raw;
 
   ProfileRulesDocument(this.raw);
 
-  // Parsed once per instance; a half-written file yields null instead of throwing.
+  // A half-written file yields null instead of throwing.
   late final YamlMap? _root = _parseRoot();
 
   YamlMap? _parseRoot() {
@@ -26,41 +25,33 @@ class ProfileRulesDocument {
     }
   }
 
-  /// Parsed `rules:` entries; empty when the key is absent, not a list, or the
-  /// document fails to parse (a half-written file must not throw).
+  // A half-written file must not throw: returns empty when unparseable.
   List<RoutingRule> get rules {
     final node = _root?['rules'];
     if (node is! YamlList) return const [];
     return parseRoutingRules(node.map((e) => e.toString()).toList());
   }
 
-  /// New document string with the `rules:` list replaced by [rules]. Throws
-  /// [ProfileRulesWriteException] when the root is not a YAML map.
+  // Throws ProfileRulesWriteException when the root is not a YAML map.
   String withRules(List<RoutingRule> rules) {
     final editor = _mapEditor();
     editor.update(['rules'], serializeRoutingRules(rules));
     return _render(editor);
   }
 
-  /// Packages under `tun.exclude-package` (the blacklist: these bypass the
-  /// tunnel); empty when absent.
+  // tun.exclude-package: the blacklist (these bypass the tunnel).
   List<String> get excludedPackages => _tunPackages('exclude-package');
 
-  /// Packages under `tun.include-package` (the whitelist: only these enter the
-  /// tunnel); empty when absent. Its presence is how the screen derives
-  /// whitelist vs blacklist mode for a profile.
+  // tun.include-package: the whitelist (only these enter the tunnel). Its
+  // presence is how the screen derives whitelist vs blacklist mode.
   List<String> get includedPackages => _tunPackages('include-package');
 
-  /// Names under `sub-rules:` (each is its own named rule list); empty when
-  /// absent. These are valid routing targets for app->sub-rule rules.
   List<String> get subRuleNames {
     final node = _root?['sub-rules'];
     if (node is! YamlMap) return const [];
     return node.keys.map((e) => e.toString()).toList();
   }
 
-  /// Each `sub-rules:` entry parsed into its rule list (preserving order);
-  /// empty map when absent or malformed.
   Map<String, List<RoutingRule>> get subRules {
     final node = _root?['sub-rules'];
     if (node is! YamlMap) return const {};
@@ -74,8 +65,6 @@ class ProfileRulesDocument {
     return out;
   }
 
-  /// New document with `sub-rules:` replaced by [subRules] (an empty map removes
-  /// the key). Insertion order is kept; other keys/comments are preserved.
   String withSubRules(Map<String, List<RoutingRule>> subRules) {
     final editor = _mapEditor();
     final root = editor.parseAt([]) as YamlMap;
@@ -90,8 +79,6 @@ class ProfileRulesDocument {
     return _render(editor);
   }
 
-  /// Names declared under `proxies:`; empty when absent. Candidate members for
-  /// a proxy group, distinct from group names.
   List<String> get proxyNames {
     final node = _root?['proxies'];
     if (node is! YamlList) return const [];
@@ -101,23 +88,6 @@ class ProfileRulesDocument {
     ];
   }
 
-  /// `proxies:` entries as (name, type, server) for a read-only listing.
-  List<({String name, String type, String? server})> get proxyInfos {
-    final node = _root?['proxies'];
-    if (node is! YamlList) return const [];
-    return [
-      for (final p in node)
-        if (p is YamlMap && p['name'] != null)
-          (
-            name: p['name'].toString(),
-            type: (p['type'] ?? '').toString(),
-            server: p['server']?.toString(),
-          ),
-    ];
-  }
-
-  /// Each `proxies:` entry as a lossless dart map; empty when absent. Preserves
-  /// every protocol field verbatim so an imported node round-trips.
   List<Map<String, dynamic>> get proxies {
     final node = _root?['proxies'];
     if (node is! YamlList) return const [];
@@ -127,8 +97,6 @@ class ProfileRulesDocument {
     ];
   }
 
-  /// New document with `proxies:` replaced by [proxies] (an empty list removes
-  /// the key); every field preserved. Other keys/comments are kept.
   String withProxies(List<Map<String, dynamic>> proxies) {
     final editor = _mapEditor();
     final root = editor.parseAt([]) as YamlMap;
@@ -140,7 +108,6 @@ class ProfileRulesDocument {
     return _render(editor);
   }
 
-  /// Each `proxy-groups:` entry as a lossless [GroupSpec]; empty when absent.
   List<GroupSpec> get proxyGroups {
     final node = _root?['proxy-groups'];
     if (node is! YamlList) return const [];
@@ -150,20 +117,14 @@ class ProfileRulesDocument {
     ];
   }
 
-  /// New document with `proxy-groups:` replaced by [groups] (each group's
-  /// unknown keys preserved verbatim). Other keys/comments are preserved.
   String withProxyGroups(List<GroupSpec> groups) {
     final editor = _mapEditor();
     editor.update(['proxy-groups'], [for (final g in groups) g.raw]);
     return _render(editor);
   }
 
-  /// Each `proxy-providers:` entry (a name->config map) as a lossless
-  /// [ProviderSpec]; empty when absent.
   Map<String, ProviderSpec> get proxyProviders => _providers('proxy-providers');
 
-  /// Each `rule-providers:` entry as a lossless [ProviderSpec]; empty when
-  /// absent.
   Map<String, ProviderSpec> get ruleProviders => _providers('rule-providers');
 
   Map<String, ProviderSpec> _providers(String key) {
@@ -179,14 +140,9 @@ class ProfileRulesDocument {
     return out;
   }
 
-  /// New document with `proxy-providers:` replaced by [providers] (an empty map
-  /// removes the key); unknown keys per provider preserved. Other keys/comments
-  /// are kept.
   String withProxyProviders(Map<String, ProviderSpec> providers) =>
       _withProviders('proxy-providers', providers);
 
-  /// New document with `rule-providers:` replaced by [providers]; same
-  /// preservation/removal semantics as [withProxyProviders].
   String withRuleProviders(Map<String, ProviderSpec> providers) =>
       _withProviders('rule-providers', providers);
 
@@ -210,9 +166,8 @@ class ProfileRulesDocument {
   static String _render(YamlEditor editor) =>
       editor.toString().replaceAll(r'\/', '/');
 
-  // A YamlEditor over a map-rooted config, or a ProfileRulesWriteException the
-  // controller already catches; so a malformed file surfaces as a message
-  // instead of an uncaught YamlException from the editor constructor.
+  // Wraps a malformed file as a ProfileRulesWriteException the controller
+  // catches, instead of an uncaught YamlException from the editor constructor.
   YamlEditor _mapEditor() {
     final YamlEditor editor;
     final Object? root;
@@ -237,14 +192,9 @@ class ProfileRulesDocument {
     return node.whereType<String>().toList();
   }
 
-  /// New document with `tun.exclude-package` set to [packages] (creates `tun`
-  /// or the key when absent; an empty list removes the key). Other tun fields
-  /// and document parts are preserved.
   String withExcludedPackages(List<String> packages) =>
       _withTunPackages('exclude-package', packages);
 
-  /// New document with `tun.include-package` set to [packages]; same
-  /// preservation/removal semantics as [withExcludedPackages].
   String withIncludedPackages(List<String> packages) =>
       _withTunPackages('include-package', packages);
 
@@ -276,9 +226,8 @@ class ProfileRulesWriteException implements Exception {
   String toString() => 'ProfileRulesWriteException: $message';
 }
 
-/// Whether the tun include/exclude-package SETS differ between two profile
-/// documents (order-insensitive). A routing write only needs a tunnel
-/// re-establish when this is true, since everything else hot-reloads.
+// Only a change to the tun package sets needs a tunnel re-establish; every
+// other routing change hot-reloads.
 bool tunPackagesChanged(String before, String after) {
   bool sameSet(List<String> x, List<String> y) =>
       x.length == y.length && x.toSet().containsAll(y);

@@ -22,9 +22,9 @@ extension FileExt on File {
     return await writeAsString(str);
   }
 
-  /// Atomic write: a reader never observes a torn/partial file. Writes to a
-  /// per-call temp then renames over the target; concurrent writers each land a
-  /// complete payload and the last rename wins.
+  // Atomic write: a reader never observes a torn/partial file. Writes to a
+  // per-call temp then renames over the target; concurrent writers each land a
+  // complete payload and the last rename wins.
   Future<File> safeWriteAsStringAtomic(String str) async {
     if (!await parent.exists()) {
       await parent.create(recursive: true);

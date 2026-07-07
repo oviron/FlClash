@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fl_clash/common/xray_json.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -21,6 +23,39 @@ const _govpnLike = '''
         "xhttpSettings":{"path":"/x","mode":"auto"}}}
   ]},
   {"remarks":"GO Hysteria","outbounds":[{"protocol":"hysteria","settings":{}}]}
+]
+''';
+
+/// The real heterogeneous GoVPN feed (happ-tier): xhttp+VLESS-Encryption over
+/// security:none, grpc+REALITY, ws+TLS, and hysteria2. Field shapes are copied
+/// verbatim from a live subscription pull.
+const _govpnReal = '''
+[
+  {"remarks":"Speed","outbounds":[
+    {"tag":"proxy","protocol":"vless","settings":{"vnext":[{"address":"g1.mtscloudstream.com","port":10443,
+      "users":[{"id":"UU","encryption":"mlkem768x25519plus.native.0rtt.BLOB","flow":""}]}]},
+      "streamSettings":{"network":"xhttp","security":"none",
+        "xhttpSettings":{"mode":"stream-up","host":"s3.storage.selcloud.ru","path":"/my-bucket",
+          "extra":{"xmux":{"cMaxReuseTimes":"5-10","maxConcurrency":2,"hKeepAlivePeriod":30000,
+            "hMaxRequestTimes":"50-100","hMaxReusableSecs":"60-300"}}}}},
+    {"tag":"proxy","protocol":"vless","settings":{"vnext":[{"address":"92.53.64.133","port":443,
+      "users":[{"id":"UU","encryption":"none","flow":""}]}]},
+      "streamSettings":{"network":"grpc","security":"reality",
+        "grpcSettings":{"serviceName":"grpc","authority":"","mode":false},
+        "realitySettings":{"serverName":"gos.skystreamgame.com","publicKey":"PBK","shortId":"5c76","fingerprint":"chrome"}}}
+  ]},
+  {"remarks":"Antiblock","outbounds":[
+    {"tag":"proxy","protocol":"vless","settings":{"vnext":[{"address":"s25198.cdn.ngenix.net","port":443,
+      "users":[{"id":"UU","encryption":"none","flow":""}]}]},
+      "streamSettings":{"network":"ws","security":"tls",
+        "wsSettings":{"path":"/v1/data/sync/","host":"","headers":{}},
+        "tlsSettings":{"serverName":"","fingerprint":"chrome","alpn":["http/1.1"]}}}
+  ]},
+  {"remarks":"Backup","outbounds":[
+    {"tag":"proxy","protocol":"hysteria","settings":{"address":"31.76.106.66","port":443,"version":2},
+      "streamSettings":{"network":"hysteria","hysteriaSettings":{"version":2,"auth":"AUTH"},
+        "security":"tls","tlsSettings":{"serverName":"ultimagamest.com","fingerprint":"chrome","alpn":["h3"]}}}
+  ]}
 ]
 ''';
 
@@ -256,6 +291,232 @@ void main() {
       'h-max-request-times': '600-900',
       'h-max-reusable-secs': '1800-3600',
       'h-keep-alive-period': 0,
+    });
+  });
+
+  group('parseXrayJson heterogeneous happ-tier transports', () {
+    List<Map<String, dynamic>> real() => parseXrayJson(_govpnReal);
+    Map<String, dynamic> byServer(String s) =>
+        real().firstWhere((p) => p['server'] == s);
+
+    test('xhttp + security:none + VLESS-Encryption (ML-KEM)', () {
+      final p = byServer('g1.mtscloudstream.com');
+      expect(p['type'], 'vless');
+      expect(p['network'], 'xhttp');
+      expect(p['tls'], false); // security: none -> no TLS
+      expect(p['encryption'], 'mlkem768x25519plus.native.0rtt.BLOB');
+      expect(p.containsKey('alpn'), false); // no TLS -> no alpn
+      expect(p.containsKey('reality-opts'), false);
+      final opts = p['xhttp-opts'] as Map;
+      expect(opts['path'], '/my-bucket');
+      expect(opts['mode'], 'stream-up');
+      expect(
+        opts['host'],
+        's3.storage.selcloud.ru',
+      ); // fronting Host, was dropped
+      // xray>=25 nests mux under extra.xmux (vs the legacy reuseSettings key).
+      expect(opts['reuse-settings'], {
+        'max-concurrency': '2',
+        'max-connections': 0,
+        'c-max-reuse-times': '5-10',
+        'h-max-request-times': '50-100',
+        'h-max-reusable-secs': '60-300',
+        'h-keep-alive-period': 30000,
+      });
+    });
+
+    test('grpc + REALITY carries grpc-service-name', () {
+      final p = byServer('92.53.64.133');
+      expect(p['network'], 'grpc');
+      expect(p['tls'], true);
+      expect(p['grpc-opts'], {'grpc-service-name': 'grpc'});
+      expect(p['servername'], 'gos.skystreamgame.com');
+      expect(p['reality-opts'], {'public-key': 'PBK', 'short-id': '5c76'});
+      expect(p['client-fingerprint'], 'chrome'); // upstream default
+      expect(p.containsKey('encryption'), false); // "none" is not emitted
+    });
+
+    test('ws + TLS carries ws-opts path + alpn', () {
+      final p = byServer('s25198.cdn.ngenix.net');
+      expect(p['network'], 'ws');
+      expect(p['tls'], true);
+      expect((p['ws-opts'] as Map)['path'], '/v1/data/sync/');
+      // empty host -> no Host header emitted
+      expect((p['ws-opts'] as Map).containsKey('headers'), false);
+      expect(p['alpn'], ['http/1.1']);
+      expect(p.containsKey('reality-opts'), false);
+    });
+
+    test('hysteria2 becomes a first-class hysteria2 proxy', () {
+      final p = byServer('31.76.106.66');
+      expect(p['type'], 'hysteria2');
+      expect(p['port'], 443);
+      expect(p['password'], 'AUTH');
+      expect(p['sni'], 'ultimagamest.com');
+      expect(p['alpn'], ['h3']);
+      // hysteria2 is QUIC: no vless-only fields
+      expect(p.containsKey('uuid'), false);
+      expect(p.containsKey('network'), false);
+      expect(p.containsKey('client-fingerprint'), false);
+    });
+
+    test('all four heterogeneous nodes survive conversion', () {
+      expect(real().length, 4);
+    });
+  });
+
+  group('parseXrayJsonGroups (Happ per-remark-profile grouping)', () {
+    test('one group per remark-profile, nodes named by remark', () {
+      final groups = parseXrayJsonGroups(_govpnReal);
+      expect(groups.map((g) => g.remark), ['Speed', 'Antiblock', 'Backup']);
+      expect(groups[0].proxies.length, 2); // xhttp + grpc
+      expect(groups[1].proxies.length, 1); // ws
+      expect(groups[2].proxies.length, 1); // hysteria2
+      expect(groups[0].proxies[0]['name'], 'Speed 01');
+      expect(groups[0].proxies[1]['name'], 'Speed 02');
+      expect(groups[1].proxies[0]['name'], 'Antiblock 01');
+      expect(groups[2].proxies.single['type'], 'hysteria2');
+    });
+
+    test('profiles with no convertible nodes are dropped', () {
+      const j = '''
+[{"remarks":"empty","outbounds":[{"protocol":"shadowsocks","settings":{}}]}]
+''';
+      expect(parseXrayJsonGroups(j), isEmpty);
+    });
+
+    test('non-JSON / non-list -> empty, never throws', () {
+      expect(parseXrayJsonGroups('not json'), isEmpty);
+      expect(parseXrayJsonGroups('{}'), isEmpty);
+    });
+  });
+
+  group('slugXrayGroups (embedded provider naming)', () {
+    test('renames nodes to a filter-safe index slug per remark', () {
+      final s = slugXrayGroups(_govpnReal, 'govpn');
+      expect(s.proxies.map((p) => p['name']).toList(), [
+        'govpn-r01-01',
+        'govpn-r01-02',
+        'govpn-r02-01',
+        'govpn-r03-01',
+      ]);
+      expect(s.remarks.map((r) => (r.label, r.slug, r.count)).toList(), [
+        ('Speed', 'govpn-r01', 2),
+        ('Antiblock', 'govpn-r02', 1),
+        ('Backup', 'govpn-r03', 1),
+      ]);
+    });
+
+    test('preserves node transport fields (only the name changes)', () {
+      final s = slugXrayGroups(_govpnReal, 'govpn');
+      expect(s.proxies[3]['type'], 'hysteria2'); // Backup node
+    });
+
+    test('non-JSON / non-list -> empty proxies and remarks', () {
+      final s = slugXrayGroups('not json', 'govpn');
+      expect(s.proxies, isEmpty);
+      expect(s.remarks, isEmpty);
+    });
+  });
+
+  group('injectRemarkGroups (embedded per-remark groups)', () {
+    const remarks = [
+      (label: 'Speed', slug: 'govpn-r01', count: 2),
+      (label: 'Antiblock', slug: 'govpn-r02', count: 1),
+      (label: 'Backup', slug: 'govpn-r03', count: 1),
+    ];
+
+    Map<String, dynamic> baseConfig() => {
+      'proxy-groups': <dynamic>[
+        {
+          'name': 'Go',
+          'type': 'url-test',
+          'use': ['govpn'],
+          'url': 'http://cp/generate_204',
+          'interval': 90,
+          'tolerance': 50,
+          'lazy': true,
+        },
+        {
+          'name': 'VPN',
+          'type': 'select',
+          'proxies': ['Go', 'DIRECT'],
+        },
+      ],
+    };
+
+    test('rewires the clean parent to a select over per-remark groups', () {
+      final config = baseConfig();
+      injectRemarkGroups(config, 'govpn', remarks);
+      final groups = (config['proxy-groups'] as List)
+          .cast<Map<String, dynamic>>();
+      final go = groups.firstWhere((g) => g['name'] == 'Go');
+      expect(go['type'], 'select');
+      expect(go['proxies'], ['Speed', 'Antiblock', 'Backup']);
+      expect(go.containsKey('use'), isFalse);
+      expect(go.containsKey('filter'), isFalse);
+      expect(go.containsKey('interval'), isFalse);
+    });
+
+    test('appends one hidden url-test group per remark, slug filter + '
+        'inherited health check', () {
+      final config = baseConfig();
+      injectRemarkGroups(config, 'govpn', remarks);
+      final groups = (config['proxy-groups'] as List)
+          .cast<Map<String, dynamic>>();
+      final speed = groups.firstWhere((g) => g['name'] == 'Speed');
+      expect(speed['type'], 'url-test');
+      expect(speed['use'], ['govpn']);
+      expect(speed['filter'], '^govpn-r01-');
+      expect(speed['interval'], 90);
+      expect(speed['tolerance'], 50);
+      expect(speed['lazy'], true);
+      expect(speed['hidden'], isTrue); // drill-down under the parent select
+      expect(
+        groups.map((g) => g['name']),
+        containsAll(['Antiblock', 'Backup']),
+      );
+    });
+
+    test('no clean parent (author filter) -> config unchanged', () {
+      final config = {
+        'proxy-groups': <dynamic>[
+          {
+            'name': 'Go',
+            'type': 'url-test',
+            'use': ['govpn'],
+            'filter': 'x',
+          },
+        ],
+      };
+      final before = jsonEncode(config);
+      injectRemarkGroups(config, 'govpn', remarks);
+      expect(jsonEncode(config), before);
+    });
+
+    test('dedups a display name that collides with an existing group', () {
+      final config = {
+        'proxy-groups': <dynamic>[
+          {
+            'name': 'Speed',
+            'type': 'select',
+            'proxies': ['DIRECT'],
+          },
+          {
+            'name': 'Go',
+            'type': 'url-test',
+            'use': ['govpn'],
+            'interval': 90,
+          },
+        ],
+      };
+      injectRemarkGroups(config, 'govpn', remarks);
+      final groups = (config['proxy-groups'] as List)
+          .cast<Map<String, dynamic>>();
+      final names = groups.map((g) => g['name']).toList();
+      expect(names, containsAll(['Speed', 'Speed (2)', 'Antiblock', 'Backup']));
+      final go = groups.firstWhere((g) => g['name'] == 'Go');
+      expect(go['proxies'], contains('Speed (2)'));
     });
   });
 }

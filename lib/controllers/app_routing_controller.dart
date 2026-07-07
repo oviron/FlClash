@@ -1,7 +1,7 @@
 part of '../controller.dart';
 
 extension AppRoutingController on AppController {
-  /// Group/node/provider counts for a profile card stat line, from one read.
+  // Group/node/provider counts for a profile card stat line, from one read.
   Future<({int groups, int nodes, int providers})> readProfileStats(
     int profileId,
   ) async {

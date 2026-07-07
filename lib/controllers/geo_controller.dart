@@ -1,32 +1,45 @@
 part of '../controller.dart';
 
 extension GeoControllerExt on AppController {
-  /// Refreshes every geo database via the core and records the timestamp.
-  /// Best-effort: a failing file is logged and skipped, others still update.
+  // Refreshes every geo database via the core; stamps the freshness timestamp
+  // only when at least one succeeded, so a total failure (e.g. an RKN-blocked
+  // CDN) retries next launch instead of being suppressed for a whole interval.
   Future<void> updateGeoDatabases() async {
-    for (final (label, fileName) in geoFileItems) {
+    var anySucceeded = false;
+    for (final item in geoItems) {
       try {
-        await coreController.updateGeoData(
-          UpdateGeoDataParams(geoName: fileName, geoType: label),
+        final message = await coreController.updateGeoData(
+          UpdateGeoDataParams(geoName: item.fileName, geoType: item.label),
         );
+        if (message.isEmpty) {
+          anySucceeded = true;
+        } else {
+          commonPrint.log(
+            'geo update ${item.label}: $message',
+            logLevel: LogLevel.warning,
+          );
+        }
       } catch (e) {
-        commonPrint.log('geo update $label: $e', logLevel: LogLevel.warning);
+        commonPrint.log(
+          'geo update ${item.label}: $e',
+          logLevel: LogLevel.warning,
+        );
       }
     }
-    _ref
-        .read(appSettingProvider.notifier)
-        .update((state) => state.copyWith(lastGeoUpdate: DateTime.now()));
+    if (anySucceeded) {
+      _ref
+          .read(appSettingProvider.notifier)
+          .update((state) => state.copyWith(lastGeoUpdate: DateTime.now()));
+    }
   }
 
-  /// Startup background geo refresh, gated by [shouldRefreshGeo]: heals a
-  /// missing database and honours the user's chosen interval.
   Future<void> autoUpdateGeo() async {
     final setting = _ref.read(appSettingProvider);
     final refresh = shouldRefreshGeo(
       interval: setting.geoUpdateInterval,
       lastGeoUpdate: setting.lastGeoUpdate,
       now: DateTime.now(),
-      geoMissing: (await loadGeositeCategories()).isEmpty,
+      geoMissing: !(await geositeReady()),
     );
     if (!refresh) return;
     await updateGeoDatabases();

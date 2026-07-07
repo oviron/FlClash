@@ -5,8 +5,6 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Thin strip above the proxy list showing the active outbound chain
-/// (entry group → … → leaf node) with the leaf's latency and a connected dot.
 class ActiveChainStrip extends ConsumerWidget {
   const ActiveChainStrip({super.key});
 

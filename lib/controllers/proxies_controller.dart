@@ -96,10 +96,8 @@ extension ProxiesControllerExt on AppController {
     addCheckIp();
   }
 
-  /// Selects [proxyName] in [groupName]. For a computed-selected group tapping
-  /// the active node clears the pin (toggle off). Returns false (with a notice)
-  /// for a group whose selection cannot be changed. Shared by the proxy card and
-  /// the node-selector sheet.
+  // Computed-selected group: tapping the active node clears the pin (toggle
+  // off). Returns false (with a notice) for a group whose selection is fixed.
   bool selectGroupMember({
     required String groupName,
     required String proxyName,

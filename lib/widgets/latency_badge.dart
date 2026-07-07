@@ -1,10 +1,9 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:flutter/material.dart';
 
-/// Latency as tabular-figure milliseconds in a semantic color. null renders
-/// nothing; the value:0 in-progress sentinel renders a spinner; value:-1 (any
-/// delay < 0) renders the timeout label. Shared across node lists, proxy cards
-/// and member pickers via [delayColor].
+// null renders nothing; value 0 is the in-progress sentinel (spinner); value < 0
+// is a timeout. Latency shows as tabular-figure ms in a semantic color
+// ([delayColor]).
 class LatencyBadge extends StatelessWidget {
   final int? delay;
   final bool showUnit;

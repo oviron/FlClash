@@ -44,14 +44,22 @@ void main() {
       expect(conditions.first, {'kind': 'wifi_named', 'ssid': 'Home'});
     });
 
-    test('serializes every default action by name', () {
-      for (final action in DefaultNetworkAction.values) {
+    test('serializes each default action to its exact wire string', () {
+      // Literal wire contract shared with Kotlin NetworkRulesCodec; must not
+      // drift from the enum's `.name` silently.
+      const wire = {
+        DefaultNetworkAction.turnOn: 'turnOn',
+        DefaultNetworkAction.turnOff: 'turnOff',
+        DefaultNetworkAction.leaveAsIs: 'leaveAsIs',
+      };
+      expect(wire.length, DefaultNetworkAction.values.length);
+      for (final entry in wire.entries) {
         final json = encodeNetworkRulesMirror(
           enabled: false,
-          defaultAction: action,
+          defaultAction: entry.key,
           rules: const [],
         );
-        expect((jsonDecode(json) as Map)['defaultAction'], action.name);
+        expect((jsonDecode(json) as Map)['defaultAction'], entry.value);
       }
     });
 
@@ -138,20 +146,19 @@ void main() {
       if (await dir.exists()) await dir.delete(recursive: true);
     });
 
-    test('concurrent writes do not race on a shared temp file', () async {
-      await Future.wait([
-        for (var i = 0; i < 8; i++)
-          writeNetworkRulesMirror(dir.path, '{"n":$i}'),
-      ]);
-      final file = File(join(dir.path, networkRulesMirrorFileName));
-      expect(await file.exists(), true);
-      expect(
-        jsonDecode(await file.readAsString()),
-        isA<Map<String, dynamic>>(),
-      );
-      final leftovers = dir.listSync().where((e) => e.path.endsWith('.tmp'));
-      expect(leftovers, isEmpty, reason: 'no orphan .tmp files left behind');
-    });
+    test(
+      'writes commit atomically (last wins) and leave no orphan temp',
+      () async {
+        // MirrorWriteQueue serializes writes, so the contract is: each write
+        // rename-commits its content and cleans up its temp.
+        await writeNetworkRulesMirror(dir.path, '{"n":1}');
+        await writeNetworkRulesMirror(dir.path, '{"n":2}');
+        final file = File(join(dir.path, networkRulesMirrorFileName));
+        expect(jsonDecode(await file.readAsString()), {'n': 2});
+        final leftovers = dir.listSync().where((e) => e.path.endsWith('.tmp'));
+        expect(leftovers, isEmpty, reason: 'no orphan .tmp files left behind');
+      },
+    );
 
     test('creates the home dir when it does not exist yet', () async {
       final nested = join(dir.path, 'sub', 'home');

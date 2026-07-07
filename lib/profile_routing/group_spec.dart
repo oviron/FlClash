@@ -3,10 +3,8 @@ import 'package:yaml/yaml.dart';
 
 const _unset = Object();
 
-/// One `proxy-groups:` entry as a lossless ordered map: typed accessors for the
-/// fields the editor manages, while every other key (strategy, filter,
-/// exclude-type, use, icon, ...) is preserved verbatim so a round-trip never
-/// drops a mihomo option the model does not know about.
+// Lossless ordered map: unmodeled keys are preserved verbatim so a
+// fresh write never drops a mihomo option the model does not know.
 class GroupSpec {
   final Map<String, dynamic> raw;
 
@@ -37,10 +35,9 @@ class GroupSpec {
 
   List<String> get proxies => _strings(raw['proxies']);
 
-  /// Provider sources (`use:`) the group draws members from; empty when absent.
   List<String> get use => _strings(raw['use']);
 
-  /// The regex `filter:` over provider members; null when absent.
+  // Regex over provider members.
   String? get filter => raw['filter']?.toString();
 
   String? get url => raw['url']?.toString();
@@ -49,18 +46,14 @@ class GroupSpec {
 
   bool get lazy => raw['lazy'] == true;
 
-  /// Hides the group from the runtime proxy selector.
   bool get hidden => raw['hidden'] == true;
 
-  /// url-test tolerance (ms) before switching; null when absent.
+  // url-test tolerance in ms before switching.
   int? get tolerance => asInt(raw['tolerance']);
 
-  /// Keys not surfaced as typed fields; shown to the user as preserved-as-is.
   List<String> get extraKeys =>
       raw.keys.where((k) => !_known.contains(k)).toList();
 
-  /// The non-modeled keys as a map, preserved verbatim; single source of the
-  /// modeled-key set (used by the routing model instead of a parallel copy).
   Map<String, dynamic> get extra => {for (final k in extraKeys) k: raw[k]};
 
   GroupSpec copyWith({

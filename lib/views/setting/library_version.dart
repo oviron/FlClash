@@ -223,6 +223,15 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
         ? 'bridgeABI ${rel.bridgeAbi}'
         : '${rel.coreName} ${rel.coreVersion}';
     if (!compatible) {
+      // rel ABI < app ABI: the core predates this app's bridge, so it can never
+      // load here; "update the app" is wrong (the app is already newer).
+      final tooOld = expectedAbi != null && rel.bridgeAbi < expectedAbi;
+      final reason = tooOld
+          ? Intl.message(
+              'Incompatible (older core)',
+              name: 'libIncompatibleOld',
+            )
+          : Intl.message('Requires app update', name: 'libNeedsUpdate');
       return ListItem(
         leading: const Icon(Icons.block),
         title: Text(
@@ -230,7 +239,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
           style: TextStyle(color: Theme.of(context).disabledColor),
         ),
         subtitle: Text(
-          Intl.message('Requires app update', name: 'libNeedsUpdate') +
+          reason +
               (expectedAbi != null && rel.bridgeAbi != expectedAbi
                   ? ' (ABI ${rel.bridgeAbi})'
                   : ''),

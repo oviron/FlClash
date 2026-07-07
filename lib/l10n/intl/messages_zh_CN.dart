@@ -41,7 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(label) => "${label}当前已存在";
 
-  static String m10(upstream) => "Fork of ${upstream}";
+  static String m10(upstream) => "${upstream} 的分支";
 
   static String m11(keys) => "原样保留：${keys}";
 
@@ -83,11 +83,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m30(count) => "已选择 ${count} 项";
 
-  static String m31(count) => "${count} 条规则";
+  static String m31(count) => "${Intl.plural(count, other: '剩余${count}天')}";
 
-  static String m32(label) => "${label}必须为URL";
+  static String m32(count) => "${Intl.plural(count, other: '剩余${count}小时')}";
 
-  static String m33(count) => "${count} 年前";
+  static String m33(value) => "剩余${value}";
+
+  static String m34(count) => "${count} 条规则";
+
+  static String m35(label) => "${label}必须为URL";
+
+  static String m36(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -202,20 +208,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "application": MessageLookupByLibrary.simpleMessage("应用程序"),
     "applicationDesc": MessageLookupByLibrary.simpleMessage("修改应用程序相关设置"),
     "auto": MessageLookupByLibrary.simpleMessage("自动"),
-    "autoCloseConnections": MessageLookupByLibrary.simpleMessage(
-      "Drop connections on node switch",
-    ),
+    "autoCloseConnections": MessageLookupByLibrary.simpleMessage("切换节点时断开连接"),
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
-      "When the proxy node changes, active connections are closed so new ones use the new node",
+      "更换代理节点时关闭现有连接，使新连接使用新节点",
     ),
-    "autoLaunch": MessageLookupByLibrary.simpleMessage("Start on device boot"),
+    "autoLaunch": MessageLookupByLibrary.simpleMessage("开机自启动"),
     "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
-      "VPN service launches automatically after the phone reboots (requires OEM whitelisting)",
+      "手机重启后自动启动 VPN 服务（需在 OEM 系统中加入白名单）",
     ),
-    "autoRun": MessageLookupByLibrary.simpleMessage("Connect on app open"),
-    "autoRunDesc": MessageLookupByLibrary.simpleMessage(
-      "Tunnel comes up immediately when the app is launched",
-    ),
+    "autoRun": MessageLookupByLibrary.simpleMessage("打开应用时连接"),
+    "autoRunDesc": MessageLookupByLibrary.simpleMessage("应用启动时立即建立隧道"),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage("自动设置系统DNS"),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自动更新"),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage("自动更新间隔（分钟）"),
@@ -392,11 +394,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "groupOpenYaml": MessageLookupByLibrary.simpleMessage("以 YAML 打开"),
     "groupType": MessageLookupByLibrary.simpleMessage("类型"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("是否缓存修改"),
-    "hideFromRecents": MessageLookupByLibrary.simpleMessage(
-      "Hide from recents",
-    ),
+    "hideFromRecents": MessageLookupByLibrary.simpleMessage("从最近任务中隐藏"),
     "hideFromRecentsDesc": MessageLookupByLibrary.simpleMessage(
-      "App icon does not appear in the recent apps list while the app is in background",
+      "应用在后台时不显示在最近任务列表中",
     ),
     "host": MessageLookupByLibrary.simpleMessage("主机"),
     "hosts": MessageLookupByLibrary.simpleMessage("Hosts"),
@@ -417,7 +417,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "在日志页保留最近事件（内部缓冲，与 adb logcat 分开）",
     ),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
-      "Include WebDAV credentials in backup",
+      "备份中包含 WebDAV 凭据",
     ),
     "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
       "默认关闭。仅在信任备份存放的存储时开启。",
@@ -451,6 +451,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "libBundledTag": MessageLookupByLibrary.simpleMessage("内置"),
     "libDelete": MessageLookupByLibrary.simpleMessage("删除"),
     "libInUse": MessageLookupByLibrary.simpleMessage("使用中"),
+    "libIncompatibleOld": MessageLookupByLibrary.simpleMessage("不兼容（内核版本过旧）"),
     "libInstalled": MessageLookupByLibrary.simpleMessage("已安装"),
     "libInstalledTag": MessageLookupByLibrary.simpleMessage("已安装"),
     "libLoadError": MessageLookupByLibrary.simpleMessage("加载发行版失败"),
@@ -523,11 +524,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "messageTest": MessageLookupByLibrary.simpleMessage("消息测试"),
     "messageTestTip": MessageLookupByLibrary.simpleMessage("这是一条消息。"),
     "min": MessageLookupByLibrary.simpleMessage("最小"),
-    "minimizeOnExit": MessageLookupByLibrary.simpleMessage(
-      "Minimize instead of exit",
-    ),
+    "minimizeOnExit": MessageLookupByLibrary.simpleMessage("最小化而非退出"),
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
-      "Back button sends the app to background instead of closing it",
+      "返回键将应用切换到后台而不是关闭",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("分钟"),
     "minutesAgo": m14,
@@ -724,6 +723,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("纯黑模式"),
     "qrcode": MessageLookupByLibrary.simpleMessage("二维码"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage("扫描二维码获取配置文件"),
+    "quickStartFailedBody": MessageLookupByLibrary.simpleMessage(
+      "密钥已连接，但网页无法加载。",
+    ),
+    "quickStartFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "无法通过此密钥连接互联网",
+    ),
+    "quickStartImported": MessageLookupByLibrary.simpleMessage("已导入"),
+    "quickStartNoServers": MessageLookupByLibrary.simpleMessage("粘贴的内容中未找到服务器"),
+    "quickStartPasteHint": MessageLookupByLibrary.simpleMessage(
+      "粘贴服务商发给你的链接、二维码或代码",
+    ),
+    "quickStartPasteKey": MessageLookupByLibrary.simpleMessage("粘贴你的密钥"),
+    "quickStartTryAgain": MessageLookupByLibrary.simpleMessage("重试"),
+    "quickStartUseDifferent": MessageLookupByLibrary.simpleMessage("换用其他密钥"),
+    "quickStartVerified": MessageLookupByLibrary.simpleMessage("已验证"),
+    "quickStartVerifying": MessageLookupByLibrary.simpleMessage("正在检查连接…"),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("彩虹"),
     "recovery": MessageLookupByLibrary.simpleMessage("恢复"),
     "recoveryAll": MessageLookupByLibrary.simpleMessage("恢复所有数据"),
@@ -839,6 +854,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingGroupVia": m25,
     "routingGroups": MessageLookupByLibrary.simpleMessage("分组"),
     "routingGroupsSubtitle": MessageLookupByLibrary.simpleMessage("如何选择服务器"),
+    "routingHideSystemApps": MessageLookupByLibrary.simpleMessage("隐藏系统应用"),
     "routingImportFailed": MessageLookupByLibrary.simpleMessage("无法读取该链接"),
     "routingListBehavior": MessageLookupByLibrary.simpleMessage("匹配类型"),
     "routingListByCountry": MessageLookupByLibrary.simpleMessage("按国家"),
@@ -951,6 +967,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingServers": MessageLookupByLibrary.simpleMessage("服务器"),
     "routingServersSubtitle": MessageLookupByLibrary.simpleMessage("流量出口"),
     "routingSetAsExit": MessageLookupByLibrary.simpleMessage("设为当前出口"),
+    "routingSkippedNodes": MessageLookupByLibrary.simpleMessage(
+      "已跳过部分不支持类型的节点",
+    ),
     "routingSourceCountry": MessageLookupByLibrary.simpleMessage("按国家"),
     "routingSourceLink": MessageLookupByLibrary.simpleMessage("通过链接"),
     "routingSourcePaste": MessageLookupByLibrary.simpleMessage("粘贴域名"),
@@ -1019,12 +1038,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "stop": MessageLookupByLibrary.simpleMessage("暂停"),
     "stopVpn": MessageLookupByLibrary.simpleMessage("正在停止VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("风格"),
+    "subDaysLeft": m31,
+    "subExpired": MessageLookupByLibrary.simpleMessage("已过期"),
+    "subHoursLeft": m32,
+    "subRemaining": m33,
     "subRule": MessageLookupByLibrary.simpleMessage("子规则"),
     "subRuleDeleteConfirm": MessageLookupByLibrary.simpleMessage("删除此子规则？"),
     "subRuleNameExists": MessageLookupByLibrary.simpleMessage("同名子规则已存在"),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("新建子规则"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("重命名子规则"),
-    "subRuleRuleCount": m31,
+    "subRuleRuleCount": m34,
     "subRules": MessageLookupByLibrary.simpleMessage("子规则"),
     "submit": MessageLookupByLibrary.simpleMessage("提交"),
     "sync": MessageLookupByLibrary.simpleMessage("同步"),
@@ -1035,7 +1058,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tab": MessageLookupByLibrary.simpleMessage("标签页"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("选项卡动画"),
     "tabAnimationDesc": MessageLookupByLibrary.simpleMessage(
-      "Smooth slide between tabs (mobile layout only)",
+      "标签页之间平滑滑动（仅限移动端布局）",
     ),
     "tcpConcurrent": MessageLookupByLibrary.simpleMessage("TCP并发"),
     "tcpConcurrentDesc": MessageLookupByLibrary.simpleMessage("开启后允许TCP并发"),
@@ -1065,7 +1088,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m32,
+    "urlTip": m35,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系统Hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("用户界面"),
@@ -1084,7 +1107,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m33,
+    "yearsAgo": m36,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
     "zoom": MessageLookupByLibrary.simpleMessage("缩放"),
   };

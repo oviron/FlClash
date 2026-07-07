@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/profile_routing/group_spec.dart';
 import 'package:fl_clash/profile_routing/provider_spec.dart';
@@ -6,9 +8,6 @@ import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
 
 const _unset = Object();
 
-/// Where matched traffic goes, in human terms. One target vocabulary for rules
-/// and apps alike: the VPN, bypass (direct), block, or a named scenario. A
-/// [ToScenario] target serializes as a `SUB-RULE` and is on par with the rest.
 sealed class Destination {
   const Destination();
 }
@@ -41,18 +40,10 @@ const toVpn = ToVpn();
 const toBypass = ToBypass();
 const toBlock = ToBlock();
 
-/// How apps reach the tunnel. `whitelist` (`include-package`, only these enter),
-/// `blacklist` (`exclude-package`, all except these), or `all` (neither key: no
-/// per-app filter, every app enters).
 enum TunnelMode { whitelist, blacklist, all }
 
-/// How a [RoutingList] is backed. Every list is the user's own: a rule-set URL,
-/// pasted domains, or a country (GEOIP). No curated/catalog content.
 enum ListKind { url, paste, country }
 
-/// A named matcher. `catalog`/`url`/`paste` are backed by a rule-provider and
-/// referenced by [id] in `RULE-SET,<id>`; `country` carries a [countryCode] and
-/// renders as `GEOIP,<cc>` with no provider.
 class RoutingList {
   final String id;
   final String name;
@@ -87,9 +78,6 @@ class RoutingList {
       );
 }
 
-/// One ordered row inside a [Scenario]. Cleanly-mapped rows become [ListRule]/
-/// [CountryRule]; anything else is kept verbatim as [RawScenarioRule] so it
-/// round-trips and surfaces as "Custom / Advanced".
 sealed class ScenarioRule {
   const ScenarioRule();
 }
@@ -113,9 +101,6 @@ final class CountryRule extends ScenarioRule {
   });
 }
 
-/// A typed matcher (`DOMAIN`, `DOMAIN-SUFFIX`, `IP-CIDR`, `PROCESS-NAME`, …)
-/// whose target is a human [Destination]. Carries the raw [action]/[value] so it
-/// round-trips verbatim while its destination stays editable.
 final class MatchRule extends ScenarioRule {
   final RuleAction action;
   final String value;
@@ -132,8 +117,6 @@ final class MatchRule extends ScenarioRule {
   });
 }
 
-/// A logical matcher (`AND`/`OR`/`NOT` over flat clauses) whose target is a
-/// human [Destination]. Carries the raw clauses so it round-trips verbatim.
 final class LogicRule extends ScenarioRule {
   final RuleAction op;
   final List<LogicalClause> clauses;
@@ -156,7 +139,6 @@ final class RawScenarioRule extends ScenarioRule {
   const RawScenarioRule(this.raw);
 }
 
-/// An ordered set of rows plus a default, mapped to a named `sub-rules:` entry.
 class Scenario {
   final String name;
   final List<ScenarioRule> rules;
@@ -172,8 +154,6 @@ class AppAssignment {
   const AppAssignment({required this.packageName, required this.dest});
 }
 
-/// A single node (inline proxy from a pasted link) or a subscription (a
-/// proxy-provider from a URL). Both are "servers" to the user; never typed.
 sealed class ServerSource {
   final String name;
 
@@ -200,21 +180,15 @@ final class NodeSource extends ServerSource {
 final class SubscriptionSource extends ServerSource {
   final String? url;
 
-  /// Non-null marks a Happ/xray subscription: [_subToProvider] emits the `xray:`
-  /// provider marker so setup's prefetch converts it to a file provider.
   final Map<String, dynamic>? xray;
 
   const SubscriptionSource({required String name, required this.url, this.xray})
     : super(name);
 }
 
-/// A human server-selection behavior. `autoFastest` -> `url-test`, `failover` ->
-/// `fallback`, `manual` -> `select`; the clash type never surfaces.
+// Maps to clash types: autoFastest -> url-test, failover -> fallback, manual -> select.
 enum GroupBehavior { autoFastest, failover, manual }
 
-/// A group of servers. [SmartGroup] is a clean behavior; anything else
-/// (provider-backed `use:`, `filter:`, load-balance, relay) is kept verbatim as
-/// [RawGroup] so a power-user mesh round-trips and shows only under Advanced.
 sealed class ServerGroup {
   const ServerGroup();
 
@@ -227,21 +201,15 @@ final class SmartGroup extends ServerGroup {
   final GroupBehavior behavior;
   final List<String> members;
 
-  /// Provider sources (`use:`) the group draws members from, and an optional
-  /// regex `filter:` over them. The common subscription-backed shape.
   final List<String> use;
   final String? filter;
   final int? interval;
   final bool lazy;
 
-  /// Health-check URL (url-test/fallback), the `hidden` flag, and url-test
-  /// `tolerance` (ms) as first-class fields.
   final String? url;
   final bool hidden;
   final int? tolerance;
 
-  /// Group keys the editor does not model (`icon`, `exclude-filter`, ...),
-  /// carried so a rename or a fresh write never drops them.
   final Map<String, dynamic> extra;
 
   const SmartGroup({
@@ -296,38 +264,28 @@ final class RawGroup extends ServerGroup {
   String get name => spec.name;
 }
 
-/// The human-language overlay over a mihomo config: which apps enter the VPN and
-/// how traffic is routed, expressed as Lists / Scenarios / Apps. Everything not
-/// modeled here (DNS, sniffer, the server mesh, anti-loop rules) stays in the
-/// underlying YAML and is preserved verbatim by the writer.
 class RoutingModel {
   final String exitGroup;
   final List<RoutingList> lists;
   final List<Scenario> scenarios;
   final List<AppAssignment> apps;
 
-  /// The top-level rules that run before per-app routing (ad-block, domestic
-  /// carve-outs, anti-leak IP rules) as editable rows. Everything not per-app
-  /// and not the terminal lives here; unmodeled shapes stay [RawScenarioRule].
   final List<ScenarioRule> globalRules;
 
-  /// The terminal `MATCH,<target>` for top-level rules: `block` (fail-closed
-  /// whitelist), `viaVpn` (full tunnel, Part I), `direct`, or null (no terminal).
+  // The terminal MATCH target as a policy: block (fail-closed whitelist), viaVpn
+  // (full tunnel), direct, or null. A non-policy MATCH,<group> is kept raw below.
   final Destination? defaultRoute;
 
-  /// Imported nodes + subscriptions. Empty means "this model does not manage the
-  /// server layer" (e.g. a routing-only or paste-and-go model); the writer then
-  /// leaves `proxies:`/`proxy-providers:`/`proxy-groups:` untouched.
+  // A non-policy terminal MATCH,<group>, kept verbatim and written LAST so it is
+  // never relocated above per-app rules (MATCH matches all, so a misplaced
+  // terminal shadows every per-app rule).
+  final RoutingRule? terminalRaw;
+
   final List<ServerSource> servers;
   final List<ServerGroup> groups;
 
-  /// Whether apps tunnel by whitelist (`include-package`), blacklist
-  /// (`exclude-package`), or `all` (no per-app filter). Default whitelist.
   final TunnelMode tunnelMode;
 
-  /// Read-only signal that the source YAML set BOTH include- and exclude-package
-  /// (unrepresentable as one mode; runs as whitelist `include − exclude`). The UI
-  /// blocks edits and offers Normalize until it is cleared.
   final bool degenerateBoth;
 
   const RoutingModel({
@@ -337,19 +295,17 @@ class RoutingModel {
     required this.apps,
     this.globalRules = const [],
     this.defaultRoute,
+    this.terminalRaw,
     this.servers = const [],
     this.groups = const [],
     this.tunnelMode = TunnelMode.whitelist,
     this.degenerateBoth = false,
   });
 
-  /// Reads an arbitrary profile into the model: recognizes modeled shapes, keeps
-  /// the rest as raw. Never throws on a malformed file (yields an empty overlay).
+  // Never throws on a malformed file; yields an empty overlay.
   static RoutingModel fromYaml(String raw) => _read(raw);
 
-  /// Materializes the overlay onto [base] (an existing profile or a from-zero
-  /// envelope), touching only the blocks it manages so DNS/sniffer/mesh/comments
-  /// round-trip verbatim. The single writer behind both paste-and-go and edit.
+  // Touches only managed blocks; unmanaged YAML (DNS/sniffer/mesh/comments) round-trips verbatim.
   String toYaml(String base) => _write(this, base);
 
   RoutingModel copyWith({
@@ -359,6 +315,7 @@ class RoutingModel {
     List<AppAssignment>? apps,
     List<ScenarioRule>? globalRules,
     Destination? defaultRoute,
+    RoutingRule? terminalRaw,
     List<ServerSource>? servers,
     List<ServerGroup>? groups,
     TunnelMode? tunnelMode,
@@ -370,14 +327,13 @@ class RoutingModel {
     apps: apps ?? this.apps,
     globalRules: globalRules ?? this.globalRules,
     defaultRoute: defaultRoute ?? this.defaultRoute,
+    terminalRaw: terminalRaw ?? this.terminalRaw,
     servers: servers ?? this.servers,
     groups: groups ?? this.groups,
     tunnelMode: tunnelMode ?? this.tunnelMode,
     degenerateBoth: degenerateBoth ?? this.degenerateBoth,
   );
 
-  /// Renames a group, cascading the new name into the exit selection and any
-  /// group whose members reference it, so nothing silently reroutes.
   RoutingModel renameGroup(String from, String to) {
     if (from == to || from.isEmpty) return this;
     List<String> ren(List<String> xs) => _replaceName(xs, from, to);
@@ -401,8 +357,6 @@ class RoutingModel {
     );
   }
 
-  /// Renames a server (node or subscription), cascading into every group's
-  /// members/`use:` and the exit selection so no reference dangles.
   RoutingModel renameServer(String from, String to) {
     if (from == to || from.isEmpty || to.isEmpty) return this;
     List<String> ren(List<String> xs) => _replaceName(xs, from, to);
@@ -437,8 +391,6 @@ class RoutingModel {
     );
   }
 
-  /// Renames a scenario (sub-rule), cascading into every reference (apps, global
-  /// rules, and other scenarios' rows that target it) so no reference dangles.
   RoutingModel renameScenario(String from, String to) {
     if (from == to || from.isEmpty || to.isEmpty) return this;
     List<ScenarioRule> remap(List<ScenarioRule> rows) => [
@@ -464,8 +416,6 @@ class RoutingModel {
     );
   }
 
-  /// Replaces the node [from]'s protocol fields with [proxy]. When `proxy['name']`
-  /// differs, this also renames the node (cascading references).
   RoutingModel updateNode(String from, Map<String, dynamic> proxy) {
     final to = (proxy['name'] ?? from).toString();
     final base = from == to ? this : renameServer(from, to);
@@ -480,7 +430,6 @@ class RoutingModel {
     );
   }
 
-  /// Replaces the subscription [name]'s URL.
   RoutingModel updateSubscriptionUrl(String name, String url) => copyWith(
     servers: [
       for (final s in servers)
@@ -492,11 +441,8 @@ class RoutingModel {
   );
 }
 
-/// Switches [current] to [newMode] without losing either filtering mode's own
-/// app selection. Leaving whitelist/blacklist captures that mode's package set
-/// into the returned stash; entering one restores its stashed set when the
-/// profile carries none (e.g. coming back from `all`). The caller writes and
-/// re-reads only the returned model, so the profile YAML stays authoritative.
+// Preserves each filtering mode's own app selection across a switch: leaving a mode
+// stashes its packages; entering one restores its stash when the profile carries none.
 ({RoutingModel model, List<String> stashInclude, List<String> stashExclude})
 switchTunnelMode({
   required RoutingModel current,
@@ -588,19 +534,15 @@ String _write(RoutingModel m, String base) {
   return _writeRulesBlock(m, out);
 }
 
-// The whitelist fail-closed sentinel: kept in `include-package` when no app is
-// routed via VPN, so the key is never removed (an absent key makes Android
-// VpnService capture ALL apps). It is the app's own package (always installed,
-// force-added natively anyway) and is filtered out on read.
+// Whitelist fail-closed sentinel: kept in `include-package` when no app is routed
+// via VPN, because an absent key makes Android VpnService capture ALL apps. It is
+// the app's own package (force-added natively anyway) and is filtered out on read.
 const routingOwnPackageSentinel = 'com.follow.clash';
 
-// Whitelist -> `tun.include-package` (apps that enter the tunnel); blacklist ->
-// `tun.exclude-package` (apps that bypass it). The unused key is cleared so a
-// mode switch never leaves a stale package list behind.
+// Each branch clears the unused package key, so a mode switch never leaves a stale list.
 String _writeTunnelPackages(RoutingModel m, String base) {
   if (m.tunnelMode == TunnelMode.all) {
-    // No per-app filter: drop both keys so Android VpnService captures every app
-    // (an absent key = capture all). This is the neither state.
+    // Drop both keys so Android VpnService captures every app (absent key = capture all).
     final out = ProfileRulesDocument(base).withIncludedPackages(const []);
     return ProfileRulesDocument(out).withExcludedPackages(const []);
   }
@@ -700,8 +642,7 @@ String _groupType(GroupBehavior b) => switch (b) {
   GroupBehavior.manual => 'select',
 };
 
-// A plain policy target. Never called with [ToScenario] (those emit a SUB-RULE
-// via [_ruleFor]); the default/terminal MATCH only ever carries a base policy.
+// Never called with ToScenario; _ruleFor intercepts those into a SUB-RULE.
 String _targetOf(RoutingModel m, Destination d) => switch (d) {
   ToVpn() => m.exitGroup,
   ToBypass() => 'DIRECT',
@@ -709,9 +650,8 @@ String _targetOf(RoutingModel m, Destination d) => switch (d) {
   ToScenario() => throw ArgumentError('scenario dest has no plain target'),
 };
 
-// One matcher (action + verbatim params) plus a destination. A scenario target
-// wraps the condition in `SUB-RULE`, folding flags into the clause so it
-// round-trips; every other target is a plain typed rule.
+// A scenario target wraps the condition in a SUB-RULE, folding src/no-resolve into
+// the clause params so it round-trips; every other target is a plain typed rule.
 RoutingRule _ruleFor(
   RoutingModel m,
   RuleAction action,
@@ -802,18 +742,70 @@ List<RoutingRule> _scenarioToRules(RoutingModel m, Scenario s) {
   ];
 }
 
-// Rebuilds `rules:` from the model: the editable global rules first (anti-loop
-// DIRECTs, carve-outs, ad-block), then per-app routing, then the terminal MATCH.
-// The model owns every top-level rule, so a no-op edit reproduces it verbatim.
+// Order is load-bearing (mihomo first-match): safety carve-outs, then per-app,
+// then policy, then the terminal MATCH. Per-app overrides policy but never the
+// safety rules (LAN/loopback/anti-leak), and MATCH can only ever be last.
 String _writeRulesBlock(RoutingModel m, String yaml) {
+  final safety = <ScenarioRule>[];
+  final policy = <ScenarioRule>[];
+  for (final r in m.globalRules) {
+    (_isSafetyRule(r) ? safety : policy).add(r);
+  }
   final next = <RoutingRule>[
-    ..._rowsToRules(m, m.globalRules),
+    ..._rowsToRules(m, safety),
     for (final a in m.apps)
       if (_appRule(m, a) case final rule?) rule,
+    ..._rowsToRules(m, policy),
     if (m.defaultRoute case final def?)
       TypedRule(action: RuleAction.MATCH, value: '', target: _targetOf(m, def)),
+    if (m.terminalRaw case final t?) t,
   ];
   return ProfileRulesDocument(yaml).withRules(next);
+}
+
+// A safety carve-out is a DIRECT network rule for a reserved/private/loopback
+// range or a single host: an app routed "via VPN" above it would pull LAN /
+// loopback / the proxy server into the tunnel (broken net or an anti-leak loop).
+bool _isSafetyRule(ScenarioRule r) {
+  if (_rowDest(r) is! ToBypass) return false;
+  return switch (r) {
+    CountryRule(:final countryCode) => const {
+      'private',
+      'lan',
+    }.contains(countryCode.toLowerCase()),
+    MatchRule(:final action, :final value) =>
+      (action == RuleAction.IP_CIDR || action == RuleAction.IP_CIDR6) &&
+          _isReservedOrHostCidr(value),
+    _ => false,
+  };
+}
+
+// True for a single-host route (/32, /128 — the anti-leak shape) or a CIDR whose
+// base is reserved/private/loopback/link-local/CGNAT/multicast.
+bool _isReservedOrHostCidr(String cidr) {
+  final slash = cidr.indexOf('/');
+  final addr = slash == -1 ? cidr : cidr.substring(0, slash);
+  final prefix = slash == -1 ? null : int.tryParse(cidr.substring(slash + 1));
+  final ip = InternetAddress.tryParse(addr);
+  if (ip == null) return false;
+  final b = ip.rawAddress;
+  if (ip.type == InternetAddressType.IPv4) {
+    if (prefix == 32) return true;
+    return b[0] == 0 ||
+        b[0] == 10 ||
+        b[0] == 127 ||
+        (b[0] == 100 && b[1] >= 64 && b[1] <= 127) ||
+        (b[0] == 169 && b[1] == 254) ||
+        (b[0] == 172 && b[1] >= 16 && b[1] <= 31) ||
+        (b[0] == 192 && b[1] == 168) ||
+        (b[0] == 198 && (b[1] == 18 || b[1] == 19)) ||
+        b[0] >= 224;
+  }
+  if (prefix == 128) return true;
+  return b[0] == 0xff ||
+      (b[0] & 0xfe) == 0xfc ||
+      (b[0] == 0xfe && (b[1] & 0xc0) == 0x80) ||
+      b.every((x) => x == 0);
 }
 
 RoutingRule? _appRule(RoutingModel m, AppAssignment a) => switch (a.dest) {
@@ -903,14 +895,22 @@ RoutingModel _read(String raw) {
       ? topRules.last as TypedRule
       : null;
   // Only a terminal MATCH to a base policy (exit/DIRECT/REJECT) is the modeled
-  // default route; MATCH to an arbitrary group round-trips as a global rule.
+  // default route; a non-policy MATCH,<group> is kept verbatim (terminalRaw) and
+  // re-emitted last, so it is not folded into globalRules and hoisted above the
+  // per-app rules it would otherwise shadow.
   final defaultRoute = terminal != null ? destOf(terminal.target) : null;
+  final terminalRaw = terminal != null && defaultRoute == null
+      ? terminal
+      : null;
 
   // One destination per package (dedup); a LinkedHashMap keeps first-seen order.
   final appByPkg = <String, Destination>{};
   final globalRules = <ScenarioRule>[];
   for (var i = 0; i < topRules.length; i++) {
-    if (defaultRoute != null && i == topRules.length - 1) continue;
+    if ((defaultRoute != null || terminalRaw != null) &&
+        i == topRules.length - 1) {
+      continue;
+    }
     final r = topRules[i];
     if (r is AppToSubRuleRoute) {
       appByPkg[r.packageName] = ToScenario(r.subRuleName);
@@ -921,11 +921,9 @@ RoutingModel _read(String raw) {
     }
   }
 
-  // Mode from the tun keys: neither present -> all (no filter); exclude-only ->
-  // blacklist; otherwise whitelist. Both present is unrepresentable as one mode,
-  // so it reads as whitelist (include - exclude) and raises `degenerateBoth`.
-  // The sentinel keeps a deliberately-empty whitelist non-absent, so it stays
-  // whitelist rather than collapsing to `all`.
+  // Mode from the tun keys: neither -> all, exclude-only -> blacklist, else whitelist.
+  // Both present is unrepresentable, so it reads as whitelist (include - exclude) and
+  // raises degenerateBoth. The sentinel keeps an empty whitelist non-absent, not `all`.
   final hasInclude = doc.includedPackages.isNotEmpty;
   final hasExclude = doc.excludedPackages.isNotEmpty;
   final degenerateBoth = hasInclude && hasExclude;
@@ -962,6 +960,7 @@ RoutingModel _read(String raw) {
     apps: apps,
     globalRules: globalRules,
     defaultRoute: defaultRoute,
+    terminalRaw: terminalRaw,
     servers: servers,
     groups: groups,
     tunnelMode: tunnelMode,
@@ -969,10 +968,6 @@ RoutingModel _read(String raw) {
   );
 }
 
-// Classify by group TYPE: a known behavior (select/url-test/fallback) is a
-// human-editable SmartGroup even when provider-backed (use/filter) or carrying
-// benign keys (hidden/icon/url); only an exotic type (relay, load-balance, ...)
-// stays a RawGroup.
 ServerGroup _readGroup(GroupSpec g) {
   final behavior = switch (g.type) {
     'url-test' => GroupBehavior.autoFastest,
@@ -1042,7 +1037,6 @@ ScenarioRule _matcherRow(
   ),
 };
 
-// Reads a row's destination for reference rewriting; a raw row has none.
 Destination? _rowDest(ScenarioRule r) => switch (r) {
   ListRule(:final dest) => dest,
   CountryRule(:final dest) => dest,
@@ -1077,7 +1071,6 @@ ScenarioRule _withDest(ScenarioRule r, Destination dest) => switch (r) {
   RawScenarioRule() => r,
 };
 
-// Rewrites a row that targets scenario [from] to point at [to]; others pass through.
 ScenarioRule _renameDestScenario(ScenarioRule r, String from, String to) {
   if (_rowDest(r) case ToScenario(:final name) when name == from) {
     return _withDest(r, ToScenario(to));

@@ -14,28 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' hide context;
 
-@immutable
-class GeoItem {
-  final String label;
-  final String key;
-  final String fileName;
-
-  const GeoItem({
-    required this.label,
-    required this.key,
-    required this.fileName,
-  });
-
-  String get updatingKey => 'geodata_$key';
-}
-
-const _geoItems = <GeoItem>[
-  GeoItem(label: 'GEOIP', fileName: GEOIP, key: 'geoip'),
-  GeoItem(label: 'GEOSITE', fileName: GEOSITE, key: 'geosite'),
-  GeoItem(label: 'MMDB', fileName: MMDB, key: 'mmdb'),
-  GeoItem(label: 'ASN', fileName: ASN, key: 'asn'),
-];
-
 Future<String> _updateGeoItem(GeoItem item) async {
   final message = await coreController.updateGeoData(
     UpdateGeoDataParams(geoName: item.fileName, geoType: item.label),
@@ -53,7 +31,7 @@ class ResourcesView extends ConsumerStatefulWidget {
 class _ResourcesViewState extends ConsumerState<ResourcesView> {
   Future<void> _updateAllGeoData() async {
     final messages = <UpdatingMessage>[];
-    final futures = _geoItems.map<Future<void>>((item) async {
+    final futures = geoItems.map<Future<void>>((item) async {
       final updatingNotifier = ref.read(
         isUpdatingProvider(item.updatingKey).notifier,
       );
@@ -142,13 +120,13 @@ class _ResourcesViewState extends ConsumerState<ResourcesView> {
           Expanded(
             child: ListView.separated(
               itemBuilder: (_, index) {
-                final geoItem = _geoItems[index];
+                final geoItem = geoItems[index];
                 return GeoDataListItem(geoItem: geoItem);
               },
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(height: 0);
               },
-              itemCount: _geoItems.length,
+              itemCount: geoItems.length,
             ),
           ),
         ],

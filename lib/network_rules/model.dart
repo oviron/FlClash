@@ -6,8 +6,7 @@ import 'package:fl_clash/common/common.dart';
 
 enum NetworkVpnMode { turnOn, turnOff, leave }
 
-/// A rule's action: what to do with the VPN, and optionally which profile to
-/// switch to. [profileId] null = leave the active profile untouched.
+// profileId null = leave the active profile untouched.
 class NetworkAction {
   final NetworkVpnMode vpn;
   final int? profileId;
@@ -16,19 +15,6 @@ class NetworkAction {
 
   static const turnOn = NetworkAction(vpn: NetworkVpnMode.turnOn);
   static const turnOff = NetworkAction(vpn: NetworkVpnMode.turnOff);
-
-  Map<String, dynamic> toJson() => {
-    'vpn': vpn.name,
-    if (profileId != null) 'profileId': profileId,
-  };
-
-  factory NetworkAction.fromJson(Map<String, dynamic> json) => NetworkAction(
-    vpn: NetworkVpnMode.values.firstWhere(
-      (m) => m.name == json['vpn'],
-      orElse: () => NetworkVpnMode.turnOn,
-    ),
-    profileId: json['profileId'] as int?,
-  );
 
   @override
   bool operator ==(Object other) =>
@@ -49,9 +35,8 @@ enum NetworkType { wifi, cellular, ethernet, none }
 class NetworkSnapshot {
   final NetworkType type;
 
-  /// Wi-Fi SSID. Only meaningful when type == wifi. Can be null even on
-  /// Wi-Fi if the OS denied us ACCESS_FINE_LOCATION or returned the
-  /// Android stub `<unknown ssid>`.
+  // Null even on Wi-Fi when the OS denied ACCESS_FINE_LOCATION or returned
+  // the Android stub `<unknown ssid>`.
   final String? ssid;
 
   const NetworkSnapshot.wifi({this.ssid}) : type = NetworkType.wifi;
@@ -74,9 +59,8 @@ class NetworkSnapshot {
   String toString() => 'NetworkSnapshot(type: $type, ssid: $ssid)';
 }
 
-/// Everything a condition may match against: the network snapshot plus the
-/// active profile id (for profile-gate conditions). The profile axis is kept
-/// out of [NetworkSnapshot] on purpose: it is app state, not network state.
+// activeProfileId is kept out of NetworkSnapshot on purpose: it is app state,
+// not network state.
 class NetworkMatchContext {
   final NetworkSnapshot snapshot;
   final int? activeProfileId;
@@ -84,8 +68,6 @@ class NetworkMatchContext {
   const NetworkMatchContext({required this.snapshot, this.activeProfileId});
 }
 
-/// A single match clause. A rule's conditions combine per its matchMode (AND by
-/// default, OR when any).
 sealed class NetworkCondition {
   const NetworkCondition();
 
@@ -93,9 +75,9 @@ sealed class NetworkCondition {
 
   Map<String, dynamic> toJson();
 
-  /// Higher = more specific. A named Wi-Fi (2) wins over a type-level clause
-  /// (1) regardless of user-defined priority, so a `Home` rule is never
-  /// shadowed by an `any wifi` rule. Keep in sync with the Kotlin engine.
+  // Higher = more specific. A named Wi-Fi (2) wins over a type-level clause
+  // (1) regardless of user priority, so a `Home` rule is never shadowed by an
+  // `any wifi` rule. Keep in sync with the Kotlin engine.
   int get specificity;
 
   static NetworkCondition fromJson(Map<String, dynamic> json) {
@@ -124,7 +106,6 @@ sealed class NetworkCondition {
   }
 }
 
-/// How a [WifiNamed] SSID is compared against the live SSID.
 enum WifiMatch { exact, prefix, contains }
 
 WifiMatch _wifiMatchFromName(String? name) => WifiMatch.values.firstWhere(
@@ -132,9 +113,8 @@ WifiMatch _wifiMatchFromName(String? name) => WifiMatch.values.firstWhere(
   orElse: () => WifiMatch.exact,
 );
 
-/// Matches a Wi-Fi by SSID, [exact] (case-insensitive) by default, or by
-/// [prefix]/[contains]. If the snapshot has no SSID (no permission or Android
-/// stub), this condition does NOT match, so the engine moves on.
+// With no live SSID (no permission or Android stub) this never matches, so
+// the engine moves on rather than treating it as a wildcard.
 class WifiNamed extends NetworkCondition {
   final String ssid;
   final WifiMatch match;
@@ -182,8 +162,7 @@ class WifiNamed extends NetworkCondition {
   String toString() => 'WifiNamed($ssid, $match)';
 }
 
-/// Inverts any condition: matches when [inner] does not. Broad by nature, so
-/// its specificity is low (1); use explicit priority to order it precisely.
+// Broad by nature, so specificity is low (1); order it with explicit priority.
 class Not extends NetworkCondition {
   final NetworkCondition inner;
 
@@ -280,9 +259,8 @@ class AnyEthernet extends NetworkCondition {
   String toString() => 'AnyEthernet()';
 }
 
-/// Matches when the given profile is active. An optional gate AND'd with a
-/// network condition; evaluated against the snapshot's active profile, so it
-/// re-checks only on engine re-evaluation (network change), not on profile switch.
+// Evaluated against the snapshot's active profile, so it re-checks only on
+// engine re-evaluation (network change), not on profile switch.
 class ProfileIs extends NetworkCondition {
   final int profileId;
 
@@ -340,15 +318,12 @@ class NetworkConditionListCodec {
   }
 }
 
-/// How a rule's conditions combine: [all] = AND (every condition), [any] = OR
-/// (at least one). Default [all] preserves legacy single/AND rules.
+// Default `all` preserves legacy single-condition/AND rules.
 enum NetworkMatchMode { all, any }
 
-/// A single network rule: when its conditions match (per [matchMode]) the
-/// current context, produce [action]. Lower [priority] runs first.
 class NetworkRule {
-  /// Drift-assigned id. 0 means "not yet persisted" and is the marker the
-  /// repository uses to switch between insert and update.
+  // Drift-assigned id. 0 means "not yet persisted" and is the marker the repo
+  // uses to switch between insert and update.
   final int id;
 
   final String? name;
@@ -359,7 +334,7 @@ class NetworkRule {
 
   final NetworkAction action;
 
-  /// Lower priority value runs first.
+  // Lower value runs first.
   final int priority;
 
   final bool enabled;
@@ -432,7 +407,6 @@ bool _conditionsEqual(List<NetworkCondition> a, List<NetworkCondition> b) {
   return true;
 }
 
-/// A rule's specificity is its most specific condition (empty => 0).
 int networkRuleSpecificity(NetworkRule rule) {
   var best = 0;
   for (final c in rule.conditions) {
@@ -441,9 +415,9 @@ int networkRuleSpecificity(NetworkRule rule) {
   return best;
 }
 
-/// Evaluation order: most specific first, then user priority (lower first),
-/// then id. Shared by the engine and the reason builder so the rule the user
-/// is told matched is exactly the one that fired. Mirror in the Kotlin engine.
+// Evaluation order: most specific first, then user priority (lower first),
+// then id. Shared by the engine and the reason builder so the rule the user
+// is told matched is exactly the one that fired. Mirror in the Kotlin engine.
 int compareNetworkRules(NetworkRule a, NetworkRule b) {
   final sa = networkRuleSpecificity(a);
   final sb = networkRuleSpecificity(b);

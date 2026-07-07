@@ -4,9 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum QuickStartVerifyStatus { idle, verifying, verified, failed }
 
-/// A tunnel probe only counts as verified when a real page actually loaded: a
-/// null result (nothing reachable) or a REJECT default route is an honest
-/// failure, never a false green.
+// Verified only when a real page loaded: a null probe (nothing reachable) or a
+// REJECT default route is an honest failure, never a false green.
 QuickStartVerifyStatus decideVerifyStatus(Result<IpInfo?> probe) {
   final info = probe.data;
   if (probe.isError || info == null || info.isRejected) {
@@ -15,8 +14,8 @@ QuickStartVerifyStatus decideVerifyStatus(Result<IpInfo?> probe) {
   return QuickStartVerifyStatus.verified;
 }
 
-/// Connect-time honesty gate: after a quick-start key connects, probe the tunnel
-/// and report verifying -> verified / failed. Hand-written (no codegen) Notifier.
+// Connect-time honesty gate: after a quick-start key connects, probe the tunnel
+// and report verifying -> verified / failed.
 class QuickStartVerification extends Notifier<QuickStartVerifyStatus> {
   @override
   QuickStartVerifyStatus build() => QuickStartVerifyStatus.idle;
@@ -28,6 +27,13 @@ class QuickStartVerification extends Notifier<QuickStartVerifyStatus> {
     // if we are still the in-flight verification.
     if (state != QuickStartVerifyStatus.verifying) return;
     state = decideVerifyStatus(probe);
+    if (state == QuickStartVerifyStatus.verified) {
+      // Auto-dismiss from the notifier (not a widget ref) so a tab switch during
+      // the window can't use a disposed ref.
+      Future.delayed(const Duration(seconds: 2), () {
+        if (state == QuickStartVerifyStatus.verified) dismiss();
+      });
+    }
   }
 
   void dismiss() => state = QuickStartVerifyStatus.idle;

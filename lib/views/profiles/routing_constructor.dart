@@ -16,9 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaml/yaml.dart';
 
-/// The zero-YAML routing constructor (servers, groups, lists, rules, scenarios,
-/// apps) as an embeddable block: reads/writes the profile through [RoutingModel]
-/// and reloads after each sub-screen (docs/onboarding.md II).
+// The zero-YAML routing constructor as an embeddable block: reads/writes the
+// profile through [RoutingModel] and reloads after each sub-screen.
 class RoutingSections extends StatefulWidget {
   final int profileId;
 
@@ -28,9 +27,6 @@ class RoutingSections extends StatefulWidget {
   State<RoutingSections> createState() => _RoutingSectionsState();
 }
 
-/// Shared model lifecycle for the routing sections: owns [_model], reloads after
-/// a sub-screen, and writes back with one error notice. Works on State and
-/// ConsumerState alike.
 mixin _RoutingSectionState<T extends StatefulWidget> on State<T> {
   RoutingModel? _model;
 
@@ -430,7 +426,7 @@ class _ScenariosViewState extends State<_ScenariosView>
     if (name == null || name.trim().isEmpty || !mounted) return;
     final model = _model!;
     final scenario = Scenario(
-      name: _slug(name),
+      name: _uniqueName(_slug(name), {for (final s in model.scenarios) s.name}),
       rules: const [],
       defaultDest: toVpn,
     );
@@ -462,7 +458,14 @@ class _ScenariosViewState extends State<_ScenariosView>
       ),
     );
     if (name == null || name.trim().isEmpty || !mounted) return;
-    await _write(_model!.renameScenario(scenario.name, _slug(name)));
+    final model = _model!;
+    final taken = {
+      for (final s in model.scenarios)
+        if (s.name != scenario.name) s.name,
+    };
+    await _write(
+      model.renameScenario(scenario.name, _uniqueName(_slug(name), taken)),
+    );
   }
 
   @override
@@ -524,7 +527,8 @@ class _ScenarioEditorViewState extends State<_ScenarioEditorView> {
     defaultDest: _default,
   );
 
-  String _rowLabel(ScenarioRule r) => _ruleLabel(r, widget.model.lists);
+  String _rowLabel(ScenarioRule r) =>
+      _ruleLabel(r, widget.model.lists, _locale(context));
 
   Destination? _rowDest(ScenarioRule r) => _ruleDest(r);
 
@@ -653,7 +657,11 @@ ScenarioRule _withDest(ScenarioRule r, Destination d) => switch (r) {
   RawScenarioRule() => r,
 };
 
-String _ruleLabel(ScenarioRule r, List<RoutingList> lists) => switch (r) {
+String _ruleLabel(
+  ScenarioRule r,
+  List<RoutingList> lists,
+  String locale,
+) => switch (r) {
   ListRule(:final listId) =>
     lists
         .firstWhere(
@@ -662,8 +670,10 @@ String _ruleLabel(ScenarioRule r, List<RoutingList> lists) => switch (r) {
               RoutingList(id: listId, name: listId, kind: ListKind.url),
         )
         .name,
-  CountryRule(:final countryCode) =>
-    countryEntry(countryCode)?.labels['en'] ?? countryCode,
+  CountryRule(:final countryCode) => switch (countryEntry(countryCode)) {
+    final e? => localeLabel(e.labels, locale),
+    null => countryCode,
+  },
   MatchRule(:final value) => value,
   LogicRule(:final op, :final clauses) =>
     '${op.value}: ${clauses.map((c) => c.params.isEmpty ? c.action.value : c.params).join(', ')}',
@@ -1450,7 +1460,7 @@ class _GlobalRulesViewState extends State<_GlobalRulesView>
         index: i,
         child: const Icon(Icons.drag_indicator),
       ),
-      title: Text(_ruleLabel(r, m.lists)),
+      title: Text(_ruleLabel(r, m.lists, _locale(context))),
       subtitle: subtitle == null ? null : Text(subtitle),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -1591,8 +1601,10 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
           ...m.servers,
           ServerSource.subscription(name: name, url: url, xray: xray),
         ],
-        groups: [...m.groups, group],
-        exitGroup: m.exitGroup.isEmpty ? group.name : m.exitGroup,
+        groups: [...m.groups.where((g) => g.name != group.name), group],
+        exitGroup: m.groups.any((g) => g.name == m.exitGroup)
+            ? m.exitGroup
+            : group.name,
       ),
     );
     if (mounted) {
@@ -1708,7 +1720,7 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
     Map<String, SubscriptionInfo> quota,
   ) {
     final info = quota[providerQuotaKey(profileId, s.name)];
-    if (info != null && info.total != 0) {
+    if (info != null && (info.total != 0 || info.expire != 0)) {
       return SubscriptionInfoView(subscriptionInfo: info);
     }
     return Text(appLocalizations.routingSubscription);
@@ -1852,7 +1864,9 @@ class _GroupsViewState extends ConsumerState<_GroupsView>
           ...m.groups.where((g) => g.name != gname),
           SmartGroup(name: gname, behavior: behavior, members: nodes),
         ],
-        exitGroup: m.exitGroup.isEmpty ? gname : m.exitGroup,
+        exitGroup: m.groups.any((g) => g.name == m.exitGroup)
+            ? m.exitGroup
+            : gname,
       ),
     );
     if (mounted) await _openEditor(gname);
@@ -2708,6 +2722,17 @@ String _locale(BuildContext context) {
   return l.countryCode != null && l.countryCode!.isNotEmpty
       ? '${l.languageCode}_${l.countryCode}'
       : l.languageCode;
+}
+
+// Appends -2, -3, ... until the name is free. Sub-rule / group / server names
+// key a map on write, so a collision silently drops the earlier entry.
+String _uniqueName(String base, Set<String> taken) {
+  var unique = base;
+  var n = 2;
+  while (taken.contains(unique)) {
+    unique = '$base-${n++}';
+  }
+  return unique;
 }
 
 String _slug(String name) {

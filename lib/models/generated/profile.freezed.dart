@@ -211,8 +211,8 @@ return $default(_that.upload,_that.download,_that.total,_that.expire);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _SubscriptionInfo implements SubscriptionInfo {
-  const _SubscriptionInfo({this.upload = 0, this.download = 0, this.total = 0, this.expire = 0});
+class _SubscriptionInfo extends SubscriptionInfo {
+  const _SubscriptionInfo({this.upload = 0, this.download = 0, this.total = 0, this.expire = 0}): super._();
   factory _SubscriptionInfo.fromJson(Map<String, dynamic> json) => _$SubscriptionInfoFromJson(json);
 
 @override@JsonKey() final  int upload;

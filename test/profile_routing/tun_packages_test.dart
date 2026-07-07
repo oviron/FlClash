@@ -189,4 +189,133 @@ void main() {
       expect(tunPackagesChanged(a, b), isTrue);
     });
   });
+
+  group('resolveEffectiveAccessControl', () {
+    const enabledGui = AccessControlProps(
+      enable: true,
+      mode: AccessControlMode.acceptSelected,
+      acceptList: ['com.only'],
+    );
+
+    test('all mode ignores the global filter and disables the ACL', () {
+      // Both tun keys absent (TunnelMode.all). "All apps" must mean all apps,
+      // never the stale global Tools filter.
+      final acl = resolveEffectiveAccessControl(
+        isGlobalMode: false,
+        guiAcl: enabledGui,
+        profileAcl: null,
+        profileConfig: _asMap('tun:\n  enable: true\nmode: rule\n'),
+      );
+      expect(acl.enable, isFalse);
+    });
+
+    test('legacy profile with no tun section also disables the ACL', () {
+      final acl = resolveEffectiveAccessControl(
+        isGlobalMode: false,
+        guiAcl: enabledGui,
+        profileAcl: null,
+        profileConfig: _asMap('mode: rule\n'),
+      );
+      expect(acl.enable, isFalse);
+    });
+
+    test('global routing mode disables the ACL', () {
+      final acl = resolveEffectiveAccessControl(
+        isGlobalMode: true,
+        guiAcl: enabledGui,
+        profileAcl: null,
+        profileConfig: _asMap('tun:\n  include-package:\n    - com.a\n'),
+      );
+      expect(acl.enable, isFalse);
+    });
+
+    test('an enabled per-profile ACL wins', () {
+      const profileAcl = AccessControlProps(
+        enable: true,
+        mode: AccessControlMode.rejectSelected,
+        rejectList: ['com.blocked'],
+      );
+      final acl = resolveEffectiveAccessControl(
+        isGlobalMode: false,
+        guiAcl: enabledGui,
+        profileAcl: profileAcl,
+        profileConfig: _asMap('tun:\n  enable: true\nmode: rule\n'),
+      );
+      expect(acl, profileAcl);
+    });
+
+    test('whitelist config yields an accept-list from the tun packages', () {
+      final acl = resolveEffectiveAccessControl(
+        isGlobalMode: false,
+        guiAcl: enabledGui,
+        profileAcl: null,
+        profileConfig: _asMap('tun:\n  include-package:\n    - com.y\n'),
+      );
+      expect(acl.enable, isTrue);
+      expect(acl.mode, AccessControlMode.acceptSelected);
+      expect(acl.acceptList, ['com.y']);
+    });
+
+    test('unreadable profile config disables the ACL', () {
+      final acl = resolveEffectiveAccessControl(
+        isGlobalMode: false,
+        guiAcl: enabledGui,
+        profileAcl: null,
+        profileConfig: null,
+      );
+      expect(acl.enable, isFalse);
+    });
+
+    test('both tun keys present subtract exclude from include', () {
+      final acl = resolveEffectiveAccessControl(
+        isGlobalMode: false,
+        guiAcl: enabledGui,
+        profileAcl: null,
+        profileConfig: _asMap(
+          'tun:\n'
+          '  include-package:\n    - com.a\n    - com.b\n'
+          '  exclude-package:\n    - com.b\n',
+        ),
+      );
+      expect(acl.enable, isTrue);
+      expect(acl.mode, AccessControlMode.acceptSelected);
+      expect(acl.acceptList, ['com.a']);
+    });
+
+    test(
+      'a fully-covered include keeps include, never an empty allow-list',
+      () {
+        final acl = resolveEffectiveAccessControl(
+          isGlobalMode: false,
+          guiAcl: enabledGui,
+          profileAcl: null,
+          profileConfig: _asMap(
+            'tun:\n'
+            '  include-package:\n    - com.b\n'
+            '  exclude-package:\n    - com.b\n',
+          ),
+        );
+        expect(acl.enable, isTrue);
+        expect(acl.mode, AccessControlMode.acceptSelected);
+        expect(acl.acceptList, ['com.b']);
+      },
+    );
+
+    test('a disabled per-profile ACL falls through to the tun packages', () {
+      const disabledProfile = AccessControlProps(
+        enable: false,
+        mode: AccessControlMode.acceptSelected,
+        acceptList: ['com.ignored'],
+      );
+      final acl = resolveEffectiveAccessControl(
+        isGlobalMode: false,
+        guiAcl: enabledGui,
+        profileAcl: disabledProfile,
+        profileConfig: _asMap('tun:\n  exclude-package:\n    - com.b\n'),
+      );
+      expect(acl.enable, isTrue);
+      expect(acl.mode, AccessControlMode.rejectSelected);
+      expect(acl.rejectList, ['com.b']);
+    });
+  });
 }

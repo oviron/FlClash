@@ -6818,6 +6818,55 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Incompatible (older core)`
+  String get libIncompatibleOld {
+    return Intl.message(
+      'Incompatible (older core)',
+      name: 'libIncompatibleOld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, =1{1 day left} other{{count} days left}}`
+  String subDaysLeft(num count) {
+    return Intl.plural(
+      count,
+      one: '1 day left',
+      other: '$count days left',
+      name: 'subDaysLeft',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `{count, plural, =1{1 hour left} other{{count} hours left}}`
+  String subHoursLeft(num count) {
+    return Intl.plural(
+      count,
+      one: '1 hour left',
+      other: '$count hours left',
+      name: 'subHoursLeft',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Expired`
+  String get subExpired {
+    return Intl.message('Expired', name: 'subExpired', desc: '', args: []);
+  }
+
+  /// `{value} left`
+  String subRemaining(Object value) {
+    return Intl.message(
+      '$value left',
+      name: 'subRemaining',
+      desc: '',
+      args: [value],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

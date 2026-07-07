@@ -807,5 +807,12 @@
   "geoUpdateDaily": "Ежедневно",
   "geoUpdateEvery3Days": "Каждые 3 дня",
   "geoUpdateWeekly": "Еженедельно",
-  "routingGroupHidden": "Скрытая"
+  "routingGroupHidden": "Скрытая",
+  "libIncompatibleOld": "Несовместимо (устаревшее ядро)",
+  "routingHideSystemApps": "Скрыть системные приложения",
+  "routingSkippedNodes": "Некоторые узлы неподдерживаемого типа пропущены",
+  "subDaysLeft": "{count, plural, one{остался {count} день} few{осталось {count} дня} many{осталось {count} дней} other{осталось {count} дня}}",
+  "subHoursLeft": "{count, plural, one{остался {count} час} few{осталось {count} часа} many{осталось {count} часов} other{осталось {count} часа}}",
+  "subExpired": "Истекла",
+  "subRemaining": "осталось {value}"
 }

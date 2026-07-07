@@ -35,12 +35,6 @@ data class NetworkRulesStatus(
     val overridden: Boolean,
 )
 
-private data class ManualOverride(
-    val networkKey: Long,
-    val running: Boolean? = null,
-    val profileId: Int? = null,
-)
-
 // The brain: reads the rules mirror, computes the decision for the current
 // network and actuates the VPN through the same headless seam the boot path
 // uses (State.handleStart/StopServiceAction, serialised by State.runLock).
@@ -55,7 +49,7 @@ object NetworkRulesController {
     private var runStateJob: Job? = null
 
     private var currentKey: Long = NO_NETWORK
-    private var override: ManualOverride? = null
+    private var overriddenKey: Long? = null
     private var lastEngineDesired: Boolean? = null
     // The profile the engine last applied via the FOREGROUND path; null after a
     // headless apply (Dart's activeProfileId is then stale and unattributable).
@@ -101,7 +95,7 @@ object NetworkRulesController {
     }
 
     private fun mutexReset() {
-        override = null
+        overriddenKey = null
         lastEngineDesired = null
         lastEngineProfileId = null
         currentKey = NO_NETWORK
@@ -122,14 +116,14 @@ object NetworkRulesController {
         val overridden: Boolean
         mutex.withLock {
             if (key != currentKey) {
-                override = null
+                overriddenKey = null
                 currentKey = key
             }
             val mirror = readMirror()
             resolution = NetworkRulesEngine.resolveFull(mirror, snapshot)
             // A foreground-applied profile is echoed back as activeProfileId; a
             // divergence (outside the guard window) is the user switching by
-            // hand -> pin the profile so the engine stops fighting on this key.
+            // hand -> pin this network so the engine stops fighting on it.
             val manualProfile = decideManualSwitch(
                 mirror.activeProfileId,
                 lastEngineProfileId,
@@ -137,10 +131,10 @@ object NetworkRulesController {
                 SystemClock.elapsedRealtime(),
             )
             if (manualProfile != null) {
-                override = ManualOverride(key, override?.running, manualProfile)
+                overriddenKey = key
             }
             reason = buildReason(mirror, snapshot, resolution.decision)
-            overridden = override?.networkKey == key
+            overridden = overriddenKey == key
         }
         publish(
             NetworkRulesStatus(snapshot.type, snapshot.ssid, resolution.decision, reason, overridden),
@@ -281,11 +275,7 @@ object NetworkRulesController {
         mutex.withLock {
             if (SystemClock.elapsedRealtime() < engineGuardUntil) return@withLock
             if (running != lastEngineDesired) {
-                override = ManualOverride(
-                    currentKey,
-                    running,
-                    override?.takeIf { it.networkKey == currentKey }?.profileId,
-                )
+                overriddenKey = currentKey
             }
         }
     }

@@ -41,7 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m9(label) => "現在の${label}は既に存在しています";
 
-  static String m10(upstream) => "Fork of ${upstream}";
+  static String m10(upstream) => "${upstream} のフォーク";
 
   static String m11(keys) => "そのまま保持: ${keys}";
 
@@ -83,11 +83,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m30(count) => "${count} 項目が選択されています";
 
-  static String m31(count) => "${count} 個のルール";
+  static String m31(count) => "${Intl.plural(count, other: '残り${count}日')}";
 
-  static String m32(label) => "${label}はURLである必要があります";
+  static String m32(count) => "${Intl.plural(count, other: '残り${count}時間')}";
 
-  static String m33(count) => "${count}年前";
+  static String m33(value) => "残り${value}";
+
+  static String m34(count) => "${count} 個のルール";
+
+  static String m35(label) => "${label}はURLである必要があります";
+
+  static String m36(count) => "${count}年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -215,19 +221,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "applicationDesc": MessageLookupByLibrary.simpleMessage("アプリ関連設定を変更"),
     "auto": MessageLookupByLibrary.simpleMessage("自動"),
     "autoCloseConnections": MessageLookupByLibrary.simpleMessage(
-      "Drop connections on node switch",
+      "ノード切替時に接続を切断",
     ),
     "autoCloseConnectionsDesc": MessageLookupByLibrary.simpleMessage(
-      "When the proxy node changes, active connections are closed so new ones use the new node",
+      "プロキシノードの変更時に既存の接続を切断し、新しい接続が新しいノードを使うようにします",
     ),
-    "autoLaunch": MessageLookupByLibrary.simpleMessage("Start on device boot"),
+    "autoLaunch": MessageLookupByLibrary.simpleMessage("起動時に開始"),
     "autoLaunchDesc": MessageLookupByLibrary.simpleMessage(
-      "VPN service launches automatically after the phone reboots (requires OEM whitelisting)",
+      "端末の再起動後にVPNサービスを自動起動します(OEMのホワイトリスト登録が必要)",
     ),
-    "autoRun": MessageLookupByLibrary.simpleMessage("Connect on app open"),
-    "autoRunDesc": MessageLookupByLibrary.simpleMessage(
-      "Tunnel comes up immediately when the app is launched",
-    ),
+    "autoRun": MessageLookupByLibrary.simpleMessage("アプリ起動時に接続"),
+    "autoRunDesc": MessageLookupByLibrary.simpleMessage("アプリ起動と同時にトンネルを開始します"),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage("オートセットシステムDNS"),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自動更新"),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage("自動更新間隔（分）"),
@@ -428,11 +432,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "groupOpenYaml": MessageLookupByLibrary.simpleMessage("YAMLとして開く"),
     "groupType": MessageLookupByLibrary.simpleMessage("タイプ"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("変更をキャッシュしますか？"),
-    "hideFromRecents": MessageLookupByLibrary.simpleMessage(
-      "Hide from recents",
-    ),
+    "hideFromRecents": MessageLookupByLibrary.simpleMessage("最近使用したアプリに非表示"),
     "hideFromRecentsDesc": MessageLookupByLibrary.simpleMessage(
-      "App icon does not appear in the recent apps list while the app is in background",
+      "バックグラウンド時に最近使用したアプリの一覧にアイコンを表示しません",
     ),
     "host": MessageLookupByLibrary.simpleMessage("ホスト"),
     "hosts": MessageLookupByLibrary.simpleMessage("ホスト"),
@@ -455,7 +457,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "最近のイベントをログ画面に保持します（内部バッファ、adb logcat とは別）",
     ),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
-      "Include WebDAV credentials in backup",
+      "バックアップにWebDAVの認証情報を含める",
     ),
     "includeDavCredsInBackupDesc": MessageLookupByLibrary.simpleMessage(
       "デフォルトは無効。バックアップの保存先を信頼できる場合のみ有効にしてください。",
@@ -491,6 +493,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "libBundledTag": MessageLookupByLibrary.simpleMessage("同梱"),
     "libDelete": MessageLookupByLibrary.simpleMessage("削除"),
     "libInUse": MessageLookupByLibrary.simpleMessage("使用中"),
+    "libIncompatibleOld": MessageLookupByLibrary.simpleMessage("非対応(古いコア)"),
     "libInstalled": MessageLookupByLibrary.simpleMessage("インストール済み"),
     "libInstalledTag": MessageLookupByLibrary.simpleMessage("インストール済み"),
     "libLoadError": MessageLookupByLibrary.simpleMessage("リリースの読み込みに失敗しました"),
@@ -565,11 +568,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "messageTest": MessageLookupByLibrary.simpleMessage("メッセージテスト"),
     "messageTestTip": MessageLookupByLibrary.simpleMessage("これはメッセージです。"),
     "min": MessageLookupByLibrary.simpleMessage("最小化"),
-    "minimizeOnExit": MessageLookupByLibrary.simpleMessage(
-      "Minimize instead of exit",
-    ),
+    "minimizeOnExit": MessageLookupByLibrary.simpleMessage("終了せずに最小化"),
     "minimizeOnExitDesc": MessageLookupByLibrary.simpleMessage(
-      "Back button sends the app to background instead of closing it",
+      "戻るボタンでアプリを終了せずバックグラウンドに移動します",
     ),
     "minutes": MessageLookupByLibrary.simpleMessage("分"),
     "minutesAgo": m14,
@@ -798,6 +799,24 @@ class MessageLookup extends MessageLookupByLibrary {
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("純黒モード"),
     "qrcode": MessageLookupByLibrary.simpleMessage("QRコード"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage("QRコードをスキャンしてプロファイルを取得"),
+    "quickStartFailedBody": MessageLookupByLibrary.simpleMessage(
+      "キーは接続できましたが、ページを読み込めませんでした。",
+    ),
+    "quickStartFailedTitle": MessageLookupByLibrary.simpleMessage(
+      "このキーではインターネットに接続できませんでした",
+    ),
+    "quickStartImported": MessageLookupByLibrary.simpleMessage("取り込み済み"),
+    "quickStartNoServers": MessageLookupByLibrary.simpleMessage(
+      "貼り付けた内容にサーバーが見つかりません",
+    ),
+    "quickStartPasteHint": MessageLookupByLibrary.simpleMessage(
+      "プロバイダーから届いたリンク、QR、コードを貼り付けてください",
+    ),
+    "quickStartPasteKey": MessageLookupByLibrary.simpleMessage("キーを貼り付け"),
+    "quickStartTryAgain": MessageLookupByLibrary.simpleMessage("再試行"),
+    "quickStartUseDifferent": MessageLookupByLibrary.simpleMessage("別のキーを使う"),
+    "quickStartVerified": MessageLookupByLibrary.simpleMessage("確認済み"),
+    "quickStartVerifying": MessageLookupByLibrary.simpleMessage("接続を確認中..."),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("レインボー"),
     "recovery": MessageLookupByLibrary.simpleMessage("復元"),
     "recoveryAll": MessageLookupByLibrary.simpleMessage("すべてのデータを復元"),
@@ -929,6 +948,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingGroupVia": m25,
     "routingGroups": MessageLookupByLibrary.simpleMessage("グループ"),
     "routingGroupsSubtitle": MessageLookupByLibrary.simpleMessage("サーバーの選び方"),
+    "routingHideSystemApps": MessageLookupByLibrary.simpleMessage(
+      "システムアプリを非表示",
+    ),
     "routingImportFailed": MessageLookupByLibrary.simpleMessage("リンクを読めませんでした"),
     "routingListBehavior": MessageLookupByLibrary.simpleMessage("マッチ種別"),
     "routingListByCountry": MessageLookupByLibrary.simpleMessage("国別"),
@@ -1059,6 +1081,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingServers": MessageLookupByLibrary.simpleMessage("サーバー"),
     "routingServersSubtitle": MessageLookupByLibrary.simpleMessage("トラフィックの出口"),
     "routingSetAsExit": MessageLookupByLibrary.simpleMessage("アクティブな出口にする"),
+    "routingSkippedNodes": MessageLookupByLibrary.simpleMessage(
+      "非対応の種類のノードは一部スキップされました",
+    ),
     "routingSourceCountry": MessageLookupByLibrary.simpleMessage("国から"),
     "routingSourceLink": MessageLookupByLibrary.simpleMessage("リンクから"),
     "routingSourcePaste": MessageLookupByLibrary.simpleMessage("ドメインを貼り付け"),
@@ -1133,6 +1158,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "stop": MessageLookupByLibrary.simpleMessage("停止"),
     "stopVpn": MessageLookupByLibrary.simpleMessage("VPNを停止中..."),
     "style": MessageLookupByLibrary.simpleMessage("スタイル"),
+    "subDaysLeft": m31,
+    "subExpired": MessageLookupByLibrary.simpleMessage("期限切れ"),
+    "subHoursLeft": m32,
+    "subRemaining": m33,
     "subRule": MessageLookupByLibrary.simpleMessage("サブルール"),
     "subRuleDeleteConfirm": MessageLookupByLibrary.simpleMessage(
       "このサブルールを削除しますか？",
@@ -1142,7 +1171,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "subRuleNew": MessageLookupByLibrary.simpleMessage("新しいサブルール"),
     "subRuleRename": MessageLookupByLibrary.simpleMessage("サブルールの名前を変更"),
-    "subRuleRuleCount": m31,
+    "subRuleRuleCount": m34,
     "subRules": MessageLookupByLibrary.simpleMessage("サブルール"),
     "submit": MessageLookupByLibrary.simpleMessage("送信"),
     "sync": MessageLookupByLibrary.simpleMessage("同期"),
@@ -1155,7 +1184,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tab": MessageLookupByLibrary.simpleMessage("タブ"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("タブアニメーション"),
     "tabAnimationDesc": MessageLookupByLibrary.simpleMessage(
-      "Smooth slide between tabs (mobile layout only)",
+      "タブ間をスムーズにスライド(モバイルレイアウトのみ)",
     ),
     "tcpConcurrent": MessageLookupByLibrary.simpleMessage("TCP並列処理"),
     "tcpConcurrentDesc": MessageLookupByLibrary.simpleMessage("TCP並列処理を許可"),
@@ -1185,7 +1214,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL経由でプロファイルを取得"),
-    "urlTip": m32,
+    "urlTip": m35,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
     "userInterface": MessageLookupByLibrary.simpleMessage("ユーザーインターフェース"),
@@ -1204,7 +1233,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
-    "yearsAgo": m33,
+    "yearsAgo": m36,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
     "zoom": MessageLookupByLibrary.simpleMessage("ズーム"),
   };

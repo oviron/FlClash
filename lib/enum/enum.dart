@@ -89,11 +89,11 @@ enum TunStack { gvisor, system, mixed }
 
 enum AccessControlMode { acceptSelected, rejectSelected }
 
-/// How often geo databases (GeoSite/GeoIP/…) auto-refresh in the background.
+// How often geo databases (GeoSite/GeoIP/…) auto-refresh in the background.
 enum GeoUpdateInterval { off, daily, every3Days, weekly }
 
 extension GeoUpdateIntervalExt on GeoUpdateInterval {
-  /// The refresh period, or null when auto-update is off.
+  // The refresh period, or null when auto-update is off.
   Duration? get duration => switch (this) {
     GeoUpdateInterval.off => null,
     GeoUpdateInterval.daily => const Duration(days: 1),
@@ -102,9 +102,9 @@ extension GeoUpdateIntervalExt on GeoUpdateInterval {
   };
 }
 
-/// Baseline applied by the network-rules engine when no rule matches the
-/// current network: turn the VPN on, off, or leave whatever the user/last
-/// state had it at.
+// Baseline applied by the network-rules engine when no rule matches the
+// current network: turn the VPN on, off, or leave whatever the user/last
+// state had it at.
 enum DefaultNetworkAction { turnOn, turnOff, leaveAsIs }
 
 enum AccessSortType { none, name, time }

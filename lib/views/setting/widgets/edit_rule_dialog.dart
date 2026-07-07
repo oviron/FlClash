@@ -43,9 +43,6 @@ extension on _ConditionKind {
   };
 }
 
-/// Picker for a new condition kind: each kind is a tappable card. A trailing
-/// chevron marks kinds that open a further config screen (Wi-Fi name, profile);
-/// the rest show a plus, since tapping adds them immediately.
 class _ConditionKindDialog extends StatelessWidget {
   const _ConditionKindDialog();
 
@@ -82,18 +79,14 @@ class _ConditionKindDialog extends StatelessWidget {
   }
 }
 
-/// Full-width bottom-sheet editor for one network rule. A sheet (not a dialog)
-/// so the segmented selectors get the whole screen width and never have to wrap
-/// their labels.
+// A sheet (not a dialog) so the segmented selectors get the whole screen width
+// and never have to wrap their labels.
 class EditRuleDialog extends ConsumerStatefulWidget {
   final NetworkRule? initial;
   final SheetType type;
 
   const EditRuleDialog({super.key, this.initial, required this.type});
 
-  /// Returns the saved rule, or null if the user cancelled. The caller persists
-  /// via the repo provider; keeping that out of the widget makes the editor
-  /// reusable for both create and edit.
   static Future<NetworkRule?> show({
     required BuildContext context,
     NetworkRule? initial,
@@ -164,8 +157,6 @@ class _EditRuleDialogState extends ConsumerState<EditRuleDialog> {
     return inner is WifiNamed;
   }
 
-  /// One sheet for the whole Wi-Fi condition: SSID + match pattern + negate,
-  /// all picked at once; no second hop to reach the pattern.
   Future<NetworkCondition?> _pickWifi(NetworkCondition? current) async {
     final granted = await ensureLocationPermissionForSsid(context, ref);
     if (!granted || !mounted) return null;

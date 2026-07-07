@@ -6,9 +6,6 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Switches the selected member of one proxy group, mirroring the Proxies card
-/// selection (computed-selected toggles off, selector picks). Shared by the
-/// dashboard node pill and any compact group switcher.
 class NodeSelectorSheet extends ConsumerWidget {
   final SheetType type;
   final String groupName;

@@ -42,6 +42,59 @@ void main() {
     });
   });
 
+  group('honest-drop parity with xray_json', () {
+    test('vless drops vision flow on a non-tcp network', () {
+      final p = parseShareLink(
+        'vless://uuid@1.2.3.4:443?security=tls&type=ws&path=%2Fws'
+        '&flow=xtls-rprx-vision#n',
+      );
+      expect(p, isNotNull);
+      expect(p!['network'], 'ws');
+      expect(p.containsKey('flow'), isFalse);
+    });
+
+    test('vless reality with no pbk is dropped', () {
+      final p = parseShareLink(
+        'vless://uuid@1.2.3.4:443?security=reality&type=tcp&sni=e.com#n',
+      );
+      expect(p, isNull);
+    });
+
+    test('trojan drops vision flow on a non-tcp network', () {
+      final p = parseShareLink(
+        'trojan://pass@1.2.3.4:443?type=grpc&serviceName=gs'
+        '&flow=xtls-rprx-vision#n',
+      );
+      expect(p, isNotNull);
+      expect(p!['network'], 'grpc');
+      expect(p.containsKey('flow'), isFalse);
+    });
+  });
+
+  group('parseShareLink ss legacy base64 form', () {
+    test(
+      'a fully-base64 blob (no plaintext @) parses cipher/password/host',
+      () {
+        final p = parseShareLink(
+          'ss://${_b64('aes-256-gcm:pass123@1.2.3.4:8388')}#legacy',
+        );
+        expect(p, isNotNull);
+        expect(p!['cipher'], 'aes-256-gcm');
+        expect(p['password'], 'pass123');
+        expect(p['server'], '1.2.3.4');
+        expect(p['port'], 8388);
+      },
+    );
+
+    test('a base64 blob that decodes without an @ is dropped', () {
+      expect(parseShareLink('ss://${_b64('no-at-sign-here')}#x'), isNull);
+    });
+
+    test('a legacy blob whose method:pass has no colon is dropped', () {
+      expect(parseShareLink('ss://${_b64('methodpass@host:443')}#x'), isNull);
+    });
+  });
+
   test('parseShareLink vmess decodes base64 json', () {
     final json = jsonEncode({
       'v': '2',
@@ -144,10 +197,8 @@ void main() {
       expect(parseShareLink('vless://'), isNull);
       expect(parseShareLink('not-a-scheme'), isNull);
       expect(parseShareLink('vless://uuid@host'), isNull); // no port
-      expect(
-        parseShareLink('hysteria2://x@h:443'),
-        isNull,
-      ); // unsupported in v1
+      expect(parseShareLink('tuic://x@h:443'), isNull); // no tuic parser yet
+      expect(parseShareLink('hysteria2://h:443'), isNull); // no auth userinfo
     });
   });
 
@@ -181,9 +232,85 @@ void main() {
             'tuic://y@h:443#tu\n'
             'plain-garbage-line';
         final res = parseSubscriptionContent(body);
-        expect(res.proxies.length, 1);
-        expect(res.skipped, 2);
+        expect(res.proxies.length, 2); // vless + hysteria2 now parse
+        expect(res.skipped, 1); // only tuic recognized-but-unsupported
       },
     );
+  });
+
+  group('parseShareLink vless happ-tier transports', () {
+    test('xhttp transport carries host + mode, no TLS', () {
+      final p = parseShareLink(
+        'vless://uuid@host:10443?encryption=none&security=none'
+        '&type=xhttp&path=%2Fmy-bucket&host=s3.example&mode=stream-up#x',
+      );
+      expect(p!['network'], 'xhttp');
+      expect(p['tls'], false);
+      expect(p['xhttp-opts'], {
+        'path': '/my-bucket',
+        'mode': 'stream-up',
+        'host': 's3.example',
+      });
+    });
+
+    test('VLESS encryption (ML-KEM) passed through, none ignored', () {
+      final p = parseShareLink(
+        'vless://uuid@host:443?encryption=mlkem768x25519plus.native.0rtt.BLOB'
+        '&security=none&type=xhttp#e',
+      );
+      expect(p!['encryption'], 'mlkem768x25519plus.native.0rtt.BLOB');
+      final none = parseShareLink(
+        'vless://uuid@host:443?encryption=none&type=tcp#n',
+      );
+      expect(none!.containsKey('encryption'), false);
+    });
+
+    test('grpc serviceName + alpn', () {
+      final p = parseShareLink(
+        'vless://uuid@host:443?security=reality&pbk=K&sid=ab&type=grpc'
+        '&serviceName=grpc&alpn=h2#g',
+      );
+      expect(p!['grpc-opts'], {'grpc-service-name': 'grpc'});
+      expect(p['alpn'], ['h2']);
+    });
+  });
+
+  test('parseShareLink hysteria2', () {
+    final p = parseShareLink(
+      'hysteria2://secret@host.tld:443?sni=h.com&alpn=h3&obfs=salamander'
+      '&obfs-password=xyz#hy',
+    );
+    expect(p!['type'], 'hysteria2');
+    expect(p['name'], 'hy');
+    expect(p['server'], 'host.tld');
+    expect(p['port'], 443);
+    expect(p['password'], 'secret');
+    expect(p['sni'], 'h.com');
+    expect(p['alpn'], ['h3']);
+    expect(p['obfs'], 'salamander');
+    expect(p['obfs-password'], 'xyz');
+  });
+
+  test('parseShareLink vmess grpc serviceName', () {
+    final json = jsonEncode({
+      'ps': 'vg',
+      'add': '1.1.1.1',
+      'port': '443',
+      'id': 'u',
+      'net': 'grpc',
+      'path': 'mygrpc',
+      'tls': 'tls',
+    });
+    final p = parseShareLink('vmess://${_b64(json)}');
+    expect(p!['network'], 'grpc');
+    expect(p['grpc-opts'], {'grpc-service-name': 'mygrpc'});
+  });
+
+  test('parseShareLink trojan flow + alpn', () {
+    final p = parseShareLink(
+      'trojan://pw@host:443?sni=h.com&flow=xtls-rprx-vision&alpn=h2,http%2F1.1#t',
+    );
+    expect(p!['flow'], 'xtls-rprx-vision');
+    expect(p['alpn'], ['h2', 'http/1.1']);
   });
 }

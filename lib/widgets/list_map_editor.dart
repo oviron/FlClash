@@ -5,14 +5,9 @@ import 'effect.dart';
 import 'pop_scope.dart';
 import 'scaffold.dart';
 
-/// Optional per-row badge for list mode (e.g. "DoH" next to a DNS URL).
 typedef ListRowTagBuilder = String? Function(String value);
 
-/// A pure, reusable list / map editor driven by [value] + [onChanged]. No
-/// provider coupling: the host owns persistence, passing the current value down
-/// and receiving the edited copy back through [onChanged].
 class ListMapEditor extends StatefulWidget {
-  /// List mode: reorderable string rows with add / remove and an optional tag.
   const ListMapEditor.list({
     super.key,
     required List<String> value,
@@ -26,7 +21,6 @@ class ListMapEditor extends StatefulWidget {
        _onMapChanged = null,
        keyLabel = null;
 
-  /// Map mode: key -> list of value chips, each card with add / remove.
   const ListMapEditor.map({
     super.key,
     required Map<String, List<String>> value,
@@ -489,8 +483,6 @@ class _SingleFieldDialogState extends State<_SingleFieldDialog> {
   }
 }
 
-/// Scaffold host for [ListMapEditor.list]. Returns the edited list via pop, so
-/// it slots into the existing `OpenDelegate(onChanged:)` flow.
 class ListEditorPage extends StatefulWidget {
   final String title;
   final List<String> items;
@@ -540,9 +532,9 @@ class _ListEditorPageState extends State<ListEditorPage> {
   }
 }
 
-/// Scaffold host for [ListMapEditor.map]. Adapts the persisted
-/// `Map<String, String>` (mihomo encodes multi-value as comma-separated) to the
-/// editor's `Map<String, List<String>>`, joining back on pop.
+// mihomo encodes a multi-value map entry as one comma-separated string, so this
+// splits `Map<String, String>` into the editor's `Map<String, List<String>>`
+// and joins back on pop.
 class MapEditorPage extends StatefulWidget {
   final String title;
   final Map<String, String> map;

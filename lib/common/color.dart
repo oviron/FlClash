@@ -121,8 +121,8 @@ extension ColorSchemeExtension on ColorScheme {
       : this;
 }
 
-/// Material 3 has no success/warning roles; these fill the gap, resolving per
-/// [brightness] so they read on both pure-black dark and light schemes.
+// Material 3 has no success/warning roles; these fill the gap, resolving per
+// [brightness] so they read on both pure-black dark and light schemes.
 extension SemanticColorScheme on ColorScheme {
   bool get _dark => brightness == Brightness.dark;
 
@@ -133,9 +133,9 @@ extension SemanticColorScheme on ColorScheme {
       _dark ? const Color(0xFFFFD479) : const Color(0xFF7A5900);
 }
 
-/// Latency → semantic color. null = untested (neutral); <= 0 = timeout (error);
-/// then good/medium/slow by ascending threshold. Single source for every
-/// latency surface (node lists, proxy cards, member pickers).
+// Latency → semantic color. null = untested (neutral); <= 0 = timeout (error);
+// then good/medium/slow by ascending threshold. Single source for every
+// latency surface (node lists, proxy cards, member pickers).
 Color delayColor(ColorScheme scheme, int? delay) {
   if (delay == null) return scheme.onSurfaceVariant;
   if (delay <= 0) return scheme.error;
@@ -144,7 +144,7 @@ Color delayColor(ColorScheme scheme, int? delay) {
   return scheme.error;
 }
 
-/// Usage ratio (0..1) → bar color: warn past [warnAt], error at/over full.
+// Usage ratio (0..1) → bar color: warn past [warnAt], error at/over full.
 const kQuotaWarnAt = 0.6;
 
 Color quotaColor(

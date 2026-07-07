@@ -211,7 +211,6 @@ class ProfileItem extends StatelessWidget {
 
   Future<void> updateProfile() async {
     if (profile.type == ProfileType.file) return;
-    try {} finally {}
     await appController.loadingRun(() async {
       await appController.updateProfile(profile, showLoading: true);
     }, tag: LoadingTag.profiles);
@@ -231,17 +230,18 @@ class ProfileItem extends StatelessWidget {
   }
 
   List<Widget> _buildUrlProfileInfo(BuildContext context) {
-    // A URL profile shows its quota bar only when the subscription reports a
-    // non-zero total; otherwise it degrades to the stat line.
-    final hasQuota = (profile.subscriptionInfo?.total ?? 0) != 0;
+    // Show the subscription status whenever the panel reports usage OR an expiry
+    // (a time-limited unlimited-data plan has total==0); else the stat line.
+    final info = profile.subscriptionInfo;
+    final hasSubInfo = info != null && (info.total != 0 || info.expire != 0);
     final updated = Text(
       profile.lastUpdateDate?.lastUpdateTimeDesc ?? '',
       style: context.textTheme.labelMedium?.toLighter,
     );
-    if (hasQuota) {
+    if (hasSubInfo) {
       return [
         const SizedBox(height: 8),
-        SubscriptionInfoView(subscriptionInfo: profile.subscriptionInfo),
+        SubscriptionInfoView(subscriptionInfo: info),
         updated,
       ];
     }
@@ -429,7 +429,7 @@ class ProfileItem extends StatelessWidget {
   }
 }
 
-/// Group/node stats for a card without a profile-level quota.
+// Group/node stats for a card without a profile-level quota.
 class _ProfileStatLine extends StatefulWidget {
   final int profileId;
 
