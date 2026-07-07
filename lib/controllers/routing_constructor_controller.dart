@@ -1,7 +1,7 @@
 part of '../controller.dart';
 
 // Constructor and Advanced editors share one validated hot-apply write path so
-// they never diverge (docs/onboarding.md II.9).
+// they never diverge.
 extension RoutingConstructorController on AppController {
   Future<RoutingModel> readRoutingModel(int profileId) async {
     final file = File(await appPath.getProfilePath(profileId.toString()));

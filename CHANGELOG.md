@@ -1,3 +1,17 @@
+## v0.16.0 (unreleased)
+
+- Onboarding, paste-and-go: a first-run "Paste your key" on-ramp accepts a share link (`vless`/`vmess`/`ss`/`trojan`/`hysteria2`/`tuic`), a base64 subscription blob, a subscription URL, or a QR, and builds a leak-hardened full-tunnel profile underneath. "Connected" is asserted only after a functional HTTP-204 probe succeeds through the tunnel, never on handshake alone
+
+- Routing constructor: a plain-language per-profile editor (Lists, Scenarios, Apps, exit) sitting on a lossless YAML round-trip that preserves every unmodeled key and comment. The raw proxy-group / rule / sub-rule / provider / DNS editors move under Advanced. Deleting a proxy, group, or list is now referentially consistent: containment references are cascaded (and emptied groups pruned), while a proxy or group still named by a rule or used as another node's `dialer-proxy` is refused with a message instead of leaving a dangling reference
+
+- Per-profile app routing is now a three-way choice, All / Selected / Except, mapped to `tun.include-package` / `tun.exclude-package` and applied at `VpnService.Builder`. All means literally all apps (any stale global filter is force-disabled), so a whitelist/blacklist profile can keep bank and government apps out of the tunnel with an OS-level guarantee. Changing the set on the active profile re-establishes the tunnel automatically instead of waiting for an app restart
+
+- Configurable tunnel MTU (default 1400). Backed by a core bump to libmihomo-android v0.2.0 (mihomo v1.19.27, bridgeABI 2), SHA-256 + GPG pinned
+
+- Bundled a baseline GeoSite database with a background auto-update, so the first connect on a network that blocks GitHub no longer stalls on a geo-DB download; a raw geo-load error in the apply path is now suppressed
+
+- Subscription support: xray/v2ray subscription ingest with per-remark grouping, and per-provider quota (used / total / expiry) surfaced in the Providers sheet even for file-backed providers
+
 ## v0.15.4
 
 - Removed the ByeDPI integration entirely: dropped the `bydpi` product flavor and the embedded byedpi DPI-bypass core, along with its settings UI, strategy tester, host list, and the `libbyedpi-android` `.aar` dependency. The app collapses to a single variant (`com.follow.clash`, no suffix) and APK artifacts are now named `FlClash-<version>-android-<abi>.apk` (no `-classic`/`-bydpi`). mihomo remains the only bundled core

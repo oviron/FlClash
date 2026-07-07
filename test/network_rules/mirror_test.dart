@@ -36,7 +36,8 @@ void main() {
       expect(rule['id'], 1);
       expect(rule['name'], 'Home');
       expect(rule['match'], 'all');
-      expect(rule['action'], 'turnOff');
+      expect(rule['actionVpn'], 'turnOff');
+      expect(rule.containsKey('action'), isFalse);
       expect(rule['priority'], 0);
       expect(rule['enabled'], true);
 
@@ -85,7 +86,7 @@ void main() {
       expect(decoded['activeProfileId'], 2);
       final rule = (decoded['rules'] as List).first as Map<String, dynamic>;
       expect(rule['actionVpn'], 'turnOn');
-      expect(rule['action'], 'turnOn'); // legacy on/off mirror
+      expect(rule.containsKey('action'), isFalse);
       expect(rule['actionProfileId'], 7);
       expect(rule['actionSelectedMap'], {'GLOBAL': 'us'});
       expect(rule['actionProfileName'], 'Work');

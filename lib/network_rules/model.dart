@@ -303,9 +303,8 @@ class NetworkConditionListCodec {
     if (decoded is! List) {
       throw FormatException('Expected JSON array of conditions, got: $raw');
     }
-    // Skip unknown entries individually: a single bad record (e.g. future
-    // version's condition kind) used to bubble out of watchAll and wipe
-    // every rule from the UI.
+    // Skip unknown entries individually so one bad record (e.g. a future
+    // version's condition kind) can't wipe every rule from the UI.
     final result = <NetworkCondition>[];
     for (final entry in decoded) {
       try {

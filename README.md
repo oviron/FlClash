@@ -4,7 +4,7 @@
 
 Android `mihomo` client. Open source, no ads, no telemetry.
 
-A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (last upstream activity: February 2026). **Android-only**, `metacubex/mihomo v1.19.24` direct via 100% JNI, no REST controller. The mihomo bridge lives in [oviron/libmihomo-android](https://github.com/oviron/libmihomo-android). FlClash consumes it as a SHA-256 + GPG-pinned `.aar` download, no C/C++/Go code in this repo.
+A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (last upstream activity: February 2026). **Android-only**, `metacubex/mihomo v1.19.27` direct via 100% JNI, no REST controller. The mihomo bridge lives in [oviron/libmihomo-android](https://github.com/oviron/libmihomo-android). FlClash consumes it as a SHA-256 + GPG-pinned `.aar` download, no C/C++/Go code in this repo.
 
 <p align="center">
     <img alt="mobile" src="snapshots/mobile.gif" width="45%">
@@ -12,9 +12,14 @@ A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (
 
 ## What's in this fork
 
-- **Per-profile App Access Control:** YAML `tun.include-package` / `tun.exclude-package` are honored by `VpnService.Builder.addAllowedApplication()`. Without this, Android Auto breaks on whitelist profiles. A per-profile GUI editor with drift v2 migration, opt-in override (Profile UI > YAML > Global), and Reset-to-YAML are included.
-- **Network Rules v1:** automatic VPN on/off based on the current network (WifiNamed / AnyWifi / AnyCellular).
-- **H.7 backend:** `metacubex/mihomo v1.19.26` direct, with CMfA-style patterns: type-explicit providers API, async-callback path, push subscription for connections/log, INNER-bypass via Dart pre-process.
+- **Onboarding, paste-and-go:** paste a share link, base64 blob, subscription URL, or QR; the app builds a leak-hardened full-tunnel profile and proves it with a functional HTTP-204 probe before it shows "Connected."
+- **Routing constructor:** a plain-language per-profile editor (Lists, Scenarios, Apps, exit) over a lossless YAML round-trip; the raw proxy-group / rule / provider / DNS editors stay under Advanced for power users.
+- **Per-profile app routing:** All / Selected / Except tunnel modes via `tun.include-package` / `tun.exclude-package`, honored by `VpnService.Builder` so bank/gov apps stay out of the tunnel, with an automatic re-establish when the set changes.
+- **Configurable tunnel MTU** (default 1400).
+- **Bundled GeoSite baseline + background auto-update**, so a first connect on a GitHub-blocked network never stalls on a geo-DB download.
+- **Subscription support:** xray/v2ray subscription ingest with per-remark grouping and per-provider quota (used / total / expiry).
+- **Network Rules:** automatic VPN on/off based on the current network (WifiNamed / AnyWifi / AnyCellular).
+- **Backend:** `metacubex/mihomo v1.19.27` direct, with CMfA-style patterns: type-explicit providers API, async-callback path, push subscription for connections/log, INNER-bypass via Dart pre-process.
 - **Dashboard checkIp probe:** JNI `WithSpecialProxy` bypasses user rules so the real exit-IP shows even on whitelist profiles with `MATCH,REJECT`.
 - Stability stack: wake/Wi-Fi locks, idempotent module loader, defensive Go type-assertions, MATCH-rule guard for upstream #1959, Global proxy watchdog.
 

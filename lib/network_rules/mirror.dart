@@ -32,11 +32,6 @@ String encodeNetworkRulesMirror({
           'id': r.id,
           'name': r.name,
           'match': r.matchMode.name,
-          // Legacy on/off field for a downgraded resident (kept one release).
-          // leave maps to turnOff so a stale resident fails safe (never auto-starts).
-          'action': r.action.vpn == NetworkVpnMode.turnOn
-              ? 'turnOn'
-              : 'turnOff',
           'actionVpn': r.action.vpn.name,
           if (r.action.profileId != null) 'actionProfileId': r.action.profileId,
           if (r.action.profileId != null &&

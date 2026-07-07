@@ -4,8 +4,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 // Drives VPN-route bookkeeping (local IP / check-ip) on connectivity changes.
-// The network-rules snapshot is no longer produced here: the resident service
-// computes it natively and pushes it via NetworkRulesBridge.
 class ConnectivityManager extends StatefulWidget {
   final Function(List<ConnectivityResult> results)? onConnectivityChanged;
 
