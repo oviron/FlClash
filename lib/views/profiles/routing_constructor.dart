@@ -1573,18 +1573,21 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
   }
 
   Future<void> _addSubscription(RoutingModel m, String url) async {
-    final used = {for (final s in m.servers) s.name};
-    var name = 'sub';
-    var n = 2;
-    while (used.contains(name)) {
-      name = 'sub-${n++}';
-    }
-    // Fetch-classify: a Happ/xray subscription becomes an xray file-provider
-    // (setup's prefetch converts it); anything else stays a plain http provider.
-    final xray = await _classifyXraySubscription(url);
+    final probe = await _probeSubscription(url);
     if (!mounted) return;
+    // The provider key and its `<name>-auto` group name must both be free.
+    final taken = {
+      for (final s in m.servers) s.name,
+      for (final g in m.groups) g.name,
+    };
+    var name = probe.name;
+    var n = 2;
+    while (taken.contains(name) || taken.contains('$name-auto')) {
+      name = '${probe.name}-${n++}';
+    }
     // A fresh subscription gets an auto (url-test) group over it, so it is
-    // usable as an exit immediately; the user can refine it in Groups.
+    // usable as an exit immediately; the user can refine it in Groups. This is
+    // also the clean parent injectRemarkGroups rewires into per-remark groups.
     final group = SmartGroup(
       name: '$name-auto',
       behavior: GroupBehavior.autoFastest,
@@ -1596,7 +1599,7 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
       m.copyWith(
         servers: [
           ...m.servers,
-          ServerSource.subscription(name: name, url: url, xray: xray),
+          ServerSource.subscription(name: name, url: url, xray: probe.xray),
         ],
         groups: [...m.groups.where((g) => g.name != group.name), group],
         exitGroup: m.groups.any((g) => g.name == m.exitGroup)
@@ -1609,20 +1612,34 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
     }
   }
 
-  // Returns an empty xray marker when the subscription body classifies as
-  // xray/Happ JSON, else null (plain http). A fetch failure degrades to null.
-  Future<Map<String, dynamic>?> _classifyXraySubscription(String url) async {
+  // One fetch yields both: the by-remark marker (so setup's prefetch splits the
+  // sub into per-remark groups, not one flat group) and a human name from the
+  // response headers. A fetch failure degrades to a plain http sub named by host.
+  Future<({Map<String, dynamic>? xray, String name})> _probeSubscription(
+    String url,
+  ) async {
+    String? title;
+    String? dispositionFilename;
+    var byRemark = false;
     try {
       final resp = await request.getTextResponseForUrl(
         url,
         headers: await happHeaders(),
       );
-      return classifyArtifact(resp.data ?? '') == ArtifactKind.xrayJson
-          ? const <String, dynamic>{}
-          : null;
-    } catch (_) {
-      return null;
-    }
+      title = resp.headers.value('profile-title');
+      dispositionFilename = utils.getFileNameForDisposition(
+        resp.headers.value('content-disposition'),
+      );
+      byRemark = classifyArtifact(resp.data ?? '') == ArtifactKind.xrayJson;
+    } catch (_) {}
+    return (
+      xray: byRemark ? const <String, dynamic>{'groups': 'by-remark'} : null,
+      name: deriveSubscriptionName(
+        profileTitle: title,
+        dispositionFilename: dispositionFilename,
+        url: url,
+      ),
+    );
   }
 
   Future<void> _removeServer(ServerSource s) async {

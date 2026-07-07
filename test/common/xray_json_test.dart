@@ -458,7 +458,7 @@ void main() {
       expect(go.containsKey('interval'), isFalse);
     });
 
-    test('appends one hidden url-test group per remark, slug filter + '
+    test('appends one visible url-test group per remark, slug filter + '
         'inherited health check', () {
       final config = baseConfig();
       injectRemarkGroups(config, 'govpn', remarks);
@@ -471,11 +471,29 @@ void main() {
       expect(speed['interval'], 90);
       expect(speed['tolerance'], 50);
       expect(speed['lazy'], true);
-      expect(speed['hidden'], isTrue); // drill-down under the parent select
+      // Visible top-level group (scenario-1 parity), not a hidden drill-down.
+      expect(speed.containsKey('hidden'), isFalse);
       expect(
         groups.map((g) => g['name']),
         containsAll(['Antiblock', 'Backup']),
       );
+    });
+
+    test('leaves non-parent sibling groups byte-identical (additive)', () {
+      final config = baseConfig();
+      final vpnBefore = jsonEncode(
+        (config['proxy-groups'] as List)
+            .cast<Map<String, dynamic>>()
+            .firstWhere((g) => g['name'] == 'VPN'),
+      );
+      injectRemarkGroups(config, 'govpn', remarks);
+      final vpnAfter = jsonEncode(
+        (config['proxy-groups'] as List)
+            .cast<Map<String, dynamic>>()
+            .firstWhere((g) => g['name'] == 'VPN'),
+      );
+      // VPN is a select over ['Go','DIRECT'], not use:[govpn] -> untouched.
+      expect(vpnAfter, vpnBefore);
     });
 
     test('no clean parent (author filter) -> config unchanged', () {

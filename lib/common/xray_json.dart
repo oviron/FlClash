@@ -156,9 +156,6 @@ void injectRemarkGroups(
     specs.add({
       'name': name,
       'type': 'url-test',
-      // hidden: reachable only by drilling into the parent select (the Happ
-      // layout), so the per-remark groups don't clutter the top-level tab bar.
-      'hidden': true,
       'use': [key],
       'filter': '^${RegExp.escape(r.slug)}-',
       'url': p0['url'] ?? 'http://cp.cloudflare.com/generate_204',
