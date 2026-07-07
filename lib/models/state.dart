@@ -284,6 +284,9 @@ abstract class VpnState with _$VpnState {
     // VpnService.Builder; changing them must re-establish, not just hot-apply.
     @Default([]) List<String> routeAddress,
     @Default([]) List<String> bypassDomain,
+    // Establish-only tun MTU (baked into VpnService.Builder.setMtu + passed to
+    // startTUN); a change must re-establish, not just hot-apply.
+    @Default(1400) int mtu,
   }) = _VpnState;
 }
 

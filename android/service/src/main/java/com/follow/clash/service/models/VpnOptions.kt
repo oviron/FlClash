@@ -25,6 +25,7 @@ data class VpnOptions(
     val bypassDomain: List<String>,
     val stack: String,
     val routeAddress: List<String>,
+    val mtu: Int = 1400,
 ) : Parcelable
 
 data class CIDR(val address: InetAddress, val prefixLength: Int)

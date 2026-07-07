@@ -291,6 +291,7 @@
   "iconStyle": "Icon style",
   "onlyIcon": "Icon",
   "stackMode": "Stack mode",
+  "mtu": "MTU",
   "network": "Network",
   "networkDesc": "Modify network-related settings",
   "bypassDomain": "Bypass domain",

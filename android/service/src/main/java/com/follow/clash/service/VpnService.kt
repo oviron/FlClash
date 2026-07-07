@@ -232,7 +232,7 @@ class VpnService : SystemVpnService(), IBaseService,
             if (options.ipv6) {
                 addDnsServer(DNS6)
             }
-            setMtu(9000)
+            setMtu(options.mtu)
             options.accessControlProps.let { accessControl ->
                 if (accessControl.enable) {
                     when (accessControl.mode) {
@@ -287,6 +287,7 @@ class VpnService : SystemVpnService(), IBaseService,
             stack = options.stack,
             address = options.address,
             dns = options.dns,
+            mtu = options.mtu,
         )
     }
 

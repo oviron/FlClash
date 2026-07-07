@@ -146,6 +146,39 @@ class TunStackItem extends ConsumerWidget {
   }
 }
 
+class MtuItem extends ConsumerWidget {
+  const MtuItem({super.key});
+
+  // Presets: 9000 jumbo (throughput), 1500 Ethernet, 1420 WireGuard, 1400/1380
+  // mobile/encapsulation-safe, 1280 IPv6 floor.
+  static const _presets = [1280, 1380, 1400, 1420, 1500, 9000];
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final mtu = ref.watch(
+      patchClashConfigProvider.select((state) => state.tun.mtu),
+    );
+    return ListItem.options(
+      title: Text(appLocalizations.mtu),
+      subtitle: Text('$mtu'),
+      delegate: OptionsDelegate<int>(
+        value: mtu,
+        options: _presets,
+        textBuilder: (value) => '$value',
+        onChanged: (value) {
+          if (value == null) {
+            return;
+          }
+          ref
+              .read(patchClashConfigProvider.notifier)
+              .update((state) => state.copyWith.tun(mtu: value));
+        },
+        title: appLocalizations.mtu,
+      ),
+    );
+  }
+}
+
 String _bypassDomainCountLabel(int count) {
   return Intl.plural(
     count,
@@ -297,6 +330,7 @@ final networkItems = [
     title: appLocalizations.options,
     items: [
       const TunStackItem(),
+      const MtuItem(),
       const RouteModeItem(),
       const RouteAddressItem(),
     ],

@@ -579,6 +579,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "months": MessageLookupByLibrary.simpleMessage("月"),
     "monthsAgo": m15,
     "more": MessageLookupByLibrary.simpleMessage("詳細"),
+    "mtu": MessageLookupByLibrary.simpleMessage("MTU"),
     "name": MessageLookupByLibrary.simpleMessage("名前"),
     "nameserver": MessageLookupByLibrary.simpleMessage("ネームサーバー"),
     "nameserverDesc": MessageLookupByLibrary.simpleMessage("ドメイン解決用"),

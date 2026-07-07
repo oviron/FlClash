@@ -133,6 +133,7 @@ VpnState vpnState(Ref ref) {
     // Only baked into the Builder when the system HTTP proxy is on; otherwise it
     // is inert and must not trigger a needless re-establish.
     bypassDomain: vpnProps.systemProxy ? bypassDomain : const [],
+    mtu: realTun.mtu,
   );
 }
 
@@ -552,6 +553,11 @@ SharedState sharedState(Ref ref) {
       (state) => state.tun.getRealTun(routeMode).routeAddress,
     ),
   );
+  final mtu = ref.watch(
+    patchClashConfigProvider.select(
+      (state) => state.tun.getRealTun(routeMode).mtu,
+    ),
+  );
   final vpnSetting = ref.watch(vpnSettingProvider);
   final effectiveAcl =
       ref.watch(effectiveAccessControlProvider).value ??
@@ -577,6 +583,7 @@ SharedState sharedState(Ref ref) {
       allowBypass: vpnSetting.allowBypass,
       bypassDomain: bypassDomain,
       routeAddress: routeAddress,
+      mtu: mtu,
     ),
   );
 }

@@ -189,6 +189,7 @@ abstract class Tun with _$Tun {
     @Default(['any:53', 'tcp://any:53'])
     List<String> dnsHijack,
     @JsonKey(name: 'route-address') @Default([]) List<String> routeAddress,
+    @Default(1400) int mtu,
   }) = _Tun;
 
   factory Tun.fromJson(Map<String, Object?> json) => _$TunFromJson(json);

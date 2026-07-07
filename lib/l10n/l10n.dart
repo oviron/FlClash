@@ -2259,6 +2259,11 @@ class AppLocalizations {
     return Intl.message('Stack mode', name: 'stackMode', desc: '', args: []);
   }
 
+  /// `MTU`
+  String get mtu {
+    return Intl.message('MTU', name: 'mtu', desc: '', args: []);
+  }
+
   /// `Network`
   String get network {
     return Intl.message('Network', name: 'network', desc: '', args: []);

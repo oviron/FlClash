@@ -742,6 +742,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "months": MessageLookupByLibrary.simpleMessage("Месяцев"),
     "monthsAgo": m15,
     "more": MessageLookupByLibrary.simpleMessage("Еще"),
+    "mtu": MessageLookupByLibrary.simpleMessage("MTU"),
     "name": MessageLookupByLibrary.simpleMessage("Имя"),
     "nameserver": MessageLookupByLibrary.simpleMessage("Сервер имен"),
     "nameserverDesc": MessageLookupByLibrary.simpleMessage(

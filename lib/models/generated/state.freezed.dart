@@ -7601,7 +7601,9 @@ mixin _$VpnState {
 // toggling Global re-establishes the tunnel to apply the new app list.
  bool get captureAll;// Establish-only OS route table + system-proxy bypass list, baked into
 // VpnService.Builder; changing them must re-establish, not just hot-apply.
- List<String> get routeAddress; List<String> get bypassDomain;
+ List<String> get routeAddress; List<String> get bypassDomain;// Establish-only tun MTU (baked into VpnService.Builder.setMtu + passed to
+// startTUN); a change must re-establish, not just hot-apply.
+ int get mtu;
 /// Create a copy of VpnState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -7612,16 +7614,16 @@ $VpnStateCopyWith<VpnState> get copyWith => _$VpnStateCopyWithImpl<VpnState>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VpnState&&(identical(other.stack, stack) || other.stack == stack)&&(identical(other.vpnProps, vpnProps) || other.vpnProps == vpnProps)&&(identical(other.captureAll, captureAll) || other.captureAll == captureAll)&&const DeepCollectionEquality().equals(other.routeAddress, routeAddress)&&const DeepCollectionEquality().equals(other.bypassDomain, bypassDomain));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VpnState&&(identical(other.stack, stack) || other.stack == stack)&&(identical(other.vpnProps, vpnProps) || other.vpnProps == vpnProps)&&(identical(other.captureAll, captureAll) || other.captureAll == captureAll)&&const DeepCollectionEquality().equals(other.routeAddress, routeAddress)&&const DeepCollectionEquality().equals(other.bypassDomain, bypassDomain)&&(identical(other.mtu, mtu) || other.mtu == mtu));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,stack,vpnProps,captureAll,const DeepCollectionEquality().hash(routeAddress),const DeepCollectionEquality().hash(bypassDomain));
+int get hashCode => Object.hash(runtimeType,stack,vpnProps,captureAll,const DeepCollectionEquality().hash(routeAddress),const DeepCollectionEquality().hash(bypassDomain),mtu);
 
 @override
 String toString() {
-  return 'VpnState(stack: $stack, vpnProps: $vpnProps, captureAll: $captureAll, routeAddress: $routeAddress, bypassDomain: $bypassDomain)';
+  return 'VpnState(stack: $stack, vpnProps: $vpnProps, captureAll: $captureAll, routeAddress: $routeAddress, bypassDomain: $bypassDomain, mtu: $mtu)';
 }
 
 
@@ -7632,7 +7634,7 @@ abstract mixin class $VpnStateCopyWith<$Res>  {
   factory $VpnStateCopyWith(VpnState value, $Res Function(VpnState) _then) = _$VpnStateCopyWithImpl;
 @useResult
 $Res call({
- TunStack stack, VpnProps vpnProps, bool captureAll, List<String> routeAddress, List<String> bypassDomain
+ TunStack stack, VpnProps vpnProps, bool captureAll, List<String> routeAddress, List<String> bypassDomain, int mtu
 });
 
 
@@ -7649,14 +7651,15 @@ class _$VpnStateCopyWithImpl<$Res>
 
 /// Create a copy of VpnState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? stack = null,Object? vpnProps = null,Object? captureAll = null,Object? routeAddress = null,Object? bypassDomain = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? stack = null,Object? vpnProps = null,Object? captureAll = null,Object? routeAddress = null,Object? bypassDomain = null,Object? mtu = null,}) {
   return _then(_self.copyWith(
 stack: null == stack ? _self.stack : stack // ignore: cast_nullable_to_non_nullable
 as TunStack,vpnProps: null == vpnProps ? _self.vpnProps : vpnProps // ignore: cast_nullable_to_non_nullable
 as VpnProps,captureAll: null == captureAll ? _self.captureAll : captureAll // ignore: cast_nullable_to_non_nullable
 as bool,routeAddress: null == routeAddress ? _self.routeAddress : routeAddress // ignore: cast_nullable_to_non_nullable
 as List<String>,bypassDomain: null == bypassDomain ? _self.bypassDomain : bypassDomain // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as List<String>,mtu: null == mtu ? _self.mtu : mtu // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 /// Create a copy of VpnState
@@ -7750,10 +7753,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TunStack stack,  VpnProps vpnProps,  bool captureAll,  List<String> routeAddress,  List<String> bypassDomain)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( TunStack stack,  VpnProps vpnProps,  bool captureAll,  List<String> routeAddress,  List<String> bypassDomain,  int mtu)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VpnState() when $default != null:
-return $default(_that.stack,_that.vpnProps,_that.captureAll,_that.routeAddress,_that.bypassDomain);case _:
+return $default(_that.stack,_that.vpnProps,_that.captureAll,_that.routeAddress,_that.bypassDomain,_that.mtu);case _:
   return orElse();
 
 }
@@ -7771,10 +7774,10 @@ return $default(_that.stack,_that.vpnProps,_that.captureAll,_that.routeAddress,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TunStack stack,  VpnProps vpnProps,  bool captureAll,  List<String> routeAddress,  List<String> bypassDomain)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( TunStack stack,  VpnProps vpnProps,  bool captureAll,  List<String> routeAddress,  List<String> bypassDomain,  int mtu)  $default,) {final _that = this;
 switch (_that) {
 case _VpnState():
-return $default(_that.stack,_that.vpnProps,_that.captureAll,_that.routeAddress,_that.bypassDomain);case _:
+return $default(_that.stack,_that.vpnProps,_that.captureAll,_that.routeAddress,_that.bypassDomain,_that.mtu);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -7791,10 +7794,10 @@ return $default(_that.stack,_that.vpnProps,_that.captureAll,_that.routeAddress,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TunStack stack,  VpnProps vpnProps,  bool captureAll,  List<String> routeAddress,  List<String> bypassDomain)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( TunStack stack,  VpnProps vpnProps,  bool captureAll,  List<String> routeAddress,  List<String> bypassDomain,  int mtu)?  $default,) {final _that = this;
 switch (_that) {
 case _VpnState() when $default != null:
-return $default(_that.stack,_that.vpnProps,_that.captureAll,_that.routeAddress,_that.bypassDomain);case _:
+return $default(_that.stack,_that.vpnProps,_that.captureAll,_that.routeAddress,_that.bypassDomain,_that.mtu);case _:
   return null;
 
 }
@@ -7806,7 +7809,7 @@ return $default(_that.stack,_that.vpnProps,_that.captureAll,_that.routeAddress,_
 
 
 class _VpnState implements VpnState {
-  const _VpnState({required this.stack, required this.vpnProps, this.captureAll = false, final  List<String> routeAddress = const [], final  List<String> bypassDomain = const []}): _routeAddress = routeAddress,_bypassDomain = bypassDomain;
+  const _VpnState({required this.stack, required this.vpnProps, this.captureAll = false, final  List<String> routeAddress = const [], final  List<String> bypassDomain = const [], this.mtu = 1400}): _routeAddress = routeAddress,_bypassDomain = bypassDomain;
   
 
 @override final  TunStack stack;
@@ -7832,6 +7835,9 @@ class _VpnState implements VpnState {
   return EqualUnmodifiableListView(_bypassDomain);
 }
 
+// Establish-only tun MTU (baked into VpnService.Builder.setMtu + passed to
+// startTUN); a change must re-establish, not just hot-apply.
+@override@JsonKey() final  int mtu;
 
 /// Create a copy of VpnState
 /// with the given fields replaced by the non-null parameter values.
@@ -7843,16 +7849,16 @@ _$VpnStateCopyWith<_VpnState> get copyWith => __$VpnStateCopyWithImpl<_VpnState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VpnState&&(identical(other.stack, stack) || other.stack == stack)&&(identical(other.vpnProps, vpnProps) || other.vpnProps == vpnProps)&&(identical(other.captureAll, captureAll) || other.captureAll == captureAll)&&const DeepCollectionEquality().equals(other._routeAddress, _routeAddress)&&const DeepCollectionEquality().equals(other._bypassDomain, _bypassDomain));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VpnState&&(identical(other.stack, stack) || other.stack == stack)&&(identical(other.vpnProps, vpnProps) || other.vpnProps == vpnProps)&&(identical(other.captureAll, captureAll) || other.captureAll == captureAll)&&const DeepCollectionEquality().equals(other._routeAddress, _routeAddress)&&const DeepCollectionEquality().equals(other._bypassDomain, _bypassDomain)&&(identical(other.mtu, mtu) || other.mtu == mtu));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,stack,vpnProps,captureAll,const DeepCollectionEquality().hash(_routeAddress),const DeepCollectionEquality().hash(_bypassDomain));
+int get hashCode => Object.hash(runtimeType,stack,vpnProps,captureAll,const DeepCollectionEquality().hash(_routeAddress),const DeepCollectionEquality().hash(_bypassDomain),mtu);
 
 @override
 String toString() {
-  return 'VpnState(stack: $stack, vpnProps: $vpnProps, captureAll: $captureAll, routeAddress: $routeAddress, bypassDomain: $bypassDomain)';
+  return 'VpnState(stack: $stack, vpnProps: $vpnProps, captureAll: $captureAll, routeAddress: $routeAddress, bypassDomain: $bypassDomain, mtu: $mtu)';
 }
 
 
@@ -7863,7 +7869,7 @@ abstract mixin class _$VpnStateCopyWith<$Res> implements $VpnStateCopyWith<$Res>
   factory _$VpnStateCopyWith(_VpnState value, $Res Function(_VpnState) _then) = __$VpnStateCopyWithImpl;
 @override @useResult
 $Res call({
- TunStack stack, VpnProps vpnProps, bool captureAll, List<String> routeAddress, List<String> bypassDomain
+ TunStack stack, VpnProps vpnProps, bool captureAll, List<String> routeAddress, List<String> bypassDomain, int mtu
 });
 
 
@@ -7880,14 +7886,15 @@ class __$VpnStateCopyWithImpl<$Res>
 
 /// Create a copy of VpnState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? stack = null,Object? vpnProps = null,Object? captureAll = null,Object? routeAddress = null,Object? bypassDomain = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? stack = null,Object? vpnProps = null,Object? captureAll = null,Object? routeAddress = null,Object? bypassDomain = null,Object? mtu = null,}) {
   return _then(_VpnState(
 stack: null == stack ? _self.stack : stack // ignore: cast_nullable_to_non_nullable
 as TunStack,vpnProps: null == vpnProps ? _self.vpnProps : vpnProps // ignore: cast_nullable_to_non_nullable
 as VpnProps,captureAll: null == captureAll ? _self.captureAll : captureAll // ignore: cast_nullable_to_non_nullable
 as bool,routeAddress: null == routeAddress ? _self._routeAddress : routeAddress // ignore: cast_nullable_to_non_nullable
 as List<String>,bypassDomain: null == bypassDomain ? _self._bypassDomain : bypassDomain // ignore: cast_nullable_to_non_nullable
-as List<String>,
+as List<String>,mtu: null == mtu ? _self.mtu : mtu // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

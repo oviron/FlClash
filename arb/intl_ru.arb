@@ -299,6 +299,7 @@
   "iconStyle": "Стиль иконки",
   "onlyIcon": "Только иконка",
   "stackMode": "Режим стека",
+  "mtu": "MTU",
   "network": "Сеть",
   "networkDesc": "Изменение настроек, связанных с сетью",
   "bypassDomain": "Обход домена",

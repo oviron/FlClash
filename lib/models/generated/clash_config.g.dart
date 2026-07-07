@@ -144,6 +144,7 @@ _Tun _$TunFromJson(Map<String, dynamic> json) => _Tun(
           ?.map((e) => e as String)
           .toList() ??
       const [],
+  mtu: (json['mtu'] as num?)?.toInt() ?? 1400,
 );
 
 Map<String, dynamic> _$TunToJson(_Tun instance) => <String, dynamic>{
@@ -153,6 +154,7 @@ Map<String, dynamic> _$TunToJson(_Tun instance) => <String, dynamic>{
   'stack': _$TunStackEnumMap[instance.stack]!,
   'dns-hijack': instance.dnsHijack,
   'route-address': instance.routeAddress,
+  'mtu': instance.mtu,
 };
 
 const _$TunStackEnumMap = {
