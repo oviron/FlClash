@@ -458,7 +458,7 @@ void main() {
       expect(go.containsKey('interval'), isFalse);
     });
 
-    test('appends one visible url-test group per remark, slug filter + '
+    test('appends one hidden url-test group per remark, slug filter + '
         'inherited health check', () {
       final config = baseConfig();
       injectRemarkGroups(config, 'govpn', remarks);
@@ -471,8 +471,8 @@ void main() {
       expect(speed['interval'], 90);
       expect(speed['tolerance'], 50);
       expect(speed['lazy'], true);
-      // Visible top-level group (scenario-1 parity), not a hidden drill-down.
-      expect(speed.containsKey('hidden'), isFalse);
+      // Hidden from the top-level strip; reachable via the sub's select parent.
+      expect(speed['hidden'], isTrue);
       expect(
         groups.map((g) => g['name']),
         containsAll(['Antiblock', 'Backup']),

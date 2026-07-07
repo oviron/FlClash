@@ -161,6 +161,9 @@ void injectRemarkGroups(
       'url': p0['url'] ?? 'http://cp.cloudflare.com/generate_204',
       'interval': p0['interval'] ?? 300,
       'tolerance': p0['tolerance'] ?? 50,
+      // Reachable through the sub's select parent; kept out of the top-level
+      // group strip so the subscription shows as a single entry.
+      'hidden': true,
       if (p0['lazy'] == true) 'lazy': true,
     });
   }

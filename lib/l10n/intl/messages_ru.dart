@@ -291,6 +291,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Автоматическая настройка системного DNS",
     ),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("Автообновление"),
+    "happMode": MessageLookupByLibrary.simpleMessage("Режим Happ"),
+    "happModeDesc": MessageLookupByLibrary.simpleMessage(
+      "Качать под видом клиента Happ, чтобы получить анти-блокировочные ноды на панелях, где они скрыты",
+    ),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал автообновления (минуты)",
     ),
