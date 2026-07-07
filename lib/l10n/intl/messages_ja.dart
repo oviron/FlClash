@@ -234,6 +234,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoRunDesc": MessageLookupByLibrary.simpleMessage("アプリ起動と同時にトンネルを開始します"),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage("オートセットシステムDNS"),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自動更新"),
+    "happMode": MessageLookupByLibrary.simpleMessage("Happモード"),
+    "happModeDesc": MessageLookupByLibrary.simpleMessage(
+      "ノードを隠すパネルで全ノードを取得するため Happ クライアントとして取得します",
+    ),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage("自動更新間隔（分）"),
     "backgroundLocationRationale": MessageLookupByLibrary.simpleMessage(
       "アプリがバックグラウンドにあるときも自動で切り替えるには、位置情報へのアクセスを常に許可してください。",

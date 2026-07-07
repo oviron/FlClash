@@ -1009,6 +1009,19 @@ class AppLocalizations {
     return Intl.message('Auto update', name: 'autoUpdate', desc: '', args: []);
   }
 
+  String get happMode {
+    return Intl.message('Happ mode', name: 'happMode', desc: '', args: []);
+  }
+
+  String get happModeDesc {
+    return Intl.message(
+      'Fetch as the Happ client to unlock anti-block nodes on panels that gate them',
+      name: 'happModeDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Auto update interval (minutes)`
   String get autoUpdateInterval {
     return Intl.message(

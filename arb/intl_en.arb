@@ -123,6 +123,8 @@
   "profileUrlNullValidationDesc": "Please input the profile URL",
   "profileUrlInvalidValidationDesc": "Please input a valid profile URL",
   "autoUpdate": "Auto update",
+  "happMode": "Happ mode",
+  "happModeDesc": "Fetch as the Happ client to unlock anti-block nodes on panels that gate them",
   "autoUpdateInterval": "Auto update interval (minutes)",
   "profileAutoUpdateIntervalNullValidationDesc": "Please enter the auto update interval time",
   "profileAutoUpdateIntervalInvalidValidationDesc": "Please input a valid interval time format",

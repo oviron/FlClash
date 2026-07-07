@@ -1519,15 +1519,14 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
   }
 
   Future<void> _addServer() async {
-    final text = await globalState.showCommonDialog<String>(
-      child: InputDialog(
+    final res = await globalState.showCommonDialog<({String url, bool happ})>(
+      child: HappUrlDialog(
         title: appLocalizations.routingAddServer,
-        value: '',
         hintText: appLocalizations.routingServerHint,
       ),
     );
-    if (text == null || text.trim().isEmpty || !mounted) return;
-    final t = text.trim();
+    if (res == null || res.url.trim().isEmpty || !mounted) return;
+    final t = res.url.trim();
     final m = _model!;
     switch (classifyArtifact(t)) {
       case ArtifactKind.shareLink:
@@ -1542,7 +1541,7 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
           context.showNotifier(appLocalizations.routingSkippedNodes);
         }
       case ArtifactKind.subscriptionUrl:
-        await _addSubscription(m, t);
+        await _addSubscription(m, t, happ: res.happ);
       case ArtifactKind.xrayJson:
         final ps = parseXrayJson(t);
         if (ps.isEmpty) return _fail();
@@ -1574,8 +1573,12 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
     if (mounted) context.showNotifier(appLocalizations.routingServerAdded);
   }
 
-  Future<void> _addSubscription(RoutingModel m, String url) async {
-    final probe = await _probeSubscription(url);
+  Future<void> _addSubscription(
+    RoutingModel m,
+    String url, {
+    required bool happ,
+  }) async {
+    final probe = await _probeSubscription(url, happ: happ);
     if (!mounted) return;
     // The provider key and its `<name>-auto` group name must both be free.
     final taken = {
@@ -1614,25 +1617,28 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
     }
   }
 
-  // One fetch yields both: the by-remark marker (so setup's prefetch splits the
-  // sub into per-remark groups, not one flat group) and a human name from the
-  // response headers. A fetch failure degrades to a plain http sub named by host.
+  // Reads the response headers for a human name. In Happ mode, fetch as the Happ
+  // client and mark the sub by-remark iff the body is xray-json (apply then
+  // splits it into hidden per-remark groups); otherwise stay an honest plain
+  // http sub. A fetch failure degrades to a plain sub named by host.
   Future<({Map<String, dynamic>? xray, String name})> _probeSubscription(
-    String url,
-  ) async {
+    String url, {
+    required bool happ,
+  }) async {
     String? title;
     String? dispositionFilename;
     var byRemark = false;
     try {
       final resp = await request.getTextResponseForUrl(
         url,
-        headers: await happHeaders(),
+        headers: happ ? await happHeaders() : null,
       );
       title = resp.headers.value('profile-title');
       dispositionFilename = utils.getFileNameForDisposition(
         resp.headers.value('content-disposition'),
       );
-      byRemark = classifyArtifact(resp.data ?? '') == ArtifactKind.xrayJson;
+      byRemark =
+          happ && classifyArtifact(resp.data ?? '') == ArtifactKind.xrayJson;
     } catch (_) {}
     return (
       xray: byRemark ? const <String, dynamic>{'groups': 'by-remark'} : null,
@@ -1706,15 +1712,18 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
   }
 
   Future<void> _editSubscription(SubscriptionSource s) async {
-    final url = await globalState.showCommonDialog<String>(
-      child: InputDialog(
+    final res = await globalState.showCommonDialog<({String url, bool happ})>(
+      child: HappUrlDialog(
         title: appLocalizations.routingSubscriptionUrl,
-        value: s.url ?? '',
+        initialUrl: s.url ?? '',
+        initialHapp: s.xray != null,
         hintText: 'https://example.com/sub.yaml',
       ),
     );
-    if (url == null || url.trim().isEmpty || !mounted) return;
-    await _write(_model!.updateSubscriptionUrl(s.name, url.trim()));
+    if (res == null || res.url.trim().isEmpty || !mounted) return;
+    await _write(
+      _model!.updateSubscription(s.name, url: res.url.trim(), happ: res.happ),
+    );
   }
 
   Widget _rowActions(

@@ -123,6 +123,8 @@
   "profileUrlNullValidationDesc": "Пожалуйста, введите URL профиля",
   "profileUrlInvalidValidationDesc": "Пожалуйста, введите действительный URL профиля",
   "autoUpdate": "Автообновление",
+  "happMode": "Режим Happ",
+  "happModeDesc": "Качать под видом клиента Happ, чтобы получить анти-блокировочные ноды на панелях, где они скрыты",
   "autoUpdateInterval": "Интервал автообновления (минуты)",
   "profileAutoUpdateIntervalNullValidationDesc": "Пожалуйста, введите интервал времени для автообновления",
   "profileAutoUpdateIntervalInvalidValidationDesc": "Пожалуйста, введите действительный формат интервала времени",

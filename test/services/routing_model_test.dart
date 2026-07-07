@@ -901,11 +901,29 @@ rules:
     test('editing a subscription URL round-trips', () {
       final m = RoutingModel.fromYaml(meshProfile);
       final out = m
-          .updateSubscriptionUrl('govpn', 'https://new.example/g.yaml')
+          .updateSubscription('govpn', url: 'https://new.example/g.yaml')
           .toYaml(meshProfile);
       expect(
         ProfileRulesDocument(out).proxyProviders['govpn']!.url,
         'https://new.example/g.yaml',
+      );
+    });
+
+    test('toggling Happ mode sets then clears the by-remark marker', () {
+      final m = RoutingModel.fromYaml(meshProfile);
+      final on = m.updateSubscription('govpn', happ: true).toYaml(meshProfile);
+      expect(ProfileRulesDocument(on).proxyProviders['govpn']!.raw['xray'], {
+        'groups': 'by-remark',
+      });
+      // Turning it off must drop the marker, not keep the prior one.
+      final off = RoutingModel.fromYaml(
+        on,
+      ).updateSubscription('govpn', happ: false).toYaml(meshProfile);
+      expect(
+        ProfileRulesDocument(
+          off,
+        ).proxyProviders['govpn']!.raw.containsKey('xray'),
+        isFalse,
       );
     });
   });

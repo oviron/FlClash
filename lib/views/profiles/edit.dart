@@ -34,6 +34,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
   late final TextEditingController _urlController;
   late final TextEditingController _autoUpdateDurationController;
   late bool _autoUpdate;
+  late bool _happMode;
   String? _rawText;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _fileInfoNotifier = ValueNotifier<FileInfo?>(null);
@@ -45,6 +46,7 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     _labelController = TextEditingController(text: widget.profile.label);
     _urlController = TextEditingController(text: widget.profile.url);
     _autoUpdate = widget.profile.autoUpdate;
+    _happMode = widget.profile.happMode;
     _autoUpdateDurationController = TextEditingController(
       text: widget.profile.autoUpdateDuration.inMinutes.toString(),
     );
@@ -70,11 +72,16 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
       url: _urlController.text,
       label: _labelController.text,
       autoUpdate: _autoUpdate,
+      happMode: _happMode,
       autoUpdateDuration: Duration(
         minutes: int.parse(_autoUpdateDurationController.text),
       ),
     );
-    final hasUpdate = widget.profile.url != profile.url;
+    // Re-download when the URL or the Happ identity changed, so flipping happMode
+    // re-fetches the subscription under the new client.
+    final hasUpdate =
+        widget.profile.url != profile.url ||
+        widget.profile.happMode != profile.happMode;
     if (_fileData != null) {
       if (profile.type == ProfileType.url && _autoUpdate) {
         final res = await globalState.showMessage(
@@ -107,6 +114,13 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
     if (_autoUpdate == value) return;
     setState(() {
       _autoUpdate = value;
+    });
+  }
+
+  void _setHappMode(bool value) {
+    if (_happMode == value) return;
+    setState(() {
+      _happMode = value;
     });
   }
 
@@ -261,6 +275,14 @@ class _EditProfileViewState extends ConsumerState<EditProfileView> {
           delegate: SwitchDelegate<bool>(
             value: _autoUpdate,
             onChanged: _setAutoUpdate,
+          ),
+        ),
+        ListItem.switchItem(
+          title: Text(appLocalizations.happMode),
+          subtitle: Text(appLocalizations.happModeDesc),
+          delegate: SwitchDelegate<bool>(
+            value: _happMode,
+            onChanged: _setHappMode,
           ),
         ),
         if (_autoUpdate)

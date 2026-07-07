@@ -44,8 +44,11 @@ class AddProfileView extends StatelessWidget {
     unawaited(appController.addProfileFormFile());
   }
 
-  Future<void> _handleAddProfileFromText(String text) async {
-    unawaited(appController.addProfileFromText(text));
+  Future<void> _handleAddProfileFromText(
+    String text, {
+    bool happMode = false,
+  }) async {
+    unawaited(appController.addProfileFromText(text, happMode: happMode));
   }
 
   Future<void> _toScan() async {
@@ -58,12 +61,10 @@ class AddProfileView extends StatelessWidget {
   }
 
   Future<void> _toAdd() async {
-    final url = await globalState.showCommonDialog<String>(
-      child: InputDialog(
-        autovalidateMode: AutovalidateMode.onUnfocus,
+    final res = await globalState.showCommonDialog<({String url, bool happ})>(
+      child: HappUrlDialog(
         title: appLocalizations.importFromURL,
         labelText: appLocalizations.url,
-        value: '',
         validator: (value) {
           if (value == null || value.isEmpty) {
             return appLocalizations.emptyTip('').trim();
@@ -77,8 +78,8 @@ class AddProfileView extends StatelessWidget {
         },
       ),
     );
-    if (url != null) {
-      unawaited(_handleAddProfileFromText(url));
+    if (res != null) {
+      unawaited(_handleAddProfileFromText(res.url, happMode: res.happ));
     }
   }
 

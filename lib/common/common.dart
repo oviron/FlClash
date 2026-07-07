@@ -36,6 +36,7 @@ export 'request.dart';
 export 'scroll.dart';
 export 'happ.dart';
 export 'share_link.dart';
+export 'subscription_fetch.dart';
 export 'xray_json.dart';
 export 'snowflake.dart';
 export 'string.dart';

@@ -65,6 +65,9 @@ abstract class Profile with _$Profile {
     required Duration autoUpdateDuration,
     SubscriptionInfo? subscriptionInfo,
     @Default(true) bool autoUpdate,
+    // Fetch this subscription as the Happ client (UA + device id) so panels that
+    // gate their full node set behind Happ serve it in full; off = honest fetch.
+    @Default(false) bool happMode,
     @Default({}) Map<String, String> selectedMap,
     @Default({}) Set<String> unfoldSet,
     @Default(OverwriteType.standard) OverwriteType overwriteType,
@@ -201,16 +204,19 @@ extension ProfileExtension on Profile {
   }
 
   Future<Profile> update() async {
-    // A Happ/xray panel gates its subscription on the Happ client (UA + x-hwid)
-    // and serves clash UAs a stripped body; fetch as Happ first so the full node
-    // set arrives deterministically, falling back to a plain request otherwise.
-    var response = await request.getFileResponseForUrl(
-      url,
-      headers: await happHeaders(),
+    // Fetch as our own client first (honest identity); escalate to the Happ
+    // client only when happMode is pinned or the honest body is unusable (a
+    // panel that gates its full node set behind the Happ client).
+    final response = await fetchWithHappFallback(
+      ({required bool happ}) async {
+        return request.getFileResponseForUrl(
+          url,
+          headers: happ ? await happHeaders() : null,
+        );
+      },
+      (r) => !_looksUnusable(r.data),
+      forceHapp: happMode,
     );
-    if (_looksUnusable(response.data)) {
-      response = await request.getFileResponseForUrl(url);
-    }
     final disposition = response.headers.value('content-disposition');
     final userinfo = response.headers.value('subscription-userinfo');
     // Clash convention: the panel's refresh cadence in hours. Honor it so the

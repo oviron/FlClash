@@ -1941,17 +1941,9 @@ class $NetworkRulesTable extends NetworkRules
 class RawNetworkRule extends DataClass implements Insertable<RawNetworkRule> {
   final int id;
   final String? name;
-
-  /// JSON-encoded `List<NetworkCondition>`.
   final String conditions;
-
-  /// How conditions combine as `NetworkMatchMode.index` (0=all/AND, 1=any/OR).
   final int matchMode;
-
-  /// VPN mode as `NetworkVpnMode.index` (0=turnOn, 1=turnOff, 2=leave).
   final int action;
-
-  /// Target profile id for a profile-switch action; null = leave profile as-is.
   final int? actionProfileId;
   final int priority;
   final bool enabled;

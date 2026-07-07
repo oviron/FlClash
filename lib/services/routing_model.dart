@@ -503,15 +503,24 @@ class RoutingModel {
     );
   }
 
-  RoutingModel updateSubscriptionUrl(String name, String url) => copyWith(
-    servers: [
-      for (final s in servers)
-        if (s is SubscriptionSource && s.name == name)
-          ServerSource.subscription(name: name, url: url, xray: s.xray)
-        else
-          s,
-    ],
-  );
+  // happ == null leaves the Happ/xray marker as-is; true sets it (per-remark,
+  // fetched as Happ at apply), false clears it (honest fetch, native clash).
+  RoutingModel updateSubscription(String name, {String? url, bool? happ}) =>
+      copyWith(
+        servers: [
+          for (final s in servers)
+            if (s is SubscriptionSource && s.name == name)
+              ServerSource.subscription(
+                name: name,
+                url: url ?? s.url,
+                xray: happ == null
+                    ? s.xray
+                    : (happ ? const {'groups': 'by-remark'} : null),
+              )
+            else
+              s,
+        ],
+      );
 }
 
 // Preserves each filtering mode's own app selection across a switch: leaving a mode
@@ -734,8 +743,12 @@ ProviderSpec _subToProvider(SubscriptionSource s, ProviderSpec? existing) {
     url: s.url,
   );
   // An xray/Happ subscription carries the `xray:` marker so setup's prefetch
-  // fetches + converts it; a plain http subscription stays as-is.
-  return s.xray == null ? base : ProviderSpec({...base.raw, 'xray': s.xray});
+  // fetches + converts it; a plain http subscription drops it (honest fetch),
+  // so toggling Happ off clears a previously-set marker instead of keeping it.
+  final raw = {...base.raw}..remove('xray');
+  return s.xray == null
+      ? ProviderSpec(raw)
+      : ProviderSpec({...raw, 'xray': s.xray});
 }
 
 GroupSpec _groupToSpec(ServerGroup g, Map<String, GroupSpec> baseGroups) =>
