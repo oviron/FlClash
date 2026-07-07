@@ -182,10 +182,7 @@ class _ListsViewState extends State<_ListsView>
 
   Future<void> _removeList(RoutingList list) async {
     if (!await _confirmDelete(list.name)) return;
-    final model = _model!;
-    await _write(
-      model.copyWith(lists: model.lists.where((l) => l.id != list.id).toList()),
-    );
+    await _write(_model!.removeList(list.id));
   }
 
   Future<void> _addFlow() async {
@@ -1629,11 +1626,13 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
   }
 
   Future<void> _removeServer(ServerSource s) async {
+    if (_model!.isReferencedByRule(s.name) ||
+        _model!.isReferencedByProxyChain(s.name)) {
+      context.showNotifier(appLocalizations.routingDeleteInUse);
+      return;
+    }
     if (!await _confirmDelete(s.name)) return;
-    final m = _model!;
-    await _write(
-      m.copyWith(servers: m.servers.where((x) => x.name != s.name).toList()),
-    );
+    await _write(_model!.removeServer(s.name));
   }
 
   ({Map<String, dynamic>? proxy, String error}) _parseProxy(String text) {
@@ -1889,11 +1888,13 @@ class _GroupsViewState extends ConsumerState<_GroupsView>
   }
 
   Future<void> _delete(ServerGroup g) async {
+    if (_model!.isReferencedByRule(g.name) ||
+        _model!.isReferencedByProxyChain(g.name)) {
+      context.showNotifier(appLocalizations.routingDeleteInUse);
+      return;
+    }
     if (!await _confirmDelete(g.name)) return;
-    final m = _model!;
-    await _write(
-      m.copyWith(groups: m.groups.where((x) => x.name != g.name).toList()),
-    );
+    await _write(_model!.removeGroup(g.name));
   }
 
   String _subtitle(ServerGroup g) {

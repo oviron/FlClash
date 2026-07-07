@@ -674,6 +674,7 @@
   "routingSwitchBodyAllExcept": "All apps will use the VPN except the ones you pick. The connection drops for a second.",
   "routingWhatToBlock": "What to block",
   "routingApplyFailed": "Couldn't apply the change",
+  "routingDeleteInUse": "Can't delete: it's still in use. Remove the reference first.",
   "routingAdvanced": "Advanced",
   "routingAdvancedEditors": "Power-user editors",
   "routingAdvancedSubtitle": "Groups, sub-rules, raw rules and YAML",

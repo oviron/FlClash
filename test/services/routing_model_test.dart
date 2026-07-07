@@ -658,6 +658,217 @@ rules:
     });
   });
 
+  group('A1: delete cascades references', () {
+    test('removing a server drops it from every group member and use', () {
+      final model = RoutingModel.fromYaml(meshProfile);
+      final n = model.removeServer('node-a');
+      expect(n.servers.map((s) => s.name), isNot(contains('node-a')));
+      final vpn = n.groups.whereType<SmartGroup>().firstWhere(
+        (g) => g.name == 'VPN',
+      );
+      expect(vpn.members, isNot(contains('node-a')));
+      expect(vpn.members, contains('Fast'));
+      // govpn is Fast's only `use:` provider, so Fast empties and is pruned.
+      final s = model.removeServer('govpn');
+      expect(s.servers.map((x) => x.name), isNot(contains('govpn')));
+      expect(s.groups.map((g) => g.name), isNot(contains('Fast')));
+      final vpn2 = s.groups.whereType<SmartGroup>().firstWhere(
+        (g) => g.name == 'VPN',
+      );
+      expect(vpn2.members, isNot(contains('Fast')));
+      // The written config carries no dangling reference either.
+      final out = model.removeServer('node-a').toYaml(meshProfile);
+      final vpnSpec = ProfileRulesDocument(
+        out,
+      ).proxyGroups.firstWhere((g) => g.name == 'VPN');
+      expect(vpnSpec.proxies, isNot(contains('node-a')));
+    });
+
+    test('removing a group drops it from members and repoints the exit', () {
+      final model = RoutingModel.fromYaml(meshProfile);
+      // Fast is a VPN member and not the exit.
+      final g = model.removeGroup('Fast');
+      expect(g.groups.map((x) => x.name), isNot(contains('Fast')));
+      final vpn = g.groups.whereType<SmartGroup>().firstWhere(
+        (x) => x.name == 'VPN',
+      );
+      expect(vpn.members, isNot(contains('Fast')));
+      expect(vpn.members, contains('node-a'));
+      // Removing the exit itself repoints to a remaining group.
+      final e = model.removeGroup('VPN');
+      expect(e.groups.map((x) => x.name), isNot(contains('VPN')));
+      expect(e.exitGroup, 'Fast');
+    });
+
+    test('removing a list drops it from global and scenario rules', () {
+      final model = RoutingModel.fromYaml(_reference);
+      // ads is referenced by a top-level RULE-SET.
+      final a = model.removeList('ads');
+      expect(a.lists.map((l) => l.id), isNot(contains('ads')));
+      expect(
+        a.globalRules.whereType<ListRule>().map((r) => r.listId),
+        isNot(contains('ads')),
+      );
+      // ru-blocked-domains is referenced inside the browser-route scenario.
+      final b = model.removeList('ru-blocked-domains');
+      final browser = b.scenarios.firstWhere((s) => s.name == 'browser-route');
+      expect(
+        browser.rules.whereType<ListRule>().map((r) => r.listId),
+        isNot(contains('ru-blocked-domains')),
+      );
+      // A sibling list in the same scenario survives.
+      expect(
+        browser.rules.whereType<ListRule>().map((r) => r.listId),
+        contains('category-bank-ru'),
+      );
+    });
+  });
+
+  group('A1: delete prunes emptied groups', () {
+    const multiGroupProfile = '''
+proxies:
+  - {name: node-a, type: ss, server: a.example, port: 443}
+proxy-providers:
+  govpn:
+    type: http
+    url: https://sub.example/gov.yaml
+    path: ./providers/govpn.yaml
+proxy-groups:
+  - name: VPN
+    type: select
+    proxies: [node-a, govpn-auto]
+  - name: govpn-auto
+    type: url-test
+    use: [govpn]
+    url: http://cp/generate_204
+    interval: 300
+rules:
+  - MATCH,VPN
+''';
+
+    const nestedGroupProfile = '''
+proxies:
+  - {name: node-a, type: ss, server: a.example, port: 443}
+proxy-groups:
+  - name: VPN
+    type: select
+    proxies: [node-a, Wrapper]
+  - name: Wrapper
+    type: select
+    proxies: [Inner]
+  - name: Inner
+    type: select
+    proxies: [node-a]
+rules:
+  - MATCH,VPN
+''';
+
+    test('deleting a subscription prunes its emptied auto-group', () {
+      final m = RoutingModel.fromYaml(multiGroupProfile);
+      final after = m.removeServer('govpn');
+      // govpn-auto had govpn as its only source -> pruned, not left empty.
+      expect(after.groups.map((g) => g.name), isNot(contains('govpn-auto')));
+      final vpn = after.groups.whereType<SmartGroup>().firstWhere(
+        (g) => g.name == 'VPN',
+      );
+      expect(vpn.members, isNot(contains('govpn-auto')));
+      expect(vpn.members, contains('node-a'));
+      // The written config carries no empty group.
+      final groups = ProfileRulesDocument(
+        after.toYaml(multiGroupProfile),
+      ).proxyGroups;
+      expect(groups.where((g) => g.proxies.isEmpty && g.use.isEmpty), isEmpty);
+    });
+
+    test('deleting a group fixpoint-prunes groups it empties', () {
+      final m = RoutingModel.fromYaml(nestedGroupProfile);
+      final after = m.removeGroup('Inner');
+      final names = after.groups.map((g) => g.name);
+      expect(names, isNot(contains('Inner')));
+      // Wrapper's only member was Inner -> emptied -> pruned in the same pass.
+      expect(names, isNot(contains('Wrapper')));
+      final vpn = after.groups.whereType<SmartGroup>().firstWhere(
+        (g) => g.name == 'VPN',
+      );
+      expect(vpn.members, ['node-a']);
+    });
+  });
+
+  group('A1: explicit rule references block deletion', () {
+    const refRuleProfile = '''
+proxies:
+  - {name: node-a, type: ss, server: a.example, port: 443}
+proxy-groups:
+  - name: VPN
+    type: select
+    proxies: [Fast, node-a]
+  - name: Fast
+    type: select
+    proxies: [node-a]
+rules:
+  - DOMAIN-SUFFIX,direct.example,node-a
+  - DOMAIN-SUFFIX,fast.example,Fast
+  - MATCH,VPN
+''';
+
+    test('a proxy named as a raw rule target is referenced', () {
+      final m = RoutingModel.fromYaml(refRuleProfile);
+      expect(m.isReferencedByRule('node-a'), isTrue);
+    });
+
+    test('a non-exit group named as a raw rule target is referenced', () {
+      final m = RoutingModel.fromYaml(refRuleProfile);
+      expect(m.isReferencedByRule('Fast'), isTrue);
+    });
+
+    test('the exit (a modeled terminal MATCH) is not a raw reference', () {
+      final m = RoutingModel.fromYaml(refRuleProfile);
+      expect(m.isReferencedByRule('VPN'), isFalse);
+    });
+
+    test('a name used only as a group member is not a rule reference', () {
+      final m = RoutingModel.fromYaml(meshProfile);
+      // node-a is a VPN member but never a rule target.
+      expect(m.isReferencedByRule('node-a'), isFalse);
+    });
+
+    test(
+      'a proxy targeted by a nested-logical (passthrough) rule is a reference',
+      () {
+        const p = '''
+proxies:
+  - {name: node-a, type: ss, server: a.example, port: 443}
+proxy-groups:
+  - name: VPN
+    type: select
+    proxies: [node-a]
+rules:
+  - AND,((DOMAIN,a.com),(OR,((DOMAIN,b.com),(DOMAIN,c.com)))),node-a
+  - MATCH,VPN
+''';
+        final m = RoutingModel.fromYaml(p);
+        expect(m.isReferencedByRule('node-a'), isTrue);
+      },
+    );
+
+    test('a proxy used as another node dialer-proxy is chain-referenced', () {
+      const p = '''
+proxies:
+  - {name: node-a, type: ss, server: a.example, port: 443}
+  - {name: node-b, type: ss, server: b.example, port: 443, dialer-proxy: node-a}
+proxy-groups:
+  - name: VPN
+    type: select
+    proxies: [node-a, node-b]
+rules:
+  - MATCH,VPN
+''';
+      final m = RoutingModel.fromYaml(p);
+      expect(m.isReferencedByProxyChain('node-a'), isTrue);
+      expect(m.isReferencedByProxyChain('node-b'), isFalse);
+    });
+  });
+
   group('A: editing server data', () {
     test('editing a node field round-trips', () {
       final m = RoutingModel.fromYaml(meshProfile);

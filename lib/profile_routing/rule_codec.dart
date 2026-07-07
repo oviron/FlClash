@@ -305,6 +305,27 @@ RoutingRule _parse(String line) {
   );
 }
 
+// The policy target (a proxy/group/DIRECT/REJECT) a rule routes to, or null when
+// it routes to a sub-rule scenario. Reaches into a PassthroughRule (an unmodeled
+// grammar) so a reference to a soon-to-be-deleted proxy/group is still detected.
+String? policyTargetOf(RoutingRule r) => switch (r) {
+  TypedRule(:final target) => target,
+  LogicalRule(:final target) => target,
+  PassthroughRule(:final raw) => _passthroughTarget(raw),
+  _ => null,
+};
+
+String? _passthroughTarget(String line) {
+  final fields = _splitTopLevel(line);
+  var end = fields.length;
+  while (end > 0 && _flags.contains(fields[end - 1])) {
+    end--;
+  }
+  if (end < 2) return null;
+  if (_actionOf(fields.first) == RuleAction.SUB_RULE) return null;
+  return fields[end - 1];
+}
+
 // `SUB-RULE,(<TYPE>,<params>),<name>` with a single flat non-logical clause: a
 // PROCESS-NAME clause is [AppToSubRuleRoute], any other matcher a [SubRuleRoute].
 // Multi-clause/logical/empty payloads return null (stay Passthrough).

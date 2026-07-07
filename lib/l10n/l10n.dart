@@ -5539,6 +5539,15 @@ class AppLocalizations {
     );
   }
 
+  String get routingDeleteInUse {
+    return Intl.message(
+      'Can\'t delete: it\'s still in use. Remove the reference first.',
+      name: 'routingDeleteInUse',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Advanced`
   String get routingAdvanced {
     return Intl.message(

@@ -806,6 +806,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("绕过 VPN"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage("无法应用更改"),
+    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
+      "无法删除：仍在使用中。请先移除引用。",
+    ),
     "routingApps": MessageLookupByLibrary.simpleMessage("应用"),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage("已更改"),
     "routingAppsSectionRest": MessageLookupByLibrary.simpleMessage("其余 · 默认"),

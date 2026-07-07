@@ -662,6 +662,7 @@
   "routingSwitchBodyAllExcept": "選択したアプリ以外のすべてが VPN を経由します。切り替え時に接続が一瞬途切れます。",
   "routingWhatToBlock": "ブロック対象",
   "routingApplyFailed": "変更を適用できませんでした",
+  "routingDeleteInUse": "削除できません：まだ使用中です。先に参照を外してください。",
   "routingAdvanced": "詳細設定",
   "routingAdvancedEditors": "上級者向けエディタ",
   "routingAdvancedSubtitle": "グループ、サブルール、生ルール、YAML",

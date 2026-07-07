@@ -662,6 +662,7 @@
   "routingSwitchBodyAllExcept": "除所选应用外，全部通过 VPN。切换时连接会中断一秒。",
   "routingWhatToBlock": "屏蔽内容",
   "routingApplyFailed": "无法应用更改",
+  "routingDeleteInUse": "无法删除：仍在使用中。请先移除引用。",
   "routingAdvanced": "高级",
   "routingAdvancedEditors": "高级编辑器",
   "routingAdvancedSubtitle": "分组、子规则、原始规则和 YAML",

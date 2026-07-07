@@ -1120,6 +1120,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t apply the change",
     ),
+    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
+      "Can\'t delete: it\'s still in use. Remove the reference first.",
+    ),
     "routingApps": MessageLookupByLibrary.simpleMessage("Apps"),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage(
       "Changed",

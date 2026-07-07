@@ -672,6 +672,7 @@
   "routingSwitchBodyAllExcept": "Через VPN пойдут все приложения, кроме выбранных. Соединение на секунду прервётся.",
   "routingWhatToBlock": "Что блокировать",
   "routingApplyFailed": "Не удалось применить изменение",
+  "routingDeleteInUse": "Нельзя удалить: ещё используется. Сначала уберите ссылку.",
   "routingAdvanced": "Дополнительно",
   "routingAdvancedEditors": "Экспертные редакторы",
   "routingAdvancedSubtitle": "Группы, суб-правила, правила и YAML",

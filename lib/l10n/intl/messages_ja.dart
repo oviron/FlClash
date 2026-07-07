@@ -894,6 +894,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("VPN を回避"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage("変更を適用できませんでした"),
+    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
+      "削除できません：まだ使用中です。先に参照を外してください。",
+    ),
     "routingApps": MessageLookupByLibrary.simpleMessage("アプリ"),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage("変更済み"),
     "routingAppsSectionRest": MessageLookupByLibrary.simpleMessage("その他 · 既定"),

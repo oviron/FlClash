@@ -1183,6 +1183,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
       "Не удалось применить изменение",
     ),
+    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
+      "Нельзя удалить: ещё используется. Сначала уберите ссылку.",
+    ),
     "routingApps": MessageLookupByLibrary.simpleMessage("Приложения"),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage(
       "Изменённые",

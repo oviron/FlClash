@@ -416,6 +416,79 @@ class RoutingModel {
     );
   }
 
+  RoutingModel removeServer(String name) {
+    if (name.isEmpty) return this;
+    final scrubbed = _dropGroupRef(groups, name, includeUse: true);
+    final pruned = _pruneEmptyGroups(scrubbed, exitGroup);
+    return copyWith(
+      servers: [
+        for (final s in servers)
+          if (s.name != name) s,
+      ],
+      groups: pruned.groups,
+      exitGroup: pruned.exitGroup,
+    );
+  }
+
+  RoutingModel removeGroup(String name) {
+    if (name.isEmpty) return this;
+    final remaining = <ServerGroup>[
+      for (final g in groups)
+        if (g.name != name) g,
+    ];
+    final scrubbed = _dropGroupRef(remaining, name, includeUse: false);
+    final exitAfterRemoval = exitGroup == name
+        ? (scrubbed.isEmpty ? '' : scrubbed.first.name)
+        : exitGroup;
+    final pruned = _pruneEmptyGroups(scrubbed, exitAfterRemoval);
+    return copyWith(exitGroup: pruned.exitGroup, groups: pruned.groups);
+  }
+
+  // True when [name] is the target of an explicit (raw) rule or the raw terminal
+  // MATCH. Modeled rules route only to VPN/DIRECT/REJECT/scenarios, so a rule
+  // naming a specific proxy or non-exit group survives only as a RawScenarioRule.
+  bool isReferencedByRule(String name) {
+    bool hit(ScenarioRule r) =>
+        r is RawScenarioRule && policyTargetOf(r.raw) == name;
+    if (globalRules.any(hit)) return true;
+    if (scenarios.any((s) => s.rules.any(hit))) return true;
+    final t = terminalRaw;
+    return t != null && policyTargetOf(t) == name;
+  }
+
+  // A node's dialer-proxy chains through another proxy/group by name; deleting
+  // the referenced entity would silently break the chain, so deletion is
+  // restricted rather than cascaded.
+  bool isReferencedByProxyChain(String name) => servers.any(
+    (s) => s is NodeSource && s.name != name && s.proxy['dialer-proxy'] == name,
+  );
+
+  RoutingModel removeList(String id) {
+    if (id.isEmpty) return this;
+    bool keep(ScenarioRule r) => r is! ListRule || r.listId != id;
+    return copyWith(
+      lists: [
+        for (final l in lists)
+          if (l.id != id) l,
+      ],
+      globalRules: [
+        for (final r in globalRules)
+          if (keep(r)) r,
+      ],
+      scenarios: [
+        for (final s in scenarios)
+          Scenario(
+            name: s.name,
+            rules: [
+              for (final r in s.rules)
+                if (keep(r)) r,
+            ],
+            defaultDest: s.defaultDest,
+          ),
+      ],
+    );
+  }
+
   RoutingModel updateNode(String from, Map<String, dynamic> proxy) {
     final to = (proxy['name'] ?? from).toString();
     final base = from == to ? this : renameServer(from, to);
@@ -505,6 +578,64 @@ switchTunnelMode({
 List<String> _replaceName(List<String> xs, String from, String to) => [
   for (final x in xs) x == from ? to : x,
 ];
+
+// Removes SmartGroups left with no members and no `use:` (a select/url-test group
+// with neither is invalid); iterates because pruning one group can empty another.
+// RawGroups are user-authored and never pruned. Repoints the exit off a pruned group.
+({List<ServerGroup> groups, String exitGroup}) _pruneEmptyGroups(
+  List<ServerGroup> groups,
+  String exitGroup,
+) {
+  var current = groups;
+  var exit = exitGroup;
+  while (true) {
+    final empties = {
+      for (final g in current)
+        if (g is SmartGroup && g.members.isEmpty && g.use.isEmpty) g.name,
+    };
+    if (empties.isEmpty) break;
+    var next = <ServerGroup>[
+      for (final g in current)
+        if (!empties.contains(g.name)) g,
+    ];
+    for (final name in empties) {
+      next = _dropGroupRef(next, name, includeUse: false);
+    }
+    current = next;
+    if (empties.contains(exit)) {
+      exit = current.isEmpty ? '' : current.first.name;
+    }
+  }
+  return (groups: current, exitGroup: exit);
+}
+
+// includeUse also strips the `use:` provider list (a removed server can back a
+// group); a removed group only ever appears in members/proxies, never in `use:`.
+List<ServerGroup> _dropGroupRef(
+  List<ServerGroup> groups,
+  String name, {
+  required bool includeUse,
+}) {
+  List<String> drop(List<String> xs) => [
+    for (final x in xs)
+      if (x != name) x,
+  ];
+  return [
+    for (final g in groups)
+      switch (g) {
+        SmartGroup() => g.copyWith(
+          members: drop(g.members),
+          use: includeUse ? drop(g.use) : g.use,
+        ),
+        RawGroup(:final spec) => RawGroup(
+          spec.copyWith(
+            proxies: drop(spec.proxies),
+            use: includeUse ? drop(spec.use) : spec.use,
+          ),
+        ),
+      },
+  ];
+}
 
 String _write(RoutingModel m, String base) {
   var out = _writeServers(m, base);
