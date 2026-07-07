@@ -362,6 +362,7 @@ class _ListsViewState extends State<_ListsView>
               illustration: const RuleEmptyIllustration(),
             )
           : ListView.builder(
+              padding: EdgeInsets.only(bottom: 88.mAp),
               itemCount: model.lists.length,
               itemBuilder: (_, i) {
                 final l = model.lists[i];
@@ -483,6 +484,7 @@ class _ScenariosViewState extends State<_ScenariosView>
               illustration: const RuleEmptyIllustration(),
             )
           : ListView.builder(
+              padding: EdgeInsets.only(bottom: 88.mAp),
               itemCount: model.scenarios.length,
               itemBuilder: (_, i) {
                 final s = model.scenarios[i];
@@ -1764,6 +1766,7 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
               ),
             )
           : ListView(
+              padding: EdgeInsets.only(bottom: 88.mAp),
               children: [
                 for (final s in m.servers)
                   if (s is NodeSource)
@@ -1955,6 +1958,7 @@ class _GroupsViewState extends ConsumerState<_GroupsView>
               ),
             )
           : ListView(
+              padding: EdgeInsets.only(bottom: 88.mAp),
               children: [
                 for (final g in m.groups)
                   ListItem(
