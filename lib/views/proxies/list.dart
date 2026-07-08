@@ -17,16 +17,17 @@ class ProxiesListView extends StatefulWidget {
   const ProxiesListView({super.key});
 
   @override
-  State<ProxiesListView> createState() => _ProxiesListViewState();
+  State<ProxiesListView> createState() => ProxiesListViewState();
 }
 
-class _ProxiesListViewState extends State<ProxiesListView> {
+class ProxiesListViewState extends State<ProxiesListView> {
   final _controller = ScrollController();
   final _headerStateNotifier = ValueNotifier<ProxiesListHeaderSelectorState?>(
     null,
   );
   List<double> _headerOffset = [];
   double containerHeight = 0;
+  bool _isDelayTesting = false;
 
   @override
   void initState() {
@@ -90,6 +91,18 @@ class _ProxiesListViewState extends State<ProxiesListView> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _adjustHeader();
     });
+  }
+
+  Future<void> delayTestUnfoldedGroups() async {
+    if (_isDelayTesting) return;
+    _isDelayTesting = true;
+    try {
+      for (final group in appController.getCurrentGroups()) {
+        await delayTest(group.all, group.testUrl);
+      }
+    } finally {
+      _isDelayTesting = false;
+    }
   }
 
   List<double> _getItemHeightList(

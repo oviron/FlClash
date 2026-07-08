@@ -293,6 +293,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoUpdate": MessageLookupByLibrary.simpleMessage("Автообновление"),
     "happMode": MessageLookupByLibrary.simpleMessage("Режим Happ"),
     "noProxy": MessageLookupByLibrary.simpleMessage("Нет доступных прокси"),
+    "scriptUpdated": MessageLookupByLibrary.simpleMessage("Скрипт обновлён"),
     "happModeDesc": MessageLookupByLibrary.simpleMessage(
       "Качать под видом клиента Happ, чтобы получить анти-блокировочные ноды на панелях, где они скрыты",
     ),
@@ -1037,6 +1038,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "proxyNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "Домен для разрешения прокси-узлов",
+    ),
+    "proxyNameserverPolicy": MessageLookupByLibrary.simpleMessage(
+      "Политика прокси-сервера имен",
+    ),
+    "proxyNameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
+      "Указать политику сервера имен для прокси-узлов",
     ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("Провайдеры прокси"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("Очистить кэш"),

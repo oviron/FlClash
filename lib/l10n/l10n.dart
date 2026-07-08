@@ -1022,6 +1022,15 @@ class AppLocalizations {
     );
   }
 
+  String get scriptUpdated {
+    return Intl.message(
+      'Script updated',
+      name: 'scriptUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get happModeDesc {
     return Intl.message(
       'Fetch as the Happ client to unlock anti-block nodes on panels that gate them',
@@ -2116,6 +2125,24 @@ class AppLocalizations {
     return Intl.message(
       'Domain for resolving proxy nodes',
       name: 'proxyNameserverDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get proxyNameserverPolicy {
+    return Intl.message(
+      'Proxy Nameserver Policy',
+      name: 'proxyNameserverPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get proxyNameserverPolicyDesc {
+    return Intl.message(
+      'Specify the nameserver policy for proxy nodes',
+      name: 'proxyNameserverPolicyDesc',
       desc: '',
       args: [],
     );
