@@ -16,6 +16,22 @@ abstract class FetchStrategy {
   Future<FetchResult> fetch(String url, {Map<String, String>? headers});
 }
 
+// The one raw network call both strategies build on, injected so the strategies
+// stay unit-testable without a real request client.
+typedef RawFetch =
+    Future<FetchResult> Function(String url, {Map<String, String>? headers});
+
+// The core default: a single honest GET, no wrapper behaviour.
+class CoreFetchStrategy implements FetchStrategy {
+  const CoreFetchStrategy(this._rawFetch);
+
+  final RawFetch _rawFetch;
+
+  @override
+  Future<FetchResult> fetch(String url, {Map<String, String>? headers}) =>
+      _rawFetch(url, headers: headers);
+}
+
 final List<Resolver> _resolvers = [];
 FetchStrategy? _fetchStrategy;
 
