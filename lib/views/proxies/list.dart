@@ -409,8 +409,11 @@ class _ProxyGroupHeaderState extends State<ProxyGroupHeader> {
   Future<void> _delayTest() async {
     if (isLock) return;
     isLock = true;
-    await delayTest(widget.group.all, widget.group.testUrl);
-    isLock = false;
+    try {
+      await delayTest(widget.group.all, widget.group.testUrl);
+    } finally {
+      isLock = false;
+    }
   }
 
   void _handleChange(String groupName) {

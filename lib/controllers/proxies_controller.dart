@@ -81,6 +81,10 @@ extension ProxiesControllerExt on AppController {
     _ref.read(delayDataSourceProvider.notifier).setDelay(delay);
   }
 
+  void clearDelay() {
+    _ref.read(delayDataSourceProvider.notifier).value = {};
+  }
+
   Future<void> changeProxy({
     required String groupName,
     required String proxyName,

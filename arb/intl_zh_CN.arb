@@ -124,6 +124,7 @@
   "profileUrlInvalidValidationDesc": "请输入有效配置URL",
   "autoUpdate": "自动更新",
   "happMode": "Happ 模式",
+  "noProxy": "没有可用的代理",
   "happModeDesc": "以 Happ 客户端身份获取，解锁面板中被隐藏的抗封锁节点",
   "autoUpdateInterval": "自动更新间隔（分钟）",
   "profileAutoUpdateIntervalNullValidationDesc": "请输入自动更新间隔时间",

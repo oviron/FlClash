@@ -20,6 +20,8 @@ class AppStateManager extends ConsumerStatefulWidget {
 
 class _AppStateManagerState extends ConsumerState<AppStateManager>
     with WidgetsBindingObserver {
+  bool _isBackground = false;
+
   @override
   void initState() {
     super.initState();
@@ -50,8 +52,19 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     commonPrint.log('$state');
+    if (state == AppLifecycleState.paused) {
+      _isBackground = true;
+    }
     if (state == AppLifecycleState.resumed) {
+      final wasBackground = _isBackground;
+      _isBackground = false;
+      if (ref.read(isStartProvider)) {
+        unawaited(globalState.startUpdateTasks());
+      }
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (wasBackground) {
+          appController.clearDelay();
+        }
         appController.tryCheckIp();
         if (system.isAndroid) {
           appController.tryStartCore();
@@ -60,6 +73,8 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
           ref.read(locationPermissionProvider.notifier).refresh();
         }
       });
+    } else {
+      globalState.stopUpdateTasks();
     }
   }
 

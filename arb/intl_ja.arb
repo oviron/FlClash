@@ -124,6 +124,7 @@
   "profileUrlInvalidValidationDesc": "有効なプロファイルURLを入力してください",
   "autoUpdate": "自動更新",
   "happMode": "Happモード",
+  "noProxy": "利用可能なプロキシがありません",
   "happModeDesc": "ノードを隠すパネルで全ノードを取得するため Happ クライアントとして取得します",
   "autoUpdateInterval": "自動更新間隔（分）",
   "profileAutoUpdateIntervalNullValidationDesc": "自動更新間隔を入力してください",
