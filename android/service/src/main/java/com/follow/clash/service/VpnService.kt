@@ -81,11 +81,15 @@ class VpnService : SystemVpnService(), IBaseService,
         if (nextUid == -1) {
             return ""
         }
-        if (!uidPageNameMap.containsKey(nextUid)) {
-            uidPageNameMap[nextUid] =
-                this.packageManager?.getPackagesForUid(nextUid)?.first() ?: ""
+        // Emit "uid\npackage" so the core revives metadata.Uid rule matching
+        // (libmihomo >= v0.3.0, bridgeABI 3). firstOrNull guards the Android 11+
+        // empty getPackagesForUid array that .first() would otherwise throw on.
+        val packageName = uidPageNameMap.getOrPut(nextUid) {
+            runCatching {
+                this.packageManager?.getPackagesForUid(nextUid)?.firstOrNull() ?: ""
+            }.getOrDefault("")
         }
-        return uidPageNameMap[nextUid] ?: ""
+        return "$nextUid\n$packageName"
     }
 
     private fun parseInetSocketAddress(address: String): InetSocketAddress {
