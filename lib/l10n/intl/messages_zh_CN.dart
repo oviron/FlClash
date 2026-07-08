@@ -221,6 +221,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage("自动设置系统DNS"),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自动更新"),
     "happMode": MessageLookupByLibrary.simpleMessage("Happ 模式"),
+    "noProxy": MessageLookupByLibrary.simpleMessage("没有可用的代理"),
     "happModeDesc": MessageLookupByLibrary.simpleMessage(
       "以 Happ 客户端身份获取，解锁面板中被隐藏的抗封锁节点",
     ),

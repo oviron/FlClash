@@ -124,6 +124,7 @@
   "profileUrlInvalidValidationDesc": "Please input a valid profile URL",
   "autoUpdate": "Auto update",
   "happMode": "Happ mode",
+  "noProxy": "No available proxies",
   "happModeDesc": "Fetch as the Happ client to unlock anti-block nodes on panels that gate them",
   "autoUpdateInterval": "Auto update interval (minutes)",
   "profileAutoUpdateIntervalNullValidationDesc": "Please enter the auto update interval time",

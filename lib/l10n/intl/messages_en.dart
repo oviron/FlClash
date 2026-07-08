@@ -279,6 +279,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("Auto update"),
     "happMode": MessageLookupByLibrary.simpleMessage("Happ mode"),
+    "noProxy": MessageLookupByLibrary.simpleMessage("No available proxies"),
     "happModeDesc": MessageLookupByLibrary.simpleMessage(
       "Fetch as the Happ client to unlock anti-block nodes on panels that gate them",
     ),

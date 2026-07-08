@@ -56,18 +56,12 @@ class _SystemBackBlockState extends ConsumerState<SystemBackBlock> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      ref.read(backBlockProvider.notifier).value = true;
-    });
+    ref.read(backBlockProvider.notifier).value = true;
   }
 
   @override
   void dispose() {
-    final backBlock = ref.read(backBlockProvider.notifier);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      backBlock.value = false;
-    });
+    ref.read(backBlockProvider.notifier).value = false;
     super.dispose();
   }
 

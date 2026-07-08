@@ -177,6 +177,10 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   rawConfig['profile']['store-selected'] = false;
   rawConfig['geox-url'] = realPatchConfig.geoXUrl.toJson();
   rawConfig['global-ua'] ??= defaultUA;
+  final clientFingerprint = rawConfig['global-client-fingerprint'];
+  if (clientFingerprint is! String || clientFingerprint.isEmpty) {
+    rawConfig['global-client-fingerprint'] = 'chrome';
+  }
   if (rawConfig['hosts'] == null) {
     rawConfig['hosts'] = {};
   }

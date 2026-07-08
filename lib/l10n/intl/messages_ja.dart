@@ -235,6 +235,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage("オートセットシステムDNS"),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自動更新"),
     "happMode": MessageLookupByLibrary.simpleMessage("Happモード"),
+    "noProxy": MessageLookupByLibrary.simpleMessage("利用可能なプロキシがありません"),
     "happModeDesc": MessageLookupByLibrary.simpleMessage(
       "ノードを隠すパネルで全ノードを取得するため Happ クライアントとして取得します",
     ),

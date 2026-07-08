@@ -1013,6 +1013,15 @@ class AppLocalizations {
     return Intl.message('Happ mode', name: 'happMode', desc: '', args: []);
   }
 
+  String get noProxy {
+    return Intl.message(
+      'No available proxies',
+      name: 'noProxy',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get happModeDesc {
     return Intl.message(
       'Fetch as the Happ client to unlock anti-block nodes on panels that gate them',

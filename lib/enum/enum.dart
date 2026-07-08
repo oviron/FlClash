@@ -70,6 +70,11 @@ enum Mode { rule, global, direct }
 enum LogLevel { debug, info, warning, error, silent }
 
 extension LogLevelExt on LogLevel {
+  bool allows(LogLevel level) =>
+      this != LogLevel.silent &&
+      level != LogLevel.silent &&
+      level.index >= index;
+
   Color? get color {
     return switch (this) {
       LogLevel.silent => Colors.grey.shade700,
