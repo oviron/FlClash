@@ -25,6 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Locale parity (arb key sets match)
+        run: python3 scripts/check_locale_parity.py
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2.23.0
         with:
@@ -187,6 +190,33 @@ jobs:
             "$ZIPALIGN" -P 16 -c -v 4 "$apk" 2>&1 | grep -E "\.so .* (BAD|OK)" || true
             "$ZIPALIGN" -P 16 -c 4 "$apk" || { echo "FAILED: native .so libs in $apk are not 16-KB aligned"; exit 1; }
           done
+
+      - name: APK size budget
+        if: startsWith(matrix.platform,'android')
+        run: |
+          shopt -s nullglob
+          max_kb=97280   # 95 MB per split APK
+          fail=0
+          for apk in ./dist/*.apk; do
+            kb=$(du -k "$apk" | cut -f1)
+            echo "$apk: ${kb} KB"
+            if [ "$kb" -gt "$max_kb" ]; then
+              echo "::error::$apk exceeds ${max_kb} KB budget"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: APK smoke (boot + launch, no FATAL)
+        if: startsWith(matrix.platform,'android') && startsWith(github.ref, 'refs/tags/v')
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot
+          disable-animations: true
+          script: bash scripts/apk_smoke.sh
 
       - name: Upload
         if: startsWith(github.ref, 'refs/tags/v')
