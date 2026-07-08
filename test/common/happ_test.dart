@@ -1,4 +1,4 @@
-import 'package:fl_clash/common/happ.dart';
+import 'package:fl_clash/ingest/happ/happ_identity.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

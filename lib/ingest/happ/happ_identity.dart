@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'preferences.dart';
+import 'package:fl_clash/common/preferences.dart';
 
 // The Happ client identity a panel needs to serve its xray-JSON subscription:
 // this UA (some panels gate the format on it) plus a stable device id header.
