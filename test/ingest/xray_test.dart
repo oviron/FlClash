@@ -18,8 +18,7 @@ const _sample = '''
 ]
 ''';
 
-Map<String, dynamic> _body(Map<String, dynamic> p) =>
-    {...p}..remove('name');
+Map<String, dynamic> _body(Map<String, dynamic> p) => {...p}..remove('name');
 
 void main() {
   group('unified xray walk', () {
@@ -31,10 +30,7 @@ void main() {
       expect(flat.length, 2);
       expect(groupedFlat.length, 2);
       // Same input, one walk: bodies (everything but the name) must match.
-      expect(
-        flat.map(_body).toList(),
-        groupedFlat.map(_body).toList(),
-      );
+      expect(flat.map(_body).toList(), groupedFlat.map(_body).toList());
     });
 
     test('grouped keeps one group per remark with label-NN names', () {
@@ -68,10 +64,10 @@ void main() {
 
     test('slug naming yields key-rNN-MM across groups', () {
       final slugged = slugXrayGroups(_sample, 'k');
-      expect(
-        slugged.proxies.map((p) => p['name']).toList(),
-        ['k-r01-01', 'k-r02-01'],
-      );
+      expect(slugged.proxies.map((p) => p['name']).toList(), [
+        'k-r01-01',
+        'k-r02-01',
+      ]);
       expect(slugged.remarks.map((r) => r.label).toList(), [
         'Main',
         'Anti-block',

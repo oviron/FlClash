@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/share_link.dart';
 import 'package:fl_clash/common/yaml.dart';
+import 'package:fl_clash/ingest/synthesize.dart';
 import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
 import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:fl_clash/services/routing_model.dart';
@@ -17,7 +18,9 @@ void main() {
         '?security=reality&sni=dl.google.com&fp=chrome&pbk=PUBKEY&sid=ab12'
         '&type=tcp&flow=xtls-rprx-vision#My node';
     final proxies = [parseShareLink(link)!];
-    final envelope = yaml.encode(synthesizeConfig(proxies));
+    final envelope = yaml.encode(
+      synthesize((proxies: proxies, groups: null, skipped: 0)),
+    );
     final defaultProfile = applyQuickStartRouting(envelope);
 
     // The default profile is a valid full tunnel through the pasted node.

@@ -183,7 +183,9 @@ void _applyTransport(Map<String, dynamic> proxy, String network, Object? t) {
     final ws = <String, dynamic>{'path': '${t['path'] ?? '/'}'};
     final headers = t['headers'];
     if (headers is Map && headers.isNotEmpty) {
-      ws['headers'] = {for (final e in headers.entries) '${e.key}': '${e.value}'};
+      ws['headers'] = {
+        for (final e in headers.entries) '${e.key}': '${e.value}',
+      };
     }
     proxy['ws-opts'] = ws;
   } else if (network == 'grpc') {

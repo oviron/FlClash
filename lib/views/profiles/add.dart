@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/ingest/normalize.dart';
 import 'package:fl_clash/pages/scan.dart';
-import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +13,7 @@ import 'package:flutter/services.dart';
 Future<void> pasteKeyOnramp() async {
   final data = await Clipboard.getData(Clipboard.kTextPlain);
   final text = data?.text?.trim();
-  if (text != null &&
-      text.isNotEmpty &&
-      classifyArtifact(text) != ArtifactKind.unknown) {
+  if (text != null && text.isNotEmpty && isIngestable(text)) {
     unawaited(appController.addProfileFromText(text));
     return;
   }
@@ -71,7 +69,7 @@ class AddProfileView extends StatelessWidget {
           }
           // Accept anything addProfileFromText handles: a URL, share link, or
           // pasted clash/xray/base64 content, not just a bare URL.
-          if (classifyArtifact(value) == ArtifactKind.unknown) {
+          if (!isIngestable(value)) {
             return appLocalizations.urlTip('').trim();
           }
           return null;
