@@ -1885,7 +1885,10 @@ class _GroupsViewState extends ConsumerState<_GroupsView>
       ),
     );
     if (name == null || name.trim().isEmpty || !mounted) return;
-    final gname = _slug(name);
+    final gname = _uniqueName(name.trim(), {
+      for (final s in m.servers) s.name,
+      for (final g in m.groups) g.name,
+    });
     final nodes = [
       for (final s in m.servers)
         if (s is NodeSource) s.name,
@@ -2075,10 +2078,16 @@ class _GroupEditorViewState extends ConsumerState<_GroupEditorView>
   Future<void> _save() async {
     final model = _model;
     if (model == null) return;
-    // Keep an unchanged name verbatim; only slug a name the user actually
-    // rewrote, so opening + saving a group never silently renames it.
+    // A group name is a verbatim mihomo reference, not a slug: store it as
+    // typed (only de-duplicated), so a rename never lowercases or mangles it.
     final typed = _nameController.text.trim();
-    final name = typed == _original ? _original : _slug(typed);
+    final name = typed == _original
+        ? _original
+        : _uniqueName(typed, {
+            for (final s in model.servers) s.name,
+            for (final g in model.groups)
+              if (g.name != _original) g.name,
+          });
     if (name.isEmpty) {
       context.showNotifier(appLocalizations.routingGroupNameHint);
       return;
