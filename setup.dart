@@ -15,9 +15,9 @@ import 'package:yaml/yaml.dart';
 const _signerFpr = '1139C91B6525883E6783DCF04A94DA488A4C5033';
 const _signerPubKeyPath = 'scripts/oviron-signing.pub.asc';
 
-const _libmihomoVersion = '0.3.0';
+const _libmihomoVersion = '0.3.1';
 const _libmihomoSha256 =
-    'feb40b11b4b162b86d9b6554c8401dbaa603c975d69cd45de5ed1a82f4a73e8e';
+    'cd3dfb461d2ae46666260b38048b77a272aa58cae33db22a374b57308bab69ef';
 
 class _PinnedAar {
   final String label;
