@@ -424,6 +424,37 @@ class _DnsCoreSection extends StatelessWidget {
   }
 }
 
+class ProxyServerNameserverPolicyItem extends ConsumerWidget {
+  const ProxyServerNameserverPolicyItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final proxyServerNameserverPolicy = ref.watch(
+      patchClashConfigProvider.select(
+        (state) => state.dns.proxyServerNameserverPolicy,
+      ),
+    );
+    return ListItem.open(
+      title: Text(appLocalizations.proxyNameserverPolicy),
+      subtitle: Text(appLocalizations.proxyNameserverPolicyDesc),
+      delegate: OpenDelegate(
+        widget: MapEditorPage(
+          title: appLocalizations.proxyNameserverPolicy,
+          map: proxyServerNameserverPolicy,
+        ),
+        onChanged: (value) {
+          ref
+              .read(patchClashConfigProvider.notifier)
+              .update(
+                (state) =>
+                    state.copyWith.dns(proxyServerNameserverPolicy: value),
+              );
+        },
+      ),
+    );
+  }
+}
+
 class _DnsServersSection extends StatelessWidget {
   const _DnsServersSection();
 
@@ -436,6 +467,7 @@ class _DnsServersSection extends StatelessWidget {
           DefaultNameserverItem(),
           NameserverItem(),
           ProxyServerNameserverItem(),
+          ProxyServerNameserverPolicyItem(),
           NameserverPolicyItem(),
         ],
       ),

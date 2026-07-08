@@ -222,6 +222,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自动更新"),
     "happMode": MessageLookupByLibrary.simpleMessage("Happ 模式"),
     "noProxy": MessageLookupByLibrary.simpleMessage("没有可用的代理"),
+    "scriptUpdated": MessageLookupByLibrary.simpleMessage("脚本已更新"),
     "happModeDesc": MessageLookupByLibrary.simpleMessage(
       "以 Happ 客户端身份获取，解锁面板中被隐藏的抗封锁节点",
     ),
@@ -723,6 +724,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxyGroups": MessageLookupByLibrary.simpleMessage("代理组"),
     "proxyNameserver": MessageLookupByLibrary.simpleMessage("代理域名服务器"),
     "proxyNameserverDesc": MessageLookupByLibrary.simpleMessage("用于解析代理节点的域名"),
+    "proxyNameserverPolicy": MessageLookupByLibrary.simpleMessage("代理域名服务器策略"),
+    "proxyNameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
+      "指定代理节点的域名服务器策略",
+    ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("代理提供者"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("修剪缓存"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("纯黑模式"),

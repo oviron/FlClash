@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/models/state.dart';
@@ -23,6 +24,7 @@ class ProxiesView extends ConsumerStatefulWidget {
 class _ProxiesViewState extends ConsumerState<ProxiesView> {
   final GlobalKey<CommonScaffoldState> _scaffoldKey = GlobalKey();
   final GlobalKey<ProxiesTabViewState> _proxiesTabKey = GlobalKey();
+  final GlobalKey<ProxiesListViewState> _proxiesListKey = GlobalKey();
   bool _hasProviders = false;
   bool _isTab = false;
 
@@ -35,6 +37,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
           },
           icon: const Icon(Icons.adjust, weight: 1),
         ),
+      if (!_isTab) _buildListUnfoldButton(),
       CommonPopupBox(
         targetBuilder: (open) {
           return IconButton(
@@ -82,14 +85,36 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
     ];
   }
 
-  Widget? _buildFAB() {
-    return _isTab
-        ? DelayTestButton(
-            onClick: () async {
-              await _proxiesTabKey.currentState?.delayTestCurrentGroup();
-            },
-          )
-        : null;
+  Widget _buildListUnfoldButton() {
+    return Consumer(
+      builder: (_, ref, _) {
+        final state = ref.watch(proxiesListStateProvider);
+        final allCollapsed = state.groups.every(
+          (group) => !state.currentUnfoldSet.contains(group.name),
+        );
+        return IconButton(
+          onPressed: () {
+            final unfoldSet = allCollapsed
+                ? state.groups.map((group) => group.name).toSet()
+                : <String>{};
+            appController.updateCurrentUnfoldSet(unfoldSet);
+          },
+          icon: Icon(allCollapsed ? Icons.unfold_more : Icons.unfold_less),
+        );
+      },
+    );
+  }
+
+  Widget _buildFAB() {
+    return DelayTestButton(
+      onClick: () async {
+        if (_isTab) {
+          await _proxiesTabKey.currentState?.delayTestCurrentGroup();
+        } else {
+          await _proxiesListKey.currentState?.delayTestUnfoldedGroups();
+        }
+      },
+    );
   }
 
   void _onSearch(String value) {
@@ -152,7 +177,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
           Expanded(
             child: switch (proxiesType) {
               ProxiesType.tab => ProxiesTabView(key: _proxiesTabKey),
-              ProxiesType.list => const ProxiesListView(),
+              ProxiesType.list => ProxiesListView(key: _proxiesListKey),
             },
           ),
         ],

@@ -236,6 +236,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自動更新"),
     "happMode": MessageLookupByLibrary.simpleMessage("Happモード"),
     "noProxy": MessageLookupByLibrary.simpleMessage("利用可能なプロキシがありません"),
+    "scriptUpdated": MessageLookupByLibrary.simpleMessage("スクリプトを更新しました"),
     "happModeDesc": MessageLookupByLibrary.simpleMessage(
       "ノードを隠すパネルで全ノードを取得するため Happ クライアントとして取得します",
     ),
@@ -798,6 +799,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxyNameserver": MessageLookupByLibrary.simpleMessage("プロキシネームサーバー"),
     "proxyNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "プロキシノード解決用ドメイン",
+    ),
+    "proxyNameserverPolicy": MessageLookupByLibrary.simpleMessage(
+      "プロキシネームサーバーポリシー",
+    ),
+    "proxyNameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
+      "プロキシノードのネームサーバーポリシーを指定",
     ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("プロキシプロバイダー"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("キャッシュの削除"),

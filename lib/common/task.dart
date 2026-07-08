@@ -205,6 +205,11 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
       rawConfig['dns']['nameserver-policy'][entry.key] =
           entry.value.splitByMultipleSeparators;
     }
+    rawConfig['dns']['proxy-server-nameserver-policy'] = {};
+    for (final entry in dns.proxyServerNameserverPolicy.entries) {
+      rawConfig['dns']['proxy-server-nameserver-policy'][entry.key] =
+          entry.value.splitByMultipleSeparators;
+    }
   }
   // proxy-server-nameserver resolves the proxy node's own domain. Without a
   // system:// fallback it strands the whole tunnel when the configured DoT/DoH

@@ -280,6 +280,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoUpdate": MessageLookupByLibrary.simpleMessage("Auto update"),
     "happMode": MessageLookupByLibrary.simpleMessage("Happ mode"),
     "noProxy": MessageLookupByLibrary.simpleMessage("No available proxies"),
+    "scriptUpdated": MessageLookupByLibrary.simpleMessage("Script updated"),
     "happModeDesc": MessageLookupByLibrary.simpleMessage(
       "Fetch as the Happ client to unlock anti-block nodes on panels that gate them",
     ),
@@ -986,6 +987,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxyNameserver": MessageLookupByLibrary.simpleMessage("Proxy nameserver"),
     "proxyNameserverDesc": MessageLookupByLibrary.simpleMessage(
       "Domain for resolving proxy nodes",
+    ),
+    "proxyNameserverPolicy": MessageLookupByLibrary.simpleMessage(
+      "Proxy Nameserver Policy",
+    ),
+    "proxyNameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
+      "Specify the nameserver policy for proxy nodes",
     ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("Proxy providers"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("Prune cache"),

@@ -263,6 +263,9 @@ abstract class Dns with _$Dns {
     // bootstrap and leaks a cleartext SNI that RU/CN DPI resets; both blocked.
     @Default(['https://9.9.9.9/dns-query', 'https://94.140.14.14/dns-query'])
     List<String> nameserver,
+    @Default({})
+    @JsonKey(name: 'proxy-server-nameserver-policy')
+    Map<String, String> proxyServerNameserverPolicy,
     // Resolves the proxy node's own domain. system:// (OS resolver on a
     // bypass-TUN socket) survives DoT :853 blocking; IP-DoH is the backstop.
     // DoT-only here strands the whole tunnel where :853 is dropped (RU).

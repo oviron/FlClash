@@ -205,6 +205,11 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
           ?.map((e) => e as String)
           .toList() ??
       const ['https://9.9.9.9/dns-query', 'https://94.140.14.14/dns-query'],
+  proxyServerNameserverPolicy:
+      (json['proxy-server-nameserver-policy'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ) ??
+      const {},
   proxyServerNameserver:
       (json['proxy-server-nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -230,6 +235,7 @@ Map<String, dynamic> _$DnsToJson(_Dns instance) => <String, dynamic>{
   'fake-ip-filter': instance.fakeIpFilter,
   'nameserver-policy': instance.nameserverPolicy,
   'nameserver': instance.nameserver,
+  'proxy-server-nameserver-policy': instance.proxyServerNameserverPolicy,
   'proxy-server-nameserver': instance.proxyServerNameserver,
 };
 
