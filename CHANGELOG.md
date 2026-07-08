@@ -14,7 +14,7 @@
 
 - Bundled a baseline GeoSite database with a background auto-update, so the first connect on a network that blocks GitHub no longer stalls on a geo-DB download; a raw geo-load error in the apply path is now suppressed
 
-- Subscription support: xray/v2ray subscription ingest with per-remark grouping, and per-provider quota (used / total / expiry) surfaced in the Providers sheet even for file-backed providers
+- Unified subscription and link ingestion: one pipeline now backs both entry points (create-profile and the routing constructor's add-server). A single try-parse normalizer handles share links and lists, base64, clash, xray-JSON (Happ, per-remark grouped), and now SIP008 and sing-box JSON, so a new format is added in one place. All Happ behaviour is isolated in one removable module (`lib/ingest/happ/`) that plugs a launcher resolver (`/happ?token` and `happ://add/` rewrite to the real subscription) and a dual-fetch strategy (honest + Happ identity, richer result wins) into the core; the per-subscription "Happ mode" toggle is gone. Every non-clash subscription is materialized in-app to a `type: file` provider the core can serve, with per-provider quota (used / total / expiry) surfaced in the Providers sheet
 
 ## v0.15.4
 
