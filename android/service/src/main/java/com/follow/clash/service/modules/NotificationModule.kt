@@ -61,11 +61,12 @@ class NotificationModule(private val service: Service) : Module() {
             combine(
                 tickerFlow(2000, 0), State.notificationParamsFlow, screenFlow
             ) { _, params, screenOn ->
-                params?.extended to screenOn
+                params to screenOn
             }.filter { (params, screenOn) -> params != null && screenOn }
-                .distinctUntilChanged { old, new -> old.first == new.first && old.second == new.second }
-                .collect { (params, _) ->
-                    update(params!!)
+                .map { (params, _) -> params!!.extended }
+                .distinctUntilChanged()
+                .collect { extended ->
+                    update(extended)
                 }
 
             State.notificationParamsFlow.value?.let {

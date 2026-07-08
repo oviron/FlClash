@@ -10,7 +10,6 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.Parcel
-import android.os.PowerManager
 import android.os.RemoteException
 import androidx.core.content.getSystemService
 import com.follow.clash.common.AccessControlMode
@@ -24,6 +23,7 @@ import com.follow.clash.service.models.toCIDR
 import com.follow.clash.service.modules.NetworkObserveModule
 import com.follow.clash.service.modules.NotificationModule
 import com.follow.clash.service.modules.SuspendModule
+import com.follow.clash.service.modules.WakeLockModule
 import io.github.oviron.libmihomo.Clash
 import io.github.oviron.libmihomo.TunInterface
 import kotlinx.coroutines.CoroutineScope
@@ -44,9 +44,9 @@ class VpnService : SystemVpnService(), IBaseService,
         install(NetworkObserveModule(self))
         install(NotificationModule(self))
         install(SuspendModule(self))
+        install(WakeLockModule(self))
     }
 
-    private var wakeLock: PowerManager.WakeLock? = null
     private var wifiLock: WifiManager.WifiLock? = null
 
     override fun onCreate() {
@@ -314,13 +314,6 @@ class VpnService : SystemVpnService(), IBaseService,
     }
 
     private fun acquireLocks() {
-        if (wakeLock == null) {
-            val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
-            wakeLock = pm.newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK,
-                "FlClash::VpnTunnel"
-            ).apply { acquire() }
-        }
         if (wifiLock == null) {
             val wm = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             @Suppress("DEPRECATION")
@@ -333,8 +326,6 @@ class VpnService : SystemVpnService(), IBaseService,
     }
 
     private fun releaseLocks() {
-        wakeLock?.let { if (it.isHeld) it.release() }
-        wakeLock = null
         wifiLock?.let { if (it.isHeld) it.release() }
         wifiLock = null
     }

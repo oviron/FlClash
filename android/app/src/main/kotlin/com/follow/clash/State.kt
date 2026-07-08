@@ -149,11 +149,11 @@ object State {
         Service.quickSetup(
             initParamsString,
             setupParamsString,
-            onStarted = {
-                startService()
-            },
+            onStarted = null,
             onResult = {
-                if (it.isNotEmpty()) {
+                if (it.isEmpty()) {
+                    startService()
+                } else {
                     GlobalState.application.showToast(it)
                 }
             },
