@@ -37,7 +37,7 @@ export 'scroll.dart';
 export 'happ.dart';
 export 'share_link.dart';
 export 'subscription_fetch.dart';
-export 'xray_json.dart';
+export 'package:fl_clash/ingest/xray.dart';
 export 'snowflake.dart';
 export 'string.dart';
 export 'system.dart';

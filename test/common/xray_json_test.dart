@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:fl_clash/common/xray_json.dart';
+import 'package:fl_clash/ingest/xray.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// A govpn-shaped xray-JSON: a list of {remarks, outbounds:[xray-outbound]}.
