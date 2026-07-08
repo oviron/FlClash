@@ -19,28 +19,33 @@ env:
   IS_STABLE: ${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-') }}
 
 jobs:
-  lint:
+  format:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-
-      - name: Locale parity (arb key sets match)
-        run: python3 scripts/check_locale_parity.py
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2.23.0
         with:
           channel: stable
           flutter-version: 3.35.7
           cache: true
-
-      - name: Flutter pub get
-        run: flutter pub get
-
       - name: Dart format check
         run: dart format --output=none --set-exit-if-changed .
 
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.35.7
+          cache: true
+      - name: Flutter pub get
+        run: flutter pub get
       - name: Flutter analyze (fatal infos, app code only)
         run: |
           out=$(flutter analyze --no-pub --fatal-infos 2>&1)
@@ -51,6 +56,19 @@ jobs:
             exit 1
           fi
 
+  dead-code:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.35.7
+          cache: true
+      - name: Flutter pub get
+        run: flutter pub get
       - name: DCM check-unused-code
         run: |
           out=$(dart run dart_code_linter:metrics check-unused-code lib 2>&1)
@@ -59,7 +77,6 @@ jobs:
             echo "::error::dart_code_linter found unused code"
             exit 1
           fi
-
       - name: DCM check-unused-files
         run: |
           out=$(dart run dart_code_linter:metrics check-unused-files lib 2>&1)
@@ -68,29 +85,69 @@ jobs:
             echo "::error::dart_code_linter found unused files"
             exit 1
           fi
+      - name: DCM check-unused-l10n
+        run: |
+          out=$(dart run dart_code_linter:metrics check-unused-l10n lib 2>&1)
+          echo "$out"
+          if echo "$out" | grep -q "✖ total unused"; then
+            echo "::error::dart_code_linter found unused l10n"
+            exit 1
+          fi
 
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.35.7
+          cache: true
+      - name: Flutter pub get
+        run: flutter pub get
       - name: Flutter test
         run: flutter test --no-pub --reporter=expanded
 
+  detekt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
       - name: Setup Java for detekt
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
       - name: Install detekt
         run: |
           curl -sSLo detekt.jar https://github.com/detekt/detekt/releases/download/v1.23.7/detekt-cli-1.23.7-all.jar
           echo '#!/usr/bin/env bash' > /usr/local/bin/detekt
           echo 'exec java -jar '"$PWD/detekt.jar"' "$@"' >> /usr/local/bin/detekt
           sudo chmod +x /usr/local/bin/detekt
-
       - name: Detekt
         run: |
           detekt \
             --input android/app/src/main/kotlin,android/app/src/main/java,android/service/src/main/java,android/common/src/main/java \
             --build-upon-default-config \
             ${{ hashFiles('detekt.yml') != '' && '--config detekt.yml' || '' }}
+
+  locale-parity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Locale parity (arb key sets match)
+        run: python3 scripts/check_locale_parity.py
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck (scripts)
+        run: shellcheck -S style scripts/*.sh
 
   secrets-scan:
     runs-on: ubuntu-latest
@@ -110,7 +167,7 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
-    needs: lint
+    needs: [format, analyze, dead-code, test, detekt, locale-parity, shellcheck]
     strategy:
       fail-fast: false
       matrix:

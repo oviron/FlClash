@@ -7,7 +7,7 @@
 #   ./scripts/lint.sh dart
 
 set -uo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 
 run="${1:-all}"
 status=0
@@ -22,13 +22,14 @@ run_kotlin() {
     fail "detekt not installed (brew install detekt)"
     return
   fi
-  detekt \
+  if detekt \
     --config detekt.yml \
     --input android/app/src/main/kotlin,android/service/src/main/java,android/common/src/main/java \
-    --build-upon-default-config \
-    2>&1 \
-    && ok "detekt clean" \
-    || fail "detekt reported issues"
+    --build-upon-default-config 2>&1; then
+    ok "detekt clean"
+  else
+    fail "detekt reported issues"
+  fi
 }
 
 run_dart() {
@@ -56,5 +57,9 @@ case "$run" in
 esac
 
 echo
-[[ $status -eq 0 ]] && ok "all checks passed" || fail "one or more checks failed"
+if [[ $status -eq 0 ]]; then
+  ok "all checks passed"
+else
+  fail "one or more checks failed"
+fi
 exit $status
