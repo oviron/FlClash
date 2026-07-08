@@ -34,7 +34,6 @@ export 'preferences.dart';
 export 'print.dart';
 export 'request.dart';
 export 'scroll.dart';
-export 'package:fl_clash/ingest/happ/happ_identity.dart';
 export 'share_link.dart';
 export 'package:fl_clash/ingest/xray.dart';
 export 'snowflake.dart';

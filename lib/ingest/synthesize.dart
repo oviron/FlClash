@@ -38,7 +38,8 @@ Map<String, dynamic> _grouped(
   final proxies = <Map<String, dynamic>>[];
   final specs = <Map<String, dynamic>>[];
   final groupNames = <String>[];
-  final used = <String>{};
+  // Reserve the exit-group name so a remark named 'PROXY' can't collide with it.
+  final used = <String>{quickStartExitGroup};
   for (final g in groups) {
     var name = g.remark.trim().isEmpty ? 'Group' : g.remark.trim();
     final base = name;
@@ -66,7 +67,8 @@ Map<String, dynamic> _grouped(
 List<Map<String, dynamic>> _ensureUniqueNames(
   List<Map<String, dynamic>> proxies,
 ) {
-  final used = <String>{};
+  // Reserve the exit-group name so a node named 'PROXY' can't collide with it.
+  final used = <String>{quickStartExitGroup};
   final out = <Map<String, dynamic>>[];
   for (var i = 0; i < proxies.length; i++) {
     var base = (proxies[i]['name'] as String?)?.trim() ?? '';

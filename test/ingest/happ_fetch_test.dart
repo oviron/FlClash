@@ -66,5 +66,24 @@ void main() {
       );
       expect(() => s.fetch('https://h/api/sub'), throwsA(isA<Object>()));
     });
+
+    test('a fuller clash honest body beats a smaller Happ xray body', () async {
+      // Panel UA-negotiates: clash to the honest UA, a thinner xray to Happ. The
+      // full native clash config must win, not the 2-node xray subset.
+      const clashHonest =
+          'proxies:\n'
+          '  - {name: c1, type: ss, server: h1, port: 1, cipher: aes-128-gcm, password: p}\n'
+          '  - {name: c2, type: ss, server: h2, port: 1, cipher: aes-128-gcm, password: p}\n'
+          '  - {name: c3, type: ss, server: h3, port: 1, cipher: aes-128-gcm, password: p}\n';
+      final s = HappFetchStrategy(
+        rawFetch: (url, {headers}) async => (
+          body: _isHapp(headers) ? _xray(2) : clashHonest,
+          headers: const <String, String>{},
+        ),
+        happIdentity: _fakeHapp,
+      );
+      final res = await s.fetch('https://h/sub');
+      expect(res.body, clashHonest);
+    });
   });
 }

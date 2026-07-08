@@ -260,19 +260,21 @@ class Request {
   }
 }
 
+// Identity headers the core strips on a cross-host redirect so they never leak
+// to another origin. x-hwid is a device id (set by the Happ module, but the
+// core owns the strip list so it depends on no module symbol).
+const _identityHeaders = {'x-hwid', 'authorization'};
+
 // Headers safe to carry to [to] when a request to [from] redirects: on a
-// cross-host hop the device id (x-hwid) and Authorization are dropped so they
-// never leak to another origin.
+// cross-host hop the identity headers are dropped.
 Map<String, String>? redirectSafeHeaders(
   Map<String, String>? headers,
   Uri from,
   Uri to,
 ) {
   if (headers == null || from.host == to.host) return headers;
-  return Map<String, String>.from(headers)..removeWhere((k, _) {
-    final key = k.toLowerCase();
-    return key == happHwidHeader || key == 'authorization';
-  });
+  return Map<String, String>.from(headers)
+    ..removeWhere((k, _) => _identityHeaders.contains(k.toLowerCase()));
 }
 
 final request = Request();

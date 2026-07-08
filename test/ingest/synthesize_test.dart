@@ -67,6 +67,21 @@ void main() {
       expect(names, ['X', 'X-2']);
     });
 
+    test('a node named PROXY is renamed off the exit-group name', () {
+      final config = synthesize((
+        proxies: [
+          {'name': 'PROXY', 'type': 'ss'},
+        ],
+        groups: null,
+        skipped: 0,
+      ));
+      final names = (config['proxies'] as List)
+          .map((p) => (p as Map)['name'])
+          .toList();
+      expect(names, ['PROXY-2']);
+      expect(_group(config, 'PROXY')['type'], 'url-test');
+    });
+
     test('empty -> ArgumentError, never a config with no exit', () {
       expect(
         () => synthesize((proxies: const [], groups: null, skipped: 0)),

@@ -84,4 +84,28 @@ void main() {
       expect(normalize('').proxies, isEmpty);
     });
   });
+
+  group('boundary predicates', () {
+    test('isSubscriptionUrl: single-line http(s) only, not share links', () {
+      expect(isSubscriptionUrl('https://h/sub'), isTrue);
+      expect(isSubscriptionUrl('http://h/sub'), isTrue);
+      expect(isSubscriptionUrl('vless://u@h:443'), isFalse);
+      expect(isSubscriptionUrl('https://h/a\nhttps://h/b'), isFalse);
+      expect(isSubscriptionUrl('not a url'), isFalse);
+    });
+
+    test('isClashDocument: a proxies:/proxy-groups: YAML block', () {
+      expect(isClashDocument('proxies:\n  - name: x'), isTrue);
+      expect(isClashDocument('proxy-groups:\n  - name: g'), isTrue);
+      expect(isClashDocument('vless://u@h:443'), isFalse);
+      expect(isClashDocument('{"proxies":[]}'), isFalse);
+    });
+
+    test('isIngestable: url, clash, or any normalizable content', () {
+      expect(isIngestable('https://h/sub'), isTrue);
+      expect(isIngestable('proxies:\n  - name: x'), isTrue);
+      expect(isIngestable('trojan://p@h:443#n'), isTrue);
+      expect(isIngestable('hello world'), isFalse);
+    });
+  });
 }

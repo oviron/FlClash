@@ -1,6 +1,7 @@
 import 'package:fl_clash/ingest/happ/happ_identity.dart';
 import 'package:fl_clash/ingest/normalize.dart';
 import 'package:fl_clash/ingest/registry.dart';
+import 'package:yaml/yaml.dart';
 
 typedef HeaderDecorator =
     Future<Map<String, String>> Function({Map<String, String>? base});
@@ -45,5 +46,21 @@ class HappFetchStrategy implements FetchStrategy {
     }
   }
 
-  int _count(String body) => normalize(body).proxies.length;
+  // Compare bodies by node count across formats. A clash document normalizes to
+  // zero (it is a passthrough, not a proxy list), so count its `proxies:` block
+  // directly, otherwise a thin xray body would always beat a full clash config.
+  int _count(String body) {
+    if (isClashDocument(body)) return _clashProxyCount(body);
+    return normalize(body).proxies.length;
+  }
+
+  int _clashProxyCount(String body) {
+    try {
+      final doc = loadYaml(body);
+      final proxies = doc is Map ? doc['proxies'] : null;
+      return proxies is List ? proxies.length : 0;
+    } catch (_) {
+      return 0;
+    }
+  }
 }

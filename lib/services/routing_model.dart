@@ -739,9 +739,9 @@ ProviderSpec _subToProvider(SubscriptionSource s, ProviderSpec? existing) {
     type: 'http',
     url: s.url,
   );
-  // An xray/Happ subscription carries the `xray:` marker so setup's prefetch
-  // fetches + converts it; a plain http subscription drops it (honest fetch),
-  // so toggling Happ off clears a previously-set marker instead of keeping it.
+  // A non-clash subscription carries the materialize marker so setup fetches and
+  // converts it; a clash subscription has none and the core fetches it natively.
+  // Rebuild from the probed marker so a stale one never lingers.
   final raw = {...base.raw}..remove('xray');
   return s.xray == null
       ? ProviderSpec(raw)
