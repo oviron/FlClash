@@ -1,7 +1,8 @@
 # Unified subscription and link ingestion
 
-Status: design, for review. Target: its own branch/PR (separate from the harvest
-backports, which are done). English-only per fork policy.
+Status: implemented on `feat/unified-ingestion` (rc30), verified on the emulator
+against three real links (cloVPN /happ, gosapi, blanc) through both entry points
+and into a production clash profile. English-only per fork policy.
 
 ## Problem
 
