@@ -4,14 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 // An xray-JSON array of [n] vless nodes, tagged so two equal-count bodies differ.
 String _xray(int n, {String tag = ''}) {
-  final profiles = [
-    for (var i = 0; i < n; i++)
+  String node(int i) =>
       '{"remarks":"$tag-r$i","outbounds":[{"protocol":"vless","settings":'
-          '{"vnext":[{"address":"h$i","port":443,"users":[{"id":"u$i"}]}]},'
-          '"streamSettings":{"network":"tcp","security":"tls",'
-          '"tlsSettings":{"serverName":"s"}}}]}',
-  ];
-  return '[${profiles.join(',')}]';
+      '{"vnext":[{"address":"h$i","port":443,"users":[{"id":"u$i"}]}]},'
+      '"streamSettings":{"network":"tcp","security":"tls",'
+      '"tlsSettings":{"serverName":"s"}}}]}';
+  return '[${[for (var i = 0; i < n; i++) node(i)].join(',')}]';
 }
 
 Future<Map<String, String>> _fakeHapp({Map<String, String>? base}) async => {

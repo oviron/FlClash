@@ -13,7 +13,6 @@ void main() {
     const link =
         'vless://uuid-1@1.2.3.4:443?security=reality&sni=ex.com&fp=chrome'
         '&pbk=PUBKEY&sid=ab12&type=tcp&flow=xtls-rprx-vision#node';
-    expect(classifyArtifact(link), ArtifactKind.shareLink);
 
     final cfg = synthesize((
       proxies: [parseShareLink(link)!],
@@ -40,7 +39,6 @@ void main() {
         'ss://${base64.encode(utf8.encode('aes-256-gcm:pw'))}@2.2.2.2:8388#b\n',
       ),
     );
-    expect(classifyArtifact(body), ArtifactKind.base64List);
 
     final proxies = parseSubscriptionContent(body).proxies;
     expect(proxies.length, 2);
@@ -66,7 +64,6 @@ void main() {
         "security":"tls","tlsSettings":{"alpn":["h3"]}}}]}
 ]
 ''';
-    expect(classifyArtifact(sub), ArtifactKind.xrayJson);
     final xrayGroups = parseXrayJsonGroups(sub);
     final cfg = synthesize((
       proxies: [for (final g in xrayGroups) ...g.proxies],

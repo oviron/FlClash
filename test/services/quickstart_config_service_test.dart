@@ -9,65 +9,6 @@ import 'package:flutter_test/flutter_test.dart';
 String _b64(String s) => base64.encode(utf8.encode(s));
 
 void main() {
-  group('classifyArtifact', () {
-    test('share link', () {
-      expect(
-        classifyArtifact('vless://uuid@1.2.3.4:443?security=tls#a'),
-        ArtifactKind.shareLink,
-      );
-      expect(
-        classifyArtifact('  trojan://pw@h:443#x '),
-        ArtifactKind.shareLink,
-      );
-    });
-
-    test('subscription url', () {
-      expect(
-        classifyArtifact('https://sub.example.com/link/abc'),
-        ArtifactKind.subscriptionUrl,
-      );
-    });
-
-    test('clash yaml', () {
-      expect(
-        classifyArtifact('proxies:\n  - name: a\n    type: vless'),
-        ArtifactKind.clashYaml,
-      );
-    });
-
-    test('base64 list', () {
-      final blob = _b64('vless://uuid@1.2.3.4:443?security=tls#a\n');
-      expect(classifyArtifact(blob), ArtifactKind.base64List);
-    });
-
-    test('xray json (happ subscription): a list with outbounds', () {
-      expect(
-        classifyArtifact(
-          '[{"remarks":"a","outbounds":[{"protocol":"vless"}]}]',
-        ),
-        ArtifactKind.xrayJson,
-      );
-    });
-
-    test('xray detection is precise (list + outbounds only)', () {
-      // A JSON list without `outbounds` is not xray.
-      expect(classifyArtifact('[1,2,3]'), ArtifactKind.unknown);
-      // JSON objects never trigger the list-only xray branch (SIP008, json-clash).
-      expect(
-        classifyArtifact('{"version":1,"servers":[]}'),
-        ArtifactKind.unknown,
-      );
-      expect(
-        classifyArtifact('{"proxies":[{"name":"a"}]}'),
-        ArtifactKind.unknown,
-      );
-    });
-
-    test('unknown', () {
-      expect(classifyArtifact('hello world'), ArtifactKind.unknown);
-    });
-  });
-
   group('synthesizeConfig', () {
     test('wraps proxies into the node envelope (topology only)', () {
       final cfg = synthesize((

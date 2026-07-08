@@ -1,59 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:fl_clash/common/share_link.dart';
 import 'package:fl_clash/common/task.dart';
 import 'package:fl_clash/ingest/normalize.dart';
 import 'package:fl_clash/ingest/synthesize.dart';
 import 'package:fl_clash/services/routing_model.dart';
-
-// The kind of artifact a user pasted, decided without any network call.
-enum ArtifactKind {
-  clashYaml,
-  subscriptionUrl,
-  shareLink,
-  base64List,
-  xrayJson,
-  unknown,
-}
-
-ArtifactKind classifyArtifact(String text) {
-  final t = text.trim();
-  if (t.isEmpty) return ArtifactKind.unknown;
-
-  final schemeIdx = t.indexOf('://');
-  if (schemeIdx > 0) {
-    final scheme = t.substring(0, schemeIdx).toLowerCase();
-    if (shareLinkSchemes.contains(scheme)) return ArtifactKind.shareLink;
-    if (scheme == 'http' || scheme == 'https') {
-      return ArtifactKind.subscriptionUrl;
-    }
-  }
-
-  if (RegExp(r'(^|\n)\s*proxies\s*:').hasMatch(t) ||
-      t.contains('proxy-groups:')) {
-    return ArtifactKind.clashYaml;
-  }
-
-  // xray-JSON (Happ subscription): a top-level list of profiles carrying
-  // `outbounds`. Distinct from clash-YAML (a `proxies` map) and SIP008.
-  if (t.startsWith('[')) {
-    try {
-      final j = jsonDecode(t);
-      if (j is List && j.any((e) => e is Map && e.containsKey('outbounds'))) {
-        return ArtifactKind.xrayJson;
-      }
-    } catch (_) {}
-  }
-
-  final decoded = decodeBase64Text(t);
-  if (decoded != null &&
-      shareLinkSchemes.any((s) => decoded.contains('$s://'))) {
-    return ArtifactKind.base64List;
-  }
-
-  return ArtifactKind.unknown;
-}
 
 // Subscription display name + provider key, derived without a second fetch:
 // profile-title (plain or `base64:`) -> Content-Disposition filename -> URL host

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/ingest/pipeline.dart';
 import 'package:fl_clash/profile_routing/reapply.dart';
 import 'package:fl_clash/profile_routing/target_validation.dart';
 import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
@@ -204,64 +205,26 @@ extension ProfileExtension on Profile {
   }
 
   Future<Profile> update() async {
-    // Fetch as our own client first (honest identity); escalate to the Happ
-    // client only when happMode is pinned or the honest body is unusable (a
-    // panel that gates its full node set behind the Happ client).
-    final response = await fetchWithHappFallback(
-      ({required bool happ}) async {
-        return request.getFileResponseForUrl(
-          url,
-          headers: happ ? await happHeaders() : null,
-        );
-      },
-      (r) => !_looksUnusable(r.data),
-      forceHapp: happMode,
-    );
-    final disposition = response.headers.value('content-disposition');
-    final userinfo = response.headers.value('subscription-userinfo');
-    // Clash convention: the panel's refresh cadence in hours. Honor it so the
-    // app polls exactly like Happ instead of on its own fixed schedule.
-    final serverHours = int.tryParse(
-      response.headers.value('profile-update-interval') ?? '',
-    );
-    final converted = await _maybeConvertSubscriptionBody(
-      response.data ?? Uint8List.fromList([]),
-    );
+    // One ingestion path: resolve any wrapper, dual-fetch (honest + Happ, the
+    // richer wins), and normalize. Convert to a self-contained config, or pass a
+    // clash doc through so the native validateConfig surfaces an honest error.
+    final ingested = await ingest(url);
+    final meta = ingested.meta;
+    final converted =
+        await artifactToConfigBytes(ingested.body) ??
+        Uint8List.fromList(utf8.encode(ingested.body));
     final bytes = await _reapplyAppRouting(converted);
     _notifyDanglingTargets(bytes);
     return await copyWith(
       label: label.takeFirstValid([
-        utils.getFileNameForDisposition(disposition),
+        utils.getFileNameForDisposition(meta.disposition),
         id.toString(),
       ]),
-      subscriptionInfo: SubscriptionInfo.formHString(userinfo),
-      autoUpdateDuration: serverHours != null && serverHours > 0
-          ? Duration(hours: serverHours)
+      subscriptionInfo: SubscriptionInfo.formHString(meta.userinfo),
+      autoUpdateDuration: meta.updateHours != null && meta.updateHours! > 0
+          ? Duration(hours: meta.updateHours!)
           : autoUpdateDuration,
     ).saveFile(bytes);
-  }
-
-  // Unknown = not clash / base64 / share-link / xray-JSON, i.e. an instruction
-  // page or a block, which signals the panel wants a Happ-shaped request.
-  bool _looksUnusable(Uint8List? raw) {
-    if (raw == null || raw.isEmpty) return true;
-    try {
-      return classifyArtifact(utf8.decode(raw)) == ArtifactKind.unknown;
-    } catch (_) {
-      return true;
-    }
-  }
-
-  // A subscription URL may return a base64 v2ray list (or a single share link)
-  // instead of clash YAML; convert it in-app so refreshes keep working. Falls
-  // back to the raw body on any failure (e.g. it was already clash YAML).
-  Future<Uint8List> _maybeConvertSubscriptionBody(Uint8List raw) async {
-    try {
-      final text = utf8.decode(raw);
-      return await artifactToConfigBytes(text) ?? raw;
-    } catch (_) {
-      return raw;
-    }
   }
 
   // A subscription refresh can rename/remove a proxy-group a routing rule
