@@ -268,7 +268,7 @@ Map<String, dynamic>? _parseSs(String text) {
     'udp': true,
   };
   if (pluginParam != null && pluginParam.isNotEmpty) {
-    final plugin = _ssPlugin(pluginParam);
+    final plugin = ssPlugin(pluginParam);
     if (plugin == null) return null; // unsupported plugin -> honest no-node
     proxy.addAll(plugin);
   }
@@ -277,7 +277,7 @@ Map<String, dynamic>? _parseSs(String text) {
 
 // SIP002 `plugin=` spec (`name;k=v;flag;...`) -> mihomo plugin + plugin-opts;
 // null for a plugin mihomo has no mapping for.
-Map<String, dynamic>? _ssPlugin(String param) {
+Map<String, dynamic>? ssPlugin(String param) {
   final parts = param.split(';');
   final opts = <String, String>{};
   for (final p in parts.skip(1)) {
