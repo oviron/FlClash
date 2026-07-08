@@ -16,9 +16,11 @@ Future<FetchResult> requestRawFetch(
   return (body: resp.data ?? '', headers: flat);
 }
 
-// Call once at startup. The registerHappModule line is the module's only on/off
-// switch: drop it and every non-Happ format still ingests through the core.
+// Call once at startup (idempotent: resets first, so a hot restart re-registers
+// cleanly). The registerHappModule line is the module's only on/off switch:
+// drop it and every non-Happ format still ingests through the core.
 void initIngest() {
+  resetIngestRegistry();
   registerFetchStrategy(const CoreFetchStrategy(requestRawFetch));
   registerHappModule(requestRawFetch);
 }
