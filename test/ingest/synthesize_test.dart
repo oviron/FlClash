@@ -1,4 +1,3 @@
-import 'package:fl_clash/ingest/normalize.dart';
 import 'package:fl_clash/ingest/synthesize.dart';
 import 'package:fl_clash/ingest/xray.dart';
 import 'package:flutter_test/flutter_test.dart';

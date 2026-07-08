@@ -1,6 +1,9 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/ingest/normalize.dart';
+import 'package:fl_clash/ingest/pipeline.dart';
+import 'package:fl_clash/ingest/registry.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/plugins/app.dart';
@@ -1519,36 +1522,36 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
   }
 
   Future<void> _addServer() async {
-    final res = await globalState.showCommonDialog<({String url, bool happ})>(
-      child: HappUrlDialog(
+    final input = await globalState.showCommonDialog<String>(
+      child: InputDialog(
         title: appLocalizations.routingAddServer,
+        value: '',
         hintText: appLocalizations.routingServerHint,
       ),
     );
-    if (res == null || res.url.trim().isEmpty || !mounted) return;
-    final t = res.url.trim();
+    if (input == null || input.trim().isEmpty || !mounted) return;
+    // Resolve a wrapper (e.g. Happ /happ -> /api/sub) up front so the concrete
+    // subscription URL is what gets stored and later fetched.
+    final t = resolveInput(input.trim());
     final m = _model!;
-    switch (classifyArtifact(t)) {
-      case ArtifactKind.shareLink:
-        final p = parseShareLink(t);
-        if (p == null) return _fail();
-        await _addNodes(m, [p]);
-      case ArtifactKind.base64List:
-        final res = parseSubscriptionContent(t);
-        if (res.proxies.isEmpty) return _fail();
-        await _addNodes(m, res.proxies);
-        if (res.skipped > 0 && mounted) {
-          context.showNotifier(appLocalizations.routingSkippedNodes);
-        }
-      case ArtifactKind.subscriptionUrl:
-        await _addSubscription(m, t, happ: res.happ);
-      case ArtifactKind.xrayJson:
-        final ps = parseXrayJson(t);
-        if (ps.isEmpty) return _fail();
-        await _addNodes(m, ps);
-      case ArtifactKind.clashYaml:
-      case ArtifactKind.unknown:
-        _fail();
+    if (isSubscriptionUrl(t)) {
+      await _addSubscription(m, t);
+      return;
+    }
+    // Inline content (share link, base64 list, pasted xray/SIP008/sing-box):
+    // one pipeline, no fetch, added as individual servers.
+    final Ingested ingested;
+    try {
+      ingested = await ingest(t);
+    } catch (_) {
+      return _fail();
+    }
+    if (!mounted) return;
+    final n = ingested.normalized;
+    if (n.proxies.isEmpty) return _fail();
+    await _addNodes(m, n.proxies);
+    if (n.skipped > 0 && mounted) {
+      context.showNotifier(appLocalizations.routingSkippedNodes);
     }
   }
 
@@ -1573,12 +1576,8 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
     if (mounted) context.showNotifier(appLocalizations.routingServerAdded);
   }
 
-  Future<void> _addSubscription(
-    RoutingModel m,
-    String url, {
-    required bool happ,
-  }) async {
-    final probe = await _probeSubscription(url, happ: happ);
+  Future<void> _addSubscription(RoutingModel m, String url) async {
+    final probe = await _probeSubscription(url);
     if (!mounted) return;
     // The provider key and its `<name>-auto` group name must both be free.
     final taken = {
@@ -1617,31 +1616,26 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
     }
   }
 
-  // Reads the response headers for a human name. In Happ mode, fetch as the Happ
-  // client and mark the sub by-remark iff the body is xray-json (apply then
-  // splits it into hidden per-remark groups); otherwise stay an honest plain
-  // http sub. A fetch failure degrades to a plain sub named by host.
+  // Fetches through the pipeline (which handles the Happ identity) to read a
+  // human name and detect grouping: a grouped (per-remark) body is marked so the
+  // apply-time materializer splits it into hidden per-remark groups. A fetch
+  // failure degrades to a plain sub named by host.
   Future<({Map<String, dynamic>? xray, String name})> _probeSubscription(
-    String url, {
-    required bool happ,
-  }) async {
+    String url,
+  ) async {
     String? title;
     String? dispositionFilename;
-    var byRemark = false;
+    var grouped = false;
     try {
-      final resp = await request.getTextResponseForUrl(
-        url,
-        headers: happ ? await happHeaders() : null,
-      );
-      title = resp.headers.value('profile-title');
+      final ingested = await ingest(url);
+      title = ingested.meta.title;
       dispositionFilename = utils.getFileNameForDisposition(
-        resp.headers.value('content-disposition'),
+        ingested.meta.disposition,
       );
-      byRemark =
-          happ && classifyArtifact(resp.data ?? '') == ArtifactKind.xrayJson;
+      grouped = ingested.normalized.groups != null;
     } catch (_) {}
     return (
-      xray: byRemark ? const <String, dynamic>{'groups': 'by-remark'} : null,
+      xray: grouped ? const <String, dynamic>{'groups': 'by-remark'} : null,
       name: deriveSubscriptionName(
         profileTitle: title,
         dispositionFilename: dispositionFilename,

@@ -6,14 +6,13 @@ import 'package:flutter_test/flutter_test.dart';
 // 5 remark-profiles, 11 vless nodes total: mirrors the real cloVPN /api/sub.
 String _panelXray() {
   final counts = [3, 2, 2, 2, 2];
+  String node(int g, int i) =>
+      '{"protocol":"vless","settings":{"vnext":[{"address":"h$g$i","port":443,'
+      '"users":[{"id":"u$g$i"}]}]},"streamSettings":{"network":"tcp",'
+      '"security":"tls","tlsSettings":{"serverName":"s"}}}';
   final profiles = <String>[];
   for (var g = 0; g < counts.length; g++) {
-    final nodes = [
-      for (var i = 0; i < counts[g]; i++)
-        '{"protocol":"vless","settings":{"vnext":[{"address":"h$g$i","port":443,'
-            '"users":[{"id":"u$g$i"}]}]},"streamSettings":{"network":"tcp",'
-            '"security":"tls","tlsSettings":{"serverName":"s"}}}',
-    ];
+    final nodes = [for (var i = 0; i < counts[g]; i++) node(g, i)];
     profiles.add('{"remarks":"Group$g","outbounds":[${nodes.join(',')}]}');
   }
   return '[${profiles.join(',')}]';
