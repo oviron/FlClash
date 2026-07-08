@@ -6,7 +6,11 @@
 
 - Per-profile app routing is now a three-way choice, All / Selected / Except, mapped to `tun.include-package` / `tun.exclude-package` and applied at `VpnService.Builder`. All means literally all apps (any stale global filter is force-disabled), so a whitelist/blacklist profile can keep bank and government apps out of the tunnel with an OS-level guarantee. Changing the set on the active profile re-establishes the tunnel automatically instead of waiting for an app restart
 
-- Configurable tunnel MTU (default 1400). Backed by a core bump to libmihomo-android v0.2.0 (mihomo v1.19.27, bridgeABI 2), SHA-256 + GPG pinned
+- Configurable tunnel MTU (default 1400). Backed by a core bump to libmihomo-android v0.3.0 (mihomo v1.19.27, bridgeABI 3), SHA-256 + GPG pinned
+
+- Fixed a reproducible `:remote` core-process crash-loop (SIGABRT) on Android 11+ whenever process-based routing was active. mihomo's `resolveProcess` upcall received an empty `getPackagesForUid()` array (package-visibility filtering) and passed it through a `.first()` that threw across the JNI boundary, aborting the core the moment a rule matched on process. The core bump to libmihomo-android v0.3.0 (bridgeABI 3) null-guards the native upcall, and `metadata.Uid` is revived over a `uid\npackage` return protocol so UID-based rules match again; the consumer replaces the throwing `.first()` with `firstOrNull`. Verified on Android 15 with `find-process-mode: strict` under multi-app traffic
+
+- Backported a batch of fixes harvested from the fork ecosystem: auto-stop the tunnel when a profile parses to zero usable proxies; default `global-client-fingerprint: chrome` (uTLS ClientHello mimicry, one fewer DPI signal); a Quick Settings Tile cold-start race fix; a screen and Doze gated wake lock plus a foreground-gated notification poll to cut idle battery; a remote-URL sync button for override scripts; a collapse-all control and an always-on delay-test button in the proxies list; a GUI editor for the DNS `proxy-server-nameserver-policy` map; in-app log-level filtering; and assorted UX fixes (delay-test lock reset, synchronous system-back handling, delay-cache reset on restart and resume)
 
 - Bundled a baseline GeoSite database with a background auto-update, so the first connect on a network that blocks GitHub no longer stalls on a geo-DB download; a raw geo-load error in the apply path is now suppressed
 
