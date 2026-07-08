@@ -26,10 +26,14 @@ Future<String> _ensureInboundPassword() async {
   return pwd;
 }
 
-// Closes a side-channel: an unauthenticated local SOCKS5/HTTP inbound is
-// reachable from any app on the device, even those outside the per-app
-// whitelist, and would leak the VPN exit IP.
-Future<void> ensureInboundAuth(Map<String, dynamic> config) async {
+// Closes a side-channel: an unauthenticated local inbound is reachable from
+// any app on the device and would leak the exit IP. Skipped in system-proxy
+// mode, where the port must serve every app (loopback stays the boundary).
+Future<void> ensureInboundAuth(
+  Map<String, dynamic> config, {
+  required bool systemProxy,
+}) async {
+  if (systemProxy) return;
   final hasInbound =
       ((config['mixed-port'] as num?)?.toInt() ?? 0) > 0 ||
       ((config['port'] as num?)?.toInt() ?? 0) > 0 ||

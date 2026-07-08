@@ -22,7 +22,10 @@ extension NetworkRulesCacheControllerExt on AppController {
       if (config.isEmpty) {
         continue;
       }
-      await ensureInboundAuth(config);
+      await ensureInboundAuth(
+        config,
+        systemProxy: _ref.read(vpnSettingProvider).systemProxy,
+      );
       final yamlString = await encodeYamlTask(config);
       await File(
         await appPath.networkRulesCachePath(id),

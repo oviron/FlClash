@@ -202,7 +202,10 @@ extension SetupControllerExt on AppController {
       setupState: setupState,
       patchConfig: realPatchConfig,
     );
-    await ensureInboundAuth(config);
+    await ensureInboundAuth(
+      config,
+      systemProxy: _ref.read(vpnSettingProvider).systemProxy,
+    );
     await _prefetchXrayProviders(config, profile);
     final configFilePath = await appPath.configFilePath;
     final yamlString = await encodeYamlTask(config);
