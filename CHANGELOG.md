@@ -18,6 +18,8 @@
 
 - Fixed group rename lowercasing the name. Creating or renaming a proxy group in the routing constructor no longer forces the name to lowercase or rewrites its punctuation. A group name is a verbatim, case-sensitive mihomo reference (the same string that rules, the exit, `use` and `members` point at), not a slug, so it is stored as typed and only de-duplicated on collision, matching how imported and subscription-backed groups (`Besaev-RU`, `GoVPN-auto`) already keep their case. The slug form stays where it is actually needed: filter-list ids, scenario keys, and auto-generated per-remark subscription groups
 
+- Bumped the bundled core to libmihomo-android v0.3.1 (mihomo v1.19.28), a patch bump over v0.3.0 (mihomo v1.19.27). bridgeABI is unchanged at 3, so the facade contract is the same; the `.aar` SHA-256 and GPG signature are re-pinned in `setup.dart`
+
 ## v0.15.4
 
 - Removed the ByeDPI integration entirely: dropped the `bydpi` product flavor and the embedded byedpi DPI-bypass core, along with its settings UI, strategy tester, host list, and the `libbyedpi-android` `.aar` dependency. The app collapses to a single variant (`com.follow.clash`, no suffix) and APK artifacts are now named `FlClash-<version>-android-<abi>.apk` (no `-classic`/`-bydpi`). mihomo remains the only bundled core
