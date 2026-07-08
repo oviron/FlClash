@@ -165,7 +165,7 @@ extension ProfilesControllerExt on AppController {
     return label;
   }
 
-  Future<void> addProfileFormURL(String url, {bool happMode = false}) async {
+  Future<void> addProfileFormURL(String url) async {
     if (globalState.navigatorKey.currentState?.canPop() ?? false) {
       globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
@@ -174,7 +174,7 @@ extension ProfilesControllerExt on AppController {
       return await Profile.normal(
         url: url,
         label: _getLabelFromURL(url),
-      ).copyWith(happMode: happMode).update();
+      ).update();
     }, title: appLocalizations.addProfile);
     if (profile != null) {
       putProfile(profile);
@@ -184,10 +184,10 @@ extension ProfilesControllerExt on AppController {
   // Funnel for any pasted/scanned artifact. A subscription URL keeps the
   // http/quota path; share link / base64 list / clash YAML are converted in-app
   // to a self-contained local profile.
-  Future<void> addProfileFromText(String raw, {bool happMode = false}) async {
+  Future<void> addProfileFromText(String raw) async {
     final text = raw.trim();
     if (isSubscriptionUrl(text)) {
-      return addProfileFormURL(text, happMode: happMode);
+      return addProfileFormURL(text);
     }
     if (globalState.navigatorKey.currentState?.canPop() ?? false) {
       globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);

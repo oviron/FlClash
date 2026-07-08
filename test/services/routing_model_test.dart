@@ -909,16 +909,18 @@ rules:
       );
     });
 
-    test('toggling Happ mode sets then clears the by-remark marker', () {
+    test('updating a subscription sets then clears the by-remark marker', () {
       final m = RoutingModel.fromYaml(meshProfile);
-      final on = m.updateSubscription('govpn', happ: true).toYaml(meshProfile);
+      final on = m
+          .updateSubscription('govpn', xray: const {'groups': 'by-remark'})
+          .toYaml(meshProfile);
       expect(ProfileRulesDocument(on).proxyProviders['govpn']!.raw['xray'], {
         'groups': 'by-remark',
       });
-      // Turning it off must drop the marker, not keep the prior one.
+      // A later update with no marker must drop it, not keep the prior one.
       final off = RoutingModel.fromYaml(
         on,
-      ).updateSubscription('govpn', happ: false).toYaml(meshProfile);
+      ).updateSubscription('govpn').toYaml(meshProfile);
       expect(
         ProfileRulesDocument(
           off,

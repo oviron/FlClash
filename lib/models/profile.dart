@@ -66,9 +66,6 @@ abstract class Profile with _$Profile {
     required Duration autoUpdateDuration,
     SubscriptionInfo? subscriptionInfo,
     @Default(true) bool autoUpdate,
-    // Fetch this subscription as the Happ client (UA + device id) so panels that
-    // gate their full node set behind Happ serve it in full; off = honest fetch.
-    @Default(false) bool happMode,
     @Default({}) Map<String, String> selectedMap,
     @Default({}) Set<String> unfoldSet,
     @Default(OverwriteType.standard) OverwriteType overwriteType,

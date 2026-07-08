@@ -220,12 +220,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoRunDesc": MessageLookupByLibrary.simpleMessage("应用启动时立即建立隧道"),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage("自动设置系统DNS"),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自动更新"),
-    "happMode": MessageLookupByLibrary.simpleMessage("Happ 模式"),
     "noProxy": MessageLookupByLibrary.simpleMessage("没有可用的代理"),
     "scriptUpdated": MessageLookupByLibrary.simpleMessage("脚本已更新"),
-    "happModeDesc": MessageLookupByLibrary.simpleMessage(
-      "以 Happ 客户端身份获取，解锁面板中被隐藏的抗封锁节点",
-    ),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage("自动更新间隔（分钟）"),
     "backgroundLocationRationale": MessageLookupByLibrary.simpleMessage(
       "若要在应用处于后台时自动切换，请始终允许访问位置信息。",

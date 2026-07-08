@@ -278,12 +278,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Auto set system DNS",
     ),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("Auto update"),
-    "happMode": MessageLookupByLibrary.simpleMessage("Happ mode"),
     "noProxy": MessageLookupByLibrary.simpleMessage("No available proxies"),
     "scriptUpdated": MessageLookupByLibrary.simpleMessage("Script updated"),
-    "happModeDesc": MessageLookupByLibrary.simpleMessage(
-      "Fetch as the Happ client to unlock anti-block nodes on panels that gate them",
-    ),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "Auto update interval (minutes)",
     ),

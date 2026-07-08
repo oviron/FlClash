@@ -230,7 +230,7 @@ extension SetupControllerExt on AppController {
       config,
       systemProxy: _ref.read(vpnSettingProvider).systemProxy,
     );
-    await _prefetchXrayProviders(config, profile);
+    await _materializeSubscriptions(config, profile);
     final configFilePath = await appPath.configFilePath;
     final yamlString = await encodeYamlTask(config);
     await File(configFilePath).safeWriteAsStringAtomic(yamlString);
@@ -262,11 +262,13 @@ extension SetupControllerExt on AppController {
     addCheckIp();
   }
 
-  // Happ/xray proxy-providers can't be fetched by the core (it can't parse
-  // xray-JSON). Detect them from the on-disk profile (the runtime map may be
-  // core-stripped), fetch+convert here, write a `proxies:` file, and flip the
-  // provider to `type: file` so the core just reads it. Markers never reach it.
-  Future<void> _prefetchXrayProviders(
+  // Non-clash subscriptions (xray-JSON / base64 / SIP008 / sing-box / share
+  // lists) can't be served to the core as a live provider, so the app fetches
+  // and normalizes them here through the pipeline (dual-fetch), writes a
+  // `proxies:` file, and flips the provider to `type: file`. Clash providers are
+  // left for the core to fetch natively. The `xray` marker, set at add/edit
+  // time, selects the subscriptions to materialize; markers never reach the core.
+  Future<void> _materializeSubscriptions(
     Map<String, dynamic> config,
     Profile? profile,
   ) async {
@@ -294,8 +296,7 @@ extension SetupControllerExt on AppController {
     // concurrently would race, so collect per-provider remarks and inject after.
     final injects = await Future.wait(
       keys.map(
-        (k) =>
-            _prefetchOneXrayProvider(providers[k], onDisk[k]!, k, profile.id),
+        (k) => _materializeOneProvider(providers[k], onDisk[k]!, k, profile.id),
       ),
     );
     for (final inj in injects) {
@@ -303,7 +304,7 @@ extension SetupControllerExt on AppController {
     }
   }
 
-  Future<({String key, List<RemarkGroup> remarks})?> _prefetchOneXrayProvider(
+  Future<({String key, List<RemarkGroup> remarks})?> _materializeOneProvider(
     dynamic entry,
     ProviderSpec spec,
     String key,
@@ -313,21 +314,8 @@ extension SetupControllerExt on AppController {
     final path = (entry['path'] ?? spec.path)?.toString();
     if (path == null) return null;
 
-    final buckets = <String, List<String>>{};
-    var fingerprint = 'upstream';
-    var dropUnmatched = false;
     final xray = spec.raw['xray'];
-    final byRemark = xray is Map && '${xray['groups'] ?? ''}' == 'by-remark';
-    if (xray is Map) {
-      final b = xray['buckets'];
-      if (b is Map) {
-        b.forEach((k, v) {
-          if (v is List) buckets['$k'] = v.map((e) => '$e').toList();
-        });
-      }
-      if (xray['fingerprint'] != null) fingerprint = '${xray['fingerprint']}';
-      dropUnmatched = xray['drop-unmatched'] == true;
-    }
+    final grouped = xray is Map && '${xray['groups'] ?? ''}' == 'by-remark';
 
     final base = <String, String>{};
     final rawHeader = spec.raw['header'];
@@ -336,39 +324,29 @@ extension SetupControllerExt on AppController {
         base['$k'] = v is List && v.isNotEmpty ? '${v.first}' : '$v';
       });
     }
-    final headers = await happHeaders(base: base);
 
     var proxies = const <Map<String, dynamic>>[];
     var remarks = const <RemarkGroup>[];
     final url = spec.url;
     if (url != null && url.isNotEmpty) {
       try {
-        final resp = await request.getTextResponseForUrl(url, headers: headers);
-        final userinfo = resp.headers.value('subscription-userinfo');
+        final ingested = await ingest(url, headers: base.isEmpty ? null : base);
+        final userinfo = ingested.meta.userinfo;
         if (userinfo != null) {
           _ref
               .read(providerQuotaProvider.notifier)
               .set(profileId, key, SubscriptionInfo.formHString(userinfo));
         }
-        if (byRemark) {
-          final slugged = slugXrayGroups(
-            resp.data ?? '',
-            key,
-            fingerprint: fingerprint,
-          );
+        if (grouped && ingested.normalized.groups != null) {
+          // <key>-rNN-MM names let the provider be sliced per remark by filter.
+          final slugged = slugXrayGroups(ingested.body, key);
           proxies = slugged.proxies;
           remarks = slugged.remarks;
         } else {
-          proxies = parseXrayJson(
-            resp.data ?? '',
-            prefix: key,
-            buckets: buckets,
-            fingerprint: fingerprint,
-            dropUnmatched: dropUnmatched,
-          );
+          proxies = _uniqueProxyNames(ingested.normalized.proxies);
         }
       } catch (e) {
-        commonPrint.log('xray provider $key fetch failed: $e');
+        commonPrint.log('provider $key materialize failed: $e');
       }
     }
 
@@ -378,7 +356,7 @@ extension SetupControllerExt on AppController {
       await file.safeWriteAsStringAtomic(
         await encodeYamlTask({'proxies': proxies}),
       );
-      if (byRemark) {
+      if (grouped) {
         // Config is rebuilt each apply; persist the group descriptors so a later
         // apply whose fetch fails restores them from cache instead of reverting
         // Go to a flat list (mirrors the node sidecar's cache failover).
@@ -396,9 +374,9 @@ extension SetupControllerExt on AppController {
       globalState.showNotifier('$key: ${appLocalizations.networkException}');
     } // else: upstream unreachable but a cache exists -> serve it (failover).
 
-    // Failed/empty by-remark fetch but a cached sidecar exists: recover the
-    // remark descriptors from the meta cache so the grouping survives.
-    if (byRemark && remarks.isEmpty) {
+    // Failed/empty grouped fetch but a cached sidecar exists: recover the remark
+    // descriptors from the meta cache so the grouping survives.
+    if (grouped && remarks.isEmpty) {
       remarks = await _readCachedRemarks(metaFile);
     }
 
@@ -411,6 +389,27 @@ extension SetupControllerExt on AppController {
       ..remove('format');
 
     return remarks.isEmpty ? null : (key: key, remarks: remarks);
+  }
+
+  // A provider file needs unique proxy names; a subscription's own names are
+  // usually unique, so collisions only get a numeric suffix.
+  List<Map<String, dynamic>> _uniqueProxyNames(
+    List<Map<String, dynamic>> proxies,
+  ) {
+    final used = <String>{};
+    final out = <Map<String, dynamic>>[];
+    for (var i = 0; i < proxies.length; i++) {
+      var name = (proxies[i]['name'] as String?)?.trim() ?? '';
+      if (name.isEmpty) name = 'node-${i + 1}';
+      var unique = name;
+      var n = 2;
+      while (used.contains(unique)) {
+        unique = '$name-${n++}';
+      }
+      used.add(unique);
+      out.add({...proxies[i], 'name': unique});
+    }
+    return out;
   }
 
   Future<List<RemarkGroup>> _readCachedRemarks(File metaFile) async {

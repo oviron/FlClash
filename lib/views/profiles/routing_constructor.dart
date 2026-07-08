@@ -1617,25 +1617,32 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
   }
 
   // Fetches through the pipeline (which handles the Happ identity) to read a
-  // human name and detect grouping: a grouped (per-remark) body is marked so the
-  // apply-time materializer splits it into hidden per-remark groups. A fetch
-  // failure degrades to a plain sub named by host.
+  // human name and pick a materialize marker: `by-remark` for grouped xray (the
+  // materializer splits it into hidden per-remark groups), `flat` for any other
+  // non-clash body the core cannot serve as a live provider, and none for a
+  // clash body (left for the core to fetch natively). A fetch failure degrades
+  // to a plain sub named by host.
   Future<({Map<String, dynamic>? xray, String name})> _probeSubscription(
     String url,
   ) async {
     String? title;
     String? dispositionFilename;
-    var grouped = false;
+    Map<String, dynamic>? marker;
     try {
       final ingested = await ingest(url);
       title = ingested.meta.title;
       dispositionFilename = utils.getFileNameForDisposition(
         ingested.meta.disposition,
       );
-      grouped = ingested.normalized.groups != null;
+      final n = ingested.normalized;
+      if (n.groups != null) {
+        marker = const {'groups': 'by-remark'};
+      } else if (n.proxies.isNotEmpty) {
+        marker = const {'groups': 'flat'};
+      }
     } catch (_) {}
     return (
-      xray: grouped ? const <String, dynamic>{'groups': 'by-remark'} : null,
+      xray: marker,
       name: deriveSubscriptionName(
         profileTitle: title,
         dispositionFilename: dispositionFilename,
@@ -1706,17 +1713,20 @@ class _ProxiesViewState extends ConsumerState<_ProxiesView>
   }
 
   Future<void> _editSubscription(SubscriptionSource s) async {
-    final res = await globalState.showCommonDialog<({String url, bool happ})>(
-      child: HappUrlDialog(
+    final url = await globalState.showCommonDialog<String>(
+      child: InputDialog(
         title: appLocalizations.routingSubscriptionUrl,
-        initialUrl: s.url ?? '',
-        initialHapp: s.xray != null,
+        value: s.url ?? '',
         hintText: 'https://example.com/sub.yaml',
       ),
     );
-    if (res == null || res.url.trim().isEmpty || !mounted) return;
+    if (url == null || url.trim().isEmpty || !mounted) return;
+    // Re-probe the new URL so the grouping marker reflects it (no manual toggle).
+    final resolved = resolveInput(url.trim());
+    final probe = await _probeSubscription(resolved);
+    if (!mounted) return;
     await _write(
-      _model!.updateSubscription(s.name, url: res.url.trim(), happ: res.happ),
+      _model!.updateSubscription(s.name, url: resolved, xray: probe.xray),
     );
   }
 
