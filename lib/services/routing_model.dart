@@ -503,24 +503,21 @@ class RoutingModel {
     );
   }
 
-  // happ == null leaves the Happ/xray marker as-is; true sets it (per-remark,
-  // fetched as Happ at apply), false clears it (honest fetch, native clash).
-  RoutingModel updateSubscription(String name, {String? url, bool? happ}) =>
-      copyWith(
-        servers: [
-          for (final s in servers)
-            if (s is SubscriptionSource && s.name == name)
-              ServerSource.subscription(
-                name: name,
-                url: url ?? s.url,
-                xray: happ == null
-                    ? s.xray
-                    : (happ ? const {'groups': 'by-remark'} : null),
-              )
-            else
-              s,
-        ],
-      );
+  // Replaces the URL and the grouping marker, which the caller re-probes from
+  // the new URL (there is no manual Happ toggle).
+  RoutingModel updateSubscription(
+    String name, {
+    String? url,
+    Map<String, dynamic>? xray,
+  }) => copyWith(
+    servers: [
+      for (final s in servers)
+        if (s is SubscriptionSource && s.name == name)
+          ServerSource.subscription(name: name, url: url ?? s.url, xray: xray)
+        else
+          s,
+    ],
+  );
 }
 
 // Preserves each filtering mode's own app selection across a switch: leaving a mode

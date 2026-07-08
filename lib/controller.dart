@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/ingest/normalize.dart';
+import 'package:fl_clash/ingest/pipeline.dart';
 import 'package:fl_clash/ingest/synthesize.dart';
 import 'package:fl_clash/manager/effects/geo_refresh_effect.dart';
 import 'package:fl_clash/plugins/app.dart';
