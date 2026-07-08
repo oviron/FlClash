@@ -186,8 +186,7 @@ extension ProfilesControllerExt on AppController {
   // to a self-contained local profile.
   Future<void> addProfileFromText(String raw, {bool happMode = false}) async {
     final text = raw.trim();
-    final kind = classifyArtifact(text);
-    if (kind == ArtifactKind.subscriptionUrl) {
+    if (isSubscriptionUrl(text)) {
       return addProfileFormURL(text, happMode: happMode);
     }
     if (globalState.navigatorKey.currentState?.canPop() ?? false) {
@@ -195,12 +194,12 @@ extension ProfilesControllerExt on AppController {
     }
     toProfiles();
     final profile = await loadingRun(tag: LoadingTag.profiles, () async {
-      final bytes = await _quickStartBytes(text, kind);
+      final bytes = await _quickStartBytes(text);
       if (bytes == null) {
         throw appLocalizations.quickStartNoServers;
       }
       return await Profile.normal(
-        label: _quickStartLabel(text, kind),
+        label: _quickStartLabel(text),
       ).saveFile(bytes);
     }, title: appLocalizations.addProfile);
     if (profile != null) {
@@ -219,18 +218,16 @@ extension ProfilesControllerExt on AppController {
     unawaited(_ref.read(quickStartVerificationProvider.notifier).run());
   }
 
-  Future<Uint8List?> _quickStartBytes(String text, ArtifactKind kind) async {
-    if (kind == ArtifactKind.clashYaml) {
+  Future<Uint8List?> _quickStartBytes(String text) async {
+    if (isClashDocument(text)) {
       return Uint8List.fromList(utf8.encode(text));
     }
-    return artifactToConfigBytes(text, kind);
+    return artifactToConfigBytes(text);
   }
 
-  String _quickStartLabel(String text, ArtifactKind kind) {
-    if (kind == ArtifactKind.shareLink) {
-      final name = (parseShareLink(text)?['name'] as String?)?.trim();
-      if (name != null && name.isNotEmpty) return name;
-    }
+  String _quickStartLabel(String text) {
+    final name = (parseShareLink(text)?['name'] as String?)?.trim();
+    if (name != null && name.isNotEmpty) return name;
     return appLocalizations.quickStartImported;
   }
 

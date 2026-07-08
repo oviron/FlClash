@@ -258,8 +258,7 @@ extension ProfileExtension on Profile {
   Future<Uint8List> _maybeConvertSubscriptionBody(Uint8List raw) async {
     try {
       final text = utf8.decode(raw);
-      final kind = classifyArtifact(text);
-      return await artifactToConfigBytes(text, kind) ?? raw;
+      return await artifactToConfigBytes(text) ?? raw;
     } catch (_) {
       return raw;
     }

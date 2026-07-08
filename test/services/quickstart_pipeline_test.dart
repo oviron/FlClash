@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fl_clash/common/share_link.dart';
+import 'package:fl_clash/ingest/synthesize.dart';
 import 'package:fl_clash/ingest/xray.dart';
 import 'package:fl_clash/common/yaml.dart';
 import 'package:fl_clash/services/quickstart_config_service.dart';
@@ -14,7 +15,11 @@ void main() {
         '&pbk=PUBKEY&sid=ab12&type=tcp&flow=xtls-rprx-vision#node';
     expect(classifyArtifact(link), ArtifactKind.shareLink);
 
-    final cfg = synthesizeConfig([parseShareLink(link)!]);
+    final cfg = synthesize((
+      proxies: [parseShareLink(link)!],
+      groups: null,
+      skipped: 0,
+    ));
     expect(cfg['proxies'][0]['reality-opts']['public-key'], 'PUBKEY');
     expect(cfg['proxies'][0]['flow'], 'xtls-rprx-vision');
     expect((cfg['proxy-groups'][0]['proxies'] as List).first, 'node');
@@ -40,7 +45,9 @@ void main() {
     final proxies = parseSubscriptionContent(body).proxies;
     expect(proxies.length, 2);
 
-    final reparsed = loadYaml(yaml.encode(synthesizeConfig(proxies)));
+    final reparsed = loadYaml(
+      yaml.encode(synthesize((proxies: proxies, groups: null, skipped: 0))),
+    );
     expect((reparsed['proxies'] as List).length, 2);
     expect((reparsed['proxy-groups'][0]['proxies'] as List).length, 2);
   });
@@ -60,7 +67,12 @@ void main() {
 ]
 ''';
     expect(classifyArtifact(sub), ArtifactKind.xrayJson);
-    final cfg = synthesizeGroupedConfig(parseXrayJsonGroups(sub));
+    final xrayGroups = parseXrayJsonGroups(sub);
+    final cfg = synthesize((
+      proxies: [for (final g in xrayGroups) ...g.proxies],
+      groups: xrayGroups,
+      skipped: 0,
+    ));
     final reparsed = loadYaml(applyQuickStartRouting(yaml.encode(cfg)));
 
     final groups = reparsed['proxy-groups'] as List;

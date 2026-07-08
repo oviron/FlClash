@@ -51,13 +51,36 @@ Normalized normalize(String text, {int depth = 0}) {
   final decoded = decodeBase64Text(t);
   if (decoded != null) {
     final d = decoded.trim();
-    if (d != t && (d.contains('://') || d.startsWith('{') || d.startsWith('['))) {
+    if (d != t &&
+        (d.contains('://') || d.startsWith('{') || d.startsWith('['))) {
       return normalize(decoded, depth: depth + 1);
     }
   }
 
   return _empty;
 }
+
+// Boundary predicates the pipeline uses around the pure normalizer: an http(s)
+// URL is fetched first, a clash document is passed through unchanged, and
+// anything normalize can turn into proxies is ingestable.
+bool isSubscriptionUrl(String text) {
+  final t = text.trim();
+  final i = t.indexOf('://');
+  if (i <= 0) return false;
+  final scheme = t.substring(0, i).toLowerCase();
+  return (scheme == 'http' || scheme == 'https') && !t.contains('\n');
+}
+
+bool isClashDocument(String text) {
+  final t = text.trim();
+  return RegExp(r'(^|\n)\s*proxies\s*:').hasMatch(t) ||
+      t.contains('proxy-groups:');
+}
+
+bool isIngestable(String text) =>
+    isSubscriptionUrl(text) ||
+    isClashDocument(text) ||
+    normalize(text).proxies.isNotEmpty;
 
 Object? _tryJson(String t) {
   if (!(t.startsWith('{') || t.startsWith('['))) return null;
@@ -111,7 +134,7 @@ Normalized? _fromJson(Object json, String rawText) {
 
 // xray outbounds carry protocol + settings/streamSettings; sing-box outbounds
 // carry type + server_port. Sniff the first proxy-shaped element to pick.
-bool _isXrayOutbounds(List outbounds) {
+bool _isXrayOutbounds(List<dynamic> outbounds) {
   for (final ob in outbounds) {
     if (ob is! Map) continue;
     if (ob.containsKey('protocol') &&
