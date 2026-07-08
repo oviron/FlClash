@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:fl_clash/common/share_link.dart';
 import 'package:fl_clash/common/task.dart';
-import 'package:fl_clash/common/xray_json.dart';
+import 'package:fl_clash/ingest/xray.dart';
 import 'package:fl_clash/services/routing_model.dart';
 
 // The kind of artifact a user pasted, decided without any network call.

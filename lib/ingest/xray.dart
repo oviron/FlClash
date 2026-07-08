@@ -2,92 +2,7 @@ import 'dart:convert';
 
 import 'package:fl_clash/common/yaml.dart';
 
-List<Map<String, dynamic>> parseXrayJson(
-  String text, {
-  String? prefix,
-  Map<String, List<String>>? buckets,
-  String fingerprint = 'upstream',
-  bool dropUnmatched = false,
-}) {
-  final Object? decoded;
-  try {
-    decoded = jsonDecode(text);
-  } catch (_) {
-    return [];
-  }
-  if (decoded is! List) return [];
-
-  final out = <Map<String, dynamic>>[];
-  final counters = <String, int>{};
-  final skipNeedles = buckets?['skip'] ?? const <String>[];
-
-  for (final profile in decoded) {
-    if (profile is! Map) continue;
-    final remarks = '${profile['remarks'] ?? ''}';
-    if (skipNeedles.any(remarks.contains)) continue;
-    final bucket = _bucketFor(remarks, buckets, dropUnmatched);
-    if (bucket == null) continue;
-    final obs = profile['outbounds'];
-    if (obs is! List) continue;
-    for (final ob in obs) {
-      if (ob is! Map) continue;
-      final proxy = _convertOutbound(ob, fingerprint);
-      if (proxy == null) continue;
-      final String name;
-      if (prefix != null) {
-        final n = (counters[bucket] ?? 0) + 1;
-        counters[bucket] = n;
-        name = '$prefix-$bucket-${n.toString().padLeft(2, '0')}';
-      } else {
-        name = remarks.isNotEmpty ? remarks : 'node';
-      }
-      out.add({'name': name, ...proxy});
-    }
-  }
-  return out;
-}
-
 typedef XrayGroup = ({String remark, List<Map<String, dynamic>> proxies});
-
-List<XrayGroup> parseXrayJsonGroups(
-  String text, {
-  String fingerprint = 'upstream',
-}) {
-  final Object? decoded;
-  try {
-    decoded = jsonDecode(text);
-  } catch (_) {
-    return [];
-  }
-  if (decoded is! List) return [];
-
-  final out = <XrayGroup>[];
-  final usedNames = <String>{};
-  for (final profile in decoded) {
-    if (profile is! Map) continue;
-    final remarks = '${profile['remarks'] ?? ''}';
-    final label = remarks.isNotEmpty ? remarks : 'node';
-    final obs = profile['outbounds'];
-    if (obs is! List) continue;
-    final proxies = <Map<String, dynamic>>[];
-    var idx = 1;
-    for (final ob in obs) {
-      if (ob is! Map) continue;
-      final proxy = _convertOutbound(ob, fingerprint);
-      if (proxy == null) continue;
-      var name = '$label ${idx.toString().padLeft(2, '0')}';
-      while (usedNames.contains(name)) {
-        idx++;
-        name = '$label ${idx.toString().padLeft(2, '0')}';
-      }
-      usedNames.add(name);
-      proxies.add({'name': name, ...proxy});
-      idx++;
-    }
-    if (proxies.isNotEmpty) out.add((remark: label, proxies: proxies));
-  }
-  return out;
-}
 
 // slug, not the human label, drives filter: so emoji/Cyrillic/| never reach a regex
 typedef RemarkGroup = ({String label, String slug, int count});
@@ -98,6 +13,114 @@ typedef SluggedXray = ({
   List<Map<String, dynamic>> proxies,
   List<RemarkGroup> remarks,
 });
+
+// One profile of an xray-JSON array after a single walk: its remark, the flat
+// routing bucket (denylist folds unmatched into 'main'), and its converted but
+// still-unnamed proxies. Naming is a per-iterator concern, kept out of the walk.
+typedef _XrayProfile = ({
+  String remark,
+  String bucket,
+  List<Map<String, dynamic>> proxies,
+});
+
+// The single pass over an xray-JSON array. Each outbound is converted exactly
+// once here; the three public iterators differ only in how they name and shape
+// the result, so they can never diverge on proxy bodies again.
+List<_XrayProfile> _walkXray(
+  String text, {
+  required String fingerprint,
+  Map<String, List<String>>? buckets,
+  bool dropUnmatched = false,
+}) {
+  final Object? decoded;
+  try {
+    decoded = jsonDecode(text);
+  } catch (_) {
+    return const [];
+  }
+  if (decoded is! List) return const [];
+
+  final skipNeedles = buckets?['skip'] ?? const <String>[];
+  final out = <_XrayProfile>[];
+  for (final profile in decoded) {
+    if (profile is! Map) continue;
+    final remarks = '${profile['remarks'] ?? ''}';
+    if (skipNeedles.any(remarks.contains)) continue;
+    final bucket = _bucketFor(remarks, buckets, dropUnmatched);
+    if (bucket == null) continue;
+    final obs = profile['outbounds'];
+    if (obs is! List) continue;
+    final proxies = <Map<String, dynamic>>[];
+    for (final ob in obs) {
+      if (ob is! Map) continue;
+      final proxy = _convertOutbound(ob, fingerprint);
+      if (proxy != null) proxies.add(proxy);
+    }
+    out.add((remark: remarks, bucket: bucket, proxies: proxies));
+  }
+  return out;
+}
+
+// Flat node list. With a prefix, names are deterministic `<prefix>-<bucket>-NN`
+// (provider-slice friendly); without one, names come from the remark (deduped
+// downstream). buckets/dropUnmatched drive the denylist/allowlist routing split.
+List<Map<String, dynamic>> parseXrayJson(
+  String text, {
+  String? prefix,
+  Map<String, List<String>>? buckets,
+  String fingerprint = 'upstream',
+  bool dropUnmatched = false,
+}) {
+  final profiles = _walkXray(
+    text,
+    fingerprint: fingerprint,
+    buckets: buckets,
+    dropUnmatched: dropUnmatched,
+  );
+  final out = <Map<String, dynamic>>[];
+  final counters = <String, int>{};
+  for (final p in profiles) {
+    for (final proxy in p.proxies) {
+      final String name;
+      if (prefix != null) {
+        final n = (counters[p.bucket] ?? 0) + 1;
+        counters[p.bucket] = n;
+        name = '$prefix-${p.bucket}-${n.toString().padLeft(2, '0')}';
+      } else {
+        name = p.remark.isNotEmpty ? p.remark : 'node';
+      }
+      out.add({'name': name, ...proxy});
+    }
+  }
+  return out;
+}
+
+// One group per profile, nodes named `<label> NN` and deduped across groups.
+List<XrayGroup> parseXrayJsonGroups(
+  String text, {
+  String fingerprint = 'upstream',
+}) {
+  final profiles = _walkXray(text, fingerprint: fingerprint);
+  final out = <XrayGroup>[];
+  final usedNames = <String>{};
+  for (final p in profiles) {
+    final label = p.remark.isNotEmpty ? p.remark : 'node';
+    final named = <Map<String, dynamic>>[];
+    var idx = 1;
+    for (final proxy in p.proxies) {
+      var name = '$label ${idx.toString().padLeft(2, '0')}';
+      while (usedNames.contains(name)) {
+        idx++;
+        name = '$label ${idx.toString().padLeft(2, '0')}';
+      }
+      usedNames.add(name);
+      named.add({'name': name, ...proxy});
+      idx++;
+    }
+    if (named.isNotEmpty) out.add((remark: label, proxies: named));
+  }
+  return out;
+}
 
 SluggedXray slugXrayGroups(
   String text,

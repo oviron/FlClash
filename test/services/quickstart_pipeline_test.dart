@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:fl_clash/common/share_link.dart';
-import 'package:fl_clash/common/xray_json.dart';
+import 'package:fl_clash/ingest/xray.dart';
 import 'package:fl_clash/common/yaml.dart';
 import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:flutter_test/flutter_test.dart';
