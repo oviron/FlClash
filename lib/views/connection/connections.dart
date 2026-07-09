@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +26,12 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
 
   Timer? timer;
 
+  Map<String, ({int upload, int download})> _prevBytes = {};
+  DateTime? _lastUpdate;
+
   List<Widget> _buildActions() {
     return [
+      _buildSortAction(),
       IconButton(
         onPressed: () async {
           coreController.closeAllConnections();
@@ -36,6 +41,30 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
       ),
     ];
   }
+
+  Widget _buildSortAction() {
+    return PopupMenuButton<ConnectionsSortType>(
+      icon: const Icon(Icons.sort),
+      onSelected: (value) {
+        _connectionsStateNotifier.value = _connectionsStateNotifier.value
+            .copyWith(sortType: value);
+      },
+      itemBuilder: (_) => [
+        for (final type in ConnectionsSortType.values)
+          CheckedPopupMenuItem(
+            value: type,
+            checked: _connectionsStateNotifier.value.sortType == type,
+            child: Text(_sortLabel(type)),
+          ),
+      ],
+    );
+  }
+
+  String _sortLabel(ConnectionsSortType type) => switch (type) {
+    ConnectionsSortType.none => appLocalizations.defaultText,
+    ConnectionsSortType.traffic => appLocalizations.traffic,
+    ConnectionsSortType.speed => appLocalizations.speed,
+  };
 
   void _onSearch(String value) {
     _connectionsStateNotifier.value = _connectionsStateNotifier.value.copyWith(
@@ -67,8 +96,19 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
   }
 
   Future<void> _updateConnections() async {
+    final raw = await coreController.getConnections();
+    final now = DateTime.now();
+    final interval = _lastUpdate == null
+        ? 0.0
+        : now.difference(_lastUpdate!).inMilliseconds / 1000.0;
+    final withSpeed = computeConnectionSpeeds(raw, _prevBytes, interval);
+    _prevBytes = {
+      for (final info in raw)
+        info.id: (upload: info.upload, download: info.download),
+    };
+    _lastUpdate = now;
     _connectionsStateNotifier.value = _connectionsStateNotifier.value.copyWith(
-      trackerInfos: await coreController.getConnections(),
+      trackerInfos: withSpeed,
     );
   }
 

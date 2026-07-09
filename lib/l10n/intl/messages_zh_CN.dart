@@ -1030,6 +1030,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "size": MessageLookupByLibrary.simpleMessage("尺寸"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks端口"),
     "sort": MessageLookupByLibrary.simpleMessage("排序"),
+    "speed": MessageLookupByLibrary.simpleMessage("速度"),
+    "traffic": MessageLookupByLibrary.simpleMessage("流量"),
     "source": MessageLookupByLibrary.simpleMessage("来源"),
     "sourceIp": MessageLookupByLibrary.simpleMessage("源IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("特殊代理"),

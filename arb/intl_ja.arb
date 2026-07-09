@@ -212,6 +212,8 @@
   "style": "スタイル",
   "size": "サイズ",
   "sort": "並び替え",
+  "traffic": "通信量",
+  "speed": "速度",
   "columns": "列",
   "proxyGroup": "プロキシグループ",
   "go": "移動",

@@ -1541,6 +1541,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "size": MessageLookupByLibrary.simpleMessage("Размер"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks-порт"),
     "sort": MessageLookupByLibrary.simpleMessage("Сортировка"),
+    "speed": MessageLookupByLibrary.simpleMessage("Скорость"),
+    "traffic": MessageLookupByLibrary.simpleMessage("Трафик"),
     "source": MessageLookupByLibrary.simpleMessage("Источник"),
     "sourceIp": MessageLookupByLibrary.simpleMessage("Исходный IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("Специальный прокси"),

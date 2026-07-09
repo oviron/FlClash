@@ -56,6 +56,33 @@ List<Group> computeSort({
   }).toList();
 }
 
+// Per-connection up/down speed is not reported by the core, so derive it as the
+// byte delta between two successive snapshots keyed by connection id. A missing
+// previous entry (new connection) or a counter reset (negative delta) reads as 0.
+List<TrackerInfo> computeConnectionSpeeds(
+  List<TrackerInfo> current,
+  Map<String, ({int upload, int download})> previous,
+  double intervalSeconds,
+) {
+  if (intervalSeconds <= 0) {
+    return current
+        .map((info) => info.copyWith(uploadSpeed: 0, downloadSpeed: 0))
+        .toList();
+  }
+  return current.map((info) {
+    final prev = previous[info.id];
+    if (prev == null) {
+      return info.copyWith(uploadSpeed: 0, downloadSpeed: 0);
+    }
+    final up = ((info.upload - prev.upload) / intervalSeconds).round();
+    final down = ((info.download - prev.download) / intervalSeconds).round();
+    return info.copyWith(
+      uploadSpeed: up < 0 ? 0 : up,
+      downloadSpeed: down < 0 ? 0 : down,
+    );
+  }).toList();
+}
+
 SelectedProxyState getRealSelectedProxyState(
   SelectedProxyState state, {
   required List<Group> groups,

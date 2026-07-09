@@ -180,6 +180,7 @@ abstract class TrackerInfosState with _$TrackerInfosState {
     @Default([]) List<String> keywords,
     @Default('') String query,
     @Default(true) bool autoScrollToEnd,
+    @Default(ConnectionsSortType.none) ConnectionsSortType sortType,
   }) = _TrackerInfosState;
 }
 
@@ -187,7 +188,7 @@ extension TrackerInfosStateExt on TrackerInfosState {
   List<TrackerInfo> get list {
     final lowerQuery = query.toLowerCase().trim();
     final lowQuery = query.toLowerCase();
-    return trackerInfos.where((trackerInfo) {
+    final filtered = trackerInfos.where((trackerInfo) {
       final chains = trackerInfo.chains;
       final process = trackerInfo.metadata.process;
       final networkText = trackerInfo.metadata.network.toLowerCase();
@@ -203,6 +204,15 @@ extension TrackerInfosStateExt on TrackerInfosState {
               processText.contains(lowerQuery) ||
               chainsText.contains(lowerQuery));
     }).toList();
+    int traffic(TrackerInfo t) => t.upload + t.download;
+    int speed(TrackerInfo t) => (t.uploadSpeed ?? 0) + (t.downloadSpeed ?? 0);
+    return switch (sortType) {
+      ConnectionsSortType.none => filtered,
+      ConnectionsSortType.traffic =>
+        filtered..sort((a, b) => traffic(b).compareTo(traffic(a))),
+      ConnectionsSortType.speed =>
+        filtered..sort((a, b) => speed(b).compareTo(speed(a))),
+    };
   }
 }
 

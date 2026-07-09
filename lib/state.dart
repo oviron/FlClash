@@ -108,6 +108,15 @@ class GlobalState {
     final container = ProviderContainer(overrides: overrides);
     final profiles = await database.profilesDao.all().get();
     container.read(profilesProvider.notifier).setAndReorder(profiles);
+    // Hydrate the proxy groups from the last persisted snapshot so the Proxies
+    // screen renders immediately instead of blinking empty until the core loads.
+    final currentProfileId = config.currentProfileId;
+    if (currentProfileId != null) {
+      final snapshot = await preferences.getGroupsSnapshot(currentProfileId);
+      if (snapshot.isNotEmpty) {
+        container.read(groupsProvider.notifier).value = snapshot;
+      }
+    }
     await AppLocalizations.load(
       utils.getLocaleForString(config.appSettingProps.locale) ??
           WidgetsBinding.instance.platformDispatcher.locale,

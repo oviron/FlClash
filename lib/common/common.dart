@@ -30,6 +30,7 @@ export 'num.dart';
 export 'package.dart';
 export 'path.dart';
 export 'picker.dart';
+export 'groups_snapshot.dart';
 export 'preferences.dart';
 export 'print.dart';
 export 'request.dart';

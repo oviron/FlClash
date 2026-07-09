@@ -18,7 +18,7 @@ extension ProxiesControllerExt on AppController {
   Future<void> updateGroups() async {
     try {
       commonPrint.log('updateGroups');
-      _ref.read(groupsProvider.notifier).value = await retry(
+      final groups = await retry(
         task: () async {
           final sortType = _ref.read(
             proxiesStyleSettingProvider.select((state) => state.sortType),
@@ -39,6 +39,13 @@ extension ProxiesControllerExt on AppController {
         },
         retryIf: (res) => res.isEmpty,
       );
+      _ref.read(groupsProvider.notifier).value = groups;
+      // Persist a cold-start snapshot for the active profile so the next launch
+      // hydrates the Proxies screen before the core loads (see state.dart).
+      final profileId = _ref.read(currentProfileProvider)?.id;
+      if (profileId != null && groups.isNotEmpty) {
+        unawaited(preferences.saveGroupsSnapshot(profileId, groups));
+      }
     } catch (e) {
       commonPrint.log('updateGroups error: $e');
       _ref.read(groupsProvider.notifier).value = [];
