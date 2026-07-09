@@ -5,6 +5,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constant.dart';
+import 'groups_snapshot.dart';
 
 class Preferences {
   static Preferences? _instance;
@@ -103,6 +104,21 @@ class Preferences {
   Future<bool> setHwid(String value) async {
     final preferences = await sharedPreferencesCompleter.future;
     return preferences?.setString('happHwid', value) ?? false;
+  }
+
+  Future<void> saveGroupsSnapshot(int profileId, List<Group> groups) async {
+    final preferences = await sharedPreferencesCompleter.future;
+    await preferences?.setString(
+      'groupsSnapshot.$profileId',
+      encodeGroupsSnapshot(groups),
+    );
+  }
+
+  Future<List<Group>> getGroupsSnapshot(int profileId) async {
+    final preferences = await sharedPreferencesCompleter.future;
+    final raw = preferences?.getString('groupsSnapshot.$profileId');
+    if (raw == null) return const [];
+    return decodeGroupsSnapshot(raw);
   }
 
   Future<void> clearPreferences() async {

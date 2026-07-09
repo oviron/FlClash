@@ -212,6 +212,8 @@
   "style": "Style",
   "size": "Size",
   "sort": "Sort",
+  "traffic": "Traffic",
+  "speed": "Speed",
   "columns": "Columns",
   "proxyGroup": "Proxy group",
   "go": "Go",

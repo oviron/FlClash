@@ -1642,6 +1642,16 @@ class AppLocalizations {
     return Intl.message('Sort', name: 'sort', desc: '', args: []);
   }
 
+  /// `Traffic`
+  String get traffic {
+    return Intl.message('Traffic', name: 'traffic', desc: '', args: []);
+  }
+
+  /// `Speed`
+  String get speed {
+    return Intl.message('Speed', name: 'speed', desc: '', args: []);
+  }
+
   /// `Columns`
   String get columns {
     return Intl.message('Columns', name: 'columns', desc: '', args: []);

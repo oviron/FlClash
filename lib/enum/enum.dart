@@ -90,6 +90,8 @@ enum TrafficUnit { B, KB, MB, GB, TB }
 
 enum ProxiesSortType { none, delay, name }
 
+enum ConnectionsSortType { none, traffic, speed }
+
 enum TunStack { gvisor, system, mixed }
 
 enum AccessControlMode { acceptSelected, rejectSelected }

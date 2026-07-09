@@ -20,6 +20,10 @@
 
 - Bumped the bundled core to libmihomo-android v0.3.1 (mihomo v1.19.28), a patch bump over v0.3.0 (mihomo v1.19.27). bridgeABI is unchanged at 3, so the facade contract is the same; the `.aar` SHA-256 and GPG signature are re-pinned in `setup.dart`
 
+- The proxy list now hydrates from a per-profile snapshot on cold start, so the Proxies screen renders the last known groups immediately instead of blinking the empty-state illustration until the core has loaded and answered. The snapshot is a disposable cache persisted after each group refresh and overwritten by the first live update; a decode failure is ignored
+
+- Connections can now be sorted by traffic or speed. A sort control in the Connections app bar offers Default, Traffic (cumulative up plus down bytes) and Speed. Per-connection speed is not reported by the core, so it is derived as the byte delta between successive one-second snapshots; a new connection or a counter reset reads as zero
+
 ## v0.15.4
 
 - Removed the ByeDPI integration entirely: dropped the `bydpi` product flavor and the embedded byedpi DPI-bypass core, along with its settings UI, strategy tester, host list, and the `libbyedpi-android` `.aar` dependency. The app collapses to a single variant (`com.follow.clash`, no suffix) and APK artifacts are now named `FlClash-<version>-android-<abi>.apk` (no `-classic`/`-bydpi`). mihomo remains the only bundled core
