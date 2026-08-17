@@ -4,7 +4,7 @@
 
 Android `mihomo` client. Open source, no ads, no telemetry.
 
-A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (last upstream activity: February 2026). **Android-only**, `metacubex/mihomo v1.19.27` direct via 100% JNI, no REST controller. The mihomo bridge lives in [oviron/libmihomo-android](https://github.com/oviron/libmihomo-android). FlClash consumes it as a SHA-256 + GPG-pinned `.aar` download, no C/C++/Go code in this repo.
+A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (last upstream activity: February 2026). **Android-only**, `metacubex/mihomo v1.19.30` direct via 100% JNI, no REST controller. The mihomo bridge lives in [oviron/libmihomo-android](https://github.com/oviron/libmihomo-android). FlClash consumes it as a SHA-256 + GPG-pinned `.aar` download, no C/C++/Go code in this repo.
 
 <p align="center">
     <img alt="mobile" src="snapshots/mobile.gif" width="45%">
@@ -19,7 +19,7 @@ A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (
 - **Bundled GeoSite baseline + background auto-update**, so a first connect on a GitHub-blocked network never stalls on a geo-DB download.
 - **Subscription support:** xray/v2ray subscription ingest with per-remark grouping and per-provider quota (used / total / expiry).
 - **Network Rules:** automatic VPN on/off based on the current network (WifiNamed / AnyWifi / AnyCellular).
-- **Backend:** `metacubex/mihomo v1.19.27` direct, with CMfA-style patterns: type-explicit providers API, async-callback path, push subscription for connections/log, INNER-bypass via Dart pre-process.
+- **Backend:** `metacubex/mihomo v1.19.30` direct, with CMfA-style patterns: type-explicit providers API, async-callback path, push subscription for connections/log, INNER-bypass via Dart pre-process.
 - **Dashboard checkIp probe:** JNI `WithSpecialProxy` bypasses user rules so the real exit-IP shows even on whitelist profiles with `MATCH,REJECT`.
 - Stability stack: wake/Wi-Fi locks, idempotent module loader, defensive Go type-assertions, MATCH-rule guard for upstream #1959, Global proxy watchdog.
 
