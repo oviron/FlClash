@@ -58,6 +58,7 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     unawaited(_bootLogging());
     ref.listenManual(coreStatusProvider, (prev, next) {
       if (next == CoreStatus.connected) {
+        unawaited(_applyLogSettings());
         coreController.subscribeConnections();
       } else {
         coreController.unsubscribeConnections();
@@ -66,12 +67,18 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     }, fireImmediately: true);
   }
 
-  Future<void> _bootLogging() async {
+  // Re-applied on every fresh core, not just at boot: these live in the core
+  // process and die with it.
+  Future<void> _applyLogSettings() async {
     await _initLogFilePath();
     final s = ref.read(appSettingProvider);
     coreController.setLogcatLevel(s.logcatLevel);
     coreController.setFileLevel(s.fileLogLevel);
     coreController.setFileEnabled(s.fileLogEnabled);
+  }
+
+  Future<void> _bootLogging() async {
+    await _applyLogSettings();
     if (!mounted) return;
     ref.listenManual(
       appSettingProvider.select((state) => state.logcatLevel),

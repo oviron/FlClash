@@ -83,6 +83,18 @@ extension CommonControllerExt on AppController {
     );
   }
 
+  /// Repairs the "service is up, UI thinks it is down" case. Deliberately
+  /// one-way: a start in flight reports runTime 0 for a few ms, and letting the
+  /// pull act on that would tear the UI down mid-connect. Genuine stops arrive
+  /// on the push instead, which cannot race a start.
+  Future<void> syncRunStateUp() async {
+    if (_ref.read(isStartProvider)) return;
+    await globalState.updateStartTime();
+    final fromService = globalState.startTime;
+    if (fromService == null) return;
+    applyRunState(fromService);
+  }
+
   Future<void> syncRunState() async {
     await globalState.updateStartTime();
     applyRunState(globalState.startTime);

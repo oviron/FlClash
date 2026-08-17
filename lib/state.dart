@@ -51,6 +51,9 @@ class GlobalState {
   // is gone with the old isolate, and we say so rather than invent one.
   HealthStats? healthBaseline;
 
+  // Set while a profile apply is rebuilding the core config; see handleFindProxy.
+  bool bootstrappingConfig = false;
+
   GlobalState._internal();
 
   factory GlobalState() {

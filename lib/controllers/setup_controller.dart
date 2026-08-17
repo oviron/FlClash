@@ -198,6 +198,15 @@ extension SetupControllerExt on AppController {
   }
 
   Future<void> _setupConfig([VoidCallback? preloadInvoke]) async {
+    globalState.bootstrappingConfig = true;
+    try {
+      await _setupConfigInner(preloadInvoke);
+    } finally {
+      globalState.bootstrappingConfig = false;
+    }
+  }
+
+  Future<void> _setupConfigInner([VoidCallback? preloadInvoke]) async {
     commonPrint.log('setup ===>');
     var profile = _ref.read(currentProfileProvider);
     final nextProfile = await profile?.checkAndUpdateAndCopy();
