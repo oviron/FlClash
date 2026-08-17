@@ -1,4 +1,4 @@
-## v0.16.0 (unreleased)
+## v0.16.0
 
 - Onboarding, paste-and-go: a first-run "Paste your key" on-ramp accepts a share link (`vless`/`vmess`/`ss`/`trojan`/`hysteria2`/`tuic`), a base64 subscription blob, a subscription URL, or a QR, and builds a leak-hardened full-tunnel profile underneath. "Connected" is asserted only after a functional HTTP-204 probe succeeds through the tunnel, never on handshake alone
 
