@@ -1027,6 +1027,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickStartVerifying": MessageLookupByLibrary.simpleMessage(
       "Checking your connection...",
     ),
+    "quickTileAdded": MessageLookupByLibrary.simpleMessage(
+      "Tile is in Quick Settings",
+    ),
+    "quickTileDesc": MessageLookupByLibrary.simpleMessage(
+      "Add a FlClash toggle next to the flashlight",
+    ),
+    "quickTileManual": MessageLookupByLibrary.simpleMessage(
+      "Add it from the Quick Settings editor: pull the shade down fully, tap the pencil, drag FlClash in",
+    ),
+    "quickTileNotAdded": MessageLookupByLibrary.simpleMessage(
+      "Tile was not added",
+    ),
+    "quickTileTitle": MessageLookupByLibrary.simpleMessage(
+      "Quick Settings tile",
+    ),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Rainbow"),
     "recovery": MessageLookupByLibrary.simpleMessage("Recovery"),
     "recoveryAll": MessageLookupByLibrary.simpleMessage("Recover all data"),

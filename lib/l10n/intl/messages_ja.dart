@@ -831,6 +831,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickStartUseDifferent": MessageLookupByLibrary.simpleMessage("別のキーを使う"),
     "quickStartVerified": MessageLookupByLibrary.simpleMessage("確認済み"),
     "quickStartVerifying": MessageLookupByLibrary.simpleMessage("接続を確認中..."),
+    "quickTileAdded": MessageLookupByLibrary.simpleMessage("タイルを追加しました"),
+    "quickTileDesc": MessageLookupByLibrary.simpleMessage(
+      "ライトの隣に FlClash の切り替えを追加",
+    ),
+    "quickTileManual": MessageLookupByLibrary.simpleMessage(
+      "クイック設定の編集から追加してください。通知シェードを最後まで開き、鉛筆をタップして FlClash をドラッグします",
+    ),
+    "quickTileNotAdded": MessageLookupByLibrary.simpleMessage("タイルは追加されませんでした"),
+    "quickTileTitle": MessageLookupByLibrary.simpleMessage("クイック設定タイル"),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("レインボー"),
     "recovery": MessageLookupByLibrary.simpleMessage("復元"),
     "recoveryAll": MessageLookupByLibrary.simpleMessage("すべてのデータを復元"),

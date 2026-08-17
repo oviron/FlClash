@@ -23,6 +23,7 @@ import com.follow.clash.common.Components
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.QuickAction
 import com.follow.clash.common.quickIntent
+import com.follow.clash.QuickTile
 import com.follow.clash.getPackageIconPath
 import com.follow.clash.healthStatsJson
 import com.follow.clash.models.Package
@@ -65,6 +66,7 @@ private object AppMethod {
     const val REQUEST_NOTIFICATIONS_PERMISSION = "requestNotificationsPermission"
     const val OPEN_FILE = "openFile"
     const val GET_HEALTH_STATS = "getHealthStats"
+    const val REQUEST_ADD_TILE = "requestAddTile"
 }
 
 class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
@@ -251,6 +253,13 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
             AppMethod.GET_HEALTH_STATS -> {
                 result.success(applicationContext.healthStatsJson())
+            }
+
+            AppMethod.REQUEST_ADD_TILE -> {
+                val label = call.arguments<String>().orEmpty()
+                QuickTile.requestAdd(activityRef?.get(), label) { code ->
+                    scope.launch(Dispatchers.Main) { result.success(code) }
+                }
             }
 
             else -> {

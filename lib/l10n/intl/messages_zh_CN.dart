@@ -749,6 +749,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickStartUseDifferent": MessageLookupByLibrary.simpleMessage("换用其他密钥"),
     "quickStartVerified": MessageLookupByLibrary.simpleMessage("已验证"),
     "quickStartVerifying": MessageLookupByLibrary.simpleMessage("正在检查连接…"),
+    "quickTileAdded": MessageLookupByLibrary.simpleMessage("磁贴已添加"),
+    "quickTileDesc": MessageLookupByLibrary.simpleMessage("在手电筒旁添加 FlClash 开关"),
+    "quickTileManual": MessageLookupByLibrary.simpleMessage(
+      "请从快捷设置编辑器添加：完全下拉通知栏，点按铅笔图标，将 FlClash 拖入",
+    ),
+    "quickTileNotAdded": MessageLookupByLibrary.simpleMessage("未添加磁贴"),
+    "quickTileTitle": MessageLookupByLibrary.simpleMessage("快捷设置磁贴"),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("彩虹"),
     "recovery": MessageLookupByLibrary.simpleMessage("恢复"),
     "recoveryAll": MessageLookupByLibrary.simpleMessage("恢复所有数据"),

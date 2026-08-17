@@ -112,6 +112,17 @@ class App {
     return await methodChannel.invokeMethod<String>(AppMethod.getLogDirectory);
   }
 
+  /// Asks the system to offer adding the Quick Settings tile. Negative codes are
+  /// ours (unsupported platform / no activity); non-negative ones come from
+  /// `StatusBarManager`, where 1 and 2 both mean the tile is in place.
+  Future<int> requestAddTile(String label) async {
+    return await methodChannel.invokeMethod<int>(
+          AppMethod.requestAddTile,
+          label,
+        ) ??
+        -1;
+  }
+
   Future<HealthStats?> getHealthStats() async {
     return HealthStats.tryParse(
       await methodChannel.invokeMethod<String>(AppMethod.getHealthStats),

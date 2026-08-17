@@ -1,7 +1,9 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/about.dart';
 import 'package:fl_clash/views/application_setting.dart';
 import 'package:fl_clash/views/backup_and_restore.dart';
@@ -87,7 +89,12 @@ class _ToolViewState extends ConsumerState<ToolsView> {
   List<Widget> _applicationSection() {
     return generateSection(
       title: context.appLocalizations.application,
-      items: const [_SettingItem(), _LoggingItem(), _ResourceUsageItem()],
+      items: const [
+        _SettingItem(),
+        _LoggingItem(),
+        _ResourceUsageItem(),
+        _QuickTileItem(),
+      ],
     );
   }
 
@@ -353,6 +360,32 @@ class _GeoDatabasesItem extends StatelessWidget {
         ),
       ),
       delegate: const OpenDelegate(widget: ResourcesView()),
+    );
+  }
+}
+
+class _QuickTileItem extends StatelessWidget {
+  const _QuickTileItem();
+
+  Future<void> _request(BuildContext context) async {
+    final l10n = context.appLocalizations;
+    final code = await app?.requestAddTile('FlClash') ?? -1;
+    // 1 = added, 2 = already there; below zero is our own "no system prompt
+    // here", which leaves the QS editor as the only route.
+    globalState.showNotifier(switch (code) {
+      1 || 2 => l10n.quickTileAdded,
+      < 0 => l10n.quickTileManual,
+      _ => l10n.quickTileNotAdded,
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem(
+      leading: const Icon(Icons.add_to_home_screen),
+      title: Text(context.appLocalizations.quickTileTitle),
+      subtitle: Text(context.appLocalizations.quickTileDesc),
+      onTap: () => _request(context),
     );
   }
 }

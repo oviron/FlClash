@@ -1078,6 +1078,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickStartVerifying": MessageLookupByLibrary.simpleMessage(
       "Проверяем подключение...",
     ),
+    "quickTileAdded": MessageLookupByLibrary.simpleMessage("Кнопка на месте"),
+    "quickTileDesc": MessageLookupByLibrary.simpleMessage(
+      "Добавить переключатель FlClash рядом с фонариком",
+    ),
+    "quickTileManual": MessageLookupByLibrary.simpleMessage(
+      "Добавьте через редактор шторки: потяните её вниз до конца, нажмите карандаш, перетащите FlClash",
+    ),
+    "quickTileNotAdded": MessageLookupByLibrary.simpleMessage(
+      "Кнопка не добавлена",
+    ),
+    "quickTileTitle": MessageLookupByLibrary.simpleMessage("Кнопка в шторке"),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Радужные"),
     "recovery": MessageLookupByLibrary.simpleMessage("Восстановление"),
     "recoveryAll": MessageLookupByLibrary.simpleMessage(

@@ -589,6 +589,56 @@ class AppLocalizations {
     );
   }
 
+  /// `Quick Settings tile`
+  String get quickTileTitle {
+    return Intl.message(
+      'Quick Settings tile',
+      name: 'quickTileTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a FlClash toggle next to the flashlight`
+  String get quickTileDesc {
+    return Intl.message(
+      'Add a FlClash toggle next to the flashlight',
+      name: 'quickTileDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tile is in Quick Settings`
+  String get quickTileAdded {
+    return Intl.message(
+      'Tile is in Quick Settings',
+      name: 'quickTileAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tile was not added`
+  String get quickTileNotAdded {
+    return Intl.message(
+      'Tile was not added',
+      name: 'quickTileNotAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add it from the Quick Settings editor: pull the shade down fully, tap the pencil, drag FlClash in`
+  String get quickTileManual {
+    return Intl.message(
+      'Add it from the Quick Settings editor: pull the shade down fully, tap the pencil, drag FlClash in',
+      name: 'quickTileManual',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Refresh`
   String get refresh {
     return Intl.message('Refresh', name: 'refresh', desc: '', args: []);
