@@ -58,9 +58,10 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
     if (state == AppLifecycleState.resumed) {
       final wasBackground = _isBackground;
       _isBackground = false;
-      if (ref.read(isStartProvider)) {
-        unawaited(globalState.startUpdateTasks());
-      }
+      // Unconditional: gating this on isStartProvider made a wrong value
+      // self-confirming — the one state that needed repairing was the one that
+      // stopped the repair from running.
+      unawaited(appController.syncRunState());
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (wasBackground) {
           appController.clearDelay();

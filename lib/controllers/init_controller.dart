@@ -80,15 +80,18 @@ extension InitControllerExt on AppController {
   }
 
   Future<void> _initStatus() async {
+    // The resync runs even when the one-shot flag is spent: the flag decides
+    // whether to auto-start, never whether to look at what the service is
+    // actually doing.
+    if (system.isAndroid) {
+      await syncRunState();
+    }
     if (!globalState.needInitStatus) {
       commonPrint.log('init status cancel');
       return;
     }
     commonPrint.log('init status');
-    if (system.isAndroid) {
-      await globalState.updateStartTime();
-    }
-    final status = globalState.isStart == true
+    final status = _ref.read(isStartProvider)
         ? true
         : _ref.read(appSettingProvider).autoRun;
     if (status == true) {

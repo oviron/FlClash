@@ -40,6 +40,54 @@ extension CommonControllerExt on AppController {
     }
   }
 
+  // The service owns run state; this mirrors it into UI state without issuing
+  // another start/stop back at it, and without touching the core listener that
+  // handleStart/handleStop own. Every path that learns the real state — the
+  // Kotlin push, the resume pull, cold init — lands here, so `runTimeProvider`
+  // can no longer drift from the tunnel the tile reports.
+  void applyRunState(DateTime? startTime) {
+    final wasStart = _ref.read(isStartProvider);
+    globalState.startTime = startTime;
+    updateRunTime();
+    if (startTime != null) {
+      if (!wasStart) {
+        unawaited(globalState.startUpdateTasks([updateRunTime, updateTraffic]));
+        _captureHealthBaseline(startTime);
+        addCheckIp();
+      }
+      return;
+    }
+    globalState.stopUpdateTasks();
+    if (wasStart) {
+      coreController.resetTraffic();
+      _ref.read(trafficsProvider.notifier).clear();
+      _ref.read(totalTrafficProvider.notifier).value = const Traffic();
+      globalState.healthBaseline = null;
+      addCheckIp();
+    }
+  }
+
+  // Only a tunnel that just came up yields an honest baseline. Joining one that
+  // was already running would label "since the app opened" as "since connect",
+  // so that case is left without a baseline and reported as since-boot instead.
+  void _captureHealthBaseline(DateTime startTime) {
+    if (DateTime.now().difference(startTime) > const Duration(seconds: 10)) {
+      globalState.healthBaseline = null;
+      return;
+    }
+    unawaited(
+      app?.getHealthStats().then((stats) {
+            globalState.healthBaseline = stats;
+          }) ??
+          Future.value(),
+    );
+  }
+
+  Future<void> syncRunState() async {
+    await globalState.updateStartTime();
+    applyRunState(globalState.startTime);
+  }
+
   Future<void> updateTraffic() async {
     final traffic = await coreController.getTraffic();
     _ref.read(trafficsProvider.notifier).addTraffic(traffic);

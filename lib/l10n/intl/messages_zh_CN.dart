@@ -220,8 +220,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoRunDesc": MessageLookupByLibrary.simpleMessage("应用启动时立即建立隧道"),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage("自动设置系统DNS"),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自动更新"),
-    "noProxy": MessageLookupByLibrary.simpleMessage("没有可用的代理"),
-    "scriptUpdated": MessageLookupByLibrary.simpleMessage("脚本已更新"),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage("自动更新间隔（分钟）"),
     "backgroundLocationRationale": MessageLookupByLibrary.simpleMessage(
       "若要在应用处于后台时自动切换，请始终允许访问位置信息。",
@@ -395,6 +393,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "groupNew": MessageLookupByLibrary.simpleMessage("新建分组"),
     "groupOpenYaml": MessageLookupByLibrary.simpleMessage("以 YAML 打开"),
     "groupType": MessageLookupByLibrary.simpleMessage("类型"),
+    "happMode": MessageLookupByLibrary.simpleMessage("Happ 模式"),
+    "happModeDesc": MessageLookupByLibrary.simpleMessage(
+      "以 Happ 客户端身份获取，解锁面板中被隐藏的抗封锁节点",
+    ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("是否缓存修改"),
     "hideFromRecents": MessageLookupByLibrary.simpleMessage("从最近任务中隐藏"),
     "hideFromRecentsDesc": MessageLookupByLibrary.simpleMessage(
@@ -631,6 +633,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noInfo": MessageLookupByLibrary.simpleMessage("暂无信息"),
     "noNetwork": MessageLookupByLibrary.simpleMessage("无网络"),
     "noNetworkApp": MessageLookupByLibrary.simpleMessage("无网络应用"),
+    "noProxy": MessageLookupByLibrary.simpleMessage("没有可用的代理"),
     "noResolve": MessageLookupByLibrary.simpleMessage("不解析IP"),
     "none": MessageLookupByLibrary.simpleMessage("无"),
     "notSelectedTip": MessageLookupByLibrary.simpleMessage("当前代理组无法选中"),
@@ -662,9 +665,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseEnterScriptName": MessageLookupByLibrary.simpleMessage("请输入脚本名称"),
     "pleaseInputAdminPassword": MessageLookupByLibrary.simpleMessage(
       "请输入管理员密码",
-    ),
-    "pleaseUploadValidQrcode": MessageLookupByLibrary.simpleMessage(
-      "请上传有效的二维码",
     ),
     "port": MessageLookupByLibrary.simpleMessage("端口"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("请输入不同的端口"),
@@ -727,6 +727,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxyProviders": MessageLookupByLibrary.simpleMessage("代理提供者"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("修剪缓存"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("纯黑模式"),
+    "qrNotImportable": MessageLookupByLibrary.simpleMessage(
+      "已识别二维码，但它不是订阅、链接或配置",
+    ),
+    "qrNotRecognized": MessageLookupByLibrary.simpleMessage("未在图片中找到二维码"),
     "qrcode": MessageLookupByLibrary.simpleMessage("二维码"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage("扫描二维码获取配置文件"),
     "quickStartFailedBody": MessageLookupByLibrary.simpleMessage(
@@ -752,6 +756,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "recoverySuccess": MessageLookupByLibrary.simpleMessage("恢复成功"),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir端口"),
     "redo": MessageLookupByLibrary.simpleMessage("重做"),
+    "refresh": MessageLookupByLibrary.simpleMessage("刷新"),
     "regExp": MessageLookupByLibrary.simpleMessage("正则"),
     "releases": MessageLookupByLibrary.simpleMessage("Releases"),
     "remote": MessageLookupByLibrary.simpleMessage("远程"),
@@ -768,6 +773,31 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "resetSection": MessageLookupByLibrary.simpleMessage("重置"),
     "resetTip": MessageLookupByLibrary.simpleMessage("确定要重置吗?"),
+    "resourceUsageCpu": MessageLookupByLibrary.simpleMessage("CPU 时间"),
+    "resourceUsageDesc": MessageLookupByLibrary.simpleMessage(
+      "本应用实际消耗的 CPU、唤醒锁与流量",
+    ),
+    "resourceUsageExplainer": MessageLookupByLibrary.simpleMessage(
+      "Android 的电池页面几乎看不到 VPN：经隧道转发的流量计入发起请求的应用而非隧道本身，而本应用在熄屏后就会释放唤醒锁。此处数字来自系统自身的按应用计数器。",
+    ),
+    "resourceUsageSinceBoot": MessageLookupByLibrary.simpleMessage("自设备启动起"),
+    "resourceUsageSinceConnect": MessageLookupByLibrary.simpleMessage("自本次连接起"),
+    "resourceUsageTitle": MessageLookupByLibrary.simpleMessage("资源占用"),
+    "resourceUsageTraffic": MessageLookupByLibrary.simpleMessage("流量"),
+    "resourceUsageTrafficDesc": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fi 与移动网络，按系统计入本应用的口径",
+    ),
+    "resourceUsageUnavailable": MessageLookupByLibrary.simpleMessage(
+      "系统未返回本应用的用量数据。",
+    ),
+    "resourceUsageWakeLock": MessageLookupByLibrary.simpleMessage("唤醒锁"),
+    "resourceUsageWakeLockDesc": MessageLookupByLibrary.simpleMessage(
+      "仅在亮屏时持有，进入 Doze 即释放",
+    ),
+    "resourceUsageWindow": MessageLookupByLibrary.simpleMessage("统计区间"),
+    "resourceUsageWindowDesc": MessageLookupByLibrary.simpleMessage(
+      "本报告覆盖的电池供电时长",
+    ),
     "resources": MessageLookupByLibrary.simpleMessage("资源"),
     "resourcesDesc": MessageLookupByLibrary.simpleMessage("外部资源相关信息"),
     "resourcesUpToDate": MessageLookupByLibrary.simpleMessage("资源已是最新"),
@@ -812,9 +842,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("绕过 VPN"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage("无法应用更改"),
-    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
-      "无法删除：仍在使用中。请先移除引用。",
-    ),
     "routingApps": MessageLookupByLibrary.simpleMessage("应用"),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage("已更改"),
     "routingAppsSectionRest": MessageLookupByLibrary.simpleMessage("其余 · 默认"),
@@ -836,6 +863,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "ISO 代码或 geo 标签 (如 private)",
     ),
     "routingCreateGroup": MessageLookupByLibrary.simpleMessage("创建分组"),
+    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
+      "无法删除：仍在使用中。请先移除引用。",
+    ),
     "routingEditGroup": MessageLookupByLibrary.simpleMessage("编辑分组"),
     "routingEditProxy": MessageLookupByLibrary.simpleMessage("编辑服务器"),
     "routingEverythingElse": MessageLookupByLibrary.simpleMessage("其他所有"),
@@ -1019,6 +1049,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "scriptModeDesc": MessageLookupByLibrary.simpleMessage(
       "脚本模式，使用外部扩展脚本，提供一键覆写配置的能力",
     ),
+    "scriptUpdated": MessageLookupByLibrary.simpleMessage("脚本已更新"),
     "search": MessageLookupByLibrary.simpleMessage("搜索"),
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
     "selectAll": MessageLookupByLibrary.simpleMessage("全选"),
@@ -1030,12 +1061,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "size": MessageLookupByLibrary.simpleMessage("尺寸"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks端口"),
     "sort": MessageLookupByLibrary.simpleMessage("排序"),
-    "speed": MessageLookupByLibrary.simpleMessage("速度"),
-    "traffic": MessageLookupByLibrary.simpleMessage("流量"),
     "source": MessageLookupByLibrary.simpleMessage("来源"),
     "sourceIp": MessageLookupByLibrary.simpleMessage("源IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("特殊代理"),
     "specialRules": MessageLookupByLibrary.simpleMessage("特殊规则"),
+    "speed": MessageLookupByLibrary.simpleMessage("速度"),
     "speedStatistics": MessageLookupByLibrary.simpleMessage("网速统计"),
     "stackMode": MessageLookupByLibrary.simpleMessage("栈模式"),
     "standard": MessageLookupByLibrary.simpleMessage("标准"),
@@ -1086,6 +1116,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("调性点缀"),
     "tools": MessageLookupByLibrary.simpleMessage("工具"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy端口"),
+    "traffic": MessageLookupByLibrary.simpleMessage("流量"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("流量统计"),
     "tun": MessageLookupByLibrary.simpleMessage("虚拟网卡"),
     "tunDesc": MessageLookupByLibrary.simpleMessage("仅在管理员模式生效"),

@@ -234,8 +234,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoRunDesc": MessageLookupByLibrary.simpleMessage("アプリ起動と同時にトンネルを開始します"),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage("オートセットシステムDNS"),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("自動更新"),
-    "noProxy": MessageLookupByLibrary.simpleMessage("利用可能なプロキシがありません"),
-    "scriptUpdated": MessageLookupByLibrary.simpleMessage("スクリプトを更新しました"),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage("自動更新間隔（分）"),
     "backgroundLocationRationale": MessageLookupByLibrary.simpleMessage(
       "アプリがバックグラウンドにあるときも自動で切り替えるには、位置情報へのアクセスを常に許可してください。",
@@ -433,6 +431,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "groupNew": MessageLookupByLibrary.simpleMessage("新しいグループ"),
     "groupOpenYaml": MessageLookupByLibrary.simpleMessage("YAMLとして開く"),
     "groupType": MessageLookupByLibrary.simpleMessage("タイプ"),
+    "happMode": MessageLookupByLibrary.simpleMessage("Happモード"),
+    "happModeDesc": MessageLookupByLibrary.simpleMessage(
+      "ノードを隠すパネルで全ノードを取得するため Happ クライアントとして取得します",
+    ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("変更をキャッシュしますか？"),
     "hideFromRecents": MessageLookupByLibrary.simpleMessage("最近使用したアプリに非表示"),
     "hideFromRecentsDesc": MessageLookupByLibrary.simpleMessage(
@@ -689,6 +691,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noInfo": MessageLookupByLibrary.simpleMessage("情報なし"),
     "noNetwork": MessageLookupByLibrary.simpleMessage("ネットワークなし"),
     "noNetworkApp": MessageLookupByLibrary.simpleMessage("ネットワークなしアプリ"),
+    "noProxy": MessageLookupByLibrary.simpleMessage("利用可能なプロキシがありません"),
     "noResolve": MessageLookupByLibrary.simpleMessage("IPを解決しない"),
     "none": MessageLookupByLibrary.simpleMessage("なし"),
     "notSelectedTip": MessageLookupByLibrary.simpleMessage(
@@ -730,9 +733,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "pleaseInputAdminPassword": MessageLookupByLibrary.simpleMessage(
       "管理者パスワードを入力",
-    ),
-    "pleaseUploadValidQrcode": MessageLookupByLibrary.simpleMessage(
-      "有効なQRコードをアップロードしてください",
     ),
     "port": MessageLookupByLibrary.simpleMessage("ポート"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage("別のポートを入力してください"),
@@ -805,6 +805,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxyProviders": MessageLookupByLibrary.simpleMessage("プロキシプロバイダー"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("キャッシュの削除"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("純黒モード"),
+    "qrNotImportable": MessageLookupByLibrary.simpleMessage(
+      "QRコードは読み取れましたが、サブスクリプション・リンク・設定のいずれでもありません",
+    ),
+    "qrNotRecognized": MessageLookupByLibrary.simpleMessage(
+      "画像からQRコードを検出できませんでした",
+    ),
     "qrcode": MessageLookupByLibrary.simpleMessage("QRコード"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage("QRコードをスキャンしてプロファイルを取得"),
     "quickStartFailedBody": MessageLookupByLibrary.simpleMessage(
@@ -832,6 +838,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "recoverySuccess": MessageLookupByLibrary.simpleMessage("復元に成功しました"),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redirポート"),
     "redo": MessageLookupByLibrary.simpleMessage("やり直す"),
+    "refresh": MessageLookupByLibrary.simpleMessage("更新"),
     "regExp": MessageLookupByLibrary.simpleMessage("正規表現"),
     "releases": MessageLookupByLibrary.simpleMessage("Releases"),
     "remote": MessageLookupByLibrary.simpleMessage("リモート"),
@@ -852,6 +859,33 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "resetSection": MessageLookupByLibrary.simpleMessage("リセット"),
     "resetTip": MessageLookupByLibrary.simpleMessage("リセットを確定"),
+    "resourceUsageCpu": MessageLookupByLibrary.simpleMessage("CPU 時間"),
+    "resourceUsageDesc": MessageLookupByLibrary.simpleMessage(
+      "このアプリが実際に使った CPU・ウェイクロック・通信量",
+    ),
+    "resourceUsageExplainer": MessageLookupByLibrary.simpleMessage(
+      "Android のバッテリー画面では VPN はほとんど表示されません。トンネル経由の通信はトンネルではなく発信元アプリに計上され、このアプリは画面が消えるとウェイクロックを解放するためです。ここの数値はシステム自身のアプリ別カウンターによるものです。",
+    ),
+    "resourceUsageSinceBoot": MessageLookupByLibrary.simpleMessage("端末の起動以降"),
+    "resourceUsageSinceConnect": MessageLookupByLibrary.simpleMessage(
+      "今回の接続以降",
+    ),
+    "resourceUsageTitle": MessageLookupByLibrary.simpleMessage("リソース使用状況"),
+    "resourceUsageTraffic": MessageLookupByLibrary.simpleMessage("通信量"),
+    "resourceUsageTrafficDesc": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fi とモバイル、システムが計上した値",
+    ),
+    "resourceUsageUnavailable": MessageLookupByLibrary.simpleMessage(
+      "システムからこのアプリの使用状況データが返りませんでした。",
+    ),
+    "resourceUsageWakeLock": MessageLookupByLibrary.simpleMessage("ウェイクロック"),
+    "resourceUsageWakeLockDesc": MessageLookupByLibrary.simpleMessage(
+      "画面点灯中のみ保持し、Doze では解放されます",
+    ),
+    "resourceUsageWindow": MessageLookupByLibrary.simpleMessage("計測期間"),
+    "resourceUsageWindowDesc": MessageLookupByLibrary.simpleMessage(
+      "このレポートが対象とするバッテリー駆動時間",
+    ),
     "resources": MessageLookupByLibrary.simpleMessage("リソース"),
     "resourcesDesc": MessageLookupByLibrary.simpleMessage("外部リソース関連情報"),
     "resourcesUpToDate": MessageLookupByLibrary.simpleMessage("リソースは最新です"),
@@ -902,9 +936,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingAppBypass": MessageLookupByLibrary.simpleMessage("VPN を回避"),
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage("変更を適用できませんでした"),
-    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
-      "削除できません：まだ使用中です。先に参照を外してください。",
-    ),
     "routingApps": MessageLookupByLibrary.simpleMessage("アプリ"),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage("変更済み"),
     "routingAppsSectionRest": MessageLookupByLibrary.simpleMessage("その他 · 既定"),
@@ -930,6 +961,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "ISO コードまたは geo タグ (例: private)",
     ),
     "routingCreateGroup": MessageLookupByLibrary.simpleMessage("グループを作成"),
+    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
+      "削除できません：まだ使用中です。先に参照を外してください。",
+    ),
     "routingEditGroup": MessageLookupByLibrary.simpleMessage("グループを編集"),
     "routingEditProxy": MessageLookupByLibrary.simpleMessage("サーバーを編集"),
     "routingEverythingElse": MessageLookupByLibrary.simpleMessage("その他すべて"),
@@ -1141,6 +1175,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "scriptModeDesc": MessageLookupByLibrary.simpleMessage(
       "スクリプトモード、外部拡張スクリプトを使用し、ワンクリックで設定を上書きする機能を提供",
     ),
+    "scriptUpdated": MessageLookupByLibrary.simpleMessage("スクリプトを更新しました"),
     "search": MessageLookupByLibrary.simpleMessage("検索"),
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
     "selectAll": MessageLookupByLibrary.simpleMessage("すべて選択"),
@@ -1152,12 +1187,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "size": MessageLookupByLibrary.simpleMessage("サイズ"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socksポート"),
     "sort": MessageLookupByLibrary.simpleMessage("並び替え"),
-    "speed": MessageLookupByLibrary.simpleMessage("速度"),
-    "traffic": MessageLookupByLibrary.simpleMessage("通信量"),
     "source": MessageLookupByLibrary.simpleMessage("ソース"),
     "sourceIp": MessageLookupByLibrary.simpleMessage("送信元IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("特殊プロキシ"),
     "specialRules": MessageLookupByLibrary.simpleMessage("特殊ルール"),
+    "speed": MessageLookupByLibrary.simpleMessage("速度"),
     "speedStatistics": MessageLookupByLibrary.simpleMessage("速度統計"),
     "stackMode": MessageLookupByLibrary.simpleMessage("スタックモード"),
     "standard": MessageLookupByLibrary.simpleMessage("標準"),
@@ -1214,6 +1248,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("トーンスポット"),
     "tools": MessageLookupByLibrary.simpleMessage("ツール"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxyポート"),
+    "traffic": MessageLookupByLibrary.simpleMessage("通信量"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("トラフィック使用量"),
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage("管理者モードでのみ有効"),

@@ -278,8 +278,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Auto set system DNS",
     ),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("Auto update"),
-    "noProxy": MessageLookupByLibrary.simpleMessage("No available proxies"),
-    "scriptUpdated": MessageLookupByLibrary.simpleMessage("Script updated"),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "Auto update interval (minutes)",
     ),
@@ -519,6 +517,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "groupNew": MessageLookupByLibrary.simpleMessage("New group"),
     "groupOpenYaml": MessageLookupByLibrary.simpleMessage("Open as YAML"),
     "groupType": MessageLookupByLibrary.simpleMessage("Type"),
+    "happMode": MessageLookupByLibrary.simpleMessage("Happ mode"),
+    "happModeDesc": MessageLookupByLibrary.simpleMessage(
+      "Fetch as the Happ client to unlock anti-block nodes on panels that gate them",
+    ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Do you want to cache the changes?",
     ),
@@ -857,6 +859,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noInfo": MessageLookupByLibrary.simpleMessage("No info"),
     "noNetwork": MessageLookupByLibrary.simpleMessage("No network"),
     "noNetworkApp": MessageLookupByLibrary.simpleMessage("No network APP"),
+    "noProxy": MessageLookupByLibrary.simpleMessage("No available proxies"),
     "noResolve": MessageLookupByLibrary.simpleMessage("No resolve IP"),
     "none": MessageLookupByLibrary.simpleMessage("none"),
     "notSelectedTip": MessageLookupByLibrary.simpleMessage(
@@ -904,9 +907,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "pleaseInputAdminPassword": MessageLookupByLibrary.simpleMessage(
       "Please enter the admin password",
-    ),
-    "pleaseUploadValidQrcode": MessageLookupByLibrary.simpleMessage(
-      "Please upload a valid QR code",
     ),
     "port": MessageLookupByLibrary.simpleMessage("Port"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
@@ -993,6 +993,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxyProviders": MessageLookupByLibrary.simpleMessage("Proxy providers"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("Prune cache"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("Pure black mode"),
+    "qrNotImportable": MessageLookupByLibrary.simpleMessage(
+      "QR code read, but it is not a subscription, link or config",
+    ),
+    "qrNotRecognized": MessageLookupByLibrary.simpleMessage(
+      "No QR code found in that image",
+    ),
     "qrcode": MessageLookupByLibrary.simpleMessage("QR code"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Scan QR code to obtain profile",
@@ -1032,6 +1038,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir Port"),
     "redo": MessageLookupByLibrary.simpleMessage("redo"),
+    "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
     "regExp": MessageLookupByLibrary.simpleMessage("RegExp"),
     "releases": MessageLookupByLibrary.simpleMessage("Releases"),
     "remote": MessageLookupByLibrary.simpleMessage("Remote"),
@@ -1056,6 +1063,39 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "resetSection": MessageLookupByLibrary.simpleMessage("Reset"),
     "resetTip": MessageLookupByLibrary.simpleMessage("Make sure to reset"),
+    "resourceUsageCpu": MessageLookupByLibrary.simpleMessage("CPU time"),
+    "resourceUsageDesc": MessageLookupByLibrary.simpleMessage(
+      "CPU, wake lock and traffic this app actually used",
+    ),
+    "resourceUsageExplainer": MessageLookupByLibrary.simpleMessage(
+      "Android\'s battery screen shows little for a VPN: tunnelled traffic is billed to the app that originated it, not to the tunnel, and this app releases its wake lock once the screen goes off. The numbers here come from the system\'s own per-app counters.",
+    ),
+    "resourceUsageSinceBoot": MessageLookupByLibrary.simpleMessage(
+      "Since device boot",
+    ),
+    "resourceUsageSinceConnect": MessageLookupByLibrary.simpleMessage(
+      "Since this connection",
+    ),
+    "resourceUsageTitle": MessageLookupByLibrary.simpleMessage(
+      "Resource usage",
+    ),
+    "resourceUsageTraffic": MessageLookupByLibrary.simpleMessage("Traffic"),
+    "resourceUsageTrafficDesc": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fi and mobile, as billed to this app",
+    ),
+    "resourceUsageUnavailable": MessageLookupByLibrary.simpleMessage(
+      "The system did not return usage data for this app.",
+    ),
+    "resourceUsageWakeLock": MessageLookupByLibrary.simpleMessage("Wake lock"),
+    "resourceUsageWakeLockDesc": MessageLookupByLibrary.simpleMessage(
+      "Held only while the screen is on, released in Doze",
+    ),
+    "resourceUsageWindow": MessageLookupByLibrary.simpleMessage(
+      "Measured window",
+    ),
+    "resourceUsageWindowDesc": MessageLookupByLibrary.simpleMessage(
+      "Time on battery this report covers",
+    ),
     "resources": MessageLookupByLibrary.simpleMessage("Resources"),
     "resourcesDesc": MessageLookupByLibrary.simpleMessage(
       "External resource related info",
@@ -1128,9 +1168,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
       "Couldn\'t apply the change",
     ),
-    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
-      "Can\'t delete: it\'s still in use. Remove the reference first.",
-    ),
     "routingApps": MessageLookupByLibrary.simpleMessage("Apps"),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage(
       "Changed",
@@ -1162,6 +1199,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "ISO code or geo tag (e.g. private)",
     ),
     "routingCreateGroup": MessageLookupByLibrary.simpleMessage("Create group"),
+    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
+      "Can\'t delete: it\'s still in use. Remove the reference first.",
+    ),
     "routingEditGroup": MessageLookupByLibrary.simpleMessage("Edit group"),
     "routingEditProxy": MessageLookupByLibrary.simpleMessage("Edit server"),
     "routingEverythingElse": MessageLookupByLibrary.simpleMessage(
@@ -1425,6 +1465,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "scriptModeDesc": MessageLookupByLibrary.simpleMessage(
       "Script mode, use external extension scripts, provide one-click override configuration capability",
     ),
+    "scriptUpdated": MessageLookupByLibrary.simpleMessage("Script updated"),
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "seconds": MessageLookupByLibrary.simpleMessage("Seconds"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
@@ -1436,12 +1477,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "size": MessageLookupByLibrary.simpleMessage("Size"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks Port"),
     "sort": MessageLookupByLibrary.simpleMessage("Sort"),
-    "speed": MessageLookupByLibrary.simpleMessage("Speed"),
-    "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
     "source": MessageLookupByLibrary.simpleMessage("Source"),
     "sourceIp": MessageLookupByLibrary.simpleMessage("Source IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("Special proxy"),
     "specialRules": MessageLookupByLibrary.simpleMessage("special rules"),
+    "speed": MessageLookupByLibrary.simpleMessage("Speed"),
     "speedStatistics": MessageLookupByLibrary.simpleMessage("Speed statistics"),
     "stackMode": MessageLookupByLibrary.simpleMessage("Stack mode"),
     "standard": MessageLookupByLibrary.simpleMessage("Standard"),
@@ -1504,6 +1544,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("TonalSpot"),
     "tools": MessageLookupByLibrary.simpleMessage("Tools"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy Port"),
+    "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Traffic usage"),
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage(

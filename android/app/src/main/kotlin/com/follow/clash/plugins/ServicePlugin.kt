@@ -13,6 +13,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
@@ -32,6 +33,7 @@ private object ServiceMethod {
     const val REQUEST_STOP = "requestStop"
     const val EVENT = "event"
     const val CRASH = "crash"
+    const val RUN_STATE = "runState"
 }
 
 class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
@@ -40,6 +42,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     private var appContext: Context? = null
     @Volatile
     private var attached = false
+    private var runStateJob: Job? = null
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         appContext = flutterPluginBinding.applicationContext
@@ -53,6 +56,8 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     override fun onDetachedFromEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         attached = false
         appContext = null
+        runStateJob?.cancel()
+        runStateJob = null
         flutterMethodChannel.setMethodCallHandler(null)
     }
 
@@ -140,6 +145,21 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     }
 
 
+    // The service owns run state; Dart mirrors it. Without this push Dart only
+    // learned about a start/stop it initiated itself, so a tile toggle, a revoke
+    // or a failed profile apply left the UI disagreeing with the tile.
+    private fun startRunStatePush() {
+        runStateJob?.cancel()
+        runStateJob = launch {
+            State.runStateFlow.collect {
+                val runTime = if (it == RunState.START) State.runTime else 0L
+                launchAttachedMain {
+                    flutterMethodChannel.invokeMethod(ServiceMethod.RUN_STATE, runTime)
+                }
+            }
+        }
+    }
+
     fun handleInit(result: MethodChannel.Result) {
         Service.bind()
         launch {
@@ -152,6 +172,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
             }
         }
         Service.onServiceDisconnected = ::onServiceDisconnected
+        startRunStatePush()
     }
 
     private fun handleGetRunTime(result: MethodChannel.Result) {

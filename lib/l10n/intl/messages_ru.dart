@@ -291,8 +291,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Автоматическая настройка системного DNS",
     ),
     "autoUpdate": MessageLookupByLibrary.simpleMessage("Автообновление"),
-    "noProxy": MessageLookupByLibrary.simpleMessage("Нет доступных прокси"),
-    "scriptUpdated": MessageLookupByLibrary.simpleMessage("Скрипт обновлён"),
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал автообновления (минуты)",
     ),
@@ -544,6 +542,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "groupNew": MessageLookupByLibrary.simpleMessage("Новая группа"),
     "groupOpenYaml": MessageLookupByLibrary.simpleMessage("Открыть как YAML"),
     "groupType": MessageLookupByLibrary.simpleMessage("Тип"),
+    "happMode": MessageLookupByLibrary.simpleMessage("Режим Happ"),
+    "happModeDesc": MessageLookupByLibrary.simpleMessage(
+      "Качать под видом клиента Happ, чтобы получить анти-блокировочные ноды на панелях, где они скрыты",
+    ),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Хотите сохранить изменения в кэше?",
     ),
@@ -896,6 +898,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noInfo": MessageLookupByLibrary.simpleMessage("Нет информации"),
     "noNetwork": MessageLookupByLibrary.simpleMessage("Нет сети"),
     "noNetworkApp": MessageLookupByLibrary.simpleMessage("Приложение без сети"),
+    "noProxy": MessageLookupByLibrary.simpleMessage("Нет доступных прокси"),
     "noResolve": MessageLookupByLibrary.simpleMessage("Не разрешать IP"),
     "none": MessageLookupByLibrary.simpleMessage("Нет"),
     "notSelectedTip": MessageLookupByLibrary.simpleMessage(
@@ -949,9 +952,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "pleaseInputAdminPassword": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, введите пароль администратора",
-    ),
-    "pleaseUploadValidQrcode": MessageLookupByLibrary.simpleMessage(
-      "Пожалуйста, загрузите действительный QR-код",
     ),
     "port": MessageLookupByLibrary.simpleMessage("Порт"),
     "portConflictTip": MessageLookupByLibrary.simpleMessage(
@@ -1044,6 +1044,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxyProviders": MessageLookupByLibrary.simpleMessage("Провайдеры прокси"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("Очистить кэш"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("Чисто черный режим"),
+    "qrNotImportable": MessageLookupByLibrary.simpleMessage(
+      "QR-код прочитан, но это не подписка, ссылка или конфиг",
+    ),
+    "qrNotRecognized": MessageLookupByLibrary.simpleMessage(
+      "На картинке не найден QR-код",
+    ),
     "qrcode": MessageLookupByLibrary.simpleMessage("QR-код"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Сканируйте QR-код для получения профиля",
@@ -1085,6 +1091,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir-порт"),
     "redo": MessageLookupByLibrary.simpleMessage("Повторить"),
+    "refresh": MessageLookupByLibrary.simpleMessage("Обновить"),
     "regExp": MessageLookupByLibrary.simpleMessage("Регулярное выражение"),
     "releases": MessageLookupByLibrary.simpleMessage("Релизы"),
     "remote": MessageLookupByLibrary.simpleMessage("Удаленный"),
@@ -1110,6 +1117,37 @@ class MessageLookup extends MessageLookupByLibrary {
     "resetSection": MessageLookupByLibrary.simpleMessage("Сброс"),
     "resetTip": MessageLookupByLibrary.simpleMessage(
       "Убедитесь, что хотите сбросить",
+    ),
+    "resourceUsageCpu": MessageLookupByLibrary.simpleMessage("Время CPU"),
+    "resourceUsageDesc": MessageLookupByLibrary.simpleMessage(
+      "Сколько CPU, wakelock и трафика приложение реально потратило",
+    ),
+    "resourceUsageExplainer": MessageLookupByLibrary.simpleMessage(
+      "В системном экране батареи VPN почти не виден: туннелированный трафик засчитывается приложению-источнику, а не туннелю, и это приложение отпускает wakelock, как только гаснет экран. Цифры здесь взяты из собственных счётчиков системы.",
+    ),
+    "resourceUsageSinceBoot": MessageLookupByLibrary.simpleMessage(
+      "С загрузки устройства",
+    ),
+    "resourceUsageSinceConnect": MessageLookupByLibrary.simpleMessage(
+      "С момента подключения",
+    ),
+    "resourceUsageTitle": MessageLookupByLibrary.simpleMessage(
+      "Расход ресурсов",
+    ),
+    "resourceUsageTraffic": MessageLookupByLibrary.simpleMessage("Трафик"),
+    "resourceUsageTrafficDesc": MessageLookupByLibrary.simpleMessage(
+      "Wi-Fi и мобильный, как их засчитала система",
+    ),
+    "resourceUsageUnavailable": MessageLookupByLibrary.simpleMessage(
+      "Система не вернула данные о расходе для этого приложения.",
+    ),
+    "resourceUsageWakeLock": MessageLookupByLibrary.simpleMessage("Wakelock"),
+    "resourceUsageWakeLockDesc": MessageLookupByLibrary.simpleMessage(
+      "Держится только при включённом экране, отпускается в Doze",
+    ),
+    "resourceUsageWindow": MessageLookupByLibrary.simpleMessage("Окно замера"),
+    "resourceUsageWindowDesc": MessageLookupByLibrary.simpleMessage(
+      "Время работы от батареи, которое покрывает отчёт",
     ),
     "resources": MessageLookupByLibrary.simpleMessage("Ресурсы"),
     "resourcesDesc": MessageLookupByLibrary.simpleMessage(
@@ -1191,9 +1229,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingApplyFailed": MessageLookupByLibrary.simpleMessage(
       "Не удалось применить изменение",
     ),
-    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
-      "Нельзя удалить: ещё используется. Сначала уберите ссылку.",
-    ),
     "routingApps": MessageLookupByLibrary.simpleMessage("Приложения"),
     "routingAppsSectionChanged": MessageLookupByLibrary.simpleMessage(
       "Изменённые",
@@ -1230,6 +1265,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routingCreateGroup": MessageLookupByLibrary.simpleMessage(
       "Создать группу",
+    ),
+    "routingDeleteInUse": MessageLookupByLibrary.simpleMessage(
+      "Нельзя удалить: ещё используется. Сначала уберите ссылку.",
     ),
     "routingEditGroup": MessageLookupByLibrary.simpleMessage(
       "Редактировать группу",
@@ -1530,6 +1568,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "scriptModeDesc": MessageLookupByLibrary.simpleMessage(
       "Режим скрипта, использование внешних расширяющих скриптов, предоставление возможности переопределения конфигурации одним кликом",
     ),
+    "scriptUpdated": MessageLookupByLibrary.simpleMessage("Скрипт обновлён"),
     "search": MessageLookupByLibrary.simpleMessage("Поиск"),
     "seconds": MessageLookupByLibrary.simpleMessage("Секунд"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать все"),
@@ -1541,12 +1580,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "size": MessageLookupByLibrary.simpleMessage("Размер"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks-порт"),
     "sort": MessageLookupByLibrary.simpleMessage("Сортировка"),
-    "speed": MessageLookupByLibrary.simpleMessage("Скорость"),
-    "traffic": MessageLookupByLibrary.simpleMessage("Трафик"),
     "source": MessageLookupByLibrary.simpleMessage("Источник"),
     "sourceIp": MessageLookupByLibrary.simpleMessage("Исходный IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("Специальный прокси"),
     "specialRules": MessageLookupByLibrary.simpleMessage("Специальные правила"),
+    "speed": MessageLookupByLibrary.simpleMessage("Скорость"),
     "speedStatistics": MessageLookupByLibrary.simpleMessage(
       "Статистика скорости",
     ),
@@ -1613,6 +1651,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("Тональный акцент"),
     "tools": MessageLookupByLibrary.simpleMessage("Инструменты"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy-порт"),
+    "traffic": MessageLookupByLibrary.simpleMessage("Трафик"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage(
       "Использование трафика",
     ),

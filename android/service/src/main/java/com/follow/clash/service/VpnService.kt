@@ -55,6 +55,15 @@ class VpnService : SystemVpnService(), IBaseService,
         handleCreate()
     }
 
+    // Another VPN app took over, or the user hit Disconnect in the system VPN
+    // dialog. The default implementation only closes the fd; stopping outright
+    // is what drives the disconnect path that clears run state.
+    override fun onRevoke() {
+        GlobalState.log("VPN revoked by the system, stopping")
+        stopSelf()
+        super.onRevoke()
+    }
+
     override fun onDestroy() {
         loader.cancel()
         releaseLocks()

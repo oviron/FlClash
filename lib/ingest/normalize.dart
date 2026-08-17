@@ -82,6 +82,18 @@ bool isIngestable(String text) =>
     isClashDocument(text) ||
     normalize(text).proxies.isNotEmpty;
 
+/// First payload the importer can actually ingest, or null if none can be.
+/// An image may hold several barcodes; a non-importable one must not mask a
+/// usable one behind it.
+String? firstIngestable(List<String?> rawValues) {
+  for (final raw in rawValues) {
+    final text = raw?.trim();
+    if (text == null || text.isEmpty) continue;
+    if (isIngestable(text)) return raw;
+  }
+  return null;
+}
+
 Object? _tryJson(String t) {
   if (!(t.startsWith('{') || t.startsWith('['))) return null;
   try {

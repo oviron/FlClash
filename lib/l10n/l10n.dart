@@ -589,6 +589,141 @@ class AppLocalizations {
     );
   }
 
+  /// `Refresh`
+  String get refresh {
+    return Intl.message('Refresh', name: 'refresh', desc: '', args: []);
+  }
+
+  /// `Resource usage`
+  String get resourceUsageTitle {
+    return Intl.message(
+      'Resource usage',
+      name: 'resourceUsageTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CPU, wake lock and traffic this app actually used`
+  String get resourceUsageDesc {
+    return Intl.message(
+      'CPU, wake lock and traffic this app actually used',
+      name: 'resourceUsageDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Since this connection`
+  String get resourceUsageSinceConnect {
+    return Intl.message(
+      'Since this connection',
+      name: 'resourceUsageSinceConnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Since device boot`
+  String get resourceUsageSinceBoot {
+    return Intl.message(
+      'Since device boot',
+      name: 'resourceUsageSinceBoot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The system did not return usage data for this app.`
+  String get resourceUsageUnavailable {
+    return Intl.message(
+      'The system did not return usage data for this app.',
+      name: 'resourceUsageUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CPU time`
+  String get resourceUsageCpu {
+    return Intl.message(
+      'CPU time',
+      name: 'resourceUsageCpu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wake lock`
+  String get resourceUsageWakeLock {
+    return Intl.message(
+      'Wake lock',
+      name: 'resourceUsageWakeLock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Held only while the screen is on, released in Doze`
+  String get resourceUsageWakeLockDesc {
+    return Intl.message(
+      'Held only while the screen is on, released in Doze',
+      name: 'resourceUsageWakeLockDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Traffic`
+  String get resourceUsageTraffic {
+    return Intl.message(
+      'Traffic',
+      name: 'resourceUsageTraffic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wi-Fi and mobile, as billed to this app`
+  String get resourceUsageTrafficDesc {
+    return Intl.message(
+      'Wi-Fi and mobile, as billed to this app',
+      name: 'resourceUsageTrafficDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Measured window`
+  String get resourceUsageWindow {
+    return Intl.message(
+      'Measured window',
+      name: 'resourceUsageWindow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time on battery this report covers`
+  String get resourceUsageWindowDesc {
+    return Intl.message(
+      'Time on battery this report covers',
+      name: 'resourceUsageWindowDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Android's battery screen shows little for a VPN: tunnelled traffic is billed to the app that originated it, not to the tunnel, and this app releases its wake lock once the screen goes off. The numbers here come from the system's own per-app counters.`
+  String get resourceUsageExplainer {
+    return Intl.message(
+      'Android\'s battery screen shows little for a VPN: tunnelled traffic is billed to the app that originated it, not to the tunnel, and this app releases its wake lock once the screen goes off. The numbers here come from the system\'s own per-app counters.',
+      name: 'resourceUsageExplainer',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Source`
   String get loggingSourceSection {
     return Intl.message(
@@ -1009,6 +1144,12 @@ class AppLocalizations {
     return Intl.message('Auto update', name: 'autoUpdate', desc: '', args: []);
   }
 
+  /// `Happ mode`
+  String get happMode {
+    return Intl.message('Happ mode', name: 'happMode', desc: '', args: []);
+  }
+
+  /// `No available proxies`
   String get noProxy {
     return Intl.message(
       'No available proxies',
@@ -1018,10 +1159,21 @@ class AppLocalizations {
     );
   }
 
+  /// `Script updated`
   String get scriptUpdated {
     return Intl.message(
       'Script updated',
       name: 'scriptUpdated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fetch as the Happ client to unlock anti-block nodes on panels that gate them`
+  String get happModeDesc {
+    return Intl.message(
+      'Fetch as the Happ client to unlock anti-block nodes on panels that gate them',
+      name: 'happModeDesc',
       desc: '',
       args: [],
     );
@@ -1117,11 +1269,21 @@ class AppLocalizations {
     return Intl.message('Create', name: 'create', desc: '', args: []);
   }
 
-  /// `Please upload a valid QR code`
-  String get pleaseUploadValidQrcode {
+  /// `No QR code found in that image`
+  String get qrNotRecognized {
     return Intl.message(
-      'Please upload a valid QR code',
-      name: 'pleaseUploadValidQrcode',
+      'No QR code found in that image',
+      name: 'qrNotRecognized',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QR code read, but it is not a subscription, link or config`
+  String get qrNotImportable {
+    return Intl.message(
+      'QR code read, but it is not a subscription, link or config',
+      name: 'qrNotImportable',
       desc: '',
       args: [],
     );
@@ -2127,6 +2289,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Proxy Nameserver Policy`
   String get proxyNameserverPolicy {
     return Intl.message(
       'Proxy Nameserver Policy',
@@ -2136,6 +2299,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Specify the nameserver policy for proxy nodes`
   String get proxyNameserverPolicyDesc {
     return Intl.message(
       'Specify the nameserver policy for proxy nodes',
@@ -5585,6 +5749,7 @@ class AppLocalizations {
     );
   }
 
+  /// `Can't delete: it's still in use. Remove the reference first.`
   String get routingDeleteInUse {
     return Intl.message(
       'Can\'t delete: it\'s still in use. Remove the reference first.',

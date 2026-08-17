@@ -13,6 +13,7 @@ abstract final class ServiceMethod {
   // Inbound (Kotlin → Dart)
   static const event = 'event';
   static const crash = 'crash';
+  static const runState = 'runState';
 }
 
 abstract final class LibraryMethod {
@@ -51,4 +52,5 @@ abstract final class AppMethod {
   static const isAutoStartEnabled = 'isAutoStartEnabled';
   static const setAutoStartEnabled = 'setAutoStartEnabled';
   static const getLogDirectory = 'getLogDirectory';
+  static const getHealthStats = 'getHealthStats';
 }

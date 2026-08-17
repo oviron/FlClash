@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/ingest/normalize.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -53,15 +55,27 @@ class Picker {
       return null;
     }
     final controller = MobileScannerController();
-    final capture = await controller.analyzeImage(
-      xFile.path,
-      formats: [BarcodeFormat.qrCode],
-    );
-    final result = capture?.barcodes.first.rawValue;
-    if (result == null || !result.isImportable) {
-      throw appLocalizations.pleaseUploadValidQrcode;
+    final BarcodeCapture? capture;
+    try {
+      capture = await controller.analyzeImage(
+        xFile.path,
+        formats: [BarcodeFormat.qrCode],
+      );
+    } finally {
+      unawaited(controller.dispose());
     }
-    return result;
+    // ML Kit reports "nothing decoded" as an empty list, so the two failures
+    // are distinct and get distinct messages: unreadable image vs. a payload
+    // this app cannot import.
+    final values = capture?.barcodes.map((b) => b.rawValue).toList();
+    if (values == null || values.isEmpty) {
+      throw appLocalizations.qrNotRecognized;
+    }
+    final payload = firstIngestable(values);
+    if (payload == null) {
+      throw appLocalizations.qrNotImportable;
+    }
+    return payload;
   }
 }
 

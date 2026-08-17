@@ -24,6 +24,7 @@ import com.follow.clash.common.GlobalState
 import com.follow.clash.common.QuickAction
 import com.follow.clash.common.quickIntent
 import com.follow.clash.getPackageIconPath
+import com.follow.clash.healthStatsJson
 import com.follow.clash.models.Package
 import com.follow.clash.showToast
 import com.google.gson.Gson
@@ -63,6 +64,7 @@ private object AppMethod {
     const val GET_LOG_DIRECTORY = "getLogDirectory"
     const val REQUEST_NOTIFICATIONS_PERMISSION = "requestNotificationsPermission"
     const val OPEN_FILE = "openFile"
+    const val GET_HEALTH_STATS = "getHealthStats"
 }
 
 class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
@@ -247,11 +249,16 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 result.success(dir.absolutePath)
             }
 
+            AppMethod.GET_HEALTH_STATS -> {
+                result.success(applicationContext.healthStatsJson())
+            }
+
             else -> {
                 result.notImplemented()
             }
         }
     }
+
 
     private fun handleGetPackageIcon(call: MethodCall, result: Result) {
         scope.launch {

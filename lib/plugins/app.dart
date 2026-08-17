@@ -111,6 +111,12 @@ class App {
   Future<String?> getLogDirectory() async {
     return await methodChannel.invokeMethod<String>(AppMethod.getLogDirectory);
   }
+
+  Future<HealthStats?> getHealthStats() async {
+    return HealthStats.tryParse(
+      await methodChannel.invokeMethod<String>(AppMethod.getHealthStats),
+    );
+  }
 }
 
 final app = system.isAndroid ? App() : null;

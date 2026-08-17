@@ -14,6 +14,7 @@ import 'package:fl_clash/views/privacy.dart';
 import 'package:fl_clash/views/resources.dart';
 import 'package:fl_clash/views/setting/library_version.dart';
 import 'package:fl_clash/views/setting/logging.dart';
+import 'package:fl_clash/views/setting/resource_usage.dart';
 import 'package:fl_clash/views/setting/network_rules.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
   List<Widget> _applicationSection() {
     return generateSection(
       title: context.appLocalizations.application,
-      items: const [_SettingItem(), _LoggingItem()],
+      items: const [_SettingItem(), _LoggingItem(), _ResourceUsageItem()],
     );
   }
 
@@ -352,6 +353,20 @@ class _GeoDatabasesItem extends StatelessWidget {
         ),
       ),
       delegate: const OpenDelegate(widget: ResourcesView()),
+    );
+  }
+}
+
+class _ResourceUsageItem extends StatelessWidget {
+  const _ResourceUsageItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListItem.open(
+      leading: const Icon(Icons.battery_charging_full_outlined),
+      title: Text(context.appLocalizations.resourceUsageTitle),
+      subtitle: Text(context.appLocalizations.resourceUsageDesc),
+      delegate: const OpenDelegate(widget: ResourceUsageView()),
     );
   }
 }

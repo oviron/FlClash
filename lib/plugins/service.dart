@@ -12,6 +12,10 @@ abstract mixin class ServiceListener {
   void onServiceEvent(CoreEvent event) {}
 
   void onServiceCrash(String message) {}
+
+  /// The service's run state changed under us — a tile toggle, a revoke, a
+  /// crash. Null means stopped.
+  void onRunStateChanged(DateTime? startTime) {}
 }
 
 class Service {
@@ -48,6 +52,15 @@ class Service {
             for (final listener in _listeners) {
               listener.onServiceCrash(message);
             }
+          }
+          break;
+        case ServiceMethod.runState:
+          final ms = call.arguments as int? ?? 0;
+          final startTime = ms == 0
+              ? null
+              : DateTime.fromMillisecondsSinceEpoch(ms);
+          for (final listener in _listeners) {
+            listener.onRunStateChanged(startTime);
           }
           break;
         default:

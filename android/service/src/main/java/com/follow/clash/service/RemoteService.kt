@@ -58,6 +58,10 @@ class RemoteService : Service(),
         GlobalState.log("Background service disconnected: $message")
         intent = null
         delegate = null
+        // The tunnel is gone (revoke, system kill, crash). Leaving runTime set
+        // makes getRunTime() — the state every consumer treats as the truth —
+        // report a tunnel that no longer exists.
+        State.runTime = 0
     }
 
     private fun handleStartService(runTime: Long, result: IResultInterface) {

@@ -46,7 +46,10 @@ class GlobalState {
   SetupState? lastSetupState;
   VpnState? lastVpnState;
 
-  bool get isStart => startTime != null && startTime!.isBeforeNow;
+  // Counter reading taken when the tunnel came up, so usage can be reported for
+  // this session. Null after a cold start into a running tunnel — the baseline
+  // is gone with the old isolate, and we say so rather than invent one.
+  HealthStats? healthBaseline;
 
   GlobalState._internal();
 
