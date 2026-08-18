@@ -12,7 +12,6 @@ import 'package:fl_clash/views/theme/slider_defaults_m3.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class ThemeModeItem {
   final ThemeMode themeMode;
@@ -216,7 +215,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
       child: OptionsDialog<DynamicSchemeVariant>(
         title: appLocalizations.colorSchemes,
         options: DynamicSchemeVariant.values,
-        textBuilder: (item) => Intl.message('${item.name}Scheme'),
+        textBuilder: (item) => item.label,
         value: schemeVariant,
       ),
     );
@@ -273,7 +272,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
                   visualDensity: VisualDensity.compact,
                 ),
                 onPressed: _handleChangeSchemeVariant,
-                child: Text(Intl.message('${schemeVariant.name}Scheme')),
+                child: Text(schemeVariant.label),
               ),
             if (_removablePrimaryColor != null)
               FilledButton(

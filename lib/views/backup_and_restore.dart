@@ -17,7 +17,6 @@ import 'package:fl_clash/widgets/scaffold.dart';
 import 'package:fl_clash/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class BackupAndRestore extends ConsumerWidget {
   const BackupAndRestore({super.key});
@@ -156,7 +155,7 @@ class BackupAndRestore extends ConsumerWidget {
       child: OptionsDialog<RestoreStrategy>(
         title: appLocalizations.restoreStrategy,
         options: RestoreStrategy.values,
-        textBuilder: (mode) => Intl.message('restoreStrategy_${mode.name}'),
+        textBuilder: (mode) => mode.label,
         value: restoreStrategy,
       ),
     );
@@ -303,9 +302,7 @@ class BackupAndRestore extends ConsumerWidget {
                   onPressed: () {
                     _handleUpdateRestoreStrategy(ref);
                   },
-                  child: Text(
-                    Intl.message('restoreStrategy_${restoreStrategy.name}'),
-                  ),
+                  child: Text(restoreStrategy.label),
                 ),
               );
             },

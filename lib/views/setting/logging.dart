@@ -6,7 +6,6 @@ import 'package:fl_clash/views/logs.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class LoggingView extends ConsumerStatefulWidget {
   const LoggingView({super.key});
@@ -123,7 +122,7 @@ class _LoggingViewState extends ConsumerState<LoggingView> {
           ),
           const Divider(height: 0),
           ExpansionTile(
-            title: Text(Intl.message('Details', name: 'detailsSection')),
+            title: Text(appLocalizations.detailsSection),
             tilePadding: const EdgeInsets.symmetric(horizontal: 16),
             childrenPadding: EdgeInsets.zero,
             children: [

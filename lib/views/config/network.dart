@@ -3,8 +3,8 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class VPNItem extends ConsumerWidget {
   const VPNItem({super.key});
@@ -15,7 +15,7 @@ class VPNItem extends ConsumerWidget {
       vpnSettingProvider.select((state) => state.enable),
     );
     return ListItem.switchItem(
-      title: Text(Intl.message('VPN', name: 'vpn')),
+      title: Text(appLocalizations.vpn),
       subtitle: Text(appLocalizations.vpnEnableDesc),
       delegate: SwitchDelegate(
         value: enable,
@@ -94,7 +94,7 @@ class UnifiedIpv6Item extends ConsumerWidget {
     final enable = activeCount >= 2;
     return ListItem.switchItem(
       leading: const Icon(Icons.public),
-      title: Text(Intl.message('IPv6', name: 'ipv6')),
+      title: Text(appLocalizations.ipv6),
       subtitle: Text(appLocalizations.ipv6Desc),
       delegate: SwitchDelegate(
         value: enable,
@@ -249,7 +249,7 @@ class RouteModeItem extends ConsumerWidget {
     );
     return ListItem<RouteMode>.options(
       title: Text(appLocalizations.routeMode),
-      subtitle: Text(Intl.message('routeMode_${routeMode.name}')),
+      subtitle: Text(routeMode.label),
       delegate: OptionsDelegate<RouteMode>(
         title: appLocalizations.routeMode,
         options: RouteMode.values,
@@ -261,7 +261,7 @@ class RouteModeItem extends ConsumerWidget {
               .read(networkSettingProvider.notifier)
               .update((state) => state.copyWith(routeMode: value));
         },
-        textBuilder: (routeMode) => Intl.message('routeMode_${routeMode.name}'),
+        textBuilder: (routeMode) => routeMode.label,
         value: routeMode,
       ),
     );
@@ -287,12 +287,7 @@ class RouteAddressItem extends ConsumerWidget {
           appLocalizations.routeAddress,
           style: TextStyle(color: Theme.of(context).disabledColor),
         ),
-        subtitle: Text(
-          Intl.message(
-            'Not used in Bypass private mode',
-            name: 'routeAddressBypassPrivateHint',
-          ),
-        ),
+        subtitle: Text(appLocalizations.routeAddressBypassPrivateHint),
       );
     }
     return ListItem.open(
@@ -318,7 +313,7 @@ class RouteAddressItem extends ConsumerWidget {
 final networkItems = [
   const VPNItem(),
   ...generateSection(
-    title: Intl.message('VPN', name: 'vpn'),
+    title: appLocalizations.vpn,
     items: [
       const UnifiedIpv6Item(),
       const DNSHijackingItem(),
@@ -349,7 +344,7 @@ class _AdvancedNetworkSection extends ConsumerWidget {
     // Bypass domain works only in HTTP/SOCKS system-proxy mode (not TUN).
     if (!systemProxy) return const SizedBox.shrink();
     return ExpansionTile(
-      title: Text(Intl.message('Advanced', name: 'advanced')),
+      title: Text(appLocalizations.advanced),
       childrenPadding: EdgeInsets.zero,
       tilePadding: const EdgeInsets.symmetric(horizontal: 16),
       children: const [BypassDomainItem()],

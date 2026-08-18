@@ -1,3 +1,4 @@
+import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/library/model.dart';
 import 'package:fl_clash/library/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -5,7 +6,6 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 String _coreTitle(String label) => 'mihomo';
 
@@ -18,11 +18,11 @@ class LibraryVersionView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final labels = [kLibMihomo];
     return BaseScaffold(
-      title: Intl.message('Library version', name: 'libraryVersion'),
+      title: appLocalizations.libraryVersion,
       actions: [
         IconButton(
           icon: const Icon(Icons.refresh),
-          tooltip: Intl.message('Refresh', name: 'libRefresh'),
+          tooltip: appLocalizations.libRefresh,
           onPressed: () {
             for (final l in labels) {
               ref.invalidate(libraryReleasesProvider(l));
@@ -68,13 +68,8 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
 
   Future<bool> _confirmSwitch() async {
     final ok = await globalState.showMessage(
-      title: Intl.message('Switch core version', name: 'libSwitchTitle'),
-      message: TextSpan(
-        text: Intl.message(
-          'Switching reloads the engine and drops your current connection. Continue?',
-          name: 'libSwitchBody',
-        ),
-      ),
+      title: appLocalizations.libSwitchTitle,
+      message: TextSpan(text: appLocalizations.libSwitchBody),
     );
     return ok == true;
   }
@@ -103,13 +98,13 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
         ListHeader(title: _coreTitle(label)),
         ListItem(
           leading: const Icon(Icons.check_circle_outline),
-          title: Text(Intl.message('Active', name: 'libActive')),
+          title: Text(appLocalizations.libActive),
           subtitle: Text(
             active != null
                 ? _versionFromDir(active)
                 : (bundled != null && bundled.isNotEmpty
-                      ? '${Intl.message('Bundled', name: 'libBundledShort')} · v$bundled'
-                      : Intl.message('Bundled (default)', name: 'libBundled')),
+                      ? '${appLocalizations.libBundledShort} · v$bundled'
+                      : appLocalizations.libBundled),
           ),
           trailing: active == null
               ? null
@@ -123,14 +118,12 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
                             wasRunning: ref.read(isStartProvider),
                           );
                         }),
-                  child: Text(
-                    Intl.message('Reset to bundled', name: 'libReset'),
-                  ),
+                  child: Text(appLocalizations.libReset),
                 ),
         ),
         if (installed.isNotEmpty) ...[
           const Divider(height: 0),
-          ListHeader(title: Intl.message('Installed', name: 'libInstalled')),
+          ListHeader(title: appLocalizations.libInstalled),
           for (final lib in installed)
             ListItem(
               leading: const Icon(Icons.inventory_2_outlined),
@@ -140,7 +133,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
             ),
         ],
         const Divider(height: 0),
-        ListHeader(title: Intl.message('Available', name: 'libAvailable')),
+        ListHeader(title: appLocalizations.libAvailable),
         releasesAsync.when(
           loading: () => const Padding(
             padding: EdgeInsets.all(16),
@@ -148,9 +141,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
           ),
           error: (e, _) => ListItem(
             leading: const Icon(Icons.error_outline),
-            title: Text(
-              Intl.message('Failed to load releases', name: 'libLoadError'),
-            ),
+            title: Text(appLocalizations.libLoadError),
             subtitle: Text('$e'),
           ),
           data: (releases) => Column(
@@ -178,7 +169,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
   ) {
     final isActive = active == lib.dir;
     if (isActive) {
-      return Text(Intl.message('In use', name: 'libInUse'));
+      return Text(appLocalizations.libInUse);
     }
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -193,11 +184,11 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
                     wasRunning: ref.read(isStartProvider),
                   );
                 }),
-          child: Text(Intl.message('Use', name: 'libUse')),
+          child: Text(appLocalizations.libUse),
         ),
         IconButton(
           icon: const Icon(Icons.delete_outline),
-          tooltip: Intl.message('Delete', name: 'libDelete'),
+          tooltip: appLocalizations.libDelete,
           onPressed: _busy.isNotEmpty
               ? null
               : () =>
@@ -227,11 +218,8 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
       // load here; "update the app" is wrong (the app is already newer).
       final tooOld = expectedAbi != null && rel.bridgeAbi < expectedAbi;
       final reason = tooOld
-          ? Intl.message(
-              'Incompatible (older core)',
-              name: 'libIncompatibleOld',
-            )
-          : Intl.message('Requires app update', name: 'libNeedsUpdate');
+          ? appLocalizations.libIncompatibleOld
+          : appLocalizations.libNeedsUpdate;
       return ListItem(
         leading: const Icon(Icons.block),
         title: Text(
@@ -254,9 +242,9 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
       title: Text('v${rel.version}'),
       subtitle: Text(subtitle),
       trailing: isBundled
-          ? Text(Intl.message('Bundled', name: 'libBundledTag'))
+          ? Text(appLocalizations.libBundledTag)
           : installed
-          ? Text(Intl.message('Installed', name: 'libInstalledTag'))
+          ? Text(appLocalizations.libInstalledTag)
           : busy
           ? const SizedBox(
               width: 20,

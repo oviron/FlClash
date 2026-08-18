@@ -6,7 +6,6 @@ import 'package:fl_clash/views/config/port_dialog.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class TestUrlItem extends ConsumerWidget {
   const TestUrlItem({super.key});
@@ -77,7 +76,7 @@ class HostsItem extends ConsumerWidget {
     final hosts = ref.watch(
       patchClashConfigProvider.select((state) => state.hosts),
     );
-    final hostsLabel = Intl.message('Hosts', name: 'hosts');
+    final hostsLabel = appLocalizations.hosts;
     return ListItem.open(
       leading: const Icon(Icons.view_list_outlined),
       title: Text(hostsLabel),
@@ -213,7 +212,7 @@ final generalItems = <Widget>[
     const HostsItem(),
   ].separated(const Divider(height: 0)),
   ExpansionTile(
-    title: Text(Intl.message('Advanced', name: 'advanced')),
+    title: Text(appLocalizations.advanced),
     childrenPadding: EdgeInsets.zero,
     tilePadding: const EdgeInsets.symmetric(horizontal: 16),
     children: <Widget>[

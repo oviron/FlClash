@@ -5,7 +5,6 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class CloseConnectionsItem extends ConsumerWidget {
   const CloseConnectionsItem({super.key});
@@ -123,31 +122,31 @@ class ApplicationSettingView extends StatelessWidget {
 
   String getLocaleString(Locale? locale) {
     if (locale == null) return appLocalizations.defaultText;
-    return Intl.message(locale.toString());
+    return localeDisplayName(locale.toString());
   }
 
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
       ...generateSection(
-        title: Intl.message('Launch & background', name: 'launchAndBackground'),
+        title: appLocalizations.launchAndBackground,
         items: const [AutoRunItem(), MinimizeItem()],
       ),
       ...generateSection(
-        title: Intl.message('Connection', name: 'connection'),
+        title: appLocalizations.connection,
         items: const [CloseConnectionsItem()],
       ),
       ...generateSection(
-        title: Intl.message('User interface', name: 'userInterface'),
+        title: appLocalizations.userInterface,
         items: const [AnimateTabItem()],
       ),
       ...generateSection(
-        title: Intl.message('Reset', name: 'resetSection'),
+        title: appLocalizations.resetSection,
         items: const [ClearDataItem()],
       ),
     ];
     return BaseScaffold(
-      title: Intl.message('General settings', name: 'generalSettings'),
+      title: appLocalizations.generalSettings,
       body: ListView.builder(
         itemBuilder: (_, index) => items[index],
         itemCount: items.length,

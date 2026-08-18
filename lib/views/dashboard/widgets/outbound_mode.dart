@@ -8,7 +8,6 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class OutboundMode extends StatelessWidget {
   const OutboundMode({super.key});
@@ -73,7 +72,7 @@ class OutboundMode extends StatelessWidget {
                                 value: item,
                               ),
                               title: Text(
-                                Intl.message(item.name),
+                                item.label,
                                 style: Theme.of(
                                   context,
                                 ).textTheme.bodyMedium?.toSoftBold,
@@ -142,7 +141,7 @@ class OutboundModeV2 extends StatelessWidget {
                                   height: height - 8.ap - 24,
                                   padding: const EdgeInsets.all(4),
                                   child: Text(
-                                    Intl.message(item.name),
+                                    item.label,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall

@@ -4,7 +4,6 @@ import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class ProxiesSetting extends StatelessWidget {
   const ProxiesSetting({super.key});
@@ -67,7 +66,7 @@ class ProxiesSetting extends StatelessWidget {
                   for (final item in ProxiesType.values)
                     SettingInfoCard(
                       Info(
-                        label: Intl.message(item.name),
+                        label: item.label,
                         iconData: _getIconWithProxiesType(item),
                       ),
                       isSelected: proxiesType == item,
@@ -144,7 +143,7 @@ class ProxiesSetting extends StatelessWidget {
                 children: [
                   for (final item in ProxyCardType.values)
                     SettingTextCard(
-                      Intl.message(item.name),
+                      item.label,
                       isSelected: item == cardType,
                       onPressed: () {
                         ref.read(proxiesStyleSettingProvider.notifier).update((

@@ -17,6 +17,7 @@ export 'icons.dart';
 export 'inbound_auth.dart';
 export 'indexing.dart';
 export 'iterable.dart';
+export 'l10n_labels.dart';
 export 'keyboard.dart';
 export 'link.dart';
 export 'list_mirror.dart';

@@ -184,8 +184,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "connecting": MessageLookupByLibrary.simpleMessage("Подключение..."),
     "connection": MessageLookupByLibrary.simpleMessage("Соединение"),
     "connections": MessageLookupByLibrary.simpleMessage("Соединения"),
+    "connectionsDesc": MessageLookupByLibrary.simpleMessage(
+      "Просмотр текущих данных о соединениях",
+    ),
     "connectivity": MessageLookupByLibrary.simpleMessage("Связь："),
     "content": MessageLookupByLibrary.simpleMessage("Содержание"),
+    "contentScheme": MessageLookupByLibrary.simpleMessage("Контентная тема"),
     "controlGlobalAddedRules": MessageLookupByLibrary.simpleMessage(
       "Управление глобальными добавленными правилами",
     ),
@@ -240,6 +244,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Режим разработчика активирован.",
     ),
     "diagnostics": MessageLookupByLibrary.simpleMessage("Диагностика"),
+    "direct": MessageLookupByLibrary.simpleMessage("Прямой"),
     "disclaimer": MessageLookupByLibrary.simpleMessage(
       "Отказ от ответственности",
     ),
@@ -271,13 +276,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "entries": MessageLookupByLibrary.simpleMessage(" записей"),
     "existsTip": m7,
     "exit": MessageLookupByLibrary.simpleMessage("Выход"),
+    "expand": MessageLookupByLibrary.simpleMessage("Стандартный"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Экспорт файла"),
     "exportLogs": MessageLookupByLibrary.simpleMessage("Экспорт логов"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("Экспорт успешен"),
+    "expressiveScheme": MessageLookupByLibrary.simpleMessage("Экспрессивные"),
     "externalFetch": MessageLookupByLibrary.simpleMessage("Внешнее получение"),
     "externalLink": MessageLookupByLibrary.simpleMessage("Внешняя ссылка"),
     "fakeipFilter": MessageLookupByLibrary.simpleMessage("Фильтр Fakeip"),
     "fakeipRange": MessageLookupByLibrary.simpleMessage("Диапазон Fakeip"),
+    "fidelityScheme": MessageLookupByLibrary.simpleMessage("Точная передача"),
     "file": MessageLookupByLibrary.simpleMessage("Файл"),
     "fileDesc": MessageLookupByLibrary.simpleMessage("Прямая загрузка профиля"),
     "fileIsUpdate": MessageLookupByLibrary.simpleMessage(
@@ -293,6 +301,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Вы уверены, что хотите принудительно перезапустить ядро?",
     ),
     "forkOf": m8,
+    "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("Фруктовый микс"),
     "generalSettings": MessageLookupByLibrary.simpleMessage("Общие настройки"),
     "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("Автообновление"),
     "geoDatabases": MessageLookupByLibrary.simpleMessage("Гео-базы"),
@@ -309,6 +318,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "geodataLoaderDesc": MessageLookupByLibrary.simpleMessage(
       "Включение будет использовать загрузчик геоданных с низким потреблением памяти",
     ),
+    "global": MessageLookupByLibrary.simpleMessage("Глобальный"),
     "go": MessageLookupByLibrary.simpleMessage("Перейти"),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage(
       "Перейти к настройке скрипта",
@@ -395,6 +405,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Загрузка и переключение версии ядра mihomo",
     ),
     "light": MessageLookupByLibrary.simpleMessage("Светлый"),
+    "list": MessageLookupByLibrary.simpleMessage("Список"),
     "listen": MessageLookupByLibrary.simpleMessage("Слушать"),
     "local": MessageLookupByLibrary.simpleMessage("Локальный"),
     "localBackupDesc": MessageLookupByLibrary.simpleMessage(
@@ -458,6 +469,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "loggingSourceSection": MessageLookupByLibrary.simpleMessage("Источник"),
     "loggingTitle": MessageLookupByLibrary.simpleMessage("Логирование"),
     "logs": MessageLookupByLibrary.simpleMessage("Логи"),
+    "logsDesc": MessageLookupByLibrary.simpleMessage("Записи захвата логов"),
     "logsTest": MessageLookupByLibrary.simpleMessage("Тест журналов"),
     "loose": MessageLookupByLibrary.simpleMessage("Свободный"),
     "memoryInfo": MessageLookupByLibrary.simpleMessage("Информация о памяти"),
@@ -465,6 +477,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Тестирование сообщения",
     ),
     "messageTestTip": MessageLookupByLibrary.simpleMessage("Это сообщение."),
+    "min": MessageLookupByLibrary.simpleMessage("Мин"),
     "minimizeOnExit": MessageLookupByLibrary.simpleMessage(
       "Сворачивать вместо выхода",
     ),
@@ -473,6 +486,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "minutesAgo": m10,
     "mixedPort": MessageLookupByLibrary.simpleMessage("Смешанный порт"),
+    "monochromeScheme": MessageLookupByLibrary.simpleMessage("Монохром"),
     "monthsAgo": m11,
     "more": MessageLookupByLibrary.simpleMessage("Еще"),
     "mtu": MessageLookupByLibrary.simpleMessage("MTU"),
@@ -594,6 +608,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Скорость сети"),
     "networkType": MessageLookupByLibrary.simpleMessage("Тип сети"),
+    "neutralScheme": MessageLookupByLibrary.simpleMessage("Нейтральные"),
     "noData": MessageLookupByLibrary.simpleMessage("Нет данных"),
     "noInfo": MessageLookupByLibrary.simpleMessage("Нет информации"),
     "noNetwork": MessageLookupByLibrary.simpleMessage("Нет сети"),
@@ -743,6 +758,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Кнопка не добавлена",
     ),
     "quickTileTitle": MessageLookupByLibrary.simpleMessage("Кнопка в шторке"),
+    "rainbowScheme": MessageLookupByLibrary.simpleMessage("Радужные"),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir-порт"),
     "redo": MessageLookupByLibrary.simpleMessage("Повторить"),
     "refresh": MessageLookupByLibrary.simpleMessage("Обновить"),
@@ -756,6 +772,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "request": MessageLookupByLibrary.simpleMessage("Запрос"),
     "requests": MessageLookupByLibrary.simpleMessage("Запросы"),
+    "requestsDesc": MessageLookupByLibrary.simpleMessage(
+      "Просмотр последних записей запросов",
+    ),
     "reset": MessageLookupByLibrary.simpleMessage("Сброс"),
     "resetSection": MessageLookupByLibrary.simpleMessage("Сброс"),
     "resetTip": MessageLookupByLibrary.simpleMessage(
@@ -793,6 +812,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Время работы от батареи, которое покрывает отчёт",
     ),
     "resources": MessageLookupByLibrary.simpleMessage("Ресурсы"),
+    "resourcesDesc": MessageLookupByLibrary.simpleMessage(
+      "Информация, связанная с внешними ресурсами",
+    ),
     "resourcesUpToDate": MessageLookupByLibrary.simpleMessage(
       "Ресурсы актуальны",
     ),
@@ -825,6 +847,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "restoreStrategy": MessageLookupByLibrary.simpleMessage(
       "Стратегия восстановления",
     ),
+    "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage(
+      "Совместимый",
+    ),
+    "restoreStrategy_override": MessageLookupByLibrary.simpleMessage(
+      "Перезаписать",
+    ),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage(
       "Восстановление успешно",
     ),
@@ -836,6 +864,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Настройка адреса прослушивания маршрутизации",
     ),
     "routeMode": MessageLookupByLibrary.simpleMessage("Режим маршрутизации"),
+    "routeMode_bypassPrivate": MessageLookupByLibrary.simpleMessage(
+      "Обход частных адресов маршрутизации",
+    ),
+    "routeMode_config": MessageLookupByLibrary.simpleMessage(
+      "Использовать конфигурацию",
+    ),
     "routingAddCondition": MessageLookupByLibrary.simpleMessage(
       "Добавить условие",
     ),
@@ -1162,6 +1196,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать все"),
     "selectedCountTitle": m24,
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
+    "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
     "size": MessageLookupByLibrary.simpleMessage("Размер"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks-порт"),
     "sort": MessageLookupByLibrary.simpleMessage("Сортировка"),
@@ -1193,6 +1228,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemProxyDesc": MessageLookupByLibrary.simpleMessage(
       "Прикрепить HTTP-прокси к VpnService",
     ),
+    "tab": MessageLookupByLibrary.simpleMessage("Вкладка"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("Анимация вкладок"),
     "tabAnimationDesc": MessageLookupByLibrary.simpleMessage(
       "Плавный переход при переключении вкладок (только в мобильной раскладке)",
@@ -1212,6 +1248,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tight": MessageLookupByLibrary.simpleMessage("Плотный"),
     "tip": MessageLookupByLibrary.simpleMessage("Подсказка"),
     "toggle": MessageLookupByLibrary.simpleMessage("Переключить"),
+    "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("Тональный акцент"),
     "tools": MessageLookupByLibrary.simpleMessage("Инструменты"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy-порт"),
     "traffic": MessageLookupByLibrary.simpleMessage("Трафик"),
@@ -1235,6 +1272,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "userInterface": MessageLookupByLibrary.simpleMessage("Интерфейс"),
     "value": MessageLookupByLibrary.simpleMessage("Значение"),
+    "vibrantScheme": MessageLookupByLibrary.simpleMessage("Яркие"),
     "vpn": MessageLookupByLibrary.simpleMessage("VPN"),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "Автоматически направляет весь системный трафик через VpnService",

@@ -5207,6 +5207,186 @@ class AppLocalizations {
       args: [value],
     );
   }
+
+  /// `Tab`
+  String get tab {
+    return Intl.message('Tab', name: 'tab', desc: '', args: []);
+  }
+
+  /// `List`
+  String get list {
+    return Intl.message('List', name: 'list', desc: '', args: []);
+  }
+
+  /// `Standard`
+  String get expand {
+    return Intl.message('Standard', name: 'expand', desc: '', args: []);
+  }
+
+  /// `Shrink`
+  String get shrink {
+    return Intl.message('Shrink', name: 'shrink', desc: '', args: []);
+  }
+
+  /// `Min`
+  String get min {
+    return Intl.message('Min', name: 'min', desc: '', args: []);
+  }
+
+  /// `Global`
+  String get global {
+    return Intl.message('Global', name: 'global', desc: '', args: []);
+  }
+
+  /// `Direct`
+  String get direct {
+    return Intl.message('Direct', name: 'direct', desc: '', args: []);
+  }
+
+  /// `Override`
+  String get restoreStrategy_override {
+    return Intl.message(
+      'Override',
+      name: 'restoreStrategy_override',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Compatible`
+  String get restoreStrategy_compatible {
+    return Intl.message(
+      'Compatible',
+      name: 'restoreStrategy_compatible',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bypass private route address`
+  String get routeMode_bypassPrivate {
+    return Intl.message(
+      'Bypass private route address',
+      name: 'routeMode_bypassPrivate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use config`
+  String get routeMode_config {
+    return Intl.message(
+      'Use config',
+      name: 'routeMode_config',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TonalSpot`
+  String get tonalSpotScheme {
+    return Intl.message(
+      'TonalSpot',
+      name: 'tonalSpotScheme',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fidelity`
+  String get fidelityScheme {
+    return Intl.message('Fidelity', name: 'fidelityScheme', desc: '', args: []);
+  }
+
+  /// `Monochrome`
+  String get monochromeScheme {
+    return Intl.message(
+      'Monochrome',
+      name: 'monochromeScheme',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Neutral`
+  String get neutralScheme {
+    return Intl.message('Neutral', name: 'neutralScheme', desc: '', args: []);
+  }
+
+  /// `Vibrant`
+  String get vibrantScheme {
+    return Intl.message('Vibrant', name: 'vibrantScheme', desc: '', args: []);
+  }
+
+  /// `Expressive`
+  String get expressiveScheme {
+    return Intl.message(
+      'Expressive',
+      name: 'expressiveScheme',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Content`
+  String get contentScheme {
+    return Intl.message('Content', name: 'contentScheme', desc: '', args: []);
+  }
+
+  /// `Rainbow`
+  String get rainbowScheme {
+    return Intl.message('Rainbow', name: 'rainbowScheme', desc: '', args: []);
+  }
+
+  /// `FruitSalad`
+  String get fruitSaladScheme {
+    return Intl.message(
+      'FruitSalad',
+      name: 'fruitSaladScheme',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View recently request records`
+  String get requestsDesc {
+    return Intl.message(
+      'View recently request records',
+      name: 'requestsDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View current connections data`
+  String get connectionsDesc {
+    return Intl.message(
+      'View current connections data',
+      name: 'connectionsDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log capture records`
+  String get logsDesc {
+    return Intl.message(
+      'Log capture records',
+      name: 'logsDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `External resource related info`
+  String get resourcesDesc {
+    return Intl.message(
+      'External resource related info',
+      name: 'resourcesDesc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

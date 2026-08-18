@@ -43,7 +43,6 @@ class Navigation {
         label: PageLabel.requests,
         builder: (_) =>
             const RequestsView(key: GlobalObjectKey(PageLabel.requests)),
-        description: 'requestsDesc',
         isMore: true,
       ),
       NavigationItem(
@@ -51,14 +50,12 @@ class Navigation {
         label: PageLabel.connections,
         builder: (_) =>
             const ConnectionsView(key: GlobalObjectKey(PageLabel.connections)),
-        description: 'connectionsDesc',
         isMore: true,
       ),
       NavigationItem(
         icon: const Icon(Icons.adb),
         label: PageLabel.logs,
         builder: (_) => const LogsView(key: GlobalObjectKey(PageLabel.logs)),
-        description: 'logsDesc',
         isMore: true,
         visible: inAppLogsEnabled,
       ),

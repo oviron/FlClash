@@ -10,7 +10,6 @@ import 'package:fl_clash/views/proxies/node_selector_sheet.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class DashboardHero extends ConsumerWidget {
   const DashboardHero({super.key});
@@ -337,7 +336,7 @@ class _ModeSegment extends ConsumerWidget {
               m: Container(
                 alignment: Alignment.center,
                 child: Text(
-                  Intl.message(m.name),
+                  m.label,
                   style: context.textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: m == mode ? scheme.onSecondaryContainer : null,

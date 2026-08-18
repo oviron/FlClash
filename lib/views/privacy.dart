@@ -4,7 +4,6 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class PrivacyView extends StatelessWidget {
   const PrivacyView({super.key});
@@ -12,7 +11,7 @@ class PrivacyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseScaffold(
-      title: Intl.message('Privacy & Security', name: 'privacyAndSecurity'),
+      title: appLocalizations.privacyAndSecurity,
       body: ListView(
         children: const [
           _HideFromRecentsItem(),
@@ -38,13 +37,8 @@ class _HideFromRecentsItem extends ConsumerWidget {
     );
     return ListItem.switchItem(
       leading: const Icon(Icons.visibility_off_outlined),
-      title: Text(Intl.message('Hide from recents', name: 'hideFromRecents')),
-      subtitle: Text(
-        Intl.message(
-          'App icon does not appear in the recent apps list while the app is in background',
-          name: 'hideFromRecentsDesc',
-        ),
-      ),
+      title: Text(appLocalizations.hideFromRecents),
+      subtitle: Text(appLocalizations.hideFromRecentsDesc),
       delegate: SwitchDelegate(
         value: hidden,
         onChanged: (value) {
@@ -64,9 +58,7 @@ class _DisclaimerActionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem(
       leading: const Icon(Icons.gavel_outlined),
-      title: Text(
-        Intl.message('Legal & disclaimer', name: 'legalAndDisclaimer'),
-      ),
+      title: Text(appLocalizations.legalAndDisclaimer),
       onTap: () async {
         await globalState.showMessage(
           title: context.appLocalizations.disclaimer,
@@ -89,12 +81,7 @@ class _DeveloperModeItem extends ConsumerWidget {
     return ListItem.switchItem(
       leading: const Icon(Icons.developer_mode_outlined),
       title: Text(context.appLocalizations.developerMode),
-      subtitle: Text(
-        Intl.message(
-          'Adds a Developer screen with diagnostic actions.',
-          name: 'developerModeDesc',
-        ),
-      ),
+      subtitle: Text(appLocalizations.developerModeDesc),
       delegate: SwitchDelegate(
         value: enabled,
         onChanged: (value) {
@@ -114,8 +101,8 @@ class _CrashReportingPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.switchItem(
       leading: const Icon(Icons.bug_report_outlined),
-      title: Text(Intl.message('Crash reporting', name: 'crashReporting')),
-      subtitle: Text(Intl.message('Coming soon', name: 'comingSoon')),
+      title: Text(appLocalizations.crashReporting),
+      subtitle: Text(appLocalizations.comingSoon),
       delegate: const SwitchDelegate(value: false, onChanged: null),
     );
   }

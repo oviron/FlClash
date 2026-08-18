@@ -181,8 +181,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "connecting": MessageLookupByLibrary.simpleMessage("Connecting..."),
     "connection": MessageLookupByLibrary.simpleMessage("Connection"),
     "connections": MessageLookupByLibrary.simpleMessage("Connections"),
+    "connectionsDesc": MessageLookupByLibrary.simpleMessage(
+      "View current connections data",
+    ),
     "connectivity": MessageLookupByLibrary.simpleMessage("Connectivity："),
     "content": MessageLookupByLibrary.simpleMessage("Content"),
+    "contentScheme": MessageLookupByLibrary.simpleMessage("Content"),
     "controlGlobalAddedRules": MessageLookupByLibrary.simpleMessage(
       "Control global added rules",
     ),
@@ -239,6 +243,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Developer mode is enabled.",
     ),
     "diagnostics": MessageLookupByLibrary.simpleMessage("Diagnostics"),
+    "direct": MessageLookupByLibrary.simpleMessage("Direct"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("Disclaimer"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
       "This software is only used for non-commercial purposes such as learning exchanges and scientific research. It is strictly prohibited to use this software for commercial purposes. Any commercial activity, if any, has nothing to do with this software.",
@@ -268,13 +273,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "entries": MessageLookupByLibrary.simpleMessage(" entries"),
     "existsTip": m7,
     "exit": MessageLookupByLibrary.simpleMessage("Exit"),
+    "expand": MessageLookupByLibrary.simpleMessage("Standard"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Export file"),
     "exportLogs": MessageLookupByLibrary.simpleMessage("Export logs"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("Export Success"),
+    "expressiveScheme": MessageLookupByLibrary.simpleMessage("Expressive"),
     "externalFetch": MessageLookupByLibrary.simpleMessage("External fetch"),
     "externalLink": MessageLookupByLibrary.simpleMessage("External link"),
     "fakeipFilter": MessageLookupByLibrary.simpleMessage("Fakeip filter"),
     "fakeipRange": MessageLookupByLibrary.simpleMessage("Fakeip range"),
+    "fidelityScheme": MessageLookupByLibrary.simpleMessage("Fidelity"),
     "file": MessageLookupByLibrary.simpleMessage("File"),
     "fileDesc": MessageLookupByLibrary.simpleMessage("Directly upload profile"),
     "fileIsUpdate": MessageLookupByLibrary.simpleMessage(
@@ -288,6 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Are you sure you want to force restart the core?",
     ),
     "forkOf": m8,
+    "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("FruitSalad"),
     "generalSettings": MessageLookupByLibrary.simpleMessage("General settings"),
     "geoAutoUpdate": MessageLookupByLibrary.simpleMessage("Auto-update"),
     "geoDatabases": MessageLookupByLibrary.simpleMessage("Geo databases"),
@@ -304,6 +313,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "geodataLoaderDesc": MessageLookupByLibrary.simpleMessage(
       "Enabling will use the Geo low memory loader",
     ),
+    "global": MessageLookupByLibrary.simpleMessage("Global"),
     "go": MessageLookupByLibrary.simpleMessage("Go"),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage(
       "Go to configure script",
@@ -388,6 +398,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Download and switch the mihomo core version",
     ),
     "light": MessageLookupByLibrary.simpleMessage("Light"),
+    "list": MessageLookupByLibrary.simpleMessage("List"),
     "listen": MessageLookupByLibrary.simpleMessage("Listen"),
     "local": MessageLookupByLibrary.simpleMessage("Local"),
     "localBackupDesc": MessageLookupByLibrary.simpleMessage(
@@ -447,6 +458,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "loggingSourceSection": MessageLookupByLibrary.simpleMessage("Source"),
     "loggingTitle": MessageLookupByLibrary.simpleMessage("Logging"),
     "logs": MessageLookupByLibrary.simpleMessage("Logs"),
+    "logsDesc": MessageLookupByLibrary.simpleMessage("Log capture records"),
     "logsTest": MessageLookupByLibrary.simpleMessage("Logs test"),
     "loose": MessageLookupByLibrary.simpleMessage("Loose"),
     "memoryInfo": MessageLookupByLibrary.simpleMessage("Memory info"),
@@ -454,6 +466,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "messageTestTip": MessageLookupByLibrary.simpleMessage(
       "This is a message.",
     ),
+    "min": MessageLookupByLibrary.simpleMessage("Min"),
     "minimizeOnExit": MessageLookupByLibrary.simpleMessage(
       "Minimize instead of exit",
     ),
@@ -462,6 +475,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "minutesAgo": m10,
     "mixedPort": MessageLookupByLibrary.simpleMessage("Mixed Port"),
+    "monochromeScheme": MessageLookupByLibrary.simpleMessage("Monochrome"),
     "monthsAgo": m11,
     "more": MessageLookupByLibrary.simpleMessage("More"),
     "mtu": MessageLookupByLibrary.simpleMessage("MTU"),
@@ -581,6 +595,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "networkType": MessageLookupByLibrary.simpleMessage("Network type"),
+    "neutralScheme": MessageLookupByLibrary.simpleMessage("Neutral"),
     "noData": MessageLookupByLibrary.simpleMessage("No data"),
     "noInfo": MessageLookupByLibrary.simpleMessage("No info"),
     "noNetwork": MessageLookupByLibrary.simpleMessage("No network"),
@@ -726,6 +741,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickTileTitle": MessageLookupByLibrary.simpleMessage(
       "Quick Settings tile",
     ),
+    "rainbowScheme": MessageLookupByLibrary.simpleMessage("Rainbow"),
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir Port"),
     "redo": MessageLookupByLibrary.simpleMessage("redo"),
     "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
@@ -739,6 +755,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "request": MessageLookupByLibrary.simpleMessage("Request"),
     "requests": MessageLookupByLibrary.simpleMessage("Requests"),
+    "requestsDesc": MessageLookupByLibrary.simpleMessage(
+      "View recently request records",
+    ),
     "reset": MessageLookupByLibrary.simpleMessage("Reset"),
     "resetSection": MessageLookupByLibrary.simpleMessage("Reset"),
     "resetTip": MessageLookupByLibrary.simpleMessage("Make sure to reset"),
@@ -776,6 +795,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Time on battery this report covers",
     ),
     "resources": MessageLookupByLibrary.simpleMessage("Resources"),
+    "resourcesDesc": MessageLookupByLibrary.simpleMessage(
+      "External resource related info",
+    ),
     "resourcesUpToDate": MessageLookupByLibrary.simpleMessage(
       "Resources up to date",
     ),
@@ -804,6 +826,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Restore profiles only",
     ),
     "restoreStrategy": MessageLookupByLibrary.simpleMessage("Restore strategy"),
+    "restoreStrategy_compatible": MessageLookupByLibrary.simpleMessage(
+      "Compatible",
+    ),
+    "restoreStrategy_override": MessageLookupByLibrary.simpleMessage(
+      "Override",
+    ),
     "restoreSuccess": MessageLookupByLibrary.simpleMessage("Restore success"),
     "routeAddress": MessageLookupByLibrary.simpleMessage("Route address"),
     "routeAddressBypassPrivateHint": MessageLookupByLibrary.simpleMessage(
@@ -813,6 +841,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Config listen route address",
     ),
     "routeMode": MessageLookupByLibrary.simpleMessage("Route mode"),
+    "routeMode_bypassPrivate": MessageLookupByLibrary.simpleMessage(
+      "Bypass private route address",
+    ),
+    "routeMode_config": MessageLookupByLibrary.simpleMessage("Use config"),
     "routingAddCondition": MessageLookupByLibrary.simpleMessage(
       "Add condition",
     ),
@@ -1101,6 +1133,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selectedCountTitle": m24,
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
     "size": MessageLookupByLibrary.simpleMessage("Size"),
     "socksPort": MessageLookupByLibrary.simpleMessage("Socks Port"),
     "sort": MessageLookupByLibrary.simpleMessage("Sort"),
@@ -1132,6 +1165,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "systemProxyDesc": MessageLookupByLibrary.simpleMessage(
       "Attach HTTP proxy to VpnService",
     ),
+    "tab": MessageLookupByLibrary.simpleMessage("Tab"),
     "tabAnimation": MessageLookupByLibrary.simpleMessage("Tab animation"),
     "tabAnimationDesc": MessageLookupByLibrary.simpleMessage(
       "Smooth slide between tabs (mobile layout only)",
@@ -1151,6 +1185,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tight": MessageLookupByLibrary.simpleMessage("Tight"),
     "tip": MessageLookupByLibrary.simpleMessage("tip"),
     "toggle": MessageLookupByLibrary.simpleMessage("Toggle"),
+    "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("TonalSpot"),
     "tools": MessageLookupByLibrary.simpleMessage("Tools"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy Port"),
     "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
@@ -1170,6 +1205,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
     "value": MessageLookupByLibrary.simpleMessage("Value"),
+    "vibrantScheme": MessageLookupByLibrary.simpleMessage("Vibrant"),
     "vpn": MessageLookupByLibrary.simpleMessage("VPN"),
     "vpnEnableDesc": MessageLookupByLibrary.simpleMessage(
       "Auto routes all system traffic through VpnService",

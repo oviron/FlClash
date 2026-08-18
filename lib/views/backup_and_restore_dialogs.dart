@@ -7,7 +7,6 @@ import 'package:fl_clash/widgets/dialog.dart';
 import 'package:fl_clash/widgets/list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class RestoreOptionsDialog extends StatefulWidget {
   const RestoreOptionsDialog({super.key});
@@ -33,12 +32,7 @@ class _RestoreOptionsDialogState extends State<RestoreOptionsDialog> {
             onTap: () {
               _handleOnTab(RestoreOption.onlyProfiles);
             },
-            title: Text(
-              Intl.message(
-                'Restore profiles only',
-                name: 'restoreOnlyProfiles',
-              ),
-            ),
+            title: Text(appLocalizations.restoreOnlyProfiles),
           ),
           ListItem(
             onTap: () {
@@ -89,12 +83,7 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
   Future<void> _delete() async {
     final confirmed = await globalState.showMessage(
       title: appLocalizations.delete,
-      message: TextSpan(
-        text: Intl.message(
-          'Delete WebDAV configuration?',
-          name: 'confirmDeleteWebDAV',
-        ),
-      ),
+      message: TextSpan(text: appLocalizations.confirmDeleteWebDAV),
     );
     if (confirmed != true) return;
     if (!mounted) return;

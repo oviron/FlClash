@@ -21,7 +21,6 @@ import 'package:fl_clash/views/setting/network_rules.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import 'developer.dart';
 import 'theme.dart';
@@ -37,9 +36,9 @@ class _ToolViewState extends ConsumerState<ToolsView> {
   Widget _buildNavigationMenuItem(NavigationItem navigationItem) {
     return ListItem.open(
       leading: navigationItem.icon,
-      title: Text(Intl.message(navigationItem.label.name)),
-      subtitle: navigationItem.description != null
-          ? Text(Intl.message(navigationItem.description!))
+      title: Text(navigationItem.label.title),
+      subtitle: navigationItem.label.moreDescription != null
+          ? Text(navigationItem.label.moreDescription!)
           : null,
       delegate: OpenDelegate(widget: navigationItem.builder(context)),
     );
@@ -60,7 +59,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
 
   List<Widget> _appearanceSection() {
     return generateSection(
-      title: Intl.message('Appearance', name: 'appearance'),
+      title: appLocalizations.appearance,
       items: const [_ThemeItem(), _LocaleItem()],
     );
   }
@@ -74,7 +73,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
 
   List<Widget> _engineSection() {
     return generateSection(
-      title: Intl.message('Engine', name: 'engine'),
+      title: appLocalizations.engine,
       items: const [
         _CoreItem(),
         _LibraryItem(),
@@ -125,9 +124,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
           }
           return Column(
             children: [
-              ListHeader(
-                title: Intl.message('Diagnostics', name: 'diagnostics'),
-              ),
+              ListHeader(title: appLocalizations.diagnostics),
               _buildNavigationMenu(state.navigationItems),
             ],
           );
@@ -151,7 +148,7 @@ class _LocaleItem extends ConsumerWidget {
 
   String _getLocaleString(Locale? locale) {
     if (locale == null) return appLocalizations.defaultText;
-    return Intl.message(locale.toString());
+    return localeDisplayName(locale.toString());
   }
 
   @override
@@ -164,7 +161,7 @@ class _LocaleItem extends ConsumerWidget {
     return ListItem<Locale?>.options(
       leading: const Icon(Icons.language_outlined),
       title: Text(context.appLocalizations.language),
-      subtitle: Text(Intl.message(subTitle)),
+      subtitle: Text(localeDisplayName(subTitle)),
       delegate: OptionsDelegate(
         title: context.appLocalizations.language,
         options: [null, ...AppLocalizations.delegate.supportedLocales],
@@ -213,7 +210,7 @@ class _VpnSettingsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vpnSettingsTitle = Intl.message('VPN settings', name: 'vpnSettings');
+    final vpnSettingsTitle = appLocalizations.vpnSettings;
     return ListItem.open(
       leading: const Icon(Icons.vpn_key),
       title: Text(vpnSettingsTitle),
@@ -256,12 +253,7 @@ class _CoreItem extends StatelessWidget {
     return ListItem.open(
       leading: const Icon(Icons.tune),
       title: Text(context.appLocalizations.core),
-      subtitle: Text(
-        Intl.message(
-          'Ports, IPv6, hosts, find-process, geodata loader, test URL',
-          name: 'coreDesc',
-        ),
-      ),
+      subtitle: Text(appLocalizations.coreDesc),
       delegate: const OpenDelegate(widget: ConfigView()),
     );
   }
@@ -274,13 +266,8 @@ class _LibraryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.open(
       leading: const Icon(Icons.dataset_outlined),
-      title: Text(Intl.message('Library version', name: 'libraryVersion')),
-      subtitle: Text(
-        Intl.message(
-          'Download and switch the mihomo core version',
-          name: 'libraryVersionDesc',
-        ),
-      ),
+      title: Text(appLocalizations.libraryVersion),
+      subtitle: Text(appLocalizations.libraryVersionDesc),
       delegate: const OpenDelegate(widget: LibraryVersionView()),
     );
   }
@@ -323,7 +310,7 @@ class _RoutingRulesItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.open(
       leading: const Icon(Icons.library_books),
-      title: Text(Intl.message('Routing rules', name: 'routingRules')),
+      title: Text(appLocalizations.routingRules),
       subtitle: Text(context.appLocalizations.controlGlobalAddedRules),
       delegate: const OpenDelegate(widget: AddedRulesView()),
     );
@@ -352,13 +339,8 @@ class _GeoDatabasesItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.open(
       leading: const Icon(Icons.public_outlined),
-      title: Text(Intl.message('Geo databases', name: 'geoDatabases')),
-      subtitle: Text(
-        Intl.message(
-          'GeoIP, GeoSite, MMDB, ASN updaters',
-          name: 'geoDatabasesDesc',
-        ),
-      ),
+      title: Text(appLocalizations.geoDatabases),
+      subtitle: Text(appLocalizations.geoDatabasesDesc),
       delegate: const OpenDelegate(widget: ResourcesView()),
     );
   }
@@ -425,7 +407,7 @@ class _SettingItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.open(
       leading: const Icon(Icons.settings),
-      title: Text(Intl.message('General settings', name: 'generalSettings')),
+      title: Text(appLocalizations.generalSettings),
       subtitle: Text(context.appLocalizations.applicationDesc),
       delegate: const OpenDelegate(widget: ApplicationSettingView()),
     );
@@ -452,9 +434,7 @@ class _PrivacyItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItem.open(
       leading: const Icon(Icons.shield),
-      title: Text(
-        Intl.message('Privacy & Security', name: 'privacyAndSecurity'),
-      ),
+      title: Text(appLocalizations.privacyAndSecurity),
       delegate: const OpenDelegate(widget: PrivacyView()),
     );
   }

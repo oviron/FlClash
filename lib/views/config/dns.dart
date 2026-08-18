@@ -4,7 +4,6 @@ import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class OverrideItem extends ConsumerWidget {
   const OverrideItem({super.key});
@@ -90,7 +89,7 @@ class PreferH3Item extends ConsumerWidget {
       patchClashConfigProvider.select((state) => state.dns.preferH3),
     );
     return ListItem.switchItem(
-      title: Text(Intl.message('Prefer H3', name: 'preferH3')),
+      title: Text(appLocalizations.preferH3),
       subtitle: Text(appLocalizations.preferH3Desc),
       delegate: SwitchDelegate(
         value: preferH3,
@@ -417,7 +416,7 @@ class _DnsCoreSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: generateSection(
-        title: Intl.message('Core', name: 'dnsCoreSection'),
+        title: appLocalizations.dnsCoreSection,
         items: const [StatusItem(), DnsModeItem()],
       ),
     );
@@ -462,7 +461,7 @@ class _DnsServersSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: generateSection(
-        title: Intl.message('Servers', name: 'dnsServersSection'),
+        title: appLocalizations.dnsServersSection,
         items: const [
           DefaultNameserverItem(),
           NameserverItem(),
@@ -482,7 +481,7 @@ class _DnsFakeIpSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: generateSection(
-        title: Intl.message('Fake-IP', name: 'dnsFakeIpSection'),
+        title: appLocalizations.dnsFakeIpSection,
         items: const [FakeIpFilterItem()],
       ),
     );
@@ -496,7 +495,7 @@ class _DnsBehaviorSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: generateSection(
-        title: Intl.message('Behavior', name: 'dnsBehaviorSection'),
+        title: appLocalizations.dnsBehaviorSection,
         items: const [RespectRulesItem(), AppendSystemDNSItem()],
       ),
     );
@@ -509,7 +508,7 @@ class _DnsAdvancedSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text(Intl.message('Advanced', name: 'advanced')),
+      title: Text(appLocalizations.advanced),
       tilePadding: const EdgeInsets.symmetric(horizontal: 16),
       childrenPadding: EdgeInsets.zero,
       children: const [
