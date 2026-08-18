@@ -15,7 +15,7 @@ import com.follow.clash.common.QuickAction
 import com.follow.clash.common.quickIntent
 import com.follow.clash.common.receiveBroadcastFlow
 import com.follow.clash.common.startForeground
-import com.follow.clash.common.tickerFlow
+import com.follow.clash.common.notificationRefreshFlow
 import com.follow.clash.common.toPendingIntent
 import com.follow.clash.service.R
 import com.follow.clash.service.State
@@ -26,9 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -58,22 +56,13 @@ class NotificationModule(private val service: Service) : Module() {
                 emit(isScreenOn())
             }
 
-            combine(
-                tickerFlow(2000, 0), State.notificationParamsFlow, screenFlow
-            ) { _, params, screenOn ->
-                params to screenOn
-            }.filter { (params, screenOn) -> params != null && screenOn }
-                .map { (params, _) -> params!!.extended }
+            notificationRefreshFlow(
+                screenFlow, State.notificationParamsFlow, TICK_MS
+            ).map { it.extended }
                 .distinctUntilChanged()
                 .collect { extended ->
                     update(extended)
                 }
-
-            State.notificationParamsFlow.value?.let {
-                update(it.extended)
-            } ?: run {
-                update(NotificationParams().extended)
-            }
         }
     }
 
@@ -125,5 +114,9 @@ class NotificationModule(private val service: Service) : Module() {
             service.stopForeground(true)
         }
         scope.cancel()
+    }
+
+    companion object {
+        private const val TICK_MS = 2000L
     }
 }

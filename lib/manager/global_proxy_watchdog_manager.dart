@@ -21,7 +21,8 @@ class GlobalProxyWatchdogManager extends ConsumerStatefulWidget {
 }
 
 class _GlobalProxyWatchdogManagerState
-    extends ConsumerState<GlobalProxyWatchdogManager> {
+    extends ConsumerState<GlobalProxyWatchdogManager>
+    with WidgetsBindingObserver {
   static const _checkInterval = Duration(seconds: 30);
   static const _probeTimeout = Duration(seconds: 8);
   static const _switchCooldown = Duration(minutes: 2);
@@ -37,8 +38,33 @@ class _GlobalProxyWatchdogManagerState
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(_checkInterval, (_) => _check());
+    WidgetsBinding.instance.addObserver(this);
+    _startTicking();
   }
+
+  void _startTicking() {
+    _timer ??= Timer.periodic(_checkInterval, (_) => _check());
+  }
+
+  void _stopTicking() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  // The probe is a real network request every 30s; with the app backgrounded
+  // it would burn radio all day for a repair nobody is looking at. The tunnel
+  // itself lives in the service process and does not need this loop.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _startTicking();
+    } else {
+      _stopTicking();
+    }
+  }
+
+  @visibleForTesting
+  bool get isTicking => _timer?.isActive ?? false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +73,8 @@ class _GlobalProxyWatchdogManagerState
 
   @override
   void dispose() {
-    _timer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    _stopTicking();
     super.dispose();
   }
 

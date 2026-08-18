@@ -88,7 +88,13 @@ extension CommonControllerExt on AppController {
   /// pull act on that would tear the UI down mid-connect. Genuine stops arrive
   /// on the push instead, which cannot race a start.
   Future<void> syncRunStateUp() async {
-    if (_ref.read(isStartProvider)) return;
+    if (_ref.read(isStartProvider)) {
+      // State is already right, but the pause handler stopped the 1s UI loop
+      // and applyRunState only restarts it on a stopped->running transition —
+      // without this, traffic and run time freeze after every resume.
+      unawaited(globalState.startUpdateTasks());
+      return;
+    }
     await globalState.updateStartTime();
     final fromService = globalState.startTime;
     if (fromService == null) return;
