@@ -1,3 +1,13 @@
+## v0.17.0-rc1
+
+- Battery: the notification ticker no longer wakes the service process every 2 seconds with the screen off — it now runs only while the screen is on, with a params change still refreshing the text; the global-mode watchdog stops its 30-second HTTP probe while the app is backgrounded and resumes with it; and the traffic/run-time readout no longer freezes after returning to the app with the tunnel up
+
+- Transport errors read as sentences. The everyday no-internet failure (and a bad certificate) surfaced as a raw DioException dump in the toast; every transport failure now maps to the localized network message
+
+- Localization debt paid down: 232 dead keys removed across all four locales (desktop-upstream leftovers — hotkeys, tray actions, UWP loopback — plus the pre-constructor per-app-routing UI), and every enum-driven label moved from runtime string-interpolated lookups to typed switches, so the analyzer now sees every key. Dropped two unused dependencies (fractional_indexing, network_info_plus) and pinned intl
+
+- Test net widened: +48 tests covering the fractional order keys behind profile reordering, the iterable/string/traffic helpers, version compare, transport-error mapping and the new enum labels
+
 ## v0.16.0
 
 - Onboarding, paste-and-go: a first-run "Paste your key" on-ramp accepts a share link (`vless`/`vmess`/`ss`/`trojan`/`hysteria2`/`tuic`), a base64 subscription blob, a subscription URL, or a QR, and builds a leak-hardened full-tunnel profile underneath. "Connected" is asserted only after a functional HTTP-204 probe succeeds through the tunnel, never on handshake alone
