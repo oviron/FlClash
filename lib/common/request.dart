@@ -38,28 +38,7 @@ class Request {
 
   Never _throwProfileRequestError(String source, Object error) {
     commonPrint.log('$source error ${error.toString()}');
-
-    if (error is TimeoutException) {
-      throw appLocalizations.networkException;
-    }
-
-    if (error is! DioException) {
-      throw appLocalizations.unknownNetworkError;
-    }
-
-    switch (error.type) {
-      case DioExceptionType.unknown:
-        throw appLocalizations.unknownNetworkError;
-      case DioExceptionType.badResponse:
-      case DioExceptionType.connectionTimeout:
-      case DioExceptionType.sendTimeout:
-      case DioExceptionType.receiveTimeout:
-        throw appLocalizations.networkException;
-      case DioExceptionType.badCertificate:
-      case DioExceptionType.cancel:
-      case DioExceptionType.connectionError:
-        throw error;
-    }
+    throw describeNetworkError(error) ?? error;
   }
 
   // Follows redirects manually so identity headers (x-hwid, Authorization) are
@@ -278,3 +257,26 @@ Map<String, String>? redirectSafeHeaders(
 }
 
 final request = Request();
+
+/// Maps a transport-level failure to a user-facing message. Returns null only
+/// for a deliberate cancel, which callers handle by type — everything else
+/// (including connectionError, the everyday "no internet" case, which used to
+/// surface as a raw DioException dump) reads as a human sentence.
+String? describeNetworkError(Object error) {
+  if (error is TimeoutException) {
+    return appLocalizations.networkException;
+  }
+  if (error is! DioException) {
+    return appLocalizations.unknownNetworkError;
+  }
+  return switch (error.type) {
+    DioExceptionType.cancel => null,
+    DioExceptionType.unknown => appLocalizations.unknownNetworkError,
+    DioExceptionType.badResponse ||
+    DioExceptionType.connectionTimeout ||
+    DioExceptionType.sendTimeout ||
+    DioExceptionType.receiveTimeout ||
+    DioExceptionType.badCertificate ||
+    DioExceptionType.connectionError => appLocalizations.networkException,
+  };
+}
