@@ -391,7 +391,10 @@ extension SetupStateExt on SetupState {
     if (overrideDns != lastSetupState.overrideDns) {
       return true;
     }
-    if (overrideDns == true && dns != lastSetupState.dns) {
+    // Not gated on overrideDns: _makeRealProfileTask also applies this DNS
+    // block when the profile leaves dns.enable off, so an edit rebuilds either
+    // way.
+    if (dns != lastSetupState.dns) {
       return true;
     }
     return false;

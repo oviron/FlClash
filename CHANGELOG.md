@@ -1,3 +1,7 @@
+## v0.17.0-rc2
+
+- DNS settings edited with the override switch off reach the core again. The builder falls back to the app-level DNS block whenever the profile itself leaves `dns.enable` off, but the rebuild trigger was gated on the override switch alone, so such an edit (DNS mode, nameservers, fake-ip range) was persisted and then silently ignored until the next profile switch or core restart
+
 ## v0.17.0-rc1
 
 - Battery: the notification ticker no longer wakes the service process every 2 seconds with the screen off — it now runs only while the screen is on, with a params change still refreshing the text; the global-mode watchdog stops its 30-second HTTP probe while the app is backgrounded and resumes with it; and the traffic/run-time readout no longer freezes after returning to the app with the tunnel up
