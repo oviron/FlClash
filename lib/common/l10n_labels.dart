@@ -36,6 +36,14 @@ extension PageLabelL10n on PageLabel {
   };
 }
 
+extension DnsSourceLabel on DnsSource {
+  String get description => switch (this) {
+    DnsSource.appOverride => appLocalizations.dnsSourceAppOverride,
+    DnsSource.appFallback => appLocalizations.dnsSourceAppFallback,
+    DnsSource.profile => appLocalizations.dnsSourceProfile,
+  };
+}
+
 extension ProxiesTypeLabel on ProxiesType {
   String get label => switch (this) {
     ProxiesType.tab => appLocalizations.tab,

@@ -152,6 +152,10 @@ enum DnsMode {
   hosts,
 }
 
+// Which DNS block the core actually ends up with, as decided by
+// _makeRealProfileTask. Drives the subtitle under the override switch.
+enum DnsSource { appOverride, appFallback, profile }
+
 enum KeyboardModifier {
   alt([PhysicalKeyboardKey.altLeft, PhysicalKeyboardKey.altRight]),
   capsLock([PhysicalKeyboardKey.capsLock]),

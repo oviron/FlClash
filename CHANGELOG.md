@@ -1,3 +1,9 @@
+## v0.17.0-rc3
+
+- The override switch on the DNS screen no longer implies something it cannot deliver. Its subtitle now states which DNS block the core actually ends up with: the app's because the switch is on, the app's because the profile carries no DNS section of its own, or the profile's own. Same wording rule in all four locales
+
+- `scripts/lint.sh` runs its Dart half again — it looked for flutter at a hardcoded `~/dev/flutter/bin/flutter` and failed the whole run when that path did not exist; it now resolves flutter from PATH
+
 ## v0.17.0-rc2
 
 - DNS settings edited with the override switch off reach the core again. The builder falls back to the app-level DNS block whenever the profile itself leaves `dns.enable` off, but the rebuild trigger was gated on the override switch alone, so such an edit (DNS mode, nameservers, fake-ip range) was persisted and then silently ignored until the next profile switch or core restart

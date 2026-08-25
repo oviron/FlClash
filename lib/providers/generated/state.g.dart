@@ -2338,6 +2338,44 @@ final class SetupStateFamily extends $Family
   String toString() => r'setupStateProvider';
 }
 
+@ProviderFor(dnsSource)
+const dnsSourceProvider = DnsSourceProvider._();
+
+final class DnsSourceProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<DnsSource?>,
+          DnsSource?,
+          FutureOr<DnsSource?>
+        >
+    with $FutureModifier<DnsSource?>, $FutureProvider<DnsSource?> {
+  const DnsSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'dnsSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$dnsSourceHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<DnsSource?> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<DnsSource?> create(Ref ref) {
+    return dnsSource(ref);
+  }
+}
+
+String _$dnsSourceHash() => r'e2401cd151495a3c882051f06389679576c1fc2c';
+
 @ProviderFor(effectiveAccessControl)
 const effectiveAccessControlProvider = EffectiveAccessControlProvider._();
 

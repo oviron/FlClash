@@ -200,6 +200,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS劫持"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS模式"),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("服务器"),
+    "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
+      "配置文件没有自己的 DNS，因此使用下方设置",
+    ),
+    "dnsSourceAppOverride": MessageLookupByLibrary.simpleMessage(
+      "下方的 DNS 设置将覆盖配置文件",
+    ),
+    "dnsSourceProfile": MessageLookupByLibrary.simpleMessage(
+      "配置文件已自带 DNS。开启后才会应用下方设置",
+    ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage("是否要通过"),
     "download": MessageLookupByLibrary.simpleMessage("下载"),
     "edit": MessageLookupByLibrary.simpleMessage("编辑"),
@@ -460,7 +469,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "outboundMode": MessageLookupByLibrary.simpleMessage("出站模式"),
     "override": MessageLookupByLibrary.simpleMessage("覆写"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("覆写DNS"),
-    "overrideDnsDesc": MessageLookupByLibrary.simpleMessage("开启后将覆盖配置中的DNS选项"),
+    "overrideDnsDesc": MessageLookupByLibrary.simpleMessage(
+      "决定内核使用哪份 DNS：配置文件的还是应用的",
+    ),
     "overrideMode": MessageLookupByLibrary.simpleMessage("覆写模式"),
     "overrideScript": MessageLookupByLibrary.simpleMessage("覆写脚本"),
     "palette": MessageLookupByLibrary.simpleMessage("调色板"),

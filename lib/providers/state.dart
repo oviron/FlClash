@@ -643,6 +643,28 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
   );
 }
 
+// The subtitle under the override switch has to state which DNS block the core
+// ends up with, not what the switch alone implies.
+@riverpod
+Future<DnsSource?> dnsSource(Ref ref) async {
+  final overrideDns = ref.watch(overrideDnsProvider);
+  final profile = ref.watch(currentProfileProvider);
+
+  Map<String, dynamic>? profileConfig;
+  if (!overrideDns && profile != null) {
+    try {
+      profileConfig = await coreController.getConfig(profile.id);
+    } catch (e) {
+      commonPrint.log('dnsSource: yaml read failed: $e');
+    }
+  }
+
+  return resolveDnsSource(
+    overrideDns: overrideDns,
+    profileConfig: profileConfig,
+  );
+}
+
 @riverpod
 Future<AccessControlProps> effectiveAccessControl(Ref ref) async {
   final isGlobalMode =

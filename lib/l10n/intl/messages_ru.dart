@@ -261,6 +261,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS-перехват"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("Режим DNS"),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("Серверы"),
+    "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
+      "В профиле нет своего DNS, поэтому применяются настройки ниже",
+    ),
+    "dnsSourceAppOverride": MessageLookupByLibrary.simpleMessage(
+      "Настройки DNS ниже перекрывают профиль",
+    ),
+    "dnsSourceProfile": MessageLookupByLibrary.simpleMessage(
+      "Профиль задаёт свой DNS. Включите, чтобы применить настройки ниже",
+    ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Вы хотите пропустить",
     ),
@@ -632,7 +641,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "override": MessageLookupByLibrary.simpleMessage("Переопределить"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("Переопределить DNS"),
     "overrideDnsDesc": MessageLookupByLibrary.simpleMessage(
-      "Включение переопределит настройки DNS в профиле",
+      "Определяет, чей DNS использует ядро: профиля или приложения",
     ),
     "overrideMode": MessageLookupByLibrary.simpleMessage(
       "Режим переопределения",

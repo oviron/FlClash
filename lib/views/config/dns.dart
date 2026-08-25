@@ -1,6 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,9 +12,10 @@ class OverrideItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final override = ref.watch(overrideDnsProvider);
+    final source = ref.watch(dnsSourceProvider).value;
     return ListItem.switchItem(
       title: Text(appLocalizations.overrideDns),
-      subtitle: Text(appLocalizations.overrideDnsDesc),
+      subtitle: Text(source?.description ?? appLocalizations.overrideDnsDesc),
       delegate: SwitchDelegate(
         value: override,
         onChanged: (bool value) async {

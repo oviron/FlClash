@@ -34,9 +34,10 @@ run_kotlin() {
 
 run_dart() {
   section "Dart (flutter analyze)"
-  local flutter="$HOME/dev/flutter/bin/flutter"
-  if [[ ! -x "$flutter" ]]; then
-    fail "flutter not found at $flutter"
+  local flutter
+  flutter="$(command -v flutter || true)"
+  if [[ -z "$flutter" ]]; then
+    fail "flutter not found in PATH"
     return
   fi
   out="$("$flutter" analyze --no-pub 2>&1)"

@@ -218,6 +218,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNSハイジャッキング"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNSモード"),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("サーバー"),
+    "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
+      "プロファイルに DNS がないため、以下の設定が適用されます",
+    ),
+    "dnsSourceAppOverride": MessageLookupByLibrary.simpleMessage(
+      "以下の DNS 設定がプロファイルを上書きします",
+    ),
+    "dnsSourceProfile": MessageLookupByLibrary.simpleMessage(
+      "プロファイルが独自の DNS を持っています。以下の設定を適用するにはオンにしてください",
+    ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage("通過させますか？"),
     "download": MessageLookupByLibrary.simpleMessage("ダウンロード"),
     "edit": MessageLookupByLibrary.simpleMessage("編集"),
@@ -505,7 +514,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "override": MessageLookupByLibrary.simpleMessage("上書き"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("DNS上書き"),
     "overrideDnsDesc": MessageLookupByLibrary.simpleMessage(
-      "有効化するとプロファイルのDNS設定を上書き",
+      "コアが使う DNS をプロファイルとアプリのどちらにするかを決めます",
     ),
     "overrideMode": MessageLookupByLibrary.simpleMessage("上書きモード"),
     "overrideScript": MessageLookupByLibrary.simpleMessage("上書きスクリプト"),

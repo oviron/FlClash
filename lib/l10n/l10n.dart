@@ -1714,11 +1714,41 @@ class AppLocalizations {
     );
   }
 
-  /// `Turning it on will override the DNS options in the profile`
+  /// `Controls whose DNS the core uses: the profile's or the app's`
   String get overrideDnsDesc {
     return Intl.message(
-      'Turning it on will override the DNS options in the profile',
+      'Controls whose DNS the core uses: the profile\'s or the app\'s',
       name: 'overrideDnsDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The DNS settings below override the profile`
+  String get dnsSourceAppOverride {
+    return Intl.message(
+      'The DNS settings below override the profile',
+      name: 'dnsSourceAppOverride',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The profile has no DNS of its own, so the settings below apply`
+  String get dnsSourceAppFallback {
+    return Intl.message(
+      'The profile has no DNS of its own, so the settings below apply',
+      name: 'dnsSourceAppFallback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The profile defines its own DNS. Turn this on to apply the settings below`
+  String get dnsSourceProfile {
+    return Intl.message(
+      'The profile defines its own DNS. Turn this on to apply the settings below',
+      name: 'dnsSourceProfile',
       desc: '',
       args: [],
     );

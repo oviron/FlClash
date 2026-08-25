@@ -221,6 +221,20 @@ AccessControlProps resolveEffectiveAccessControl({
   return const AccessControlProps();
 }
 
+// Mirrors the gate in _makeRealProfileTask: the app-level DNS block is applied
+// when the override switch is on, and also when the profile leaves dns.enable
+// off. Null means the profile could not be read, so neither can be claimed.
+DnsSource? resolveDnsSource({
+  required bool overrideDns,
+  required Map<String, dynamic>? profileConfig,
+}) {
+  if (overrideDns) return DnsSource.appOverride;
+  if (profileConfig == null) return null;
+  final dns = profileConfig['dns'];
+  final profileEnablesDns = dns is Map && dns['enable'] == true;
+  return profileEnablesDns ? DnsSource.profile : DnsSource.appFallback;
+}
+
 @freezed
 abstract class VpnProps with _$VpnProps {
   const factory VpnProps({

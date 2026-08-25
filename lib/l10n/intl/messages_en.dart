@@ -258,6 +258,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS hijacking"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS mode"),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("Servers"),
+    "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
+      "The profile has no DNS of its own, so the settings below apply",
+    ),
+    "dnsSourceAppOverride": MessageLookupByLibrary.simpleMessage(
+      "The DNS settings below override the profile",
+    ),
+    "dnsSourceProfile": MessageLookupByLibrary.simpleMessage(
+      "The profile defines its own DNS. Turn this on to apply the settings below",
+    ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Do you want to pass",
     ),
@@ -617,7 +626,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "override": MessageLookupByLibrary.simpleMessage("Override"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("Override Dns"),
     "overrideDnsDesc": MessageLookupByLibrary.simpleMessage(
-      "Turning it on will override the DNS options in the profile",
+      "Controls whose DNS the core uses: the profile\'s or the app\'s",
     ),
     "overrideMode": MessageLookupByLibrary.simpleMessage("Override mode"),
     "overrideScript": MessageLookupByLibrary.simpleMessage("Override script"),
