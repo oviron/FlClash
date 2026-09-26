@@ -1,3 +1,11 @@
+## v0.17.0-rc4
+
+- The bundled core is libmihomo-android v0.3.5 (mihomo v1.19.31), up from v0.3.3 (mihomo v1.19.30). No CVE fixes in mihomo itself this cycle; the fixes that reach the client are hysteria v1 UDP working again and hysteria2 UDP sessions closing with their connection, a VLESS decryption cleanup panic, a nil dereference in WireGuard init, split-DNS over a tailnet peer, wildcard domain-set matching with overlapping rules, and a sweep of connections leaked on error paths. ZeroTier gains `identity-secret`; the new upstream EasyTier outbound is compiled out, like Tailscale
+
+- Core security: the library now builds with Go 1.27 (1.25 is out of support) and bumps `golang.org/x/net` and `golang.org/x/text`, closing four advisories that a scan of the real Android build showed reachable, among them an HTTP/2 transport infinite loop and a proxy bypass via IPv6 zone IDs. Runtime TLS and HTTP defaults stay at upstream mihomo's level
+
+- A core segfault now leaves its Go traceback in `crash.log` next to `debug.log` in the app's log directory, instead of only the Zygote's `signal 11` line in logcat. bridgeABI is unchanged at 3; the `.aar` SHA-256 and GPG signature are re-pinned in `setup.dart`
+
 ## v0.17.0-rc3
 
 - The override switch on the DNS screen no longer implies something it cannot deliver. Its subtitle now states which DNS block the core actually ends up with: the app's because the switch is on, the app's because the profile carries no DNS section of its own, or the profile's own. Same wording rule in all four locales
