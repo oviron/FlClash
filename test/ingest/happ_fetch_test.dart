@@ -67,6 +67,16 @@ void main() {
       expect(() => s.fetch('https://h/api/sub'), throwsA(isA<Object>()));
     });
 
+    test('both sides error -> the honest error surfaces', () async {
+      const honestError = 'HTTP 500: upstream failed';
+      final s = HappFetchStrategy(
+        rawFetch: (url, {headers}) async =>
+            throw _isHapp(headers) ? 'HTTP 403: forbidden' : honestError,
+        happIdentity: _fakeHapp,
+      );
+      await expectLater(s.fetch('https://h/api/sub'), throwsA(honestError));
+    });
+
     test('a fuller clash honest body beats a smaller Happ xray body', () async {
       // Panel UA-negotiates: clash to the honest UA, a thinner xray to Happ. The
       // full native clash config must win, not the 2-node xray subset.

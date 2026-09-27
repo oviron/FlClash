@@ -6,10 +6,9 @@ import 'package:yaml/yaml.dart';
 typedef HeaderDecorator =
     Future<Map<String, String>> Function({Map<String, String>? base});
 
-// Fetches a subscription twice, honest and as the Happ client, and keeps the
-// body that normalizes to more proxies (some panels gate their full node set
-// behind the Happ identity). A tie keeps the honest body to avoid leaking the
-// device id when it buys nothing; if one side fails the other is used.
+// Fetches honestly and as the Happ client and keeps the body with more proxies (some
+// panels gate nodes behind the Happ identity); a tie keeps the honest one, so the device
+// id is not leaked for nothing. If both fail, the honest error (HTTP status, body) surfaces.
 class HappFetchStrategy implements FetchStrategy {
   HappFetchStrategy({required RawFetch rawFetch, HeaderDecorator? happIdentity})
     : _rawFetch = rawFetch,
@@ -20,7 +19,15 @@ class HappFetchStrategy implements FetchStrategy {
 
   @override
   Future<FetchResult> fetch(String url, {Map<String, String>? headers}) async {
-    final honestFuture = _tryFetch(url, headers);
+    Object? honestError;
+    final honestFuture = Future.sync(() => _rawFetch(url, headers: headers))
+        .then<FetchResult?>(
+          (r) => r,
+          onError: (Object e) {
+            honestError = e;
+            return null;
+          },
+        );
     final happFuture = _happIdentity(
       base: headers,
     ).then((h) => _tryFetch(url, h)).catchError((_) => null);
@@ -32,7 +39,7 @@ class HappFetchStrategy implements FetchStrategy {
     }
     if (honest != null) return honest;
     if (happ != null) return happ;
-    throw StateError('both subscription fetches failed');
+    throw honestError!;
   }
 
   Future<FetchResult?> _tryFetch(
