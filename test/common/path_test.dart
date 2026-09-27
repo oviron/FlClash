@@ -17,4 +17,21 @@ void main() {
       throwsA(isA<PlatformException>()),
     );
   });
+
+  test('a lookup that failed once is retried on the next call', () async {
+    const channel = MethodChannel('plugins.flutter.io/path_provider');
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(
+      channel,
+      (call) async => throw PlatformException(code: 'unavailable'),
+    );
+    await expectLater(
+      AppPath().databasePath,
+      throwsA(isA<PlatformException>()),
+    );
+
+    messenger.setMockMethodCallHandler(channel, (call) async => '/data/app');
+    expect(await AppPath().databasePath, '/data/app/database.sqlite');
+  });
 }
