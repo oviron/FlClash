@@ -703,22 +703,12 @@ List<ServerGroup> _dropGroupRef(
 String _write(RoutingModel m, String base) {
   var out = _writeServers(m, base);
 
-  final managedProviderIds = {
-    for (final l in m.lists)
-      if (l.kind != ListKind.country) l.id,
-  };
-
   final baseProviders = ProfileRulesDocument(out).ruleProviders;
-  final providers = <String, ProviderSpec>{};
-  for (final l in m.lists) {
-    if (l.kind == ListKind.country) continue;
-    providers[l.id] = _listToProvider(l, baseProviders[l.id]);
-  }
-  // Preserve any rule-provider the model never adopted (defensive; today every
-  // provider maps to a List, so this is empty on a round-trip).
-  for (final e in baseProviders.entries) {
-    if (!managedProviderIds.contains(e.key)) providers[e.key] = e.value;
-  }
+  final providers = <String, ProviderSpec>{
+    for (final l in m.lists)
+      if (l.kind != ListKind.country)
+        l.id: _listToProvider(l, baseProviders[l.id]),
+  };
 
   out = ProfileRulesDocument(out).withRuleProviders(providers);
   out = ProfileRulesDocument(
@@ -885,6 +875,10 @@ ProviderSpec _listToProvider(RoutingList l, ProviderSpec? existing) {
     if (l.behavior != null) m['behavior'] = l.behavior;
     return ProviderSpec(m);
   }
+  // A provider without a URL (type: file) is not a link list; keep its type.
+  if (l.url == null && existing != null) {
+    return existing.copyWith(behavior: l.behavior, format: l.format);
+  }
   return base.copyWith(
     type: 'http',
     url: l.url,
@@ -1041,10 +1035,14 @@ RoutingModel _read(String raw) {
       RoutingList(
         id: e.key,
         name: e.key,
-        kind: ListKind.url,
+        kind: e.value.type == 'inline' ? ListKind.paste : ListKind.url,
         url: e.value.url,
         behavior: e.value.behavior,
         format: e.value.format,
+        payload: [
+          for (final item in e.value.raw['payload'] as List? ?? const [])
+            item.toString(),
+        ],
       ),
   ];
 

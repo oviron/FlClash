@@ -722,6 +722,67 @@ rules:
         contains('category-bank-ru'),
       );
     });
+
+    test('a pasted list survives a re-read and a second write', () {
+      final model = RoutingModel.fromYaml(_reference);
+      final pasted = model.copyWith(
+        lists: [
+          ...model.lists,
+          const RoutingList(
+            id: 'mine',
+            name: 'mine',
+            kind: ListKind.paste,
+            behavior: 'domain',
+            payload: ['example.org'],
+          ),
+        ],
+      );
+      final first = pasted.toYaml(_reference);
+
+      final reread = RoutingModel.fromYaml(first);
+      final second = reread.removeList('ads').toYaml(first);
+
+      final mine = reread.lists.singleWhere((l) => l.id == 'mine');
+      expect(mine.kind, ListKind.paste);
+      expect(mine.payload, ['example.org']);
+      final provider = ProfileRulesDocument(second).ruleProviders['mine']!;
+      expect(provider.type, 'inline');
+      expect(provider.raw['payload'], ['example.org']);
+    });
+
+    test('a file rule-provider keeps its type through a write', () {
+      const base = '''
+rule-providers:
+  local:
+    type: file
+    path: ./local.yaml
+    behavior: domain
+rules:
+  - RULE-SET,local,DIRECT
+  - MATCH,DIRECT
+''';
+      final written = RoutingModel.fromYaml(base).toYaml(base);
+
+      final local = ProfileRulesDocument(written).ruleProviders['local']!;
+      expect(local.type, 'file');
+      expect(local.path, './local.yaml');
+      expect(local.behavior, 'domain');
+    });
+
+    test('a removed list stays removed after a write and a re-read', () {
+      final written = RoutingModel.fromYaml(
+        _reference,
+      ).removeList('ads').toYaml(_reference);
+
+      expect(
+        ProfileRulesDocument(written).ruleProviders,
+        isNot(contains('ads')),
+      );
+      expect(
+        RoutingModel.fromYaml(written).lists.map((l) => l.id),
+        isNot(contains('ads')),
+      );
+    });
   });
 
   group('A1: delete prunes emptied groups', () {
