@@ -33,11 +33,13 @@ extension SetupControllerExt on AppController {
       }
     } else {
       await globalState.handleStop();
-      coreController.resetTraffic();
       _ref.read(trafficsProvider.notifier).clear();
       _ref.read(totalTrafficProvider.notifier).value = const Traffic();
       _ref.read(runTimeProvider.notifier).value = null;
       addCheckIp();
+      // Awaited so a quick restart cannot have the reset land on the new
+      // session; last, so a reconnecting core does not stall the stop UI.
+      await coreController.resetTraffic();
     }
   }
 

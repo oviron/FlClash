@@ -61,7 +61,7 @@ mixin CoreInterface {
 
   FutureOr<String> getMemory();
 
-  FutureOr<void> resetTraffic();
+  Future<void> resetTraffic();
 
   FutureOr<void> startLog();
 
@@ -237,9 +237,7 @@ abstract class CoreHandlerInterface with CoreInterface {
   }
 
   @override
-  void resetTraffic() {
-    _invoke(method: ActionMethod.resetTraffic);
-  }
+  Future<void> resetTraffic() => _invoke(method: ActionMethod.resetTraffic);
 
   @override
   void startLog() {

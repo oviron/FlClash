@@ -251,9 +251,7 @@ class CoreController {
     return int.parse(value);
   }
 
-  void resetTraffic() {
-    _interface.resetTraffic();
-  }
+  Future<void> resetTraffic() => _interface.resetTraffic();
 
   void startLog() {
     _interface.startLog();
