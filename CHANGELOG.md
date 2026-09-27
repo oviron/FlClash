@@ -1,3 +1,31 @@
+## v0.17.0-rc6
+
+- VPN start and stop requests run in the order they were made. A stop followed by a start could run the other way round, a late report from an earlier session could stop the next one or restart a tunnel the user had just stopped, and a quick stop then start from the notification lost the start. A start whose reply never comes is cancelled, so the app and the VPN process no longer disagree, and the dashboard no longer flickers to "stopped" during every start
+
+- The tunnel comes back after Android kills it. If only the VPN process dies, it restarts in under a second. If the whole app is killed, a background job brings it back within 15 minutes. At most three restarts per 10 minutes, and a stop by the user, by Network Rules or by revoking the VPN in Settings always wins
+
+- Override DNS replaces only the keys you pick. Before, turning it on replaced the profile's whole `dns` block, and changing one setting wiped everything the subscription had tuned. A new "Keys to override" page lists the keys. A config saved before this change keeps overriding every key, so existing setups behave as before. The nameserver-policy editor now says that several servers are separated by commas
+
+- Network Rules:
+  - a stop now reaches a start that is still waiting for VPN consent, so accepting the dialog afterwards no longer pins that network against the rules;
+  - the cached config of a ruled profile is rebuilt when a setting, its subscription or its proxy selection changes, not only when the rules change;
+  - profile ids are no longer truncated on the Android side, which broke switching to a profile from a rule;
+  - a manual profile switch applies to the current network only instead of pinning every later one
+
+- Routing constructor: a deleted list stays deleted, a pasted list stays pasted after reopening the profile, and a `type: file` rule-provider keeps its type
+
+- Connections and Requests show the destination country's flag and can be filtered by app
+
+- The Find process setting and the FlClash User-Agent reach the core again. The core filled in its own defaults (`strict`, `clash.meta/…`), so the app's values were used only until the next VPN start, and providers were fetched with the core's User-Agent. A profile that sets either key keeps its own value, and changing another setting no longer overwrites the profile's `find-process-mode`
+
+- A User-Agent setting under Core: Default (the FlClash UA, unchanged), `clash-verge/v2.4.2`, `ClashforWindows/0.19.23` or your own. It is sent with subscription downloads and, as `global-ua`, used by the core for providers unless the profile sets its own. Happ subscriptions keep the Happ identity
+
+- IP quality check: tap the Network detection card to see which five services will receive the exit IP, then tap Check to get a verdict (quality, type, organisation, ASN, risk flags) and each service's answer. Nothing is sent before the tap, and every service is queried over HTTPS
+
+- A home screen widget turns the VPN on or off and shows the active profile, green while connected. It works while the app is closed. A toggle that reached the app while it was closed started a running VPN again instead of stopping it; fixed. When Network Rules switch profiles with the app closed, the widget, tile and notification now name the profile that is running
+
+- The Connections list and the dashboard's Memory card keep updating on an idle screen. They polled on a chain that waited for a frame, so the list could freeze until the page was reopened. Both now poll only while the app is in the foreground, and the Memory card no longer keeps polling after it is closed
+
 ## v0.17.0-rc5
 
 - Security: TLS certificate checks are no longer switched off for the whole app. A global override accepted any certificate on every HTTPS request, subscriptions included; it is removed outright rather than narrowed, since nothing the app talks to over loopback uses HTTPS
