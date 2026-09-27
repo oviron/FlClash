@@ -61,6 +61,7 @@ object State {
     var runTime: Long = 0
 
     // A UI process restarted without Flutter still needs the tile's profile name and collapse choice.
+    @Volatile
     var sharedState: SharedState = GlobalState.application.sharedState
         set(value) {
             field = value
@@ -172,6 +173,9 @@ object State {
     // checking here would drop a start that follows a stop Dart has not run yet.
     suspend fun handleStartServiceAction(fromTile: Boolean = false) {
         if (flutterEngine != null) {
+            // Dart sets up the start itself; a staged headless start must not linger for a later one.
+            pendingSelectedMap = null
+            pendingProfileName = null
             tilePlugin?.handleStart()
             return
         }

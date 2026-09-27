@@ -209,7 +209,7 @@ object NetworkRulesController {
                 resolution.selectedMap,
                 resolution.profileName,
             )
-            // Cold boot: stage config + selectedMap so quickSetup boots it.
+            // Cold boot: stage config, selectedMap and profile name so quickSetup boots it.
             swapConfig(profileTarget) -> {
                 State.pendingSelectedMap = resolution.selectedMap
                 State.pendingProfileName = resolution.profileName
