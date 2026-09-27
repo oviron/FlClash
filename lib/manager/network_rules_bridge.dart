@@ -44,6 +44,14 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
     // its own. Publish-only (no cache rebuild, no reevaluate): a manual switch
     // must not make the engine immediately re-apply.
     ref.listenManual(currentProfileIdProvider, (_, _) => _publishMirror());
+    // A headless switch reads the baked config, so it must follow settings and
+    // subscription updates, not only rule edits.
+    ref.listenManual(networkRulesBakeInputsProvider, (previous, next) {
+      final before = previous?.value;
+      if (before != null && next.hasValue && next.value != before) {
+        unawaited(_rebakeMirror());
+      }
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       unawaited(_bootstrap());
@@ -92,13 +100,11 @@ class _NetworkRulesBridgeState extends ConsumerState<NetworkRulesBridge> {
   // references them, so the resident never reads a rule whose config is absent.
   Future<void> _bake() async {
     final rules = ref.read(networkRulesStreamProvider).value ?? const [];
-    final profileIds = <int>{
-      for (final r in rules)
-        if (r.enabled && r.action.profileId != null) r.action.profileId!,
-    };
     _lastBake = (
       rules: rules,
-      entries: await appController.rebuildNetworkRulesCache(profileIds),
+      entries: await appController.rebuildNetworkRulesCache(
+        networkRuleProfileIds(rules),
+      ),
     );
   }
 
