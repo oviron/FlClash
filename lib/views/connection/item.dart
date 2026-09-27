@@ -75,10 +75,11 @@ class TrackerInfoItem extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
             _CountryFlag(ip: trackerInfo.metadata.destinationIP),
-            Text(trackerInfo.desc, style: context.textTheme.bodyLarge),
+            Flexible(
+              child: Text(trackerInfo.desc, style: context.textTheme.bodyLarge),
+            ),
           ],
         ),
         const SizedBox(height: 6),
