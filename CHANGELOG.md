@@ -1,3 +1,37 @@
+## v0.17.0-rc5
+
+- Security: TLS certificate checks are no longer switched off for the whole app. A global override accepted any certificate on every HTTPS request, subscriptions included; it is removed outright rather than narrowed, since nothing the app talks to over loopback uses HTTPS
+
+- Starting the tunnel is reported honestly. A failed `establish()` used to pass as a success at every layer, leaving the app convinced it was connected while nothing ran, so the next tap was swallowed and the tile needed two. `establish()` is now retried three times, a failure reaches the UI, and a stale "connected" left behind by a service that died unseen is dropped before the next toggle. The VPN consent dialog no longer blocks the tile and other toggles while it is open, and Cancel returns the UI to Disconnected
+
+- On the first start the tunnel comes up only after the core has accepted the config, so apps no longer see DNS timeouts while rules are still loading, and a config the core rejects no longer brings the tunnel up
+
+- Calls into the core fail at once when its process dies instead of waiting out a three-minute timeout, and quick-settings actions no longer flash a window
+
+- Doze: the core is no longer suspended while the device idles, which cut traffic that Doze still lets through and delayed push notifications. Core memory is now returned on `onTrimMemory` as well as `onLowMemory`, at most once every 30 seconds
+
+- `find-process-mode` defaults to `strict`: the core looks up the owning app only when a rule needs it, instead of a binder call per connection. A one-time migration moves the old `always` default to `strict`
+
+- Database: foreign keys are enforced. They were declared but never switched on, so deleting a profile left its rule links behind. A one-time migration (schema 10) removes the orphans first. Restoring a backup drops orphaned links instead of failing
+
+- Backups: a merge restore no longer deletes rules, rule links and scripts created on the device after the backup was made; only an override restore replaces them. Network rules are restored from a backup at all now. Before, a merge restore skipped them and an override restore wiped every network rule on the device
+
+- Robustness: a subscription or script with a mistyped section (`tun: true`, a string where a list belongs) no longer fails the whole profile; a failing storage lookup at startup reports an error instead of hanging; a quick stop and start no longer zeroes the new session's traffic counters; app icons are fetched once instead of on every rebuild
+
+- Fast-boot devices (Xiaomi, HTC and others) start the tunnel at boot: the boot receivers also listen for `QUICKBOOT_POWERON`
+
+- Work and clone (dual apps) profiles no longer hang on the VPN's loopback HTTP proxy. When the user has other profiles, the proxy is not attached; the tunnel still captures their traffic
+
+- After the first successful start the app asks once to be exempted from battery optimization, so OEM battery savers stop killing the tunnel in the background
+
+- On vivo, OPPO and Xiaomi, where the installed-apps list sits behind a vendor permission, the per-app routing screen explains why apps are missing and opens the app's settings; the list reloads once the permission is granted
+
+- A failed subscription download says what the server answered: "Server responded with HTTP 403" and the start of the response body, instead of "check your connection". The subscription URL and any token the server echoes back are masked. The real error also reaches the screen now; before, a failed download often showed only "both subscription fetches failed". The log no longer records full request URLs, so subscription tokens stay out of `debug.log`
+
+- Rule presets on the Global rules screen: block QUIC/STUN/DoT, LAN direct, system services direct and BitTorrent direct, added in one tap and never duplicated
+
+- The Quick Settings tile shows the active profile while connected. A new setting lets a tap toggle the VPN without closing the panel, and the tile no longer shows a toast on top of its own state change
+
 ## v0.17.0-rc4
 
 - The bundled core is libmihomo-android v0.3.5 (mihomo v1.19.31), up from v0.3.3 (mihomo v1.19.30). No CVE fixes in mihomo itself this cycle; the fixes that reach the client are hysteria v1 UDP working again and hysteria2 UDP sessions closing with their connection, a VLESS decryption cleanup panic, a nil dereference in WireGuard init, split-DNS over a tailnet peer, wildcard domain-set matching with overlapping rules, and a sweep of connections leaked on error paths. ZeroTier gains `identity-secret`; the new upstream EasyTier outbound is compiled out, like Tailscale
