@@ -20,6 +20,7 @@ import com.follow.clash.service.models.VpnOptions
 import com.google.gson.Gson
 import io.flutter.embedding.engine.FlutterEngine
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.withLock
 
 private const val NATIVE_PREFS = "native_state"
@@ -61,13 +62,24 @@ object State {
 
     // A UI process restarted without Flutter still needs the tile's profile name and collapse choice.
     var sharedState: SharedState = GlobalState.application.sharedState
+        set(value) {
+            field = value
+            VpnWidget.refresh()
+        }
 
     // Staged by NetworkRulesController before a headless start so a cold boot
     // picks up the target profile's proxy selections, not the last profile's.
     @Volatile
     var pendingSelectedMap: Map<String, String>? = null
 
+    @Volatile
+    var pendingProfileName: String? = null
+
     val runStateFlow: MutableStateFlow<RunState> = MutableStateFlow(RunState.STOP)
+
+    init {
+        GlobalState.launch { runStateFlow.collect { VpnWidget.refresh() } }
+    }
 
     var flutterEngine: FlutterEngine? = null
 
@@ -83,6 +95,8 @@ object State {
     }
 
     suspend fun handleToggleAction(fromTile: Boolean = false) {
+        // A UI process started without Flutter reads STOP until it asks the service.
+        if (flutterEngine == null) handleSyncState()
         var action: (suspend () -> Unit)?
         runLock.withLock {
             dropStaleStartLocked()
@@ -212,7 +226,9 @@ object State {
                 if (lifecycle.isCancelled(ticket) || runStateFlow.value != RunState.STOP) {
                     return@launch
                 }
-                sharedState = GlobalState.application.sharedState
+                val saved = GlobalState.application.sharedState
+                sharedState = pendingProfileName?.let { saved.copy(currentProfileName = it) } ?: saved
+                pendingProfileName = null
                 setupAndStart(fromTile, ticket)
             }
         }

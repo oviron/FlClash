@@ -210,7 +210,10 @@ object NetworkRulesController {
                 resolution.profileName,
             )
             // Cold boot: stage config + selectedMap so quickSetup boots it.
-            swapConfig(profileTarget) -> State.pendingSelectedMap = resolution.selectedMap
+            swapConfig(profileTarget) -> {
+                State.pendingSelectedMap = resolution.selectedMap
+                State.pendingProfileName = resolution.profileName
+            }
         }
     }
 
@@ -235,6 +238,7 @@ object NetworkRulesController {
         // Retitle the notification only after the core accepted the config; on
         // failure it keeps showing the actually-active profile.
         if (profileName != null) {
+            State.sharedState = State.sharedState.copy(currentProfileName = profileName)
             Service.updateNotificationParams(
                 NotificationParams(title = profileName, stopText = State.sharedState.stopText),
             )
