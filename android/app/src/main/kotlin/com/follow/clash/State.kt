@@ -44,6 +44,7 @@ object State {
     suspend fun handleToggleAction() {
         var action: (suspend () -> Unit)?
         runLock.withLock {
+            dropStaleStartLocked()
             action = when (runStateFlow.value) {
                 RunState.PENDING -> null
                 RunState.START -> ::handleStopServiceAction
@@ -69,8 +70,17 @@ object State {
         }
     }
 
+    // A START left behind by a service that died unseen would reject every later start.
+    private suspend fun dropStaleStartLocked() {
+        if (runStateFlow.value != RunState.START) return
+        Service.bind()
+        runTime = Service.getRunTime()
+        if (runTime == 0L) runStateFlow.tryEmit(RunState.STOP)
+    }
+
     suspend fun handleStartServiceAction() {
         runLock.withLock {
+            dropStaleStartLocked()
             if (runStateFlow.value != RunState.STOP) {
                 return
             }
@@ -160,28 +170,24 @@ object State {
         )
     }
 
+    private suspend fun prepareVpn(): Boolean =
+        appPlugin?.prepareVpn() ?: (VpnService.prepare(GlobalState.application) == null)
+
     private fun startService() {
         GlobalState.launch {
             runLock.withLock {
+                dropStaleStartLocked()
                 if (runStateFlow.value != RunState.STOP) {
                     return@launch
                 }
                 try {
                     runStateFlow.tryEmit(RunState.PENDING)
                     val options = sharedState.vpnOptions ?: return@launch
-                    appPlugin?.let {
-                        it.prepare(options.enable) {
-                            runTime = Service.startService(options, runTime)
-                            runStateFlow.tryEmit(RunState.START)
-                        }
-                    } ?: run {
-                        val intent = VpnService.prepare(GlobalState.application)
-                        if (intent != null) {
-                            return@launch
-                        }
-                        runTime = Service.startService(options, runTime)
-                        runStateFlow.tryEmit(RunState.START)
-                    }
+                    if (options.enable && !prepareVpn()) return@launch
+                    // A timed-out AIDL reply does not mean the service failed to start.
+                    runTime = Service.startService(options, runTime)
+                        .takeIf { it != 0L } ?: Service.getRunTime()
+                    if (runTime != 0L) runStateFlow.tryEmit(RunState.START)
                 } finally {
                     if (runStateFlow.value == RunState.PENDING) {
                         runStateFlow.tryEmit(RunState.STOP)

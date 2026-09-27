@@ -90,8 +90,16 @@ class RemoteService : Service(),
                     intent = nextIntent
                     delegate?.bind()
                 }
-                delegate?.useService { service ->
+                val started = delegate?.useService { service ->
                     service.start()
+                }?.getOrNull() == true
+                if (!started) {
+                    delegate?.unbind()
+                    intent = null
+                    delegate = null
+                    State.runTime = 0
+                    result.onResult(0)
+                    return@withLock
                 }
                 State.runTime = when (runTime != 0L) {
                     true -> runTime

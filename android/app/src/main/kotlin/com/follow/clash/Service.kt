@@ -18,6 +18,9 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 object Service {
+    // Start loads the core and retries establish(); 5 s is not enough on slow devices.
+    private const val RUN_STATE_TIMEOUT_MS = 15_000L
+
     private val delegate by lazy {
         ServiceDelegate<IRemoteInterface>(
             RemoteService::class.intent, ::handleServiceDisconnected
@@ -156,7 +159,7 @@ object Service {
 
 
     suspend fun startService(options: VpnOptions, runTime: Long): Long {
-        return delegate.useService {
+        return delegate.useService(RUN_STATE_TIMEOUT_MS) {
             awaitIResultInterface { callback ->
                 it.startService(options, runTime, callback)
             }
@@ -164,7 +167,7 @@ object Service {
     }
 
     suspend fun stopService(): Long {
-        return delegate.useService {
+        return delegate.useService(RUN_STATE_TIMEOUT_MS) {
             awaitIResultInterface { callback ->
                 it.stopService(callback)
             }

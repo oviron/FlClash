@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import com.follow.clash.common.GlobalState
 import com.follow.clash.common.modules.moduleLoader
 import com.follow.clash.service.modules.NetworkObserveModule
 import com.follow.clash.service.modules.NotificationModule
@@ -48,12 +49,13 @@ class CommonService : Service(), IBaseService,
         return binder
     }
 
-    override fun start() {
-        try {
-            loader.load()
-        } catch (_: Exception) {
-            stop()
-        }
+    override fun start(): Boolean = try {
+        loader.load()
+        true
+    } catch (e: Exception) {
+        GlobalState.log("CommonService start failed: $e")
+        stop()
+        false
     }
 
     override fun stop() {
