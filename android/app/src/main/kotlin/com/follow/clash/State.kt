@@ -124,18 +124,26 @@ object State {
         if (lost) recoverTunnel()
     }
 
-    suspend fun handleRecoveryCheck() {
+    // True when a recovery start went out. A stop since the job fired has disarmed it.
+    suspend fun handleRecoveryCheck(): Boolean {
         handleSyncState()
-        if (runStateFlow.value == RunState.STOP) recoverTunnel()
+        val lost = runLock.withLock { runStateFlow.value == RunState.STOP && RecoveryJob.isArmed }
+        return lost && recoverTunnel()
     }
 
-    private suspend fun recoverTunnel() {
+    // Under runLock so it lands after, never before, a start committing now.
+    suspend fun disarmRecovery() {
+        runLock.withLock { RecoveryJob.cancel() }
+    }
+
+    private suspend fun recoverTunnel(): Boolean {
         if (!recoveryBudget.tryAcquire()) {
             GlobalState.log("Tunnel recovery paused: too many restarts")
-            return
+            return false
         }
         GlobalState.log("Recovering the tunnel")
         handleStartServiceAction()
+        return true
     }
 
     // A START left behind by a service that died unseen would reject every later start.
@@ -267,10 +275,7 @@ object State {
                     settled = true
                     commitStartLocked(ticket, options)
                 }
-                if (started) {
-                    RecoveryJob.schedule()
-                    appPlugin?.activity?.let(::requestBatteryExemptionOnce)
-                }
+                if (started) appPlugin?.activity?.let(::requestBatteryExemptionOnce)
             } finally {
                 // Once settled, a PENDING seen here belongs to a later stop.
                 if (!settled && runStateFlow.value == RunState.PENDING) {
@@ -294,6 +299,7 @@ object State {
             if (!lifecycle.isCancelled(ticket)) {
                 runTime = startRemote(options)
                 started = runTime != 0L
+                if (started) RecoveryJob.schedule()
             }
         } finally {
             runStateFlow.tryEmit(if (started) RunState.START else RunState.STOP)
@@ -311,10 +317,10 @@ object State {
     }
 
     fun handleStopService() {
-        RecoveryJob.cancel()
         lifecycle.cancelStarts()
         lifecycle.launch {
             runLock.withLock {
+                RecoveryJob.cancel()
                 if (runStateFlow.value != RunState.START) {
                     return@launch
                 }

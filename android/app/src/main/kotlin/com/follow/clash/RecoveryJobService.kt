@@ -6,12 +6,15 @@ import android.app.job.JobScheduler
 import android.app.job.JobService
 import android.content.ComponentName
 import com.follow.clash.common.GlobalState
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 
 private const val RECOVERY_JOB_ID = 0x7f1c
 private const val RECOVERY_PERIOD_MS = 15 * 60_000L
+// Without a flex window the first run may come right after schedule().
+private const val RECOVERY_FLEX_MS = 5 * 60_000L
 private const val START_WAIT_MS = 30_000L
 
 // Armed while the user wants the tunnel up: when both processes die nothing else wakes the app.
@@ -21,7 +24,7 @@ object RecoveryJob {
     fun schedule() {
         val app = GlobalState.application
         val job = JobInfo.Builder(RECOVERY_JOB_ID, ComponentName(app, RecoveryJobService::class.java))
-            .setPeriodic(RECOVERY_PERIOD_MS)
+            .setPeriodic(RECOVERY_PERIOD_MS, RECOVERY_FLEX_MS)
             .build()
         runCatching { scheduler?.schedule(job) }
             .onFailure { GlobalState.log("Recovery job not scheduled: $it") }
@@ -30,14 +33,19 @@ object RecoveryJob {
     fun cancel() {
         scheduler?.cancel(RECOVERY_JOB_ID)
     }
+
+    val isArmed: Boolean get() = scheduler?.getPendingJob(RECOVERY_JOB_ID) != null
 }
 
 class RecoveryJobService : JobService() {
     override fun onStartJob(params: JobParameters): Boolean {
         GlobalState.launch {
-            State.request { handleRecoveryCheck() }
+            val recovering = CompletableDeferred<Boolean>()
+            State.request { recovering.complete(handleRecoveryCheck()) }
             // Held until the start settles so the process is not frozen halfway through it.
-            withTimeoutOrNull(START_WAIT_MS) { State.runStateFlow.first { it == RunState.START } }
+            if (recovering.await()) {
+                withTimeoutOrNull(START_WAIT_MS) { State.runStateFlow.first { it == RunState.START } }
+            }
             jobFinished(params, false)
         }
         return true

@@ -181,6 +181,8 @@ object NetworkRulesController {
         if (profileTarget != null) {
             applyResolvedProfile(profileTarget, foreground, running, resolution)
         }
+        // A tunnel already down here must stay down, not come back through recovery.
+        if (resolution.decision == NetworkDecision.STOP) State.disarmRecovery()
         startAction?.invoke()
     }
 
