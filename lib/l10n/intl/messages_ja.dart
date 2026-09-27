@@ -254,8 +254,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "ファイルが変更されました。保存しますか？",
     ),
     "findProcessMode": MessageLookupByLibrary.simpleMessage("プロセス検出"),
+    "findProcessModeAlways": MessageLookupByLibrary.simpleMessage("すべての接続"),
     "findProcessModeDesc": MessageLookupByLibrary.simpleMessage(
-      "プロファイルYAMLにfind-process-modeが指定されていない場合のフォールバック。有効化するとパフォーマンスが若干低下します。",
+      "プロファイルYAMLにfind-process-modeが指定されていない場合に使用します。すべての接続でアプリを検出するとバッテリーを消費します。",
+    ),
+    "findProcessModeOff": MessageLookupByLibrary.simpleMessage("オフ"),
+    "findProcessModeStrict": MessageLookupByLibrary.simpleMessage(
+      "ルールで必要な場合のみ",
     ),
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "コアを強制再起動してもよろしいですか？",

@@ -298,8 +298,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "The file has been modified. Do you want to save the changes?",
     ),
     "findProcessMode": MessageLookupByLibrary.simpleMessage("Find process"),
+    "findProcessModeAlways": MessageLookupByLibrary.simpleMessage(
+      "Every connection",
+    ),
     "findProcessModeDesc": MessageLookupByLibrary.simpleMessage(
-      "Fallback used only when profile YAML omits find-process-mode. Small performance impact.",
+      "Used only when the profile YAML omits find-process-mode. Looking up the app of every connection costs battery.",
+    ),
+    "findProcessModeOff": MessageLookupByLibrary.simpleMessage("Off"),
+    "findProcessModeStrict": MessageLookupByLibrary.simpleMessage(
+      "Only when rules need it",
     ),
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to force restart the core?",

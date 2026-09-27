@@ -66,6 +66,14 @@ extension RouteModeLabel on RouteMode {
   };
 }
 
+extension FindProcessModeLabel on FindProcessMode {
+  String get label => switch (this) {
+    FindProcessMode.always => appLocalizations.findProcessModeAlways,
+    FindProcessMode.strict => appLocalizations.findProcessModeStrict,
+    FindProcessMode.off => appLocalizations.findProcessModeOff,
+  };
+}
+
 extension RestoreStrategyLabel on RestoreStrategy {
   String get label => switch (this) {
     RestoreStrategy.compatible => appLocalizations.restoreStrategy_compatible,

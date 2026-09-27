@@ -29,7 +29,7 @@ class ConfigView extends StatelessWidget {
                       allowLan: false,
                       tcpConcurrent: true,
                       geodataLoader: GeodataLoader.memconservative,
-                      findProcessMode: FindProcessMode.always,
+                      findProcessMode: FindProcessMode.strict,
                       mixedPort: defaultMixedPort,
                       port: 0,
                       socksPort: 0,

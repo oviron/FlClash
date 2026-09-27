@@ -2214,14 +2214,39 @@ class AppLocalizations {
     );
   }
 
-  /// `Fallback used only when profile YAML omits find-process-mode. Small performance impact.`
+  /// `Used only when the profile YAML omits find-process-mode. Looking up the app of every connection costs battery.`
   String get findProcessModeDesc {
     return Intl.message(
-      'Fallback used only when profile YAML omits find-process-mode. Small performance impact.',
+      'Used only when the profile YAML omits find-process-mode. Looking up the app of every connection costs battery.',
       name: 'findProcessModeDesc',
       desc: '',
       args: [],
     );
+  }
+
+  /// `Every connection`
+  String get findProcessModeAlways {
+    return Intl.message(
+      'Every connection',
+      name: 'findProcessModeAlways',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only when rules need it`
+  String get findProcessModeStrict {
+    return Intl.message(
+      'Only when rules need it',
+      name: 'findProcessModeStrict',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Off`
+  String get findProcessModeOff {
+    return Intl.message('Off', name: 'findProcessModeOff', desc: '', args: []);
   }
 
   /// `Smooth slide between tabs (mobile layout only)`

@@ -327,9 +327,9 @@ _ClashConfig _$ClashConfigFromJson(Map<String, dynamic> json) => _ClashConfig(
       $enumDecodeNullable(
         _$FindProcessModeEnumMap,
         json['find-process-mode'],
-        unknownValue: FindProcessMode.always,
+        unknownValue: FindProcessMode.strict,
       ) ??
-      FindProcessMode.always,
+      FindProcessMode.strict,
   keepAliveInterval:
       (json['keep-alive-interval'] as num?)?.toInt() ??
       defaultKeepAliveInterval,
@@ -400,6 +400,7 @@ const _$LogLevelEnumMap = {
 
 const _$FindProcessModeEnumMap = {
   FindProcessMode.always: 'always',
+  FindProcessMode.strict: 'strict',
   FindProcessMode.off: 'off',
 };
 
