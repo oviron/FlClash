@@ -12,27 +12,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // "all" plus every process/app seen in the current list, mirroring the
 // existing sort action's shape.
 Widget buildProcessFilterAction(ValueNotifier<TrackerInfosState> notifier) {
-  return PopupMenuButton<String>(
-    icon: const Icon(Icons.filter_alt_outlined),
-    onSelected: (value) {
-      notifier.value = notifier.value.copyWith(processFilter: value);
-    },
-    itemBuilder: (_) {
-      final state = notifier.value;
+  return ValueListenableBuilder<TrackerInfosState>(
+    valueListenable: notifier,
+    builder: (_, state, _) {
+      final processes = state.availableProcesses;
+      if (processes.isEmpty) {
+        return const SizedBox.shrink();
+      }
       final selected = state.resolvedProcessFilter;
-      return [
-        CheckedPopupMenuItem(
-          value: '',
-          checked: selected.isEmpty,
-          child: Text(appLocalizations.allApplications),
-        ),
-        for (final process in state.availableProcesses)
+      return PopupMenuButton<String>(
+        icon: const Icon(Icons.filter_alt_outlined),
+        onSelected: (value) {
+          notifier.value = notifier.value.copyWith(processFilter: value);
+        },
+        itemBuilder: (_) => [
           CheckedPopupMenuItem(
-            value: process,
-            checked: selected == process,
-            child: Text(process),
+            value: '',
+            checked: selected.isEmpty,
+            child: Text(appLocalizations.allApplications),
           ),
-      ];
+          for (final process in processes)
+            CheckedPopupMenuItem(
+              value: process,
+              checked: selected == process,
+              child: Text(process),
+            ),
+        ],
+      );
     },
   );
 }
