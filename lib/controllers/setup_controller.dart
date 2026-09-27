@@ -13,6 +13,7 @@ extension SetupControllerExt on AppController {
 
   Future<void> updateStatus(bool isStart, {bool isInit = false}) async {
     if (isStart) {
+      await coreController.pendingTrafficReset;
       if (!isInit) {
         final res = await tryStartCore(true);
         if (res) {
@@ -37,8 +38,7 @@ extension SetupControllerExt on AppController {
       _ref.read(totalTrafficProvider.notifier).value = const Traffic();
       _ref.read(runTimeProvider.notifier).value = null;
       addCheckIp();
-      // Awaited so a quick restart cannot have the reset land on the new
-      // session; last, so a reconnecting core does not stall the stop UI.
+      // Last, so a reconnecting core does not stall the stop UI; a start waits for it.
       await coreController.resetTraffic();
     }
   }

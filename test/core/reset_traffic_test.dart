@@ -55,4 +55,21 @@ void main() {
       expect(done, isTrue);
     });
   });
+
+  test('pendingTrafficReset holds until the last reset is handled', () async {
+    final core = _GatedCore();
+    var idle = false;
+    await core.pendingTrafficReset.then((_) => idle = true);
+    expect(idle, isTrue);
+
+    unawaited(core.resetTraffic());
+    var settled = false;
+    final pending = core.pendingTrafficReset.then((_) => settled = true);
+    await pumpEventQueue();
+    expect(settled, isFalse);
+
+    core.gate.complete();
+    await pending;
+    expect(settled, isTrue);
+  });
 }

@@ -253,6 +253,8 @@ class CoreController {
 
   Future<void> resetTraffic() => _interface.resetTraffic();
 
+  Future<void> get pendingTrafficReset => _interface.pendingTrafficReset;
+
   void startLog() {
     _interface.startLog();
   }
