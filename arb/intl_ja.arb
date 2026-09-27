@@ -594,6 +594,7 @@
   "routingModeAllExcept": "除外",
   "routingModeAllExceptDesc": "選択したアプリ以外のすべてが VPN を経由します。",
   "routingBothBannerBody": "このプロファイルは include と exclude の両方のリストを設定しています。include から exclude を引いたホワイトリストとして動作します。編集するには正規化してください。",
+  "appListRestrictedBody": "この端末は一部のインストール済みアプリを FlClash から隠しています。すべて表示するには、FlClash の権限で「インストール済みアプリの取得」を許可してください。",
   "routingBothNormalize": "正規化",
   "geoAutoUpdate": "自動更新",
   "geoUpdateOff": "オフ",

@@ -606,6 +606,7 @@
   "routingModeAllExcept": "Except",
   "routingModeAllExceptDesc": "Every app uses the VPN except the ones you pick.",
   "routingBothBannerBody": "This profile sets both an include and an exclude list. It runs as a whitelist of include minus exclude. Normalize to edit.",
+  "appListRestrictedBody": "Your phone hides some installed apps from FlClash. Allow \"Get installed apps\" in the app's permissions to see them all.",
   "routingBothNormalize": "Normalize",
   "geoAutoUpdate": "Auto-update",
   "geoUpdateOff": "Off",

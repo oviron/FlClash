@@ -594,6 +594,7 @@
   "routingModeAllExcept": "排除",
   "routingModeAllExceptDesc": "除所选应用外，全部通过 VPN。",
   "routingBothBannerBody": "此配置同时设置了 include 和 exclude 列表，将作为 include 减 exclude 的白名单运行。规范化后方可编辑。",
+  "appListRestrictedBody": "此手机向 FlClash 隐藏了部分已安装应用。请在 FlClash 的权限中允许“获取已安装应用列表”以显示全部应用。",
   "routingBothNormalize": "规范化",
   "geoAutoUpdate": "自动更新",
   "geoUpdateOff": "关闭",

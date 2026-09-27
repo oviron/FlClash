@@ -11,7 +11,9 @@ import android.os.Build
 import android.os.IBinder
 import android.os.Parcel
 import android.os.ParcelFileDescriptor
+import android.os.Process
 import android.os.RemoteException
+import android.os.UserManager
 import androidx.core.content.getSystemService
 import com.follow.clash.common.AccessControlMode
 import com.follow.clash.common.GlobalState
@@ -280,12 +282,16 @@ class VpnService : SystemVpnService(), IBaseService,
                 allowBypass()
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && options.systemProxy) {
-                GlobalState.log("Open http proxy")
-                setHttpProxy(
-                    ProxyInfo.buildDirectProxy(
-                        "127.0.0.1", options.port, options.bypassDomain
+                if (hasOtherUserProfiles()) {
+                    GlobalState.log("Skip http proxy: other user profiles cannot reach loopback")
+                } else {
+                    GlobalState.log("Open http proxy")
+                    setHttpProxy(
+                        ProxyInfo.buildDirectProxy(
+                            "127.0.0.1", options.port, options.bypassDomain
+                        )
                     )
-                )
+                }
             }
             establishWithRetry().detachFd()
         }
@@ -299,6 +305,12 @@ class VpnService : SystemVpnService(), IBaseService,
             mtu = options.mtu,
         )
     }
+
+    // Other profiles of this user (work, clone) get the VPN proxy too but cannot reach our loopback,
+    // so their requests hang; the tunnel captures their traffic anyway.
+    private fun hasOtherUserProfiles(): Boolean = runCatching {
+        getSystemService<UserManager>()?.userProfiles?.any { it != Process.myUserHandle() } ?: false
+    }.getOrDefault(true)
 
     // establish() returns null for a moment while a previous tunnel (ours or another VPN's) is torn down.
     private suspend fun Builder.establishWithRetry(): ParcelFileDescriptor {

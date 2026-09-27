@@ -98,6 +98,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "allowBypassDesc": MessageLookupByLibrary.simpleMessage("开启后部分应用可绕过VPN"),
     "allowLan": MessageLookupByLibrary.simpleMessage("局域网代理"),
     "allowLanDesc": MessageLookupByLibrary.simpleMessage("允许通过局域网访问代理"),
+    "appListRestrictedBody": MessageLookupByLibrary.simpleMessage(
+      "此手机向 FlClash 隐藏了部分已安装应用。请在 FlClash 的权限中允许“获取已安装应用列表”以显示全部应用。",
+    ),
     "appRoutingDanglingTargets": m0,
     "appRoutingRulesReapplied": m1,
     "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage("搜索应用"),
