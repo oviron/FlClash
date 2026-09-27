@@ -91,6 +91,11 @@ fun decideManualSwitch(
     return active
 }
 
+// A manual switch belongs to the network it was made on: a new network starts from the
+// active profile, unless the engine's own apply is still awaiting Dart's echo.
+fun rebaseOnNetworkChange(lastEngineProfileId: Long?, active: Long?, guardUntil: Long, now: Long): Long? =
+    if (lastEngineProfileId == null || now < guardUntil) lastEngineProfileId else active
+
 // The VPN call [decision] needs now, or null. [settling] (PENDING) may be a start
 // waiting for consent, which a STOP must cancel; for a stop under way it is a no-op.
 fun actuation(decision: NetworkDecision, up: Boolean, settling: Boolean): NetworkDecision? =

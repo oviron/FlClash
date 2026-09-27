@@ -385,6 +385,17 @@ class NetworkRulesEngineTest {
     }
 
     @Test
+    fun aNewNetworkTakesTheActiveProfileAsItsBaseline() {
+        // A switch made on the old network is not carried over as manual.
+        assertEquals(8L, rebaseOnNetworkChange(lastEngineProfileId = 7, active = 8, guardUntil = 200, now = 300))
+        assertNull(decideManualSwitch(active = 8, lastEngineProfileId = 8, guardUntil = 200, now = 300))
+        // Inside the guard window Dart has not echoed the engine's apply yet: keep it.
+        assertEquals(7L, rebaseOnNetworkChange(lastEngineProfileId = 7, active = 6, guardUntil = 200, now = 100))
+        // Unarmed stays unarmed.
+        assertNull(rebaseOnNetworkChange(lastEngineProfileId = null, active = 8, guardUntil = 0, now = 300))
+    }
+
+    @Test
     fun goldenVectorsMatchAcrossEngines() {
         val text = javaClass.getResource("/network_rules_golden.json")!!.readText()
         val cases = JsonParser.parseString(text).asJsonObject.getAsJsonArray("cases")

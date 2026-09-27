@@ -13,6 +13,7 @@ import com.follow.clash.common.networkrules.NetworkRulesEngine
 import com.follow.clash.common.networkrules.NetworkRuleType
 import com.follow.clash.common.networkrules.actuation
 import com.follow.clash.common.networkrules.decideManualSwitch
+import com.follow.clash.common.networkrules.rebaseOnNetworkChange
 import com.follow.clash.common.networkrules.NetworkSnapshot
 import com.follow.clash.common.networkrules.RulesMirror
 import com.follow.clash.service.models.NotificationParams
@@ -116,11 +117,17 @@ object NetworkRulesController {
         val reason: String
         val overridden: Boolean
         mutex.withLock {
+            val mirror = readMirror()
             if (key != currentKey) {
                 overriddenKey = null
                 currentKey = key
+                lastEngineProfileId = rebaseOnNetworkChange(
+                    lastEngineProfileId,
+                    mirror.activeProfileId,
+                    engineGuardUntil,
+                    SystemClock.elapsedRealtime(),
+                )
             }
-            val mirror = readMirror()
             resolution = NetworkRulesEngine.resolveFull(mirror, snapshot)
             // A foreground-applied profile is echoed back as activeProfileId; a
             // divergence (outside the guard window) is the user switching by
