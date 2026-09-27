@@ -7,6 +7,8 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'ip_quality_sheet.dart';
+
 class NetworkDetection extends ConsumerStatefulWidget {
   const NetworkDetection({super.key});
 
@@ -30,7 +32,9 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
     return SizedBox(
       height: getWidgetHeight(1),
       child: CommonCard(
-        onPressed: () {},
+        onPressed: ipInfo == null || ipInfo.isRejected
+            ? () {}
+            : () => showIpQualitySheet(context, ip: ipInfo.ip),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

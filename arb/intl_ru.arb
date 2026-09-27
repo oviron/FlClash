@@ -661,5 +661,38 @@
   "requestsDesc": "Просмотр последних записей запросов",
   "connectionsDesc": "Просмотр текущих данных о соединениях",
   "logsDesc": "Записи захвата логов",
-  "resourcesDesc": "Информация, связанная с внешними ресурсами"
+  "resourcesDesc": "Информация, связанная с внешними ресурсами",
+  "ipQualityCheck": "Проверка качества IP",
+  "ipQualityIntro": "При проверке {ip} будет отправлен по HTTPS в каждый из сервисов ниже, чтобы узнать его владельца, риск и тип сети.",
+  "@ipQualityIntro": {
+    "placeholders": {
+      "ip": {}
+    }
+  },
+  "ipQualityCheckAction": "Проверить",
+  "ipQualitySources": "Сервисы",
+  "ipQualityResult": "Результат",
+  "ipQualityLevel": "Качество",
+  "ipQualityGood": "Хорошее",
+  "ipQualityNormal": "Обычное",
+  "ipQualityRisky": "Рискованное",
+  "ipAddress": "IP-адрес",
+  "ipType": "Тип",
+  "ipTypeResidential": "Домашний",
+  "ipTypeMobile": "Мобильный",
+  "ipTypeBusiness": "Корпоративный",
+  "ipTypeHosting": "Хостинг",
+  "ipOrganization": "Организация",
+  "ipAsn": "ASN",
+  "ipFlags": "Метки",
+  "ipFlagTor": "Tor",
+  "ipFlagAbuser": "Жалобы на злоупотребления",
+  "ipFlagVpn": "VPN",
+  "ipFlagProxy": "Прокси",
+  "ipQualityFailed": "Ни один сервис не ответил",
+  "ipQualityRetry": "Повторить",
+  "ipSourceNoType": "Тип не определён",
+  "ipSourceRateLimited": "Превышен лимит запросов",
+  "ipSourceFailed": "Ошибка",
+  "ipSourceIpMismatch": "IP не совпадает"
 }

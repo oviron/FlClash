@@ -274,6 +274,26 @@ enum DashboardWidget {
 
 enum GeodataLoader { standard, memconservative }
 
+enum IpType { residential, mobile, business, hosting }
+
+enum IpQualityLevel { good, normal, risky }
+
+// ip-api.com is dropped: its free plan is HTTP-only, and Android's network
+// security config denies cleartext outside localhost.
+enum IpQualitySource {
+  identMe('ident.me'),
+  ipQuery('ipquery.io'),
+  ipLocate('iplocate.io'),
+  proxyCheck('proxycheck.io'),
+  ipApiIs('ipapi.is');
+
+  const IpQualitySource(this.label);
+
+  final String label;
+}
+
+enum IpQualitySourceStatus { noType, timeout, rateLimited, failed, ipMismatch }
+
 enum PageLabel {
   dashboard,
   proxies,

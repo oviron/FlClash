@@ -661,5 +661,38 @@
   "requestsDesc": "View recently request records",
   "connectionsDesc": "View current connections data",
   "logsDesc": "Log capture records",
-  "resourcesDesc": "External resource related info"
+  "resourcesDesc": "External resource related info",
+  "ipQualityCheck": "IP quality check",
+  "ipQualityIntro": "Checking will send {ip} to each service below over HTTPS, so it can look up its ownership, risk and network type.",
+  "@ipQualityIntro": {
+    "placeholders": {
+      "ip": {}
+    }
+  },
+  "ipQualityCheckAction": "Check",
+  "ipQualitySources": "Services",
+  "ipQualityResult": "Result",
+  "ipQualityLevel": "Quality",
+  "ipQualityGood": "Good",
+  "ipQualityNormal": "Normal",
+  "ipQualityRisky": "Risky",
+  "ipAddress": "IP address",
+  "ipType": "Type",
+  "ipTypeResidential": "Residential",
+  "ipTypeMobile": "Mobile",
+  "ipTypeBusiness": "Business",
+  "ipTypeHosting": "Hosting",
+  "ipOrganization": "Organization",
+  "ipAsn": "ASN",
+  "ipFlags": "Flags",
+  "ipFlagTor": "Tor",
+  "ipFlagAbuser": "Abuse reports",
+  "ipFlagVpn": "VPN",
+  "ipFlagProxy": "Proxy",
+  "ipQualityFailed": "Every service failed to answer",
+  "ipQualityRetry": "Retry",
+  "ipSourceNoType": "No type reported",
+  "ipSourceRateLimited": "Rate limited",
+  "ipSourceFailed": "Failed",
+  "ipSourceIpMismatch": "IP mismatch"
 }

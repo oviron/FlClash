@@ -661,5 +661,38 @@
   "requestsDesc": "最近のリクエスト記録を表示",
   "connectionsDesc": "現在の接続データを表示",
   "logsDesc": "ログキャプチャ記録",
-  "resourcesDesc": "外部リソース関連情報"
+  "resourcesDesc": "外部リソース関連情報",
+  "ipQualityCheck": "IP品質チェック",
+  "ipQualityIntro": "チェックすると、{ip} は所有者・リスク・回線種別を調べるために以下の各サービスへHTTPSで送信されます。",
+  "@ipQualityIntro": {
+    "placeholders": {
+      "ip": {}
+    }
+  },
+  "ipQualityCheckAction": "チェック",
+  "ipQualitySources": "サービス",
+  "ipQualityResult": "結果",
+  "ipQualityLevel": "品質",
+  "ipQualityGood": "良好",
+  "ipQualityNormal": "普通",
+  "ipQualityRisky": "リスクあり",
+  "ipAddress": "IPアドレス",
+  "ipType": "種別",
+  "ipTypeResidential": "住宅用",
+  "ipTypeMobile": "モバイル",
+  "ipTypeBusiness": "法人用",
+  "ipTypeHosting": "ホスティング",
+  "ipOrganization": "組織",
+  "ipAsn": "ASN",
+  "ipFlags": "フラグ",
+  "ipFlagTor": "Tor",
+  "ipFlagAbuser": "不正利用報告あり",
+  "ipFlagVpn": "VPN",
+  "ipFlagProxy": "プロキシ",
+  "ipQualityFailed": "すべてのサービスが応答しませんでした",
+  "ipQualityRetry": "再試行",
+  "ipSourceNoType": "種別を取得できません",
+  "ipSourceRateLimited": "リクエスト制限超過",
+  "ipSourceFailed": "失敗",
+  "ipSourceIpMismatch": "IPが一致しません"
 }
