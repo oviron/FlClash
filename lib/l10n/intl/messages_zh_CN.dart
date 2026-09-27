@@ -556,6 +556,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickStartVerified": MessageLookupByLibrary.simpleMessage("已验证"),
     "quickStartVerifying": MessageLookupByLibrary.simpleMessage("正在检查连接…"),
     "quickTileAdded": MessageLookupByLibrary.simpleMessage("磁贴已添加"),
+    "quickTileCollapsePanel": MessageLookupByLibrary.simpleMessage(
+      "点按后收起快捷设置面板",
+    ),
+    "quickTileCollapsePanelDesc": MessageLookupByLibrary.simpleMessage(
+      "关闭后可在不收起面板的情况下切换磁贴",
+    ),
     "quickTileDesc": MessageLookupByLibrary.simpleMessage("在手电筒旁添加 FlClash 开关"),
     "quickTileManual": MessageLookupByLibrary.simpleMessage(
       "请从快捷设置编辑器添加：完全下拉通知栏，点按铅笔图标，将 FlClash 拖入",
@@ -634,6 +640,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeMode_config": MessageLookupByLibrary.simpleMessage("使用配置"),
     "routingAddCondition": MessageLookupByLibrary.simpleMessage("添加条件"),
     "routingAddList": MessageLookupByLibrary.simpleMessage("添加列表"),
+    "routingAddPreset": MessageLookupByLibrary.simpleMessage("添加预设"),
     "routingAddRule": MessageLookupByLibrary.simpleMessage("添加规则"),
     "routingAddServer": MessageLookupByLibrary.simpleMessage("添加服务器"),
     "routingAdvanced": MessageLookupByLibrary.simpleMessage("高级"),
@@ -777,6 +784,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingNoServers": MessageLookupByLibrary.simpleMessage("暂无服务器"),
     "routingPasteHint": MessageLookupByLibrary.simpleMessage("每行一个域名"),
     "routingPickList": MessageLookupByLibrary.simpleMessage("选择列表"),
+    "routingPresetBittorrentDirect": MessageLookupByLibrary.simpleMessage(
+      "BitTorrent 直连",
+    ),
+    "routingPresetBlockQuicStunDot": MessageLookupByLibrary.simpleMessage(
+      "屏蔽 QUIC / STUN / DoT",
+    ),
+    "routingPresetLanDirect": MessageLookupByLibrary.simpleMessage("局域网直连"),
+    "routingPresetPickerTitle": MessageLookupByLibrary.simpleMessage("规则预设"),
+    "routingPresetSystemServicesDirect": MessageLookupByLibrary.simpleMessage(
+      "系统服务直连",
+    ),
     "routingProxies": MessageLookupByLibrary.simpleMessage("代理"),
     "routingProxiesSubtitle": MessageLookupByLibrary.simpleMessage("服务器和订阅"),
     "routingRawGroupHint": MessageLookupByLibrary.simpleMessage(

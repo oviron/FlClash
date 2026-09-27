@@ -750,6 +750,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickTileAdded": MessageLookupByLibrary.simpleMessage(
       "Tile is in Quick Settings",
     ),
+    "quickTileCollapsePanel": MessageLookupByLibrary.simpleMessage(
+      "Collapse Quick Settings after tap",
+    ),
+    "quickTileCollapsePanelDesc": MessageLookupByLibrary.simpleMessage(
+      "Turn off to toggle the tile without closing the panel",
+    ),
     "quickTileDesc": MessageLookupByLibrary.simpleMessage(
       "Add a FlClash toggle next to the flashlight",
     ),
@@ -870,6 +876,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Add condition",
     ),
     "routingAddList": MessageLookupByLibrary.simpleMessage("Add list"),
+    "routingAddPreset": MessageLookupByLibrary.simpleMessage("Add preset"),
     "routingAddRule": MessageLookupByLibrary.simpleMessage("Add rule"),
     "routingAddServer": MessageLookupByLibrary.simpleMessage("Add server"),
     "routingAdvanced": MessageLookupByLibrary.simpleMessage("Advanced"),
@@ -1085,6 +1092,21 @@ class MessageLookup extends MessageLookupByLibrary {
       "One domain per line",
     ),
     "routingPickList": MessageLookupByLibrary.simpleMessage("Choose a list"),
+    "routingPresetBittorrentDirect": MessageLookupByLibrary.simpleMessage(
+      "BitTorrent direct",
+    ),
+    "routingPresetBlockQuicStunDot": MessageLookupByLibrary.simpleMessage(
+      "Block QUIC / STUN / DoT",
+    ),
+    "routingPresetLanDirect": MessageLookupByLibrary.simpleMessage(
+      "LAN direct",
+    ),
+    "routingPresetPickerTitle": MessageLookupByLibrary.simpleMessage(
+      "Rule presets",
+    ),
+    "routingPresetSystemServicesDirect": MessageLookupByLibrary.simpleMessage(
+      "System services direct",
+    ),
     "routingProxies": MessageLookupByLibrary.simpleMessage("Proxies"),
     "routingProxiesSubtitle": MessageLookupByLibrary.simpleMessage(
       "Servers and subscriptions",

@@ -614,6 +614,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickStartVerified": MessageLookupByLibrary.simpleMessage("確認済み"),
     "quickStartVerifying": MessageLookupByLibrary.simpleMessage("接続を確認中..."),
     "quickTileAdded": MessageLookupByLibrary.simpleMessage("タイルを追加しました"),
+    "quickTileCollapsePanel": MessageLookupByLibrary.simpleMessage(
+      "タップ後にクイック設定パネルを閉じる",
+    ),
+    "quickTileCollapsePanelDesc": MessageLookupByLibrary.simpleMessage(
+      "オフにすると、パネルを閉じずにタイルを切り替えられます",
+    ),
     "quickTileDesc": MessageLookupByLibrary.simpleMessage(
       "ライトの隣に FlClash の切り替えを追加",
     ),
@@ -704,6 +710,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeMode_config": MessageLookupByLibrary.simpleMessage("設定を使用"),
     "routingAddCondition": MessageLookupByLibrary.simpleMessage("条件を追加"),
     "routingAddList": MessageLookupByLibrary.simpleMessage("リストを追加"),
+    "routingAddPreset": MessageLookupByLibrary.simpleMessage("プリセットを追加"),
     "routingAddRule": MessageLookupByLibrary.simpleMessage("ルールを追加"),
     "routingAddServer": MessageLookupByLibrary.simpleMessage("サーバーを追加"),
     "routingAdvanced": MessageLookupByLibrary.simpleMessage("詳細設定"),
@@ -869,6 +876,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingNoServers": MessageLookupByLibrary.simpleMessage("サーバーがありません"),
     "routingPasteHint": MessageLookupByLibrary.simpleMessage("1行に1ドメイン"),
     "routingPickList": MessageLookupByLibrary.simpleMessage("リストを選択"),
+    "routingPresetBittorrentDirect": MessageLookupByLibrary.simpleMessage(
+      "BitTorrent を直接接続",
+    ),
+    "routingPresetBlockQuicStunDot": MessageLookupByLibrary.simpleMessage(
+      "QUIC / STUN / DoT をブロック",
+    ),
+    "routingPresetLanDirect": MessageLookupByLibrary.simpleMessage("LAN を直接接続"),
+    "routingPresetPickerTitle": MessageLookupByLibrary.simpleMessage(
+      "ルールプリセット",
+    ),
+    "routingPresetSystemServicesDirect": MessageLookupByLibrary.simpleMessage(
+      "システムサービスを直接接続",
+    ),
     "routingProxies": MessageLookupByLibrary.simpleMessage("プロキシ"),
     "routingProxiesSubtitle": MessageLookupByLibrary.simpleMessage(
       "サーバーとサブスクリプション",

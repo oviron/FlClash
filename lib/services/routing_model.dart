@@ -87,6 +87,13 @@ final class ListRule extends ScenarioRule {
   final Destination dest;
 
   const ListRule({required this.listId, required this.dest});
+
+  @override
+  bool operator ==(Object other) =>
+      other is ListRule && other.listId == listId && other.dest == dest;
+
+  @override
+  int get hashCode => Object.hash(listId, dest);
 }
 
 final class CountryRule extends ScenarioRule {
@@ -99,6 +106,16 @@ final class CountryRule extends ScenarioRule {
     required this.dest,
     this.noResolve = true,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      other is CountryRule &&
+      other.countryCode == countryCode &&
+      other.dest == dest &&
+      other.noResolve == noResolve;
+
+  @override
+  int get hashCode => Object.hash(countryCode, dest, noResolve);
 }
 
 final class MatchRule extends ScenarioRule {
@@ -115,6 +132,18 @@ final class MatchRule extends ScenarioRule {
     this.noResolve = false,
     this.src = false,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      other is MatchRule &&
+      other.action == action &&
+      other.value == value &&
+      other.dest == dest &&
+      other.noResolve == noResolve &&
+      other.src == src;
+
+  @override
+  int get hashCode => Object.hash(action, value, dest, noResolve, src);
 }
 
 final class LogicRule extends ScenarioRule {
@@ -131,12 +160,40 @@ final class LogicRule extends ScenarioRule {
     this.noResolve = false,
     this.src = false,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      other is LogicRule &&
+      other.op == op &&
+      other.dest == dest &&
+      other.noResolve == noResolve &&
+      other.src == src &&
+      _clausesEq(other.clauses, clauses);
+
+  @override
+  int get hashCode =>
+      Object.hash(op, dest, noResolve, src, Object.hashAll(clauses));
+
+  static bool _clausesEq(List<LogicalClause> a, List<LogicalClause> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
 }
 
 final class RawScenarioRule extends ScenarioRule {
   final RoutingRule raw;
 
   const RawScenarioRule(this.raw);
+
+  @override
+  bool operator ==(Object other) =>
+      other is RawScenarioRule && other.raw == raw;
+
+  @override
+  int get hashCode => raw.hashCode;
 }
 
 class Scenario {

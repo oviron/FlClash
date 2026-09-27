@@ -769,6 +769,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Проверяем подключение...",
     ),
     "quickTileAdded": MessageLookupByLibrary.simpleMessage("Кнопка на месте"),
+    "quickTileCollapsePanel": MessageLookupByLibrary.simpleMessage(
+      "Сворачивать шторку после нажатия",
+    ),
+    "quickTileCollapsePanelDesc": MessageLookupByLibrary.simpleMessage(
+      "Выключите, чтобы переключать плитку без закрытия шторки",
+    ),
     "quickTileDesc": MessageLookupByLibrary.simpleMessage(
       "Добавить переключатель FlClash рядом с фонариком",
     ),
@@ -895,6 +901,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Добавить условие",
     ),
     "routingAddList": MessageLookupByLibrary.simpleMessage("Добавить список"),
+    "routingAddPreset": MessageLookupByLibrary.simpleMessage("Добавить пресет"),
     "routingAddRule": MessageLookupByLibrary.simpleMessage("Добавить правило"),
     "routingAddServer": MessageLookupByLibrary.simpleMessage("Добавить сервер"),
     "routingAdvanced": MessageLookupByLibrary.simpleMessage("Дополнительно"),
@@ -1142,6 +1149,21 @@ class MessageLookup extends MessageLookupByLibrary {
       "По одному домену в строке",
     ),
     "routingPickList": MessageLookupByLibrary.simpleMessage("Выберите список"),
+    "routingPresetBittorrentDirect": MessageLookupByLibrary.simpleMessage(
+      "BitTorrent напрямую",
+    ),
+    "routingPresetBlockQuicStunDot": MessageLookupByLibrary.simpleMessage(
+      "Блокировать QUIC / STUN / DoT",
+    ),
+    "routingPresetLanDirect": MessageLookupByLibrary.simpleMessage(
+      "Локальная сеть напрямую",
+    ),
+    "routingPresetPickerTitle": MessageLookupByLibrary.simpleMessage(
+      "Пресеты правил",
+    ),
+    "routingPresetSystemServicesDirect": MessageLookupByLibrary.simpleMessage(
+      "Системные сервисы напрямую",
+    ),
     "routingProxies": MessageLookupByLibrary.simpleMessage("Прокси"),
     "routingProxiesSubtitle": MessageLookupByLibrary.simpleMessage(
       "Серверы и подписки",
