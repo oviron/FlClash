@@ -27,6 +27,9 @@ import kotlinx.coroutines.sync.withLock
 import java.util.UUID
 import kotlin.coroutines.resume
 
+// Core load plus establish() retries; stays under the app's 15 s wait so a slow start still reports back.
+private const val START_TIMEOUT_MS = 12_000L
+
 class RemoteService : Service(),
     CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
 
@@ -90,7 +93,7 @@ class RemoteService : Service(),
                     intent = nextIntent
                     delegate?.bind()
                 }
-                val started = delegate?.useService { service ->
+                val started = delegate?.useService(START_TIMEOUT_MS) { service ->
                     service.start()
                 }?.getOrNull() == true
                 if (!started) {

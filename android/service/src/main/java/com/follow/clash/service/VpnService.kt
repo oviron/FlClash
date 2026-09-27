@@ -26,6 +26,7 @@ import com.follow.clash.service.modules.NotificationModule
 import com.follow.clash.service.modules.WakeLockModule
 import io.github.oviron.libmihomo.Clash
 import io.github.oviron.libmihomo.TunInterface
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -315,6 +316,9 @@ class VpnService : SystemVpnService(), IBaseService,
         loader.load()
         handleStart(State.options ?: throw IllegalStateException("VPN options missing"))
         true
+    } catch (e: CancellationException) {
+        stop()
+        throw e
     } catch (e: Exception) {
         GlobalState.log("VpnService start failed: $e")
         stop()
