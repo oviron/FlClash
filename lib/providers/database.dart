@@ -34,7 +34,7 @@ class Profiles extends _$Profiles {
   void del(int id) {
     final newProfiles = state.where((element) => element.id != id).toList();
     state = newProfiles;
-    database.profiles.remove((t) => t.id.equals(id));
+    database.deleteProfile(id);
   }
 
   void updateProfile(int profileId, Profile Function(Profile profile) builder) {

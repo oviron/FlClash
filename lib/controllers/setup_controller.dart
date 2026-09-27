@@ -13,6 +13,7 @@ extension SetupControllerExt on AppController {
 
   Future<void> updateStatus(bool isStart, {bool isInit = false}) async {
     if (isStart) {
+      await coreController.pendingTrafficReset;
       if (!isInit) {
         final res = await tryStartCore(true);
         if (res) {
@@ -33,11 +34,12 @@ extension SetupControllerExt on AppController {
       }
     } else {
       await globalState.handleStop();
-      coreController.resetTraffic();
       _ref.read(trafficsProvider.notifier).clear();
       _ref.read(totalTrafficProvider.notifier).value = const Traffic();
       _ref.read(runTimeProvider.notifier).value = null;
       addCheckIp();
+      // Last, so a reconnecting core does not stall the stop UI; a start waits for it.
+      await coreController.resetTraffic();
     }
   }
 

@@ -45,7 +45,7 @@ extension CommonControllerExt on AppController {
   // handleStart/handleStop own. Every path that learns the real state — the
   // Kotlin push, the resume pull, cold init — lands here, so `runTimeProvider`
   // can no longer drift from the tunnel the tile reports.
-  void applyRunState(DateTime? startTime) {
+  Future<void> applyRunState(DateTime? startTime) async {
     final wasStart = _ref.read(isStartProvider);
     globalState.startTime = startTime;
     updateRunTime();
@@ -59,11 +59,11 @@ extension CommonControllerExt on AppController {
     }
     globalState.stopUpdateTasks();
     if (wasStart) {
-      coreController.resetTraffic();
       _ref.read(trafficsProvider.notifier).clear();
       _ref.read(totalTrafficProvider.notifier).value = const Traffic();
       globalState.healthBaseline = null;
       addCheckIp();
+      await coreController.resetTraffic();
     }
   }
 
@@ -98,12 +98,12 @@ extension CommonControllerExt on AppController {
     await globalState.updateStartTime();
     final fromService = globalState.startTime;
     if (fromService == null) return;
-    applyRunState(fromService);
+    await applyRunState(fromService);
   }
 
   Future<void> syncRunState() async {
     await globalState.updateStartTime();
-    applyRunState(globalState.startTime);
+    await applyRunState(globalState.startTime);
   }
 
   Future<void> updateTraffic() async {

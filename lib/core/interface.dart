@@ -61,7 +61,7 @@ mixin CoreInterface {
 
   FutureOr<String> getMemory();
 
-  FutureOr<void> resetTraffic();
+  Future<void> resetTraffic();
 
   FutureOr<void> startLog();
 
@@ -236,10 +236,16 @@ abstract class CoreHandlerInterface with CoreInterface {
         '';
   }
 
+  Future<void>? _trafficReset;
+
   @override
-  void resetTraffic() {
-    _invoke(method: ActionMethod.resetTraffic);
-  }
+  // Awaited on the stop path; a hung core must not hold it for the 3 min default.
+  Future<void> resetTraffic() => _trafficReset = _invoke(
+    method: ActionMethod.resetTraffic,
+  ).withTimeout(timeout: const Duration(seconds: 5), onTimeout: () => null);
+
+  // A start waits on this so the previous stop's reset cannot zero the new session.
+  Future<void> get pendingTrafficReset => _trafficReset ?? Future.value();
 
   @override
   void startLog() {

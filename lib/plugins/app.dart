@@ -66,15 +66,25 @@ class App {
         false;
   }
 
-  Future<ImageProvider?> getPackageIcon(String packageName) async {
-    final path = await methodChannel.invokeMethod<String>(
-      AppMethod.getPackageIcon,
-      {'packageName': packageName},
-    );
-    if (path == null) {
+  final Map<String, Future<ImageProvider?>> _packageIcons = {};
+
+  // Keyed by package so a rebuilt row reuses the same Future instead of
+  // making another platform round trip.
+  Future<ImageProvider?> getPackageIcon(String packageName) {
+    return _packageIcons[packageName] ??= _loadPackageIcon(packageName);
+  }
+
+  Future<ImageProvider?> _loadPackageIcon(String packageName) async {
+    try {
+      final path = await methodChannel.invokeMethod<String>(
+        AppMethod.getPackageIcon,
+        {'packageName': packageName},
+      );
+      return path == null ? null : FileImage(File(path));
+    } on Exception catch (e) {
+      commonPrint.log('getPackageIcon $packageName: $e');
       return null;
     }
-    return FileImage(File(path));
   }
 
   Future<bool?> tip(String? message) async {

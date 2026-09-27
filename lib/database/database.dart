@@ -24,7 +24,7 @@ class Database extends _$Database {
   Database([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -71,7 +71,13 @@ class Database extends _$Database {
       if (from < 9) {
         await m.addColumn(profiles, profiles.appFilterStash);
       }
+      // v10: foreign keys were never enabled, so links outlived their profile
+      // or rule. Purge them before beforeOpen turns enforcement on.
+      if (from < 10) {
+        await _purgeOrphans();
+      }
     },
+    beforeOpen: (_) => customStatement('PRAGMA foreign_keys = ON'),
   );
 
   static LazyDatabase _openConnection() {
@@ -89,11 +95,17 @@ class Database extends _$Database {
     bool isOverride = false,
     List<NetworkRule> networkRules = const [],
   }) async {
-    if (profiles.isNotEmpty ||
-        scripts.isNotEmpty ||
-        rules.isNotEmpty ||
-        links.isNotEmpty ||
-        networkRules.isNotEmpty) {
+    if (profiles.isEmpty &&
+        scripts.isEmpty &&
+        rules.isEmpty &&
+        links.isEmpty &&
+        networkRules.isEmpty) {
+      return;
+    }
+    await transaction(() async {
+      // A backup taken before enforcement may carry orphaned links; checking at
+      // commit lets the purge below drop them instead of failing the restore.
+      await customStatement('PRAGMA defer_foreign_keys = ON');
       await batch((b) {
         isOverride
             ? profilesDao.setAllWithBatch(b, profiles)
@@ -107,7 +119,26 @@ class Database extends _$Database {
             ? networkRulesDao.setAllWithBatch(b, networkRules)
             : networkRulesDao.putAllWithBatch(b, networkRules);
       });
-    }
+      await _purgeOrphans();
+    });
+  }
+
+  Future<void> deleteProfile(int profileId) {
+    return transaction(() async {
+      await profiles.remove((t) => t.id.equals(profileId));
+      await rulesDao.delUnlinkedRules();
+    });
+  }
+
+  Future<void> _purgeOrphans() async {
+    final profileIds = selectOnly(profiles)..addColumns([profiles.id]);
+    final ruleIds = selectOnly(rules)..addColumns([rules.id]);
+    await profileRuleLinks.remove(
+      (t) =>
+          t.ruleId.isNotInQuery(ruleIds) |
+          (t.profileId.isNotNull() & t.profileId.isNotInQuery(profileIds)),
+    );
+    await rulesDao.delUnlinkedRules();
   }
 }
 

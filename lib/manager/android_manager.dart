@@ -65,7 +65,7 @@ class _AndroidContainerState extends ConsumerState<AndroidManager>
 
   @override
   void onRunStateChanged(DateTime? startTime) {
-    appController.applyRunState(startTime);
+    unawaited(appController.applyRunState(startTime));
     super.onRunStateChanged(startTime);
   }
 
