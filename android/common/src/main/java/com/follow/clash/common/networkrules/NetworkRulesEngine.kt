@@ -91,8 +91,8 @@ fun decideManualSwitch(
     return active
 }
 
-// The VPN call [decision] needs now, or null. A start still waiting to commit
-// ([settling]) is not up yet but is one a STOP must cancel.
+// The VPN call [decision] needs now, or null. [settling] (PENDING) may be a start
+// waiting for consent, which a STOP must cancel; for a stop under way it is a no-op.
 fun actuation(decision: NetworkDecision, up: Boolean, settling: Boolean): NetworkDecision? =
     when (decision) {
         NetworkDecision.START -> decision.takeIf { !up }
