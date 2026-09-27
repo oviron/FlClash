@@ -292,7 +292,12 @@ class _DnsItem extends StatelessWidget {
                 onConfirm: () async {
                   ref
                       .read(patchClashConfigProvider.notifier)
-                      .update((state) => state.copyWith(dns: defaultDns));
+                      .update(
+                        (state) => state.copyWith(
+                          dns: defaultDns,
+                          dnsOverrideKeys: {},
+                        ),
+                      );
                 },
               ),
             ),

@@ -222,15 +222,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNSハイジャッキング"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNSモード"),
+    "dnsOverrideKeys": MessageLookupByLibrary.simpleMessage("上書きするキー"),
+    "dnsOverrideKeysAll": MessageLookupByLibrary.simpleMessage(
+      "すべて：アプリの DNS ブロックでプロファイルのものを置き換えます",
+    ),
+    "dnsOverrideKeysNone": MessageLookupByLibrary.simpleMessage(
+      "まだありません：プロファイルの DNS はそのままです",
+    ),
+    "dnsOverrideKeysTip": MessageLookupByLibrary.simpleMessage(
+      "チェックしたキーだけがプロファイルの値を置き換えます。設定を変更するとそのキーは自動でチェックされます。",
+    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("サーバー"),
     "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
       "プロファイルに DNS がないため、以下の設定が適用されます",
     ),
     "dnsSourceAppOverride": MessageLookupByLibrary.simpleMessage(
-      "以下の DNS 設定がプロファイルを上書きします",
+      "下で選んだ DNS キーがプロファイルを上書きします",
     ),
     "dnsSourceProfile": MessageLookupByLibrary.simpleMessage(
-      "プロファイルが独自の DNS を持っています。以下の設定を適用するにはオンにしてください",
+      "プロファイルが独自の DNS を持っています。下で選んだキーを適用するにはオンにしてください",
     ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage("通過させますか？"),
     "download": MessageLookupByLibrary.simpleMessage("ダウンロード"),
@@ -417,7 +427,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nameserverDesc": MessageLookupByLibrary.simpleMessage("ドメイン解決用"),
     "nameserverPolicy": MessageLookupByLibrary.simpleMessage("ネームサーバーポリシー"),
     "nameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
-      "対応するネームサーバーポリシーを指定",
+      "ドメインごとのネームサーバー。複数はカンマで区切ります",
     ),
     "networkDesc": MessageLookupByLibrary.simpleMessage("ネットワーク関連設定の変更"),
     "networkDetection": MessageLookupByLibrary.simpleMessage("ネットワーク検出"),
@@ -582,7 +592,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "プロキシネームサーバーポリシー",
     ),
     "proxyNameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
-      "プロキシノードのネームサーバーポリシーを指定",
+      "プロキシサーバーの名前解決に使うドメインごとのネームサーバー。複数はカンマで区切ります",
     ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("プロキシプロバイダー"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("キャッシュの削除"),

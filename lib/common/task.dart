@@ -179,15 +179,23 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
       ),
       false => realPatchConfig.dns,
     };
-    dnsConfig = rawConfig['dns'] = dns.toJson();
-    dnsConfig['nameserver-policy'] = {
-      for (final entry in dns.nameserverPolicy.entries)
-        entry.key: entry.value.splitByMultipleSeparators,
-    };
-    dnsConfig['proxy-server-nameserver-policy'] = {
-      for (final entry in dns.proxyServerNameserverPolicy.entries)
-        entry.key: entry.value.splitByMultipleSeparators,
-    };
+    final appDns = dns.toJson()
+      ..['nameserver-policy'] = {
+        for (final entry in dns.nameserverPolicy.entries)
+          entry.key: entry.value.splitByMultipleSeparators,
+      }
+      ..['proxy-server-nameserver-policy'] = {
+        for (final entry in dns.proxyServerNameserverPolicy.entries)
+          entry.key: entry.value.splitByMultipleSeparators,
+      };
+    final keys = realPatchConfig.dnsOverrideKeys;
+    if (!isEnableDns || keys.containsAll(allDnsKeys)) {
+      dnsConfig = rawConfig['dns'] = appDns;
+    } else {
+      for (final key in keys) {
+        if (appDns.containsKey(key)) dnsConfig[key] = appDns[key];
+      }
+    }
   }
   // proxy-server-nameserver resolves the proxy node's own domain. Without a
   // system:// fallback it strands the whole tunnel when the configured DoT/DoH

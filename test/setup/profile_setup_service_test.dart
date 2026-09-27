@@ -17,6 +17,7 @@ void main() {
       script: script,
       overrideDns: false,
       dns: defaultDns,
+      dnsOverrideKeys: const {},
     );
   }
 
