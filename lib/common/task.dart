@@ -118,79 +118,59 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   rawConfig['find-process-mode'] ??= realPatchConfig.findProcessMode.name;
   rawConfig['allow-lan'] = realPatchConfig.allowLan;
   rawConfig['mode'] = realPatchConfig.mode.name;
-  if (rawConfig['tun'] == null) {
-    rawConfig['tun'] = {};
-  }
-  rawConfig['tun']['enable'] = realPatchConfig.tun.enable;
-  rawConfig['tun']['device'] = realPatchConfig.tun.device;
-  rawConfig['tun']['dns-hijack'] = realPatchConfig.tun.dnsHijack;
-  rawConfig['tun']['stack'] = realPatchConfig.tun.stack.name;
-  rawConfig['tun']['route-address'] = realPatchConfig.tun.routeAddress;
-  rawConfig['tun']['auto-route'] = realPatchConfig.tun.autoRoute;
+  final tun = _mapAt(rawConfig, 'tun');
+  tun['enable'] = realPatchConfig.tun.enable;
+  tun['device'] = realPatchConfig.tun.device;
+  tun['dns-hijack'] = realPatchConfig.tun.dnsHijack;
+  tun['stack'] = realPatchConfig.tun.stack.name;
+  tun['route-address'] = realPatchConfig.tun.routeAddress;
+  tun['auto-route'] = realPatchConfig.tun.autoRoute;
   rawConfig['geodata-loader'] = realPatchConfig.geodataLoader.name;
-  if (rawConfig['sniffer']?['sniff'] != null) {
-    for (final value in (rawConfig['sniffer']?['sniff'] as Map).values) {
-      if (value['ports'] != null && value['ports'] is List) {
-        value['ports'] =
-            value['ports']?.map((item) => item.toString()).toList() ?? [];
+  final sniffer = rawConfig['sniffer'];
+  final sniff = sniffer is Map ? sniffer['sniff'] : null;
+  if (sniff is Map) {
+    for (final value in sniff.values) {
+      final ports = value is Map ? value['ports'] : null;
+      if (ports is List) {
+        value['ports'] = [for (final port in ports) port.toString()];
       }
     }
-  }
-  if (rawConfig['profile'] == null) {
-    rawConfig['profile'] = {};
   }
   // Default proxy: DIRECT routes the provider's own download via
   // SpecialProxy and skips user rules; otherwise a trailing MATCH,REJECT
   // REJECTs the fetch and the provider never loads.
-  if (rawConfig['proxy-providers'] != null) {
-    final proxyProviders = rawConfig['proxy-providers'] as Map;
-    for (final key in proxyProviders.keys) {
-      final proxyProvider = proxyProviders[key];
-      if (proxyProvider['type'] != 'http') {
+  void confineProviders(String key, String type) {
+    final providers = rawConfig[key];
+    if (providers is! Map) {
+      return;
+    }
+    for (final provider in providers.values) {
+      if (provider is! Map || provider['type'] != 'http') {
         continue;
       }
-      if (proxyProvider['url'] != null) {
-        proxyProvider['path'] = getProvidersFilePathInner(
-          'proxies',
-          proxyProvider['url'],
-        );
+      final url = provider['url'];
+      if (url is String) {
+        provider['path'] = getProvidersFilePathInner(type, url);
       }
-      proxyProvider['proxy'] ??= 'DIRECT';
+      provider['proxy'] ??= 'DIRECT';
     }
   }
-  if (rawConfig['rule-providers'] != null) {
-    final ruleProviders = rawConfig['rule-providers'] as Map;
-    for (final key in ruleProviders.keys) {
-      final ruleProvider = ruleProviders[key];
-      if (ruleProvider['type'] != 'http') {
-        continue;
-      }
-      if (ruleProvider['url'] != null) {
-        ruleProvider['path'] = getProvidersFilePathInner(
-          'rules',
-          ruleProvider['url'],
-        );
-      }
-      ruleProvider['proxy'] ??= 'DIRECT';
-    }
-  }
-  rawConfig['profile']['store-selected'] = false;
+
+  confineProviders('proxy-providers', 'proxies');
+  confineProviders('rule-providers', 'rules');
+  _mapAt(rawConfig, 'profile')['store-selected'] = false;
   rawConfig['geox-url'] = realPatchConfig.geoXUrl.toJson();
   rawConfig['global-ua'] ??= defaultUA;
   final clientFingerprint = rawConfig['global-client-fingerprint'];
   if (clientFingerprint is! String || clientFingerprint.isEmpty) {
     rawConfig['global-client-fingerprint'] = 'chrome';
   }
-  if (rawConfig['hosts'] == null) {
-    rawConfig['hosts'] = {};
-  }
+  final hosts = _mapAt(rawConfig, 'hosts');
   for (final host in realPatchConfig.hosts.entries) {
-    rawConfig['hosts'][host.key] = host.value.splitByMultipleSeparators;
+    hosts[host.key] = host.value.splitByMultipleSeparators;
   }
-  if (rawConfig['dns'] == null) {
-    rawConfig['dns'] = {};
-  }
-  final isEnableDns = rawConfig['dns']['enable'] == true;
+  var dnsConfig = _mapAt(rawConfig, 'dns');
+  final isEnableDns = dnsConfig['enable'] == true;
   const systemDns = 'system://';
   if (overrideDns || !isEnableDns) {
     final dns = switch (!isEnableDns) {
@@ -199,42 +179,35 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
       ),
       false => realPatchConfig.dns,
     };
-    rawConfig['dns'] = dns.toJson();
-    rawConfig['dns']['nameserver-policy'] = {};
-    for (final entry in dns.nameserverPolicy.entries) {
-      rawConfig['dns']['nameserver-policy'][entry.key] =
-          entry.value.splitByMultipleSeparators;
-    }
-    rawConfig['dns']['proxy-server-nameserver-policy'] = {};
-    for (final entry in dns.proxyServerNameserverPolicy.entries) {
-      rawConfig['dns']['proxy-server-nameserver-policy'][entry.key] =
-          entry.value.splitByMultipleSeparators;
-    }
+    dnsConfig = rawConfig['dns'] = dns.toJson();
+    dnsConfig['nameserver-policy'] = {
+      for (final entry in dns.nameserverPolicy.entries)
+        entry.key: entry.value.splitByMultipleSeparators,
+    };
+    dnsConfig['proxy-server-nameserver-policy'] = {
+      for (final entry in dns.proxyServerNameserverPolicy.entries)
+        entry.key: entry.value.splitByMultipleSeparators,
+    };
   }
   // proxy-server-nameserver resolves the proxy node's own domain. Without a
   // system:// fallback it strands the whole tunnel when the configured DoT/DoH
   // is blocked (RU drops :853); unconditional because that failure is total.
-  final List<String> proxyServerNameserver = List<String>.from(
-    rawConfig['dns']['proxy-server-nameserver'] ?? [],
+  final proxyServerNameserver = _stringsAt(
+    dnsConfig,
+    'proxy-server-nameserver',
   );
-  if (!proxyServerNameserver.contains(systemDns)) {
-    rawConfig['dns']['proxy-server-nameserver'] = [
-      systemDns,
-      ...proxyServerNameserver,
+  dnsConfig['proxy-server-nameserver'] = [
+    if (!proxyServerNameserver.contains(systemDns)) systemDns,
+    ...proxyServerNameserver,
+  ];
+  if (appendSystemDns) {
+    final nameserver = _stringsAt(dnsConfig, 'nameserver');
+    dnsConfig['nameserver'] = [
+      ...nameserver,
+      if (!nameserver.contains(systemDns)) systemDns,
     ];
   }
-  if (appendSystemDns) {
-    final List<String> nameserver = List<String>.from(
-      rawConfig['dns']['nameserver'] ?? [],
-    );
-    if (!nameserver.contains(systemDns)) {
-      rawConfig['dns']['nameserver'] = [...nameserver, systemDns];
-    }
-  }
-  List<String> rules = [];
-  if (rawConfig['rules'] != null) {
-    rules = List<String>.from(rawConfig['rules']);
-  }
+  List<String> rules = _stringsAt(rawConfig, 'rules');
   rawConfig.remove('rules');
   // IN-TYPE matches Type and ignores Process: covers both INNER paths
   // (GeoX fetch with Process=mihomo, DoH with Process="") so a trailing
@@ -298,6 +271,19 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   }
   rawConfig['rules'] = rules;
   return Map<String, dynamic>.from(rawConfig);
+}
+
+Map<dynamic, dynamic> _mapAt(Map<dynamic, dynamic> config, String key) {
+  final value = config[key];
+  if (value is Map) {
+    return value;
+  }
+  return config[key] = <String, dynamic>{};
+}
+
+List<String> _stringsAt(Map<dynamic, dynamic> config, String key) {
+  final value = config[key];
+  return value is List ? value.whereType<String>().toList() : [];
 }
 
 Future<List<String>> shakingProfileTask(
