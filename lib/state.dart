@@ -42,6 +42,9 @@ class GlobalState {
   bool needInitStatus = true;
   CorePalette? corePalette;
   DateTime? startTime;
+  // Start/stop requests run in call order: a stop's awaits overlapping the next
+  // start's could otherwise reach the service after it.
+  final statusQueue = SerialQueue();
   UpdateTasks tasks = [];
   SetupState? lastSetupState;
   VpnState? lastVpnState;

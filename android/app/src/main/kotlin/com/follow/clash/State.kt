@@ -9,16 +9,16 @@ import android.provider.Settings
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import com.follow.clash.common.GlobalState
+import com.follow.clash.common.LifecycleSequencer
 import com.follow.clash.common.shouldShowTileActionToast
 import com.follow.clash.models.SharedState
 import com.follow.clash.plugins.AppPlugin
 import com.follow.clash.plugins.TilePlugin
 import com.follow.clash.service.models.NotificationParams
+import com.follow.clash.service.models.VpnOptions
 import com.google.gson.Gson
 import io.flutter.embedding.engine.FlutterEngine
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 private const val NATIVE_PREFS = "native_state"
@@ -49,7 +49,9 @@ enum class RunState {
 
 object State {
 
-    val runLock = Mutex()
+    private val lifecycle = LifecycleSequencer(GlobalState)
+
+    private val runLock = lifecycle.lock
 
     var runTime: Long = 0
 
@@ -70,6 +72,11 @@ object State {
 
     val tilePlugin: TilePlugin?
         get() = flutterEngine?.plugin<TilePlugin>()
+
+    // Entry points go through here so requests reach the lock, or Dart, in the order they were made.
+    fun request(action: suspend State.() -> Unit) {
+        lifecycle.launch { action() }
+    }
 
     suspend fun handleToggleAction(fromTile: Boolean = false) {
         var action: (suspend () -> Unit)?
@@ -102,6 +109,14 @@ object State {
         }
     }
 
+    // A start waiting for consent stays PENDING: it binds a fresh :remote when it commits.
+    suspend fun handleRemoteDied() {
+        runLock.withLock {
+            runTime = 0
+            if (runStateFlow.value == RunState.START) runStateFlow.tryEmit(RunState.STOP)
+        }
+    }
+
     // A START left behind by a service that died unseen would reject every later start.
     private suspend fun dropStaleStartLocked() {
         if (runStateFlow.value != RunState.START) return
@@ -110,28 +125,35 @@ object State {
         if (runTime == 0L) runStateFlow.tryEmit(RunState.STOP)
     }
 
+    // With Flutter attached, Dart queues the request and checks the state when it runs;
+    // checking here would drop a start that follows a stop Dart has not run yet.
     suspend fun handleStartServiceAction(fromTile: Boolean = false) {
+        if (flutterEngine != null) {
+            tilePlugin?.handleStart()
+            return
+        }
         runLock.withLock {
             dropStaleStartLocked()
             if (runStateFlow.value != RunState.STOP) {
                 return
             }
-            tilePlugin?.handleStart()
-            if (flutterEngine != null) {
-                return
-            }
             startServiceWithPref(fromTile)
         }
-
     }
 
-    suspend fun handleStopServiceAction(fromTile: Boolean = false) {
+    // session is the run time a service-destroyed report belongs to; 0 when the stop is not such a report.
+    suspend fun handleStopServiceAction(fromTile: Boolean = false, session: Long = 0L) {
         runLock.withLock {
-            if (runStateFlow.value != RunState.START) {
+            // A late report about an earlier tunnel must not stop the one running now.
+            if (session != 0L && session != runTime) {
                 return
             }
-            tilePlugin?.handleStop()
             if (flutterEngine != null) {
+                tilePlugin?.handleStop()
+                return
+            }
+            // A stop during PENDING still cancels the start that is waiting to commit.
+            if (runStateFlow.value == RunState.STOP) {
                 return
             }
             if (shouldShowTileActionToast(fromTile, sharedState.quickTileCollapsePanel)) {
@@ -142,24 +164,26 @@ object State {
     }
 
     fun handleStartService() {
+        val ticket = lifecycle.startTicket()
         val appPlugin = flutterEngine?.plugin<AppPlugin>()
         if (appPlugin != null) {
             appPlugin.requestNotificationsPermission {
-                startService()
+                startService(ticket)
             }
             return
         }
-        startService()
+        startService(ticket)
     }
 
     private fun startServiceWithPref(fromTile: Boolean) {
-        GlobalState.launch {
+        val ticket = lifecycle.startTicket()
+        lifecycle.launch {
             runLock.withLock {
-                if (runStateFlow.value != RunState.STOP) {
+                if (lifecycle.isCancelled(ticket) || runStateFlow.value != RunState.STOP) {
                     return@launch
                 }
                 sharedState = GlobalState.application.sharedState
-                setupAndStart(fromTile)
+                setupAndStart(fromTile, ticket)
             }
         }
     }
@@ -173,7 +197,7 @@ object State {
         )
     }
 
-    private suspend fun setupAndStart(fromTile: Boolean = false) {
+    private suspend fun setupAndStart(fromTile: Boolean, ticket: Long) {
         Service.bind()
         syncState()
         if (shouldShowTileActionToast(fromTile, sharedState.quickTileCollapsePanel)) {
@@ -198,7 +222,7 @@ object State {
             onStarted = null,
             onResult = {
                 if (it.isEmpty()) {
-                    startService()
+                    startService(ticket)
                 } else {
                     GlobalState.application.showToast(it)
                 }
@@ -209,38 +233,62 @@ object State {
     private suspend fun prepareVpn(): Boolean =
         appPlugin?.prepareVpn() ?: (VpnService.prepare(GlobalState.application) == null)
 
-    private fun startService() {
-        GlobalState.launch {
-            runLock.withLock {
-                dropStaleStartLocked()
-                if (runStateFlow.value != RunState.STOP) {
-                    return@launch
-                }
-                runStateFlow.tryEmit(RunState.PENDING)
-            }
+    private fun startService(ticket: Long) {
+        lifecycle.launch {
+            if (!enterPending(ticket)) return@launch
+            var settled = false
             try {
                 val options = sharedState.vpnOptions ?: return@launch
                 // The consent dialog stays open as long as the user leaves it, so it is awaited
                 // outside runLock; PENDING keeps other starts and stops out meanwhile.
                 if (options.enable && !prepareVpn()) return@launch
                 val started = runLock.withLock {
-                    // A timed-out AIDL reply does not mean the service failed to start.
-                    runTime = Service.startService(options, runTime)
-                        .takeIf { it != 0L } ?: Service.getRunTime()
-                    if (runTime != 0L) runStateFlow.tryEmit(RunState.START)
-                    runTime != 0L
+                    settled = true
+                    commitStartLocked(ticket, options)
                 }
                 if (started) appPlugin?.activity?.let(::requestBatteryExemptionOnce)
             } finally {
-                if (runStateFlow.value == RunState.PENDING) {
+                // Once settled, a PENDING seen here belongs to a later stop.
+                if (!settled && runStateFlow.value == RunState.PENDING) {
                     runStateFlow.tryEmit(RunState.STOP)
                 }
             }
         }
     }
 
+    private suspend fun enterPending(ticket: Long): Boolean = runLock.withLock {
+        dropStaleStartLocked()
+        val ready = !lifecycle.isCancelled(ticket) && runStateFlow.value == RunState.STOP
+        if (ready) runStateFlow.tryEmit(RunState.PENDING)
+        ready
+    }
+
+    // A stop requested while the consent dialog was open has cancelled the ticket.
+    private suspend fun commitStartLocked(ticket: Long, options: VpnOptions): Boolean {
+        var started = false
+        try {
+            if (!lifecycle.isCancelled(ticket)) {
+                runTime = startRemote(options)
+                started = runTime != 0L
+            }
+        } finally {
+            runStateFlow.tryEmit(if (started) RunState.START else RunState.STOP)
+        }
+        return started
+    }
+
+    // No reply is not a failed start: the start may still land, so it is cancelled
+    // behind itself to leave both processes stopped.
+    private suspend fun startRemote(options: VpnOptions): Long {
+        Service.startService(options, runTime)?.let { return it }
+        Service.queryRunTime()?.takeIf { it != 0L }?.let { return it }
+        Service.stopService()
+        return 0L
+    }
+
     fun handleStopService() {
-        GlobalState.launch {
+        lifecycle.cancelStarts()
+        lifecycle.launch {
             runLock.withLock {
                 if (runStateFlow.value != RunState.START) {
                     return@launch

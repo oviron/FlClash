@@ -158,12 +158,13 @@ object Service {
     }
 
 
-    suspend fun startService(options: VpnOptions, runTime: Long): Long {
+    // null when :remote did not answer in time; 0 when it answered that the start failed.
+    suspend fun startService(options: VpnOptions, runTime: Long): Long? {
         return delegate.useService(RUN_STATE_TIMEOUT_MS) {
             awaitIResultInterface { callback ->
                 it.startService(options, runTime, callback)
             }
-        }.getOrNull() ?: 0L
+        }.getOrNull()
     }
 
     suspend fun stopService(): Long {

@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -128,7 +129,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
     private fun onServiceDisconnected(message: String) {
         pendingCalls.failAll()
-        State.runStateFlow.tryEmit(RunState.STOP)
+        State.request { handleRemoteDied() }
         if (attached) {
             flutterMethodChannel.invokeMethodOnMainThread<Any>(ServiceMethod.CRASH, message)
         }
@@ -151,10 +152,11 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     // The service owns run state; Dart mirrors it. Without this push Dart only
     // learned about a start/stop it initiated itself, so a tile toggle, a revoke
     // or a failed profile apply left the UI disagreeing with the tile.
+    // PENDING is not pushed: Dart would read it as stopped in the middle of a start.
     private fun startRunStatePush() {
         runStateJob?.cancel()
         runStateJob = launch {
-            State.runStateFlow.collect {
+            State.runStateFlow.filter { it != RunState.PENDING }.collect {
                 val runTime = if (it == RunState.START) State.runTime else 0L
                 launchAttachedMain {
                     flutterMethodChannel.invokeMethod(ServiceMethod.RUN_STATE, runTime)

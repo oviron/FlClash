@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.os.Process
 import com.follow.clash.common.GlobalState
+import com.follow.clash.common.LifecycleSequencer
 import com.follow.clash.common.Logger
 import com.follow.clash.common.MemoryTrimGate
 import com.follow.clash.common.ServiceDelegate
@@ -12,8 +13,6 @@ import com.follow.clash.common.buildHostLogAction
 import com.follow.clash.common.chunkedForAidl
 import com.follow.clash.common.intent
 import com.follow.clash.service.State.delegate
-import com.follow.clash.service.State.intent
-import com.follow.clash.service.State.runLock
 import com.follow.clash.service.models.NotificationParams
 import com.follow.clash.service.models.VpnOptions
 import io.github.oviron.libmihomo.Clash
@@ -32,6 +31,9 @@ private const val START_TIMEOUT_MS = 12_000L
 
 class RemoteService : Service(),
     CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
+
+    // The app waits for each reply, so requests only overlap after it gave up on one.
+    private val lifecycle = LifecycleSequencer(this)
 
     // onTrimMemory arrives on the main thread; a Go GC there would stall it.
     private val memoryTrim = MemoryTrimGate {
@@ -52,12 +54,14 @@ class RemoteService : Service(),
     }
 
     private fun handleStopService(result: IResultInterface) {
-        launch {
-            runLock.withLock {
+        lifecycle.cancelStarts()
+        lifecycle.launch {
+            lifecycle.lock.withLock {
                 delegate?.useService { service ->
                     service.stop()
                     delegate?.unbind()
                 }
+                delegate = null
                 State.runTime = 0
                 result.onResult(0)
             }
@@ -66,7 +70,6 @@ class RemoteService : Service(),
 
     private fun handleServiceDisconnected(message: String) {
         GlobalState.log("Background service disconnected: $message")
-        intent = null
         delegate = null
         // The tunnel is gone (revoke, system kill, crash). Leaving runTime set
         // makes getRunTime() — the state every consumer treats as the truth —
@@ -74,31 +77,39 @@ class RemoteService : Service(),
         State.runTime = 0
     }
 
-    private fun handleStartService(runTime: Long, result: IResultInterface) {
-        launch {
-            runLock.withLock {
-                val nextIntent = when (State.options?.enable == true) {
+    private fun handleStartService(options: VpnOptions, runTime: Long, result: IResultInterface) {
+        val ticket = lifecycle.startTicket()
+        lifecycle.launch {
+            lifecycle.lock.withLock {
+                // A stop that arrived after this start, while it waited for the lock, wins.
+                if (lifecycle.isCancelled(ticket)) {
+                    result.onResult(0)
+                    return@withLock
+                }
+                State.options = options
+                val nextIntent = when (options.enable) {
                     true -> VpnService::class.intent
                     false -> CommonService::class.intent
                 }
-                if (intent != nextIntent) {
-                    delegate?.unbind()
-                    delegate = ServiceDelegate(nextIntent, ::handleServiceDisconnected) { binder ->
-                        when (binder) {
-                            is VpnService.LocalBinder -> binder.getService()
-                            is CommonService.LocalBinder -> binder.getService()
-                            else -> throw IllegalArgumentException("Invalid binder type")
-                        }
+                delegate?.unbind()
+                delegate = ServiceDelegate(nextIntent, ::handleServiceDisconnected) { binder ->
+                    when (binder) {
+                        is VpnService.LocalBinder -> binder.getService()
+                        is CommonService.LocalBinder -> binder.getService()
+                        else -> throw IllegalArgumentException("Invalid binder type")
                     }
-                    intent = nextIntent
-                    delegate?.bind()
                 }
-                val started = delegate?.useService(START_TIMEOUT_MS) { service ->
-                    service.start()
-                }?.getOrNull() == true
+                State.starting = true
+                val started = try {
+                    delegate?.bind()
+                    delegate?.useService(START_TIMEOUT_MS) { service ->
+                        service.start()
+                    }?.getOrNull() == true
+                } finally {
+                    State.starting = false
+                }
                 if (!started) {
                     delegate?.unbind()
-                    intent = null
                     delegate = null
                     State.runTime = 0
                     result.onResult(0)
@@ -177,8 +188,7 @@ class RemoteService : Service(),
             result: IResultInterface,
         ) {
             GlobalState.log("remote startService")
-            State.options = options
-            handleStartService(runtime, result)
+            handleStartService(options, runtime, result)
         }
 
         override fun stopService(result: IResultInterface) {

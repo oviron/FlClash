@@ -11,7 +11,20 @@ extension SetupControllerExt on AppController {
     _ref.read(requestsProvider.notifier).value = FixedList(500);
   }
 
-  Future<void> updateStatus(bool isStart, {bool isInit = false}) async {
+  Future<void> updateStatus(bool isStart, {bool isInit = false}) =>
+      globalState.statusQueue.run(() => _updateStatus(isStart, isInit: isInit));
+
+  // For requests made against a state that may change before they run, such as
+  // a tile action queued behind the stop before it.
+  Future<void> ensureStatus(bool isStart) => globalState.statusQueue.run(() {
+    final current = _ref.read(isStartProvider);
+    if (isStart ? current && coreController.isCompleted : !current) {
+      return Future.value();
+    }
+    return _updateStatus(isStart);
+  });
+
+  Future<void> _updateStatus(bool isStart, {bool isInit = false}) async {
     if (isStart) {
       await coreController.pendingTrafficReset;
       if (!isInit) {

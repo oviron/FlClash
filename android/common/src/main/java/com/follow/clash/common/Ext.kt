@@ -75,11 +75,14 @@ val BroadcastAction.quickIntent: Intent
         action = this@quickIntent.action
     }
 
-fun BroadcastAction.sendBroadcast() {
+const val EXTRA_RUN_TIME = "runTime"
+
+fun BroadcastAction.sendBroadcast(extras: Intent.() -> Unit = {}) {
     val intent = Intent().apply {
         action = this@sendBroadcast.action
         Logger.d("sendBroadcast", "$action")
         setPackage(GlobalState.packageName)
+        extras()
     }
     GlobalState.application.sendBroadcast(
         intent, GlobalState.RECEIVE_BROADCASTS_PERMISSIONS

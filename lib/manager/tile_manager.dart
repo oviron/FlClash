@@ -27,21 +27,17 @@ class _TileContainerState extends ConsumerState<TileManager> with TileListener {
 
   @override
   Future<void> onStart() async {
-    if (isStart && coreController.isCompleted) {
-      return;
+    if (!isStart || !coreController.isCompleted) {
+      unawaited(app?.tip(appLocalizations.startVpn));
     }
-    unawaited(appController.updateStatus(true));
-    unawaited(app?.tip(appLocalizations.startVpn));
+    unawaited(appController.ensureStatus(true));
     super.onStart();
   }
 
   @override
   Future<void> onStop() async {
-    if (!isStart) {
-      return;
-    }
-    unawaited(appController.updateStatus(false));
-    unawaited(app?.tip(appLocalizations.stopVpn));
+    if (isStart) unawaited(app?.tip(appLocalizations.stopVpn));
+    unawaited(appController.ensureStatus(false));
     super.onStop();
   }
 

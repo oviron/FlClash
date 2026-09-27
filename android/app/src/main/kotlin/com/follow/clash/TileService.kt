@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import com.follow.clash.common.GlobalState
 import com.follow.clash.common.QuickAction
 import com.follow.clash.common.quickIntent
 import com.follow.clash.common.tileSubtitle
@@ -51,7 +50,7 @@ class TileService : TileService() {
     @SuppressLint("StartActivityAndCollapseDeprecated")
     private fun handleToggle() {
         if (!State.sharedState.quickTileCollapsePanel) {
-            GlobalState.launch { State.handleToggleAction(fromTile = true) }
+            State.request { handleToggleAction(fromTile = true) }
             return
         }
         val intent = QuickAction.TOGGLE.quickIntent

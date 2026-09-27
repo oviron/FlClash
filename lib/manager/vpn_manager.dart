@@ -61,8 +61,10 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     _forceReestablish = false;
     try {
       globalState.showNotifier(appLocalizations.vpnReestablishing);
-      await globalState.handleStop();
-      await appController.updateStatus(true);
+      await globalState.statusQueue.run(() async {
+        await globalState.handleStop();
+        await appController.updateStatus(true);
+      });
     } finally {
       _reestablishing = false;
     }
