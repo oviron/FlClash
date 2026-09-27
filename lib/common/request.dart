@@ -23,10 +23,6 @@ class Request {
     _clashDio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         final client = HttpClient();
-        // Subscription/provider fetches carry the device id and adopt the
-        // returned config, so they must verify TLS. The global override accepts
-        // any cert; reset it here so this channel does not (scoped, not global).
-        client.badCertificateCallback = null;
         client.findProxy = (Uri uri) {
           client.userAgent = appController.ua;
           return FlClashHttpOverrides.handleFindProxy(uri);
