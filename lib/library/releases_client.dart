@@ -10,12 +10,7 @@ import 'package:fl_clash/library/model.dart';
 // bypasses the app-wide HttpOverrides that force the proxy.
 Dio _directDio() => Dio()
   ..httpClientAdapter = IOHttpClientAdapter(
-    createHttpClient: () {
-      final client = HttpClient();
-      client.badCertificateCallback = (_, _, _) => true;
-      client.findProxy = (_) => 'DIRECT';
-      return client;
-    },
+    createHttpClient: () => HttpClient()..findProxy = (_) => 'DIRECT',
   );
 
 class ReleasesClient {
