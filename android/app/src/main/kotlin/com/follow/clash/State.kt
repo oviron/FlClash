@@ -1,6 +1,13 @@
 package com.follow.clash
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.net.VpnService
+import android.os.PowerManager
+import android.provider.Settings
+import androidx.core.content.edit
+import androidx.core.net.toUri
 import com.follow.clash.common.GlobalState
 import com.follow.clash.models.SharedState
 import com.follow.clash.plugins.AppPlugin
@@ -12,6 +19,27 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+
+private const val NATIVE_PREFS = "native_state"
+private const val BATTERY_EXEMPTION_ASKED = "battery_exemption_asked"
+
+// Asked once after the first successful start; OEM battery savers otherwise kill the tunnel.
+private fun requestBatteryExemptionOnce(activity: Activity) {
+    val app = GlobalState.application
+    val prefs = app.getSharedPreferences(NATIVE_PREFS, Context.MODE_PRIVATE)
+    if (prefs.getBoolean(BATTERY_EXEMPTION_ASKED, false)) return
+    val power = app.getSystemService(PowerManager::class.java) ?: return
+    if (power.isIgnoringBatteryOptimizations(app.packageName)) return
+    val intent = Intent(
+        Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+        "package:${app.packageName}".toUri(),
+    )
+    activity.runOnUiThread {
+        runCatching { activity.startActivity(intent) }
+            .onSuccess { prefs.edit { putBoolean(BATTERY_EXEMPTION_ASKED, true) } }
+            .onFailure { GlobalState.log("Battery exemption request failed: $it") }
+    }
+}
 
 enum class RunState {
     START, PENDING, STOP
@@ -189,12 +217,14 @@ object State {
                 // The consent dialog stays open as long as the user leaves it, so it is awaited
                 // outside runLock; PENDING keeps other starts and stops out meanwhile.
                 if (options.enable && !prepareVpn()) return@launch
-                runLock.withLock {
+                val started = runLock.withLock {
                     // A timed-out AIDL reply does not mean the service failed to start.
                     runTime = Service.startService(options, runTime)
                         .takeIf { it != 0L } ?: Service.getRunTime()
                     if (runTime != 0L) runStateFlow.tryEmit(RunState.START)
+                    runTime != 0L
                 }
+                if (started) appPlugin?.activity?.let(::requestBatteryExemptionOnce)
             } finally {
                 if (runStateFlow.value == RunState.PENDING) {
                     runStateFlow.tryEmit(RunState.STOP)

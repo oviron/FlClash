@@ -79,6 +79,9 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
     private var activityRef: WeakReference<Activity>? = null
 
+    val activity: Activity?
+        get() = activityRef?.get()
+
     private lateinit var channel: MethodChannel
 
     private lateinit var scope: CoroutineScope
