@@ -30,8 +30,9 @@ import kotlin.coroutines.resume
 class RemoteService : Service(),
     CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
 
+    // onTrimMemory arrives on the main thread; a Go GC there would stall it.
     private val memoryTrim = MemoryTrimGate {
-        if (Clash.isLoaded()) Clash.forceGC()
+        launch { if (Clash.isLoaded()) Clash.forceGC() }
     }
 
     override fun onCreate() {
