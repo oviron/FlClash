@@ -28,3 +28,19 @@ extension CompleterExt<T> on Completer<T> {
     complete(value);
   }
 }
+
+// Runs tasks one at a time in call order, so overlapping awaits cannot reorder them.
+// A task queued from inside a running one runs inline instead of waiting for itself.
+class SerialQueue {
+  final Object _zoneKey = Object();
+  Future<void> _tail = Future.value();
+
+  Future<T> run<T>(Future<T> Function() task) {
+    if (Zone.current[_zoneKey] == true) return task();
+    final result = _tail.then(
+      (_) => runZoned(task, zoneValues: {_zoneKey: true}),
+    );
+    _tail = result.then<void>((_) {}, onError: (_) {});
+    return result;
+  }
+}
