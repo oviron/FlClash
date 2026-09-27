@@ -176,7 +176,11 @@ class _ResultBody extends StatelessWidget {
       if (verdict.organization case final organization?)
         ListItem(
           title: Text(appLocalizations.ipOrganization),
-          trailing: Text(organization),
+          trailing: Text(
+            organization,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       if (verdict.asn case final asn?)
         ListItem(title: Text(appLocalizations.ipAsn), trailing: Text('AS$asn')),

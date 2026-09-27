@@ -33,7 +33,7 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
       height: getWidgetHeight(1),
       child: CommonCard(
         onPressed: ipInfo == null || ipInfo.isRejected
-            ? () {}
+            ? null
             : () => showIpQualitySheet(context, ip: ipInfo.ip),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

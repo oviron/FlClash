@@ -24,6 +24,12 @@ void main() {
       }
     });
 
+    test('the label shown to the user is the host the ip goes to', () {
+      for (final source in IpQualitySource.values) {
+        expect(Uri.parse(ipQualitySourceUrl(source, _ip)).host, source.label);
+      }
+    });
+
     test('embeds the ip where the source expects it', () {
       expect(ipQualitySourceUrl(IpQualitySource.ipQuery, _ip), contains(_ip));
       expect(ipQualitySourceUrl(IpQualitySource.ipLocate, _ip), contains(_ip));

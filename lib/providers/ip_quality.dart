@@ -23,6 +23,13 @@ class IpQualityChecked extends IpQualityCheckState {
 // Scoped to the sheet that owns it (autoDispose): closing the sheet drops the
 // state, so reopening it for a possibly different IP starts at idle again
 // instead of showing a stale result.
+typedef IpQualityLookup =
+    Future<IpQualityReport> Function(String ip, {CancelToken? cancelToken});
+
+final ipQualityLookupProvider = Provider<IpQualityLookup>(
+  (_) => request.checkIpQuality,
+);
+
 class IpQualityCheck extends Notifier<IpQualityCheckState> {
   CancelToken? _cancelToken;
 
@@ -37,9 +44,16 @@ class IpQualityCheck extends Notifier<IpQualityCheckState> {
     final token = CancelToken();
     _cancelToken = token;
     state = const IpQualityChecking();
-    final report = await request.checkIpQuality(ip, cancelToken: token);
-    if (token.isCancelled) return;
-    state = IpQualityChecked(report);
+    final lookup = ref.read(ipQualityLookupProvider);
+    try {
+      final report = await lookup(ip, cancelToken: token);
+      if (token.isCancelled) return;
+      state = IpQualityChecked(report);
+    } catch (e) {
+      if (token.isCancelled) return;
+      commonPrint.log('IP quality check failed: ${e.runtimeType}');
+      state = const IpQualityIdle();
+    }
   }
 }
 

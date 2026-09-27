@@ -282,10 +282,10 @@ enum IpQualityLevel { good, normal, risky }
 // security config denies cleartext outside localhost.
 enum IpQualitySource {
   identMe('ident.me'),
-  ipQuery('ipquery.io'),
+  ipQuery('api.ipquery.io'),
   ipLocate('iplocate.io'),
   proxyCheck('proxycheck.io'),
-  ipApiIs('ipapi.is');
+  ipApiIs('api.ipapi.is');
 
   const IpQualitySource(this.label);
 
