@@ -15,7 +15,7 @@ class NetworkRulesEngineTest {
         enabled: Boolean = true,
         id: Int = 0,
         name: String? = null,
-        profileId: Int? = null,
+        profileId: Long? = null,
         selectedMap: Map<String, String> = emptyMap(),
         profileName: String? = null,
         matchMode: NetworkMatchMode = NetworkMatchMode.ALL,
@@ -179,7 +179,7 @@ class NetworkRulesEngineTest {
         val res = NetworkRulesEngine.resolveFull(mirror, NetworkSnapshot(NetworkRuleType.CELLULAR))
         // vpn=LEAVE + default LEAVE_AS_IS => no VPN change, but the profile switches.
         assertEquals(NetworkDecision.LEAVE_AS_IS, res.decision)
-        assertEquals(7, res.profileId)
+        assertEquals(7L, res.profileId)
         assertEquals(mapOf("GLOBAL" to "us"), res.selectedMap)
         assertEquals("Work", res.profileName)
     }
@@ -204,12 +204,27 @@ class NetworkRulesEngineTest {
                        "conditions":[{"kind":"any_cellular"}]}]}
         """.trimIndent()
         val mirror = NetworkRulesCodec.parse(json)
-        assertEquals(3, mirror.activeProfileId)
+        assertEquals(3L, mirror.activeProfileId)
         val res = NetworkRulesEngine.resolveFull(mirror, NetworkSnapshot(NetworkRuleType.CELLULAR))
         assertEquals(NetworkDecision.START, res.decision)
-        assertEquals(7, res.profileId)
+        assertEquals(7L, res.profileId)
         assertEquals("Work", res.profileName)
         assertEquals(mapOf("GLOBAL" to "us"), res.selectedMap)
+    }
+
+    @Test
+    fun codecKeepsSnowflakeProfileIdsWhole() {
+        val json = """
+            {"version":2,"enabled":true,"defaultAction":"leaveAsIs","activeProfileId":333283346308141056,
+             "rules":[{"id":1,"actionVpn":"turnOn","actionProfileId":333283346308141057,"priority":0,
+                       "enabled":true,"conditions":[{"kind":"any_cellular"},
+                       {"kind":"profile_is","profileId":333283346308141056}]}]}
+        """.trimIndent()
+        val mirror = NetworkRulesCodec.parse(json)
+        assertEquals(333283346308141056L, mirror.activeProfileId)
+        val res = NetworkRulesEngine.resolveFull(mirror, NetworkSnapshot(NetworkRuleType.CELLULAR))
+        assertEquals(NetworkDecision.START, res.decision)
+        assertEquals(333283346308141057L, res.profileId)
     }
 
     @Test
@@ -366,7 +381,7 @@ class NetworkRulesEngineTest {
         // Null active (headless apply): unattributable, not manual.
         assertNull(decideManualSwitch(active = null, lastEngineProfileId = 7, guardUntil = 200, now = 300))
         // Divergent, armed, outside the window: the user switched by hand.
-        assertEquals(8, decideManualSwitch(active = 8, lastEngineProfileId = 7, guardUntil = 200, now = 300))
+        assertEquals(8L, decideManualSwitch(active = 8, lastEngineProfileId = 7, guardUntil = 200, now = 300))
     }
 
     @Test

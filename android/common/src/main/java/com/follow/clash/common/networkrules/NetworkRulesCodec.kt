@@ -17,7 +17,7 @@ object NetworkRulesCodec {
                 enabled = root.optBoolean("enabled", false),
                 defaultAction = parseDefaultAction(root.optString("defaultAction")),
                 rules = parseRules(root.getAsJsonArray("rules")),
-                activeProfileId = root.optIntOrNull("activeProfileId"),
+                activeProfileId = root.optLongOrNull("activeProfileId"),
             )
         } catch (_: Exception) {
             disabled
@@ -52,7 +52,7 @@ object NetworkRulesCodec {
         action = parseAction(obj.optString("actionVpn") ?: obj.optString("action")),
         priority = obj.optInt("priority", 0),
         enabled = obj.optBoolean("enabled", true),
-        actionProfileId = obj.optIntOrNull("actionProfileId"),
+        actionProfileId = obj.optLongOrNull("actionProfileId"),
         actionSelectedMap = parseStringMap(obj.getAsJsonObjectOrNull("actionSelectedMap")),
         actionProfileName = obj.optString("actionProfileName"),
         matchMode = parseMatchMode(obj.optString("match")),
@@ -80,7 +80,7 @@ object NetworkRulesCodec {
             "any_wifi" -> NetworkCondition.AnyWifi
             "any_cellular" -> NetworkCondition.AnyCellular
             "any_ethernet" -> NetworkCondition.AnyEthernet
-            "profile_is" -> NetworkCondition.ProfileIs(obj.get("profileId").asInt)
+            "profile_is" -> NetworkCondition.ProfileIs(obj.get("profileId").asLong)
             "not" -> obj.getAsJsonObjectOrNull("condition")
                 ?.let { parseCondition(it) }
                 ?.let { NetworkCondition.Not(it) }
@@ -123,8 +123,8 @@ object NetworkRulesCodec {
     private fun JsonObject.optInt(key: String, fallback: Int): Int =
         if (has(key) && !get(key).isJsonNull) get(key).asInt else fallback
 
-    private fun JsonObject.optIntOrNull(key: String): Int? =
-        if (has(key) && !get(key).isJsonNull) get(key).asInt else null
+    private fun JsonObject.optLongOrNull(key: String): Long? =
+        if (has(key) && !get(key).isJsonNull) get(key).asLong else null
 
     private fun JsonObject.getAsJsonObjectOrNull(key: String): JsonObject? =
         if (has(key) && get(key).isJsonObject) getAsJsonObject(key) else null

@@ -16,7 +16,7 @@ data class NetworkSnapshot(val type: NetworkRuleType, val ssid: String? = null)
 // Snapshot + active profile id; conditions match against this. The profile axis
 // is kept out of NetworkSnapshot (it is app state, not network state). Mirror of
 // the Dart NetworkMatchContext.
-data class MatchContext(val snapshot: NetworkSnapshot, val activeProfileId: Int? = null)
+data class MatchContext(val snapshot: NetworkSnapshot, val activeProfileId: Long? = null)
 
 // How a WifiNamed SSID is compared. Mirror of the Dart WifiMatch.
 enum class WifiMatch { EXACT, PREFIX, CONTAINS }
@@ -62,7 +62,7 @@ sealed interface NetworkCondition {
     }
 
     // Optional profile gate: matches when the active profile is this one.
-    data class ProfileIs(val profileId: Int) : NetworkCondition {
+    data class ProfileIs(val profileId: Long) : NetworkCondition {
         override val specificity = 2
         override fun matches(ctx: MatchContext) = ctx.activeProfileId == profileId
     }
@@ -81,7 +81,7 @@ data class NetworkRule(
     val action: NetworkRuleAction,
     val priority: Int,
     val enabled: Boolean,
-    val actionProfileId: Int? = null,
+    val actionProfileId: Long? = null,
     val actionSelectedMap: Map<String, String> = emptyMap(),
     val actionProfileName: String? = null,
     val matchMode: NetworkMatchMode = NetworkMatchMode.ALL,
@@ -91,7 +91,7 @@ data class NetworkRule(
 // profile, that profile's id / pre-baked selectedMap / display name.
 data class NetworkResolution(
     val decision: NetworkDecision,
-    val profileId: Int?,
+    val profileId: Long?,
     val selectedMap: Map<String, String>,
     val profileName: String?,
 )
@@ -100,7 +100,7 @@ data class RulesMirror(
     val enabled: Boolean,
     val defaultAction: DefaultNetworkAction,
     val rules: List<NetworkRule>,
-    val activeProfileId: Int? = null,
+    val activeProfileId: Long? = null,
 )
 
 fun NetworkRule.specificity(): Int =
