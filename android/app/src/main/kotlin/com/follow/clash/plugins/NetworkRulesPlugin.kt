@@ -79,7 +79,7 @@ class NetworkRulesPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
         }
     }
 
-    private fun pushSwitchProfile(profileId: Int) {
+    private fun pushSwitchProfile(profileId: Long) {
         mainHandler.post {
             try {
                 channel.invokeMethod(NetworkRulesMethod.SWITCH_PROFILE, profileId)

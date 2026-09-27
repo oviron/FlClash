@@ -9,7 +9,7 @@ object NetworkRulesEngine {
     fun evaluateRule(
         rules: List<NetworkRule>,
         snapshot: NetworkSnapshot,
-        activeProfileId: Int? = null,
+        activeProfileId: Long? = null,
     ): NetworkRule? {
         val ctx = MatchContext(snapshot, activeProfileId)
         for (rule in rules.sortedWith(networkRuleComparator)) {
@@ -27,14 +27,14 @@ object NetworkRulesEngine {
     fun evaluate(
         rules: List<NetworkRule>,
         snapshot: NetworkSnapshot,
-        activeProfileId: Int? = null,
+        activeProfileId: Long? = null,
     ): NetworkRuleAction? = evaluateRule(rules, snapshot, activeProfileId)?.action
 
     fun resolve(
         rules: List<NetworkRule>,
         snapshot: NetworkSnapshot,
         defaultAction: DefaultNetworkAction,
-        activeProfileId: Int? = null,
+        activeProfileId: Long? = null,
     ): NetworkDecision = vpnDecision(evaluate(rules, snapshot, activeProfileId), defaultAction)
 
     // Mirror-level entry: a disabled feature is always a no-op.
@@ -80,11 +80,11 @@ object NetworkRulesEngine {
 // [lastEngineProfileId] is non-null (after a foreground apply), so a stale
 // activeProfileId never misfires. Pure so it can be unit-tested off-device.
 fun decideManualSwitch(
-    active: Int?,
-    lastEngineProfileId: Int?,
+    active: Long?,
+    lastEngineProfileId: Long?,
     guardUntil: Long,
     now: Long,
-): Int? {
+): Long? {
     if (active == null || lastEngineProfileId == null) return null
     if (active == lastEngineProfileId) return null
     if (now < guardUntil) return null

@@ -55,7 +55,7 @@ object NetworkRulesController {
     // The profile the engine last applied via the FOREGROUND path; null after a
     // headless apply (Dart's activeProfileId is then stale and unattributable).
     // Manual-switch detection only arms while this is non-null.
-    private var lastEngineProfileId: Int? = null
+    private var lastEngineProfileId: Long? = null
     private var engineGuardUntil: Long = 0
 
     @Volatile
@@ -75,7 +75,7 @@ object NetworkRulesController {
     // is routed through Dart (applyProfile) so the UI/providers stay coherent
     // instead of the resident swapping config.yaml directly.
     @Volatile
-    var profileSwitchListener: ((Int) -> Unit)? = null
+    var profileSwitchListener: ((Long) -> Unit)? = null
 
     fun start(context: Context) {
         if (observer != null) return
@@ -190,8 +190,8 @@ object NetworkRulesController {
     // notification, but NOT the VpnService per-app allow/deny set: that is bound
     // to the TUN fd at establish() and re-applying it would drop the tunnel.
     private suspend fun applyResolvedProfile(
-        profileTarget: Int,
-        foreground: ((Int) -> Unit)?,
+        profileTarget: Long,
+        foreground: ((Long) -> Unit)?,
         running: Boolean,
         resolution: NetworkResolution,
     ) {
@@ -211,7 +211,7 @@ object NetworkRulesController {
     // the running core to re-apply. applyConfig re-reads config.yaml without
     // touching the TUN fd, so the VPN never drops.
     private suspend fun applyProfileHot(
-        profileId: Int,
+        profileId: Long,
         selectedMap: Map<String, String>,
         profileName: String?,
     ) {
@@ -240,7 +240,7 @@ object NetworkRulesController {
     // The resident is the only writer while headless (Dart's foreground path
     // takes over once attached); a unique tmp per swap keeps two overlapping
     // resident swaps from clobbering each other's rename.
-    private fun swapConfig(profileId: Int): Boolean {
+    private fun swapConfig(profileId: Long): Boolean {
         val filesDir = GlobalState.application.filesDir
         val cache = File(filesDir, "$CACHE_DIR/$profileId.yaml")
         if (!cache.exists()) {
