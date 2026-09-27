@@ -537,6 +537,9 @@ SharedState sharedState(Ref ref) {
   final testUrl = ref.watch(
     appSettingProvider.select((state) => state.testUrl),
   );
+  final quickTileCollapsePanel = ref.watch(
+    appSettingProvider.select((state) => state.quickTileCollapsePanel),
+  );
   final bypassDomain = ref.watch(
     networkSettingProvider.select((state) => state.bypassDomain),
   );
@@ -571,6 +574,7 @@ SharedState sharedState(Ref ref) {
     stopText: appLocalizations.stop,
     stopTip: appLocalizations.stopVpn,
     startTip: appLocalizations.startVpn,
+    quickTileCollapsePanel: quickTileCollapsePanel,
     setupParams: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
     vpnOptions: VpnOptions(
       enable: vpnSetting.enable,

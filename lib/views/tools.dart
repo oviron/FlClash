@@ -93,6 +93,7 @@ class _ToolViewState extends ConsumerState<ToolsView> {
         _LoggingItem(),
         _ResourceUsageItem(),
         _QuickTileItem(),
+        _QuickTileCollapsePanelItem(),
       ],
     );
   }
@@ -368,6 +369,30 @@ class _QuickTileItem extends StatelessWidget {
       title: Text(context.appLocalizations.quickTileTitle),
       subtitle: Text(context.appLocalizations.quickTileDesc),
       onTap: () => _request(context),
+    );
+  }
+}
+
+class _QuickTileCollapsePanelItem extends ConsumerWidget {
+  const _QuickTileCollapsePanelItem();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final collapsePanel = ref.watch(
+      appSettingProvider.select((state) => state.quickTileCollapsePanel),
+    );
+    return ListItem.switchItem(
+      leading: const Icon(Icons.unfold_less_outlined),
+      title: Text(context.appLocalizations.quickTileCollapsePanel),
+      subtitle: Text(context.appLocalizations.quickTileCollapsePanelDesc),
+      delegate: SwitchDelegate(
+        value: collapsePanel,
+        onChanged: (value) {
+          ref
+              .read(appSettingProvider.notifier)
+              .update((state) => state.copyWith(quickTileCollapsePanel: value));
+        },
+      ),
     );
   }
 }
