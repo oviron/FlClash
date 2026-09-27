@@ -55,6 +55,40 @@ final class NetworkRulesStreamProvider
 String _$networkRulesStreamHash() =>
     r'9e585a656fe433479d28a5ec584a7be079372fc4';
 
+@ProviderFor(networkRulesBakeInputs)
+const networkRulesBakeInputsProvider = NetworkRulesBakeInputsProvider._();
+
+final class NetworkRulesBakeInputsProvider
+    extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
+    with $FutureModifier<int>, $FutureProvider<int> {
+  const NetworkRulesBakeInputsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'networkRulesBakeInputsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$networkRulesBakeInputsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<int> create(Ref ref) {
+    return networkRulesBakeInputs(ref);
+  }
+}
+
+String _$networkRulesBakeInputsHash() =>
+    r'af7bbe6e1ca2a997e6c544faacfe7821eb676214';
+
 /// Repository facade with CRUD + reorder. keepAlive because the engine
 /// needs to keep watching even when no UI page is mounted.
 
