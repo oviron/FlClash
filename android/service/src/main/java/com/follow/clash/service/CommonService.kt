@@ -7,7 +7,6 @@ import android.os.IBinder
 import com.follow.clash.common.modules.moduleLoader
 import com.follow.clash.service.modules.NetworkObserveModule
 import com.follow.clash.service.modules.NotificationModule
-import io.github.oviron.libmihomo.Clash
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -35,11 +34,6 @@ class CommonService : Service(), IBaseService,
         loader.cancel()
         handleDestroy()
         super.onDestroy()
-    }
-
-    override fun onLowMemory() {
-        if (Clash.isLoaded()) Clash.forceGC()
-        super.onLowMemory()
     }
 
     private val binder = LocalBinder()

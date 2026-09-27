@@ -6,6 +6,7 @@ import android.os.IBinder
 import android.os.Process
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.Logger
+import com.follow.clash.common.MemoryTrimGate
 import com.follow.clash.common.ServiceDelegate
 import com.follow.clash.common.buildHostLogAction
 import com.follow.clash.common.chunkedForAidl
@@ -29,9 +30,14 @@ import kotlin.coroutines.resume
 class RemoteService : Service(),
     CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
 
+    private val memoryTrim = MemoryTrimGate {
+        if (Clash.isLoaded()) Clash.forceGC()
+    }
+
     override fun onCreate() {
         super.onCreate()
         LibraryLoader.load(this)
+        registerComponentCallbacks(memoryTrim)
         // :remote owns libclash.so → direct JNI, no IPC.
         // Guard against unloaded Clash so log calls don't amplify a failed init
         // into a service-killing crash loop.
@@ -217,6 +223,7 @@ class RemoteService : Service(),
 
     override fun onDestroy() {
         GlobalState.log("Remote service destroy")
+        unregisterComponentCallbacks(memoryTrim)
         super.onDestroy()
     }
 }

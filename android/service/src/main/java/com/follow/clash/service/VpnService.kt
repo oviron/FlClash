@@ -145,12 +145,6 @@ class VpnService : SystemVpnService(), IBaseService,
             }
         }
 
-
-    override fun onLowMemory() {
-        if (Clash.isLoaded()) Clash.forceGC()
-        super.onLowMemory()
-    }
-
     private val binder = LocalBinder()
 
     override var destroyed = false
