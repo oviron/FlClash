@@ -44,7 +44,7 @@ void main() {
 
       // The highest onUpgrade branch must equal the declared schema version, or a
       // future migration silently never runs.
-      expect(db.schemaVersion, 9);
+      expect(db.schemaVersion, 10);
 
       final rows = await db.networkRulesDao.watchAll().first;
       expect(rows, hasLength(1));

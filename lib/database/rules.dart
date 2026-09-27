@@ -84,6 +84,16 @@ class RulesDao extends DatabaseAccessor<Database> with _$RulesDaoMixin {
     batch.deleteWhere(profileRuleLinks, (t) => t.id.isNotIn(linkKeys));
   }
 
+  Future<void> delUnlinkedRules() {
+    return rules.remove(_isUnlinked);
+  }
+
+  Expression<bool> _isUnlinked(Rules rule) {
+    final linkedIds = selectOnly(profileRuleLinks)
+      ..addColumns([profileRuleLinks.ruleId]);
+    return rule.id.isNotInQuery(linkedIds);
+  }
+
   Future<void> delRules(Iterable<int> ruleIds) {
     return _delAll(ruleIds);
   }
@@ -261,11 +271,7 @@ class RulesDao extends DatabaseAccessor<Database> with _$RulesDaoMixin {
         ),
       );
 
-      b.deleteWhere(this.rules, (r) {
-        final linkedIds = selectOnly(profileRuleLinks);
-        linkedIds.addColumns([profileRuleLinks.ruleId]);
-        return r.id.isNotInQuery(linkedIds);
-      });
+      b.deleteWhere(this.rules, _isUnlinked);
     });
   }
 }
