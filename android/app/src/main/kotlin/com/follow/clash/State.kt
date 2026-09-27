@@ -152,7 +152,8 @@ object State {
                 tilePlugin?.handleStop()
                 return
             }
-            if (runStateFlow.value != RunState.START) {
+            // A stop during PENDING still cancels the start that is waiting to commit.
+            if (runStateFlow.value == RunState.STOP) {
                 return
             }
             if (shouldShowTileActionToast(fromTile, sharedState.quickTileCollapsePanel)) {
@@ -235,15 +236,20 @@ object State {
     private fun startService(ticket: Long) {
         lifecycle.launch {
             if (!enterPending(ticket)) return@launch
+            var settled = false
             try {
                 val options = sharedState.vpnOptions ?: return@launch
                 // The consent dialog stays open as long as the user leaves it, so it is awaited
                 // outside runLock; PENDING keeps other starts and stops out meanwhile.
                 if (options.enable && !prepareVpn()) return@launch
-                val started = runLock.withLock { commitStartLocked(ticket, options) }
+                val started = runLock.withLock {
+                    settled = true
+                    commitStartLocked(ticket, options)
+                }
                 if (started) appPlugin?.activity?.let(::requestBatteryExemptionOnce)
             } finally {
-                if (runStateFlow.value == RunState.PENDING) {
+                // Once settled, a PENDING seen here belongs to a later stop.
+                if (!settled && runStateFlow.value == RunState.PENDING) {
                     runStateFlow.tryEmit(RunState.STOP)
                 }
             }
@@ -259,10 +265,16 @@ object State {
 
     // A stop requested while the consent dialog was open has cancelled the ticket.
     private suspend fun commitStartLocked(ticket: Long, options: VpnOptions): Boolean {
-        if (lifecycle.isCancelled(ticket)) return false
-        runTime = startRemote(options)
-        if (runTime != 0L) runStateFlow.tryEmit(RunState.START)
-        return runTime != 0L
+        var started = false
+        try {
+            if (!lifecycle.isCancelled(ticket)) {
+                runTime = startRemote(options)
+                started = runTime != 0L
+            }
+        } finally {
+            runStateFlow.tryEmit(if (started) RunState.START else RunState.STOP)
+        }
+        return started
     }
 
     // No reply is not a failed start: the start may still land, so it is cancelled
