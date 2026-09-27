@@ -49,7 +49,7 @@ class CommonService : Service(), IBaseService,
         return binder
     }
 
-    override fun start(): Boolean = try {
+    override suspend fun start(): Boolean = try {
         loader.load()
         true
     } catch (e: Exception) {

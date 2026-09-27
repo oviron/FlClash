@@ -29,6 +29,7 @@ import io.github.oviron.libmihomo.TunInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.URL
@@ -178,7 +179,7 @@ class VpnService : SystemVpnService(), IBaseService,
         "CognitiveComplexMethod",
         "NestedBlockDepth",
     )
-    private fun handleStart(options: VpnOptions) {
+    private suspend fun handleStart(options: VpnOptions) {
         val fd = with(Builder()) {
             val cidr = IPV4_ADDRESS.toCIDR()
             addAddress(cidr.address, cidr.prefixLength)
@@ -299,17 +300,17 @@ class VpnService : SystemVpnService(), IBaseService,
     }
 
     // establish() returns null for a moment while a previous tunnel (ours or another VPN's) is torn down.
-    private fun Builder.establishWithRetry(): ParcelFileDescriptor {
+    private suspend fun Builder.establishWithRetry(): ParcelFileDescriptor {
         repeat(ESTABLISH_ATTEMPTS - 1) { attempt ->
             runCatching { establish() }
                 .onFailure { GlobalState.log("VPN establish attempt ${attempt + 1} failed: $it") }
                 .getOrNull()?.let { return it }
-            Thread.sleep(ESTABLISH_RETRY_MS)
+            delay(ESTABLISH_RETRY_MS)
         }
         return establish() ?: throw IllegalStateException("Establish VPN rejected by system")
     }
 
-    override fun start(): Boolean = try {
+    override suspend fun start(): Boolean = try {
         acquireLocks()
         loader.load()
         handleStart(State.options ?: throw IllegalStateException("VPN options missing"))

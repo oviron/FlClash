@@ -56,6 +56,8 @@ object State {
 
     suspend fun handleSyncState() {
         runLock.withLock {
+            // Only startService leaves PENDING outside the lock, while it waits for VPN consent.
+            if (runStateFlow.value == RunState.PENDING) return
             try {
                 Service.bind()
                 runTime = Service.getRunTime()
@@ -74,7 +76,7 @@ object State {
     private suspend fun dropStaleStartLocked() {
         if (runStateFlow.value != RunState.START) return
         Service.bind()
-        runTime = Service.getRunTime()
+        runTime = Service.queryRunTime() ?: return
         if (runTime == 0L) runStateFlow.tryEmit(RunState.STOP)
     }
 
@@ -180,18 +182,22 @@ object State {
                 if (runStateFlow.value != RunState.STOP) {
                     return@launch
                 }
-                try {
-                    runStateFlow.tryEmit(RunState.PENDING)
-                    val options = sharedState.vpnOptions ?: return@launch
-                    if (options.enable && !prepareVpn()) return@launch
+                runStateFlow.tryEmit(RunState.PENDING)
+            }
+            try {
+                val options = sharedState.vpnOptions ?: return@launch
+                // The consent dialog stays open as long as the user leaves it, so it is awaited
+                // outside runLock; PENDING keeps other starts and stops out meanwhile.
+                if (options.enable && !prepareVpn()) return@launch
+                runLock.withLock {
                     // A timed-out AIDL reply does not mean the service failed to start.
                     runTime = Service.startService(options, runTime)
                         .takeIf { it != 0L } ?: Service.getRunTime()
                     if (runTime != 0L) runStateFlow.tryEmit(RunState.START)
-                } finally {
-                    if (runStateFlow.value == RunState.PENDING) {
-                        runStateFlow.tryEmit(RunState.STOP)
-                    }
+                }
+            } finally {
+                if (runStateFlow.value == RunState.PENDING) {
+                    runStateFlow.tryEmit(RunState.STOP)
                 }
             }
         }
