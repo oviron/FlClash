@@ -8,6 +8,35 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// Shared by connections.dart and requests.dart: a PopupMenuButton offering
+// "all" plus every process/app seen in the current list, mirroring the
+// existing sort action's shape.
+Widget buildProcessFilterAction(ValueNotifier<TrackerInfosState> notifier) {
+  return PopupMenuButton<String>(
+    icon: const Icon(Icons.filter_alt_outlined),
+    onSelected: (value) {
+      notifier.value = notifier.value.copyWith(processFilter: value);
+    },
+    itemBuilder: (_) {
+      final state = notifier.value;
+      final selected = state.resolvedProcessFilter;
+      return [
+        CheckedPopupMenuItem(
+          value: '',
+          checked: selected.isEmpty,
+          child: Text(appLocalizations.allApplications),
+        ),
+        for (final process in state.availableProcesses)
+          CheckedPopupMenuItem(
+            value: process,
+            checked: selected == process,
+            child: Text(process),
+          ),
+      ];
+    },
+  );
+}
+
 class TrackerInfoItem extends ConsumerWidget {
   final TrackerInfo trackerInfo;
   final Function(String)? onClickKeyword;
@@ -45,7 +74,13 @@ class TrackerInfoItem extends ConsumerWidget {
     final title = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(trackerInfo.desc, style: context.textTheme.bodyLarge),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _CountryFlag(ip: trackerInfo.metadata.destinationIP),
+            Text(trackerInfo.desc, style: context.textTheme.bodyLarge),
+          ],
+        ),
         const SizedBox(height: 6),
         Text(
           _getSourceText(trackerInfo),
@@ -330,6 +365,69 @@ class TrackerInfoDetailView extends StatelessWidget {
         itemBuilder: (_, index) {
           return items[index];
         },
+      ),
+    );
+  }
+}
+
+// Renders the destination's country flag once resolved, nothing before that
+// or when it can't be (private/local address, domain with no IP, lookup
+// error) — resolution goes through the shared, bounded [countryCodeCache].
+class _CountryFlag extends StatefulWidget {
+  const _CountryFlag({required this.ip});
+
+  final String ip;
+
+  @override
+  State<_CountryFlag> createState() => _CountryFlagState();
+}
+
+class _CountryFlagState extends State<_CountryFlag> {
+  String? _emoji;
+
+  @override
+  void initState() {
+    super.initState();
+    _resolve();
+  }
+
+  @override
+  void didUpdateWidget(covariant _CountryFlag oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.ip != widget.ip) {
+      _emoji = null;
+      _resolve();
+    }
+  }
+
+  String? _emojiFor(IpInfo? info) =>
+      info == null ? null : countryCodeToEmoji(info.countryCode);
+
+  void _resolve() {
+    if (!shouldLookUpCountryCode(widget.ip)) return;
+    if (countryCodeCache.containsKey(widget.ip)) {
+      _emoji = _emojiFor(countryCodeCache.peek(widget.ip));
+      return;
+    }
+    countryCodeCache.resolve(widget.ip).then((info) {
+      if (!mounted) return;
+      final emoji = _emojiFor(info);
+      if (emoji == null) return;
+      setState(() => _emoji = emoji);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final emoji = _emoji;
+    if (emoji == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: Text(
+        emoji,
+        style: context.textTheme.bodyLarge?.copyWith(
+          fontFamily: FontFamily.twEmoji.value,
+        ),
       ),
     );
   }

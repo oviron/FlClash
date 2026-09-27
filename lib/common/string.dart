@@ -91,6 +91,16 @@ extension StringExtension on String {
   }
 }
 
+// ISO-3166 alpha-2 code to a flag emoji (regional indicator pair). Null for
+// anything that isn't exactly two letters, e.g. the core's REJECT sentinel.
+String? countryCodeToEmoji(String countryCode) {
+  final code = countryCode.toUpperCase();
+  if (code.length != 2) return null;
+  final units = code.codeUnits;
+  if (units.any((c) => c < 0x41 || c > 0x5A)) return null;
+  return String.fromCharCodes(units.map((c) => c - 0x41 + 0x1F1E6));
+}
+
 extension StringNullExt on String? {
   String takeFirstValid(List<String?> others, {String defaultValue = ''}) {
     if (this != null && this!.trim().isNotEmpty) return this!.trim();

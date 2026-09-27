@@ -180,13 +180,20 @@ abstract class TrackerInfosState with _$TrackerInfosState {
     @Default('') String query,
     @Default(true) bool autoScrollToEnd,
     @Default(ConnectionsSortType.none) ConnectionsSortType sortType,
+    @Default('') String processFilter,
   }) = _TrackerInfosState;
 }
 
 extension TrackerInfosStateExt on TrackerInfosState {
+  List<String> get availableProcesses => connectionProcesses(trackerInfos);
+
+  String get resolvedProcessFilter =>
+      resolveProcessFilter(processFilter, availableProcesses);
+
   List<TrackerInfo> get list {
     final lowerQuery = query.toLowerCase().trim();
     final lowQuery = query.toLowerCase();
+    final effectiveProcessFilter = resolvedProcessFilter;
     final filtered = trackerInfos.where((trackerInfo) {
       final chains = trackerInfo.chains;
       final process = trackerInfo.metadata.process;
@@ -196,7 +203,10 @@ extension TrackerInfosStateExt on TrackerInfosState {
           .toLowerCase();
       final processText = trackerInfo.metadata.process.toLowerCase();
       final chainsText = chains.join('').toLowerCase();
-      return {...chains, process}.containsAll(keywords) &&
+      final matchesProcessFilter =
+          effectiveProcessFilter.isEmpty || process == effectiveProcessFilter;
+      return matchesProcessFilter &&
+          {...chains, process}.containsAll(keywords) &&
           (networkText.contains(lowerQuery) ||
               hostText.contains(lowerQuery) ||
               destinationIPText.contains(lowQuery) ||

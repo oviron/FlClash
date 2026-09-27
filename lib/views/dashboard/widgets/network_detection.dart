@@ -15,16 +15,6 @@ class NetworkDetection extends ConsumerStatefulWidget {
 }
 
 class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
-  String _countryCodeToEmoji(String countryCode) {
-    final String code = countryCode.toUpperCase();
-    if (code.length != 2) {
-      return countryCode;
-    }
-    final int firstLetter = code.codeUnitAt(0) - 0x41 + 0x1F1E6;
-    final int secondLetter = code.codeUnitAt(1) - 0x41 + 0x1F1E6;
-    return String.fromCharCode(firstLetter) + String.fromCharCode(secondLetter);
-  }
-
   @override
   Widget build(BuildContext context) {
     final networkDetection = ref.watch(networkDetectionProvider);
@@ -59,7 +49,8 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                           size: 20.ap,
                         )
                       : Text(
-                          _countryCodeToEmoji(ipInfo.countryCode),
+                          countryCodeToEmoji(ipInfo.countryCode) ??
+                              ipInfo.countryCode,
                           style: emojiTextStyle,
                         ),
                   const SizedBox(width: 8),

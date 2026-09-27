@@ -188,6 +188,7 @@
   "sort": "Sort",
   "traffic": "Traffic",
   "speed": "Speed",
+  "allApplications": "All applications",
   "proxyGroup": "Proxy group",
   "go": "Go",
   "externalLink": "External link",

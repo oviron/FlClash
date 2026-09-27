@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "addressTip": MessageLookupByLibrary.simpleMessage("有効なWebDAVアドレスを入力"),
     "advanced": MessageLookupByLibrary.simpleMessage("詳細設定"),
     "agree": MessageLookupByLibrary.simpleMessage("同意"),
+    "allApplications": MessageLookupByLibrary.simpleMessage("すべてのアプリ"),
     "allowBypass": MessageLookupByLibrary.simpleMessage("アプリがVPNをバイパスすることを許可"),
     "allowBypassDesc": MessageLookupByLibrary.simpleMessage(
       "有効化すると一部アプリがVPNをバイパス",

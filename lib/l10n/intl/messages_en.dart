@@ -110,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "advanced": MessageLookupByLibrary.simpleMessage("Advanced"),
     "agree": MessageLookupByLibrary.simpleMessage("Agree"),
+    "allApplications": MessageLookupByLibrary.simpleMessage("All applications"),
     "allowBypass": MessageLookupByLibrary.simpleMessage(
       "Allow applications to bypass VPN",
     ),
