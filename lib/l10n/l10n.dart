@@ -5159,6 +5159,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Your phone hides some installed apps from FlClash. Allow "Get installed apps" in the app's permissions to see them all.`
+  String get appListRestrictedBody {
+    return Intl.message(
+      'Your phone hides some installed apps from FlClash. Allow "Get installed apps" in the app\'s permissions to see them all.',
+      name: 'appListRestrictedBody',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Normalize`
   String get routingBothNormalize {
     return Intl.message(

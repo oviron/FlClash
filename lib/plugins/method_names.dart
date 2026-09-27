@@ -53,5 +53,7 @@ abstract final class AppMethod {
   static const setAutoStartEnabled = 'setAutoStartEnabled';
   static const getLogDirectory = 'getLogDirectory';
   static const getHealthStats = 'getHealthStats';
+  static const isInstalledAppsPermissionMissing =
+      'isInstalledAppsPermissionMissing';
   static const requestAddTile = 'requestAddTile';
 }

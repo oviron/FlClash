@@ -3,6 +3,10 @@ part of '../controller.dart';
 extension SystemControllerExt on AppController {
   Future<List<Package>> getPackages() async {
     await Future.delayed(commonDuration);
+    // A list read without the vendor permission is partial; it must not stick once granted.
+    if (await app?.isInstalledAppsPermissionMissing() ?? false) {
+      return await app?.getPackages() ?? [];
+    }
     if (_ref.read(packagesProvider).isEmpty) {
       _ref.read(packagesProvider.notifier).value =
           await app?.getPackages() ?? [];

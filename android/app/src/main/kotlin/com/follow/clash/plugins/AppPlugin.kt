@@ -67,6 +67,21 @@ private object AppMethod {
     const val OPEN_FILE = "openFile"
     const val GET_HEALTH_STATS = "getHealthStats"
     const val REQUEST_ADD_TILE = "requestAddTile"
+    const val IS_INSTALLED_APPS_PERMISSION_MISSING = "isInstalledAppsPermissionMissing"
+}
+
+private const val GET_INSTALLED_APPS = "com.android.permission.GET_INSTALLED_APPS"
+
+// vivo, OPPO and Xiaomi hide most apps behind a vendor runtime permission; stock Android has none.
+private fun isInstalledAppsPermissionMissing(): Boolean {
+    val packageManager = GlobalState.application.packageManager
+    try {
+        packageManager.getPermissionInfo(GET_INSTALLED_APPS, 0)
+    } catch (_: PackageManager.NameNotFoundException) {
+        return false
+    }
+    return packageManager.checkPermission(GET_INSTALLED_APPS, GlobalState.application.packageName) !=
+        PackageManager.PERMISSION_GRANTED
 }
 
 class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
@@ -93,6 +108,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
     private val packages = mutableListOf<Package>()
     private val packagesLock = Any()
+    private var packagesPermissionMissing = false
 
     private val skipPrefixList = listOf(
         "com.google",
@@ -211,6 +227,10 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 }
             }
 
+            AppMethod.IS_INSTALLED_APPS_PERMISSION_MISSING -> {
+                result.success(isInstalledAppsPermissionMissing())
+            }
+
             AppMethod.GET_CHINA_PACKAGE_NAMES -> {
                 scope.launch {
                     result.success(getChinaPackageNames())
@@ -327,7 +347,10 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
     private fun getPackages(): List<Package> {
         synchronized(packagesLock) {
+            val permissionMissing = isInstalledAppsPermissionMissing()
+            if (packagesPermissionMissing && !permissionMissing) packages.clear()
             if (packages.isNotEmpty()) return packages.toList()
+            packagesPermissionMissing = permissionMissing
             val packageManager = GlobalState.application.packageManager
                 ?: return emptyList()
             packageManager.getInstalledPackages(

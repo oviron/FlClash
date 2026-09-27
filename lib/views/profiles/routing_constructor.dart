@@ -17,6 +17,7 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:yaml/yaml.dart';
 
 // The zero-YAML routing constructor as an embeddable block: reads/writes the
@@ -2368,17 +2369,31 @@ class _AppsView extends StatefulWidget {
 }
 
 class _AppsViewState extends State<_AppsView>
-    with _RoutingSectionState<_AppsView> {
+    with _RoutingSectionState<_AppsView>, WidgetsBindingObserver {
   @override
   int get profileId => widget.profileId;
   List<Package> _packages = const [];
   String _query = '';
   bool _hideSystem = false;
+  bool _appListRestricted = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _load();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Back from system settings, where the banner sends the user.
+    if (state == AppLifecycleState.resumed && _appListRestricted) _load();
   }
 
   Future<void> _resetApps() async {
@@ -2392,9 +2407,11 @@ class _AppsViewState extends State<_AppsView>
   Future<void> _load() async {
     final loaded = await appController.readRoutingModel(profileId);
     final packages = await appController.getPackages();
+    final restricted = await app?.isInstalledAppsPermissionMissing() ?? false;
     if (!mounted) return;
     setState(() {
       _model = loaded;
+      _appListRestricted = restricted;
       _packages = packages.where((p) => p.internet).toList()
         ..sort(
           (a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()),
@@ -2518,6 +2535,34 @@ class _AppsViewState extends State<_AppsView>
         TextButton(
           onPressed: () => _normalizeBoth(model),
           child: Text(appLocalizations.routingBothNormalize),
+        ),
+      ],
+    ),
+  );
+
+  Widget _appListBanner() => Container(
+    margin: EdgeInsets.fromLTRB(16.mAp, 16.mAp, 16.mAp, 0),
+    padding: EdgeInsets.all(12.mAp),
+    decoration: BoxDecoration(
+      color: context.colorScheme.secondaryContainer,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      children: [
+        Icon(
+          Icons.info_outline,
+          color: context.colorScheme.onSecondaryContainer,
+        ),
+        SizedBox(width: 12.mAp),
+        Expanded(
+          child: Text(
+            appLocalizations.appListRestrictedBody,
+            style: TextStyle(color: context.colorScheme.onSecondaryContainer),
+          ),
+        ),
+        TextButton(
+          onPressed: openAppSettings,
+          child: Text(appLocalizations.openSettings),
         ),
       ],
     ),
@@ -2657,6 +2702,7 @@ class _AppsViewState extends State<_AppsView>
       body: Column(
         children: [
           if (degenerate) _bothBanner(model),
+          if (_appListRestricted && !allMode) _appListBanner(),
           if (!allMode)
             _dim(
               degenerate,

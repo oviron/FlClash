@@ -604,6 +604,7 @@
   "routingModeAllExcept": "Кроме",
   "routingModeAllExceptDesc": "Через VPN идут все приложения, кроме выбранных.",
   "routingBothBannerBody": "Профиль задаёт оба списка (include и exclude). Работает как whitelist: include минус exclude. Нормализуйте, чтобы редактировать.",
+  "appListRestrictedBody": "Телефон скрывает от FlClash часть установленных приложений. Разрешите «Список установленных приложений» в разрешениях FlClash, чтобы видеть все.",
   "routingBothNormalize": "Нормализовать",
   "geoAutoUpdate": "Автообновление",
   "geoUpdateOff": "Выкл",

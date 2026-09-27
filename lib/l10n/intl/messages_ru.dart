@@ -115,6 +115,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "allowLanDesc": MessageLookupByLibrary.simpleMessage(
       "Разрешить доступ к прокси через локальную сеть",
     ),
+    "appListRestrictedBody": MessageLookupByLibrary.simpleMessage(
+      "Телефон скрывает от FlClash часть установленных приложений. Разрешите «Список установленных приложений» в разрешениях FlClash, чтобы видеть все.",
+    ),
     "appRoutingDanglingTargets": m0,
     "appRoutingRulesReapplied": m1,
     "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage(

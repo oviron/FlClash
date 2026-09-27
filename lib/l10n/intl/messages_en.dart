@@ -118,6 +118,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "allowLanDesc": MessageLookupByLibrary.simpleMessage(
       "Allow access proxy through the LAN",
     ),
+    "appListRestrictedBody": MessageLookupByLibrary.simpleMessage(
+      "Your phone hides some installed apps from FlClash. Allow \"Get installed apps\" in the app\'s permissions to see them all.",
+    ),
     "appRoutingDanglingTargets": m0,
     "appRoutingRulesReapplied": m1,
     "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage("Search apps"),

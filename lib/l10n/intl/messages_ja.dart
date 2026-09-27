@@ -100,6 +100,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "allowLan": MessageLookupByLibrary.simpleMessage("LANを許可"),
     "allowLanDesc": MessageLookupByLibrary.simpleMessage("LAN経由でのプロキシアクセスを許可"),
+    "appListRestrictedBody": MessageLookupByLibrary.simpleMessage(
+      "この端末は一部のインストール済みアプリを FlClash から隠しています。すべて表示するには、FlClash の権限で「インストール済みアプリの取得」を許可してください。",
+    ),
     "appRoutingDanglingTargets": m0,
     "appRoutingRulesReapplied": m1,
     "appRoutingSearchHint": MessageLookupByLibrary.simpleMessage("アプリを検索"),
