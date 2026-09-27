@@ -35,6 +35,14 @@ class ScriptsDao extends DatabaseAccessor<Database> with _$ScriptsDaoMixin {
     });
   }
 
+  // Merge restore: upsert without deleting rows absent from the backup.
+  void putAllWithBatch(Batch batch, Iterable<Script> scripts) {
+    batch.insertAllOnConflictUpdate(
+      this.scripts,
+      scripts.map((item) => item.toCompanion()),
+    );
+  }
+
   Future<void> setAllWithBatch(Batch batch, Iterable<Script> scripts) async {
     final List<ScriptsCompanion> items = [];
     final List<int> ids = [];
