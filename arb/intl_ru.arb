@@ -360,6 +360,12 @@
   "unknownNetworkError": "Неизвестная сетевая ошибка",
   "restoreException": "Ошибка восстановления",
   "networkException": "Ошибка сети, проверьте соединение и попробуйте еще раз",
+  "serverHttpError": "Сервер ответил HTTP {code}",
+  "@serverHttpError": {
+    "placeholders": {
+      "code": {}
+    }
+  },
   "invalidBackupFile": "Неверный файл резервной копии",
   "pruneCache": "Очистить кэш",
   "backupAndRestore": "Резервное копирование и восстановление",

@@ -360,6 +360,12 @@
   "unknownNetworkError": "未知网络错误",
   "restoreException": "恢复异常",
   "networkException": "网络异常，请检查连接后重试",
+  "serverHttpError": "服务器返回 HTTP {code}",
+  "@serverHttpError": {
+    "placeholders": {
+      "code": {}
+    }
+  },
   "invalidBackupFile": "无效备份文件",
   "pruneCache": "修剪缓存",
   "backupAndRestore": "备份与恢复",

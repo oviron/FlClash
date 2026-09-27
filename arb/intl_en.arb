@@ -360,6 +360,12 @@
   "unknownNetworkError": "Unknown network error",
   "restoreException": "Recovery exception",
   "networkException": "Network exception, please check your connection and try again",
+  "serverHttpError": "Server responded with HTTP {code}",
+  "@serverHttpError": {
+    "placeholders": {
+      "code": {}
+    }
+  },
   "invalidBackupFile": "Invalid backup file",
   "pruneCache": "Prune cache",
   "backupAndRestore": "Backup and Restore",

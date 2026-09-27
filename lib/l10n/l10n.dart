@@ -2919,6 +2919,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Server responded with HTTP {code}`
+  String serverHttpError(Object code) {
+    return Intl.message(
+      'Server responded with HTTP $code',
+      name: 'serverHttpError',
+      desc: '',
+      args: [code],
+    );
+  }
+
   /// `Invalid backup file`
   String get invalidBackupFile {
     return Intl.message(

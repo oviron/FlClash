@@ -71,15 +71,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m24(count) => "已选择 ${count} 项";
 
-  static String m25(count) => "${Intl.plural(count, other: '剩余${count}天')}";
+  static String m25(code) => "服务器返回 HTTP ${code}";
 
-  static String m26(count) => "${Intl.plural(count, other: '剩余${count}小时')}";
+  static String m26(count) => "${Intl.plural(count, other: '剩余${count}天')}";
 
-  static String m27(value) => "剩余${value}";
+  static String m27(count) => "${Intl.plural(count, other: '剩余${count}小时')}";
 
-  static String m28(label) => "${label}必须为URL";
+  static String m28(value) => "剩余${value}";
 
-  static String m29(count) => "${count} 年前";
+  static String m29(label) => "${label}必须为URL";
+
+  static String m30(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -829,6 +831,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "search": MessageLookupByLibrary.simpleMessage("搜索"),
     "selectAll": MessageLookupByLibrary.simpleMessage("全选"),
     "selectedCountTitle": m24,
+    "serverHttpError": m25,
     "settings": MessageLookupByLibrary.simpleMessage("设置"),
     "shrink": MessageLookupByLibrary.simpleMessage("紧凑"),
     "size": MessageLookupByLibrary.simpleMessage("尺寸"),
@@ -850,10 +853,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "stop": MessageLookupByLibrary.simpleMessage("暂停"),
     "stopVpn": MessageLookupByLibrary.simpleMessage("正在停止VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("风格"),
-    "subDaysLeft": m25,
+    "subDaysLeft": m26,
     "subExpired": MessageLookupByLibrary.simpleMessage("已过期"),
-    "subHoursLeft": m26,
-    "subRemaining": m27,
+    "subHoursLeft": m27,
+    "subRemaining": m28,
     "submit": MessageLookupByLibrary.simpleMessage("提交"),
     "sync": MessageLookupByLibrary.simpleMessage("同步"),
     "systemProxy": MessageLookupByLibrary.simpleMessage("系统代理"),
@@ -885,7 +888,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m28,
+    "urlTip": m29,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系统Hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("用户界面"),
@@ -900,7 +903,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN 设置"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
-    "yearsAgo": m29,
+    "yearsAgo": m30,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
   };
 }

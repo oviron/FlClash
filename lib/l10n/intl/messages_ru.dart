@@ -77,17 +77,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m24(count) => "Выбрано ${count} элементов";
 
-  static String m25(count) =>
-      "${Intl.plural(count, one: 'остался ${count} день', few: 'осталось ${count} дня', many: 'осталось ${count} дней', other: 'осталось ${count} дня')}";
+  static String m25(code) => "Сервер ответил HTTP ${code}";
 
   static String m26(count) =>
+      "${Intl.plural(count, one: 'остался ${count} день', few: 'осталось ${count} дня', many: 'осталось ${count} дней', other: 'осталось ${count} дня')}";
+
+  static String m27(count) =>
       "${Intl.plural(count, one: 'остался ${count} час', few: 'осталось ${count} часа', many: 'осталось ${count} часов', other: 'осталось ${count} часа')}";
 
-  static String m27(value) => "осталось ${value}";
+  static String m28(value) => "осталось ${value}";
 
-  static String m28(label) => "${label} должен быть URL";
+  static String m29(label) => "${label} должен быть URL";
 
-  static String m29(count) =>
+  static String m30(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1214,6 +1216,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "search": MessageLookupByLibrary.simpleMessage("Поиск"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Выбрать все"),
     "selectedCountTitle": m24,
+    "serverHttpError": m25,
     "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
     "shrink": MessageLookupByLibrary.simpleMessage("Сжать"),
     "size": MessageLookupByLibrary.simpleMessage("Размер"),
@@ -1237,10 +1240,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "stop": MessageLookupByLibrary.simpleMessage("Стоп"),
     "stopVpn": MessageLookupByLibrary.simpleMessage("Остановка VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("Стиль"),
-    "subDaysLeft": m25,
+    "subDaysLeft": m26,
     "subExpired": MessageLookupByLibrary.simpleMessage("Истекла"),
-    "subHoursLeft": m26,
-    "subRemaining": m27,
+    "subHoursLeft": m27,
+    "subRemaining": m28,
     "submit": MessageLookupByLibrary.simpleMessage("Отправить"),
     "sync": MessageLookupByLibrary.simpleMessage("Синхронизация"),
     "systemProxy": MessageLookupByLibrary.simpleMessage("Системный прокси"),
@@ -1284,7 +1287,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Получить профиль через URL",
     ),
-    "urlTip": m28,
+    "urlTip": m29,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
@@ -1303,7 +1306,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage(
       "Конфигурация WebDAV",
     ),
-    "yearsAgo": m29,
+    "yearsAgo": m30,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
   };
 }
