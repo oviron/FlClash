@@ -26,10 +26,6 @@ class TrackerInfoItem extends ConsumerWidget {
     return globalState.measure.bodySmallHeight + 20;
   }
 
-  Future<ImageProvider?> _getPackageIcon(TrackerInfo connection) async {
-    return await app?.getPackageIcon(connection.metadata.process);
-  }
-
   String _getSourceText(TrackerInfo trackerInfo) {
     final progress = trackerInfo.progressText.isNotEmpty
         ? '${trackerInfo.progressText} · '
@@ -106,7 +102,7 @@ class TrackerInfoItem extends ConsumerWidget {
               width: 42,
               height: 42,
               child: FutureBuilder<ImageProvider?>(
-                future: _getPackageIcon(trackerInfo),
+                future: app?.getPackageIcon(trackerInfo.metadata.process),
                 builder: (_, snapshot) {
                   if (!snapshot.hasData && snapshot.data == null) {
                     return Container();
