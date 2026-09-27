@@ -179,7 +179,10 @@ extension SetupControllerExt on AppController {
     final appendSystemDns = networkVM2.a;
     final routeMode = networkVM2.b;
     final service = ProfileSetupService(
-      loadRawProfile: coreController.getConfig,
+      loadRawProfile: (id) async => dropCoreDefaults(
+        await coreController.getConfig(id),
+        await File(await appPath.getProfilePath('$id')).readAsString(),
+      ),
       evaluateScript: globalState.handleEvaluate,
       loadScriptContent: (script) => script.content,
     );
