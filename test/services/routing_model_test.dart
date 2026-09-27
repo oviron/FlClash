@@ -723,6 +723,33 @@ rules:
       );
     });
 
+    test('a pasted list survives a re-read and a second write', () {
+      final model = RoutingModel.fromYaml(_reference);
+      final pasted = model.copyWith(
+        lists: [
+          ...model.lists,
+          const RoutingList(
+            id: 'mine',
+            name: 'mine',
+            kind: ListKind.paste,
+            behavior: 'domain',
+            payload: ['example.org'],
+          ),
+        ],
+      );
+      final first = pasted.toYaml(_reference);
+
+      final reread = RoutingModel.fromYaml(first);
+      final second = reread.removeList('ads').toYaml(first);
+
+      final mine = reread.lists.singleWhere((l) => l.id == 'mine');
+      expect(mine.kind, ListKind.paste);
+      expect(mine.payload, ['example.org']);
+      final provider = ProfileRulesDocument(second).ruleProviders['mine']!;
+      expect(provider.type, 'inline');
+      expect(provider.raw['payload'], ['example.org']);
+    });
+
     test('a removed list stays removed after a write and a re-read', () {
       final written = RoutingModel.fromYaml(
         _reference,

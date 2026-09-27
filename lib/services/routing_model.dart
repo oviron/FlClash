@@ -1031,10 +1031,14 @@ RoutingModel _read(String raw) {
       RoutingList(
         id: e.key,
         name: e.key,
-        kind: ListKind.url,
+        kind: e.value.type == 'inline' ? ListKind.paste : ListKind.url,
         url: e.value.url,
         behavior: e.value.behavior,
         format: e.value.format,
+        payload: [
+          for (final item in e.value.raw['payload'] as List? ?? const [])
+            item.toString(),
+        ],
       ),
   ];
 
