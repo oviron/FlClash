@@ -21,7 +21,7 @@ class LinkManager {
     commonPrint.log('initAppLinksListen');
     destroy();
     subscription = _appLinks.uriLinkStream.listen((uri) {
-      commonPrint.log('onAppLink: $uri');
+      commonPrint.log('onAppLink: ${uri.host}');
       if (uri.host == 'install-config') {
         final parameters = uri.queryParameters;
         final url = parameters['url'];
