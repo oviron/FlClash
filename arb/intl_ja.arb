@@ -243,7 +243,7 @@
   "proxyNameserver": "プロキシネームサーバー",
   "proxyNameserverDesc": "プロキシノード解決用ドメイン",
   "proxyNameserverPolicy": "プロキシネームサーバーポリシー",
-  "proxyNameserverPolicyDesc": "プロキシノードのネームサーバーポリシーを指定",
+  "proxyNameserverPolicyDesc": "プロキシサーバーの名前解決に使うドメインごとのネームサーバー。複数はカンマで区切ります",
   "reset": "リセット",
   "disclaimer": "免責事項",
   "disclaimerDesc": "本ソフトウェアは学習交流や科学研究などの非営利目的でのみ使用されます。商用利用は厳禁です。いかなる商用活動も本ソフトウェアとは無関係です。",

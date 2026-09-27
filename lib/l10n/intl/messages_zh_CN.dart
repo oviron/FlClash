@@ -540,7 +540,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "proxyNameserverDesc": MessageLookupByLibrary.simpleMessage("用于解析代理节点的域名"),
     "proxyNameserverPolicy": MessageLookupByLibrary.simpleMessage("代理域名服务器策略"),
     "proxyNameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
-      "指定代理节点的域名服务器策略",
+      "按域名指定解析代理服务器的域名服务器，多个用逗号分隔",
     ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("代理提供者"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("修剪缓存"),

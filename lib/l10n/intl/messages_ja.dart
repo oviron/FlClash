@@ -592,7 +592,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "プロキシネームサーバーポリシー",
     ),
     "proxyNameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
-      "プロキシノードのネームサーバーポリシーを指定",
+      "プロキシサーバーの名前解決に使うドメインごとのネームサーバー。複数はカンマで区切ります",
     ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("プロキシプロバイダー"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("キャッシュの削除"),

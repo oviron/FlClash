@@ -718,7 +718,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Proxy Nameserver Policy",
     ),
     "proxyNameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
-      "Specify the nameserver policy for proxy nodes",
+      "Nameservers per domain for resolving proxy servers; separate several with commas",
     ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("Proxy providers"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("Prune cache"),

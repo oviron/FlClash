@@ -1984,10 +1984,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Specify the nameserver policy for proxy nodes`
+  /// `Nameservers per domain for resolving proxy servers; separate several with commas`
   String get proxyNameserverPolicyDesc {
     return Intl.message(
-      'Specify the nameserver policy for proxy nodes',
+      'Nameservers per domain for resolving proxy servers; separate several with commas',
       name: 'proxyNameserverPolicyDesc',
       desc: '',
       args: [],

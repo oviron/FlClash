@@ -741,7 +741,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Политика прокси-сервера имен",
     ),
     "proxyNameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
-      "Указать политику сервера имен для прокси-узлов",
+      "DNS-серверы для доменов прокси-серверов; несколько разделяйте запятыми",
     ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("Провайдеры прокси"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("Очистить кэш"),

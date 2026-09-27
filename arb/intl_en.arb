@@ -243,7 +243,7 @@
   "proxyNameserver": "Proxy nameserver",
   "proxyNameserverDesc": "Domain for resolving proxy nodes",
   "proxyNameserverPolicy": "Proxy Nameserver Policy",
-  "proxyNameserverPolicyDesc": "Specify the nameserver policy for proxy nodes",
+  "proxyNameserverPolicyDesc": "Nameservers per domain for resolving proxy servers; separate several with commas",
   "reset": "Reset",
   "disclaimer": "Disclaimer",
   "disclaimerDesc": "This software is only used for non-commercial purposes such as learning exchanges and scientific research. It is strictly prohibited to use this software for commercial purposes. Any commercial activity, if any, has nothing to do with this software.",
