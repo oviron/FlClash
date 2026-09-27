@@ -49,4 +49,21 @@ void main() {
       expect(parseGeositeCategories(bytes), ['ru']);
     });
   });
+
+  group('isGeoDataWarning', () {
+    test('accepts a broken geo database as non-fatal', () {
+      expect(isGeoDataWarning('GeoSite data error: file is empty'), isTrue);
+      expect(isGeoDataWarning('rules[2]: GeoIP data error'), isTrue);
+      expect(isGeoDataWarning('decode geosite.dat: unexpected EOF'), isTrue);
+    });
+
+    test('treats every other setup error as fatal', () {
+      expect(
+        isGeoDataWarning('yaml: line 3: did not find expected key'),
+        isFalse,
+      );
+      expect(isGeoDataWarning("proxy group[0]: 'PROXY' not found"), isFalse);
+      expect(isGeoDataWarning('decode proxy: missing field server'), isFalse);
+    });
+  });
 }

@@ -5,6 +5,7 @@ import com.follow.clash.RunState
 import com.follow.clash.Service
 import com.follow.clash.State
 import com.follow.clash.common.Components
+import com.follow.clash.common.PendingCalls
 import com.follow.clash.invokeMethodOnMainThread
 import com.follow.clash.models.SharedState
 import com.google.gson.Gson
@@ -43,6 +44,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     @Volatile
     private var attached = false
     private var runStateJob: Job? = null
+    private val pendingCalls = PendingCalls<String>()
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         appContext = flutterPluginBinding.applicationContext
@@ -56,6 +58,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     override fun onDetachedFromEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         attached = false
         appContext = null
+        pendingCalls.failAll()
         runStateJob?.cancel()
         runStateJob = null
         flutterMethodChannel.setMethodCallHandler(null)
@@ -92,10 +95,9 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
             result.error("NULL_ARG", "invokeAction expects a String payload", null)
             return
         }
+        val complete = pendingCalls.register { launchAttachedMain { result.success(it) } }
         launch {
-            Service.invokeAction(data) {
-                launchAttachedMain { result.success(it) }
-            }
+            Service.invokeAction(data, complete).onFailure { complete(null) }
         }
     }
 
@@ -125,6 +127,7 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
     }
 
     private fun onServiceDisconnected(message: String) {
+        pendingCalls.failAll()
         State.runStateFlow.tryEmit(RunState.STOP)
         if (attached) {
             flutterMethodChannel.invokeMethodOnMainThread<Any>(ServiceMethod.CRASH, message)

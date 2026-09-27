@@ -78,7 +78,7 @@
             android:name=".TempActivity"
             android:excludeFromRecents="true"
             android:exported="true"
-            android:theme="@style/TransparentTheme">
+            android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="${applicationId}.action.START" />

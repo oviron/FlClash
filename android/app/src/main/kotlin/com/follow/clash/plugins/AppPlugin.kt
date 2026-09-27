@@ -29,13 +29,13 @@ import com.follow.clash.healthStatsJson
 import com.follow.clash.models.Package
 import com.follow.clash.showToast
 import com.google.gson.Gson
-import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -83,7 +83,8 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
     private lateinit var scope: CoroutineScope
 
-    private var vpnPrepareCallback: (suspend () -> Unit)? = null
+    @Volatile
+    private var vpnConsent: CompletableDeferred<Boolean>? = null
 
     private var requestNotificationCallback: (() -> Unit)? = null
 
@@ -367,13 +368,16 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 invokeRequestNotificationCallback()
                 return
             }
-            activityRef?.get()?.let {
-                ActivityCompat.requestPermissions(
-                    it,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    NOTIFICATION_PERMISSION_REQUEST_CODE
-                )
+            val activity = activityRef?.get()
+            if (activity == null) {
+                invokeRequestNotificationCallback()
+                return
             }
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                NOTIFICATION_PERMISSION_REQUEST_CODE
+            )
             return
         } else {
             invokeRequestNotificationCallback()
@@ -386,25 +390,21 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         requestNotificationCallback = null
     }
 
-    fun prepare(needPrepare: Boolean, callBack: (suspend () -> Unit)) {
-        vpnPrepareCallback = callBack
-        if (!needPrepare) {
-            invokeVpnPrepareCallback()
-            return
+    suspend fun prepareVpn(): Boolean {
+        val intent = VpnService.prepare(GlobalState.application) ?: return true
+        val activity = activityRef?.get() ?: return false
+        val consent = CompletableDeferred<Boolean>()
+        vpnConsent?.complete(false)
+        vpnConsent = consent
+        withContext(Dispatchers.Main) {
+            activity.startActivityForResult(intent, VPN_PERMISSION_REQUEST_CODE)
         }
-        val intent = VpnService.prepare(GlobalState.application)
-        if (intent != null) {
-            activityRef?.get()?.startActivityForResult(intent, VPN_PERMISSION_REQUEST_CODE)
-            return
-        }
-        invokeVpnPrepareCallback()
+        return consent.await()
     }
 
-    fun invokeVpnPrepareCallback() {
-        GlobalState.launch {
-            vpnPrepareCallback?.invoke()
-            vpnPrepareCallback = null
-        }
+    private fun resolveVpnConsent(granted: Boolean) {
+        vpnConsent?.complete(granted)
+        vpnConsent = null
     }
 
 
@@ -515,29 +515,27 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        activityRef = WeakReference(binding.activity)
+        onAttachedToActivity(binding)
     }
 
     override fun onDetachedFromActivity() {
         channel.invokeMethod(AppMethod.EXIT, null)
         activityRef = null
+        resolveVpnConsent(false)
+        requestNotificationCallback = null
     }
 
     private fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode == VPN_PERMISSION_REQUEST_CODE) {
-            if (resultCode == FlutterActivity.RESULT_OK) {
-                invokeVpnPrepareCallback()
-            }
-        }
+        if (requestCode != VPN_PERMISSION_REQUEST_CODE) return false
+        resolveVpnConsent(resultCode == Activity.RESULT_OK)
         return true
     }
 
     private fun onRequestPermissionsResultListener(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ): Boolean {
-        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
-            isBlockNotification = true
-        }
+        if (requestCode != NOTIFICATION_PERMISSION_REQUEST_CODE) return false
+        isBlockNotification = true
         invokeRequestNotificationCallback()
         return true
     }

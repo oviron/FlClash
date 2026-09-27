@@ -18,6 +18,9 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 object Service {
+    // Start loads the core and retries establish(), stop tears the tunnel down; 5 s is not enough on slow devices.
+    private const val RUN_STATE_TIMEOUT_MS = 15_000L
+
     private val delegate by lazy {
         ServiceDelegate<IRemoteInterface>(
             RemoteService::class.intent, ::handleServiceDisconnected
@@ -156,7 +159,7 @@ object Service {
 
 
     suspend fun startService(options: VpnOptions, runTime: Long): Long {
-        return delegate.useService {
+        return delegate.useService(RUN_STATE_TIMEOUT_MS) {
             awaitIResultInterface { callback ->
                 it.startService(options, runTime, callback)
             }
@@ -164,18 +167,17 @@ object Service {
     }
 
     suspend fun stopService(): Long {
-        return delegate.useService {
+        return delegate.useService(RUN_STATE_TIMEOUT_MS) {
             awaitIResultInterface { callback ->
                 it.stopService(callback)
             }
         }.getOrNull() ?: 0L
     }
 
-    suspend fun getRunTime(): Long {
-        return delegate.useService {
-            it.runTime
-        }.getOrNull() ?: 0L
-    }
+    suspend fun getRunTime(): Long = queryRunTime() ?: 0L
+
+    // null when :remote did not answer, which is not the same as a stopped tunnel.
+    suspend fun queryRunTime(): Long? = delegate.useService { it.runTime }.getOrNull()
 
     // Library hot-swap: tell :remote to kill itself so the next bind reloads the
     // (possibly new) core .so. The binder call may die mid-transact as the process

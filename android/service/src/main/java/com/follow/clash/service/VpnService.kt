@@ -10,6 +10,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.Parcel
+import android.os.ParcelFileDescriptor
 import android.os.RemoteException
 import androidx.core.content.getSystemService
 import com.follow.clash.common.AccessControlMode
@@ -25,9 +26,11 @@ import com.follow.clash.service.modules.NotificationModule
 import com.follow.clash.service.modules.WakeLockModule
 import io.github.oviron.libmihomo.Clash
 import io.github.oviron.libmihomo.TunInterface
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.URL
@@ -177,7 +180,7 @@ class VpnService : SystemVpnService(), IBaseService,
         "CognitiveComplexMethod",
         "NestedBlockDepth",
     )
-    private fun handleStart(options: VpnOptions) {
+    private suspend fun handleStart(options: VpnOptions) {
         val fd = with(Builder()) {
             val cidr = IPV4_ADDRESS.toCIDR()
             addAddress(cidr.address, cidr.prefixLength)
@@ -284,8 +287,7 @@ class VpnService : SystemVpnService(), IBaseService,
                     )
                 )
             }
-            establish()?.detachFd()
-                ?: throw NullPointerException("Establish VPN rejected by system")
+            establishWithRetry().detachFd()
         }
         Clash.startTUN(
             fd = fd,
@@ -298,16 +300,29 @@ class VpnService : SystemVpnService(), IBaseService,
         )
     }
 
-    override fun start() {
-        try {
-            acquireLocks()
-            loader.load()
-            State.options?.let {
-                handleStart(it)
-            }
-        } catch (_: Exception) {
-            stop()
+    // establish() returns null for a moment while a previous tunnel (ours or another VPN's) is torn down.
+    private suspend fun Builder.establishWithRetry(): ParcelFileDescriptor {
+        repeat(ESTABLISH_ATTEMPTS - 1) { attempt ->
+            runCatching { establish() }
+                .onFailure { GlobalState.log("VPN establish attempt ${attempt + 1} failed: $it") }
+                .getOrNull()?.let { return it }
+            delay(ESTABLISH_RETRY_MS)
         }
+        return establish() ?: throw IllegalStateException("Establish VPN rejected by system")
+    }
+
+    override suspend fun start(): Boolean = try {
+        acquireLocks()
+        loader.load()
+        handleStart(State.options ?: throw IllegalStateException("VPN options missing"))
+        true
+    } catch (e: CancellationException) {
+        stop()
+        throw e
+    } catch (e: Exception) {
+        GlobalState.log("VpnService start failed: $e")
+        stop()
+        false
     }
 
     override fun stop() {
@@ -342,5 +357,7 @@ class VpnService : SystemVpnService(), IBaseService,
         private const val DNS6 = "fdfe:dcba:9876::2"
         private const val NET_ANY = "0.0.0.0"
         private const val NET_ANY6 = "::"
+        private const val ESTABLISH_ATTEMPTS = 3
+        private const val ESTABLISH_RETRY_MS = 300L
     }
 }

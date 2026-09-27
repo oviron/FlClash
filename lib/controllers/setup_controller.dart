@@ -27,9 +27,8 @@ extension SetupControllerExt on AppController {
         globalState.needInitStatus = false;
         await applyProfile(
           force: true,
-          preloadInvoke: () async {
-            await globalState.handleStart([updateRunTime, updateTraffic]);
-          },
+          onConfigApplied: () =>
+              globalState.handleStart([updateRunTime, updateTraffic]),
         );
       }
     } else {
@@ -109,14 +108,14 @@ extension SetupControllerExt on AppController {
   Future<void> applyProfile({
     bool silence = false,
     bool force = false,
-    VoidCallback? preloadInvoke,
+    Future<void> Function()? onConfigApplied,
   }) async {
     if (!force && !await needSetup()) {
       return;
     }
     final res = await loadingRun<bool>(
       () async {
-        await _setupConfig(preloadInvoke);
+        await _setupConfig(onConfigApplied);
         await updateGroups();
         await updateProviders();
         final groups = _ref.read(groupsProvider);
@@ -197,16 +196,18 @@ extension SetupControllerExt on AppController {
     return res;
   }
 
-  Future<void> _setupConfig([VoidCallback? preloadInvoke]) async {
+  Future<void> _setupConfig([Future<void> Function()? onConfigApplied]) async {
     globalState.bootstrappingConfig = true;
     try {
-      await _setupConfigInner(preloadInvoke);
+      await _setupConfigInner(onConfigApplied);
     } finally {
       globalState.bootstrappingConfig = false;
     }
   }
 
-  Future<void> _setupConfigInner([VoidCallback? preloadInvoke]) async {
+  Future<void> _setupConfigInner([
+    Future<void> Function()? onConfigApplied,
+  ]) async {
     commonPrint.log('setup ===>');
     var profile = _ref.read(currentProfileProvider);
     final nextProfile = await profile?.checkAndUpdateAndCopy();
@@ -250,15 +251,9 @@ extension SetupControllerExt on AppController {
     final message = await coreController.setupConfig(
       setupState: setupState,
       params: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
-      preloadInvoke: preloadInvoke,
     );
     if (message.isNotEmpty) {
-      final lower = message.toLowerCase();
-      final geoWarning =
-          lower.contains('geosite data error') ||
-          lower.contains('geoip data error') ||
-          (lower.contains('decode') && lower.contains('geo'));
-      if (!geoWarning) throw message;
+      if (!isGeoDataWarning(message)) throw message;
       // A GeoSite/GeoIP rule couldn't resolve (missing/stale/corrupt database);
       // the rest of the config still applied, so heal the geo data in the
       // background instead of alarming the user with the raw core error.
@@ -268,6 +263,7 @@ extension SetupControllerExt on AppController {
       );
       unawaited(seedGeositeIfMissing().then((_) => updateGeoDatabases()));
     }
+    await onConfigApplied?.call();
     addCheckIp();
   }
 

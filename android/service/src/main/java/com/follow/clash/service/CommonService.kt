@@ -4,9 +4,11 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import com.follow.clash.common.GlobalState
 import com.follow.clash.common.modules.moduleLoader
 import com.follow.clash.service.modules.NetworkObserveModule
 import com.follow.clash.service.modules.NotificationModule
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -48,12 +50,16 @@ class CommonService : Service(), IBaseService,
         return binder
     }
 
-    override fun start() {
-        try {
-            loader.load()
-        } catch (_: Exception) {
-            stop()
-        }
+    override suspend fun start(): Boolean = try {
+        loader.load()
+        true
+    } catch (e: CancellationException) {
+        stop()
+        throw e
+    } catch (e: Exception) {
+        GlobalState.log("CommonService start failed: $e")
+        stop()
+        false
     }
 
     override fun stop() {
