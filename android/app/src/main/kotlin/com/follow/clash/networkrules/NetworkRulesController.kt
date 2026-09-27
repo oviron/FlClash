@@ -11,6 +11,7 @@ import com.follow.clash.common.networkrules.NetworkResolution
 import com.follow.clash.common.networkrules.NetworkRulesCodec
 import com.follow.clash.common.networkrules.NetworkRulesEngine
 import com.follow.clash.common.networkrules.NetworkRuleType
+import com.follow.clash.common.networkrules.actuation
 import com.follow.clash.common.networkrules.decideManualSwitch
 import com.follow.clash.common.networkrules.NetworkSnapshot
 import com.follow.clash.common.networkrules.RulesMirror
@@ -148,30 +149,25 @@ object NetworkRulesController {
     // guard window and is classified as engine-initiated, not a manual toggle.
     private suspend fun actuate(resolution: NetworkResolution) {
         val foreground = profileSwitchListener
-        val running = State.runStateFlow.value == RunState.START
+        val runState = State.runStateFlow.value
+        val running = runState == RunState.START
         // A profile target applies only when the core is, or is about to be, up.
         val profileTarget = resolution.profileId
             ?.takeIf { running || resolution.decision == NetworkDecision.START }
         var startAction: (suspend () -> Unit)? = null
         mutex.withLock {
             when (resolution.decision) {
-                NetworkDecision.START -> {
-                    lastEngineDesired = true
-                    if (!running) {
-                        engineGuardUntil = SystemClock.elapsedRealtime() + GUARD_MS
-                        startAction = State::handleStartServiceAction
-                    }
-                }
-
-                NetworkDecision.STOP -> {
-                    lastEngineDesired = false
-                    if (running) {
-                        engineGuardUntil = SystemClock.elapsedRealtime() + GUARD_MS
-                        startAction = State::handleStopServiceAction
-                    }
-                }
-
+                NetworkDecision.START -> lastEngineDesired = true
+                NetworkDecision.STOP -> lastEngineDesired = false
                 NetworkDecision.LEAVE_AS_IS -> Unit
+            }
+            startAction = when (actuation(resolution.decision, running, runState == RunState.PENDING)) {
+                NetworkDecision.START -> State::handleStartServiceAction
+                NetworkDecision.STOP -> State::handleStopServiceAction
+                else -> null
+            }
+            if (startAction != null) {
+                engineGuardUntil = SystemClock.elapsedRealtime() + GUARD_MS
             }
             if (profileTarget != null) {
                 // Only a foreground apply is attributable to the engine (Dart

@@ -342,6 +342,20 @@ class NetworkRulesEngineTest {
     }
 
     @Test
+    fun stopReachesAStartStillWaitingToCommit() {
+        assertEquals(NetworkDecision.STOP, actuation(NetworkDecision.STOP, up = false, settling = true))
+        assertEquals(NetworkDecision.STOP, actuation(NetworkDecision.STOP, up = true, settling = false))
+        assertNull(actuation(NetworkDecision.STOP, up = false, settling = false))
+    }
+
+    @Test
+    fun startOnlyWhenTheTunnelIsDown() {
+        assertEquals(NetworkDecision.START, actuation(NetworkDecision.START, up = false, settling = false))
+        assertNull(actuation(NetworkDecision.START, up = true, settling = false))
+        assertNull(actuation(NetworkDecision.LEAVE_AS_IS, up = false, settling = true))
+    }
+
+    @Test
     fun manualSwitchArmsOnlyAfterAForegroundApply() {
         // No prior foreground apply: unarmed, never a manual switch.
         assertNull(decideManualSwitch(active = 7, lastEngineProfileId = null, guardUntil = 0, now = 100))
