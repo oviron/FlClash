@@ -1,17 +1,19 @@
 import 'package:fl_clash/common/task.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Future<Map<String, dynamic>> _build(
   Map<String, dynamic> rawConfig, {
   bool appendSystemDns = false,
+  ClashConfig realPatchConfig = defaultClashConfig,
 }) {
   return makeRealProfileTask(
     MakeRealProfileState(
       profilesPath: '/profiles',
       profileId: 1,
       rawConfig: rawConfig,
-      realPatchConfig: defaultClashConfig,
+      realPatchConfig: realPatchConfig,
       overrideDns: false,
       appendSystemDns: appendSystemDns,
       addedRules: const [],
@@ -21,6 +23,76 @@ Future<Map<String, dynamic>> _build(
 }
 
 void main() {
+  group('keys the core fills in when the profile leaves them out', () {
+    const coreDefaults = {
+      'find-process-mode': 'strict',
+      'global-ua': 'clash.meta/1.10.0',
+    };
+    final patch = defaultClashConfig.copyWith(
+      findProcessMode: FindProcessMode.always,
+    );
+
+    test('give way to the app settings', () async {
+      final config = await _build(
+        dropCoreDefaults(coreDefaults, 'mode: rule\nproxies: []\n'),
+        realPatchConfig: patch,
+      );
+
+      expect(config['find-process-mode'], 'always');
+      expect(config['global-ua'], 'ua');
+    });
+
+    test('stay when the profile sets them', () async {
+      const yaml = '''
+mode: rule
+find-process-mode: strict
+"global-ua": clash.meta/1.10.0
+''';
+      final config = await _build(
+        dropCoreDefaults(coreDefaults, yaml),
+        realPatchConfig: patch,
+      );
+
+      expect(config['find-process-mode'], 'strict');
+      expect(config['global-ua'], 'clash.meta/1.10.0');
+    });
+
+    test('a byte-order mark or CRLF line ends do not hide a key', () async {
+      for (final yaml in [
+        '\uFEFFfind-process-mode: strict\r\nmode: rule\r\n',
+        'mode: rule\r\nfind-process-mode: strict\r\n',
+      ]) {
+        final config = await _build(
+          dropCoreDefaults(coreDefaults, yaml),
+          realPatchConfig: patch,
+        );
+        expect(config['find-process-mode'], 'strict');
+      }
+    });
+
+    test('a commented-out key does not count', () async {
+      final config = await _build(
+        dropCoreDefaults(coreDefaults, '# find-process-mode: strict\n'),
+        realPatchConfig: patch,
+      );
+
+      expect(config['find-process-mode'], 'always');
+    });
+
+    test('a nested key of the same name does not count', () async {
+      const yaml = '''
+tun:
+  find-process-mode: off
+''';
+      final config = await _build(
+        dropCoreDefaults(coreDefaults, yaml),
+        realPatchConfig: patch,
+      );
+
+      expect(config['find-process-mode'], 'always');
+    });
+  });
+
   group('a mistyped field from a subscription or script', () {
     test('tun that is not a map is replaced', () async {
       final config = await _build({'tun': true});

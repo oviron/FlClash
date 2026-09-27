@@ -70,6 +70,25 @@ Future<List<Group>> _toGroupsTask(ComputeGroupsState state) async {
   );
 }
 
+bool profileSetsKey(String profileYaml, String key) => RegExp(
+  '^\\uFEFF?["\']?${RegExp.escape(key)}["\']?\\s*:',
+  multiLine: true,
+).hasMatch(profileYaml);
+
+// The core parses a profile into mihomo's RawConfig, which fills these in when
+// the YAML leaves them out; dropping them lets the app settings apply.
+Map<String, dynamic> dropCoreDefaults(
+  Map<String, dynamic> rawConfig,
+  String profileYaml,
+) {
+  const keys = ['find-process-mode', 'global-ua'];
+  return {
+    for (final entry in rawConfig.entries)
+      if (!keys.contains(entry.key) || profileSetsKey(profileYaml, entry.key))
+        entry.key: entry.value,
+  };
+}
+
 Future<Map<String, dynamic>> makeRealProfileTask(
   MakeRealProfileState data,
 ) async {
@@ -114,7 +133,7 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   rawConfig['socks-port'] = realPatchConfig.socksPort;
   rawConfig['redir-port'] = realPatchConfig.redirPort;
   rawConfig['tproxy-port'] = realPatchConfig.tproxyPort;
-  // YAML-set find-process-mode wins; fall back to UI value (FlClash enum is {always, off}, default always).
+  // A profile that sets find-process-mode keeps it; see dropCoreDefaults.
   rawConfig['find-process-mode'] ??= realPatchConfig.findProcessMode.name;
   rawConfig['allow-lan'] = realPatchConfig.allowLan;
   rawConfig['mode'] = realPatchConfig.mode.name;
