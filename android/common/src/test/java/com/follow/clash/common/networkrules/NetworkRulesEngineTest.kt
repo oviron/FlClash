@@ -391,8 +391,9 @@ class NetworkRulesEngineTest {
         assertNull(decideManualSwitch(active = 8, lastEngineProfileId = 8, guardUntil = 200, now = 300))
         // Inside the guard window Dart has not echoed the engine's apply yet: keep it.
         assertEquals(7L, rebaseOnNetworkChange(lastEngineProfileId = 7, active = 6, guardUntil = 200, now = 100))
-        // Unarmed stays unarmed.
+        // Unarmed stays unarmed, and no active profile disarms.
         assertNull(rebaseOnNetworkChange(lastEngineProfileId = null, active = 8, guardUntil = 0, now = 300))
+        assertNull(rebaseOnNetworkChange(lastEngineProfileId = 7, active = null, guardUntil = 200, now = 300))
     }
 
     @Test
