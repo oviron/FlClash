@@ -2,4 +2,8 @@
 <resources>
     <string name="network_rules_channel">Сетевые правила</string>
     <string name="network_rules_notification">Авто-VPN по сети активен</string>
+    <string name="widget_description">Включение и выключение VPN</string>
+    <string name="widget_on">Включён</string>
+    <string name="widget_off">Выключен</string>
+    <string name="widget_pending">Переключение…</string>
 </resources>

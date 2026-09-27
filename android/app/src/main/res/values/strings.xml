@@ -2,4 +2,8 @@
 <resources>
     <string name="network_rules_channel">Network rules</string>
     <string name="network_rules_notification">Auto VPN by network is active</string>
+    <string name="widget_description">Turn the VPN on or off</string>
+    <string name="widget_on">On</string>
+    <string name="widget_off">Off</string>
+    <string name="widget_pending">Switching…</string>
 </resources>

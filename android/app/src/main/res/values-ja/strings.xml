@@ -2,4 +2,8 @@
 <resources>
     <string name="network_rules_channel">ネットワークルール</string>
     <string name="network_rules_notification">ネットワーク連動の自動VPNが有効です</string>
+    <string name="widget_description">VPN のオン・オフ</string>
+    <string name="widget_on">オン</string>
+    <string name="widget_off">オフ</string>
+    <string name="widget_pending">切り替え中…</string>
 </resources>

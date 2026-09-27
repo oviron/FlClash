@@ -2,4 +2,8 @@
 <resources>
     <string name="network_rules_channel">网络规则</string>
     <string name="network_rules_notification">按网络自动切换 VPN 已启用</string>
+    <string name="widget_description">开启或关闭 VPN</string>
+    <string name="widget_on">已开启</string>
+    <string name="widget_off">已关闭</string>
+    <string name="widget_pending">切换中…</string>
 </resources>
