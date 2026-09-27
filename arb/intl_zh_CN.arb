@@ -661,5 +661,38 @@
   "requestsDesc": "查看最近请求记录",
   "connectionsDesc": "查看当前连接数据",
   "logsDesc": "日志捕获记录",
-  "resourcesDesc": "外部资源相关信息"
+  "resourcesDesc": "外部资源相关信息",
+  "ipQualityCheck": "IP 质量检测",
+  "ipQualityIntro": "检测时会通过 HTTPS 将 {ip} 发送给下方各服务，以查询其归属、风险和网络类型。",
+  "@ipQualityIntro": {
+    "placeholders": {
+      "ip": {}
+    }
+  },
+  "ipQualityCheckAction": "开始检测",
+  "ipQualitySources": "服务",
+  "ipQualityResult": "结果",
+  "ipQualityLevel": "质量",
+  "ipQualityGood": "良好",
+  "ipQualityNormal": "一般",
+  "ipQualityRisky": "有风险",
+  "ipAddress": "IP 地址",
+  "ipType": "类型",
+  "ipTypeResidential": "住宅",
+  "ipTypeMobile": "移动网络",
+  "ipTypeBusiness": "商业",
+  "ipTypeHosting": "机房",
+  "ipOrganization": "所属组织",
+  "ipAsn": "ASN",
+  "ipFlags": "标记",
+  "ipFlagTor": "Tor",
+  "ipFlagAbuser": "存在滥用举报",
+  "ipFlagVpn": "VPN",
+  "ipFlagProxy": "代理",
+  "ipQualityFailed": "所有服务均未返回结果",
+  "ipQualityRetry": "重试",
+  "ipSourceNoType": "未返回类型",
+  "ipSourceRateLimited": "请求过于频繁",
+  "ipSourceFailed": "失败",
+  "ipSourceIpMismatch": "IP 不一致"
 }

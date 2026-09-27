@@ -4,5 +4,6 @@ export 'common.dart';
 export 'config.dart';
 export 'core.dart';
 export 'health_stats.dart';
+export 'ip_quality.dart';
 export 'profile.dart';
 export 'state.dart';

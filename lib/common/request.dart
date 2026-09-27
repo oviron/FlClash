@@ -180,6 +180,15 @@ class Request {
     return res;
   }
 
+  // Same _clashDio as checkIp: routed through the VPN's proxy when it is on,
+  // so the sources see the tunnel's exit IP, not the device's own.
+  Future<IpQualityReport> checkIpQuality(
+    String ip, {
+    CancelToken? cancelToken,
+  }) {
+    return lookupIpQuality(_clashDio, ip, cancelToken: cancelToken);
+  }
+
   Future<bool> pingHelper() async {
     try {
       final response = await dio

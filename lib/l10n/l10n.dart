@@ -5592,6 +5592,201 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `IP quality check`
+  String get ipQualityCheck {
+    return Intl.message(
+      'IP quality check',
+      name: 'ipQualityCheck',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Checking will send {ip} to each service below over HTTPS, so it can look up its ownership, risk and network type.`
+  String ipQualityIntro(Object ip) {
+    return Intl.message(
+      'Checking will send $ip to each service below over HTTPS, so it can look up its ownership, risk and network type.',
+      name: 'ipQualityIntro',
+      desc: '',
+      args: [ip],
+    );
+  }
+
+  /// `Check`
+  String get ipQualityCheckAction {
+    return Intl.message(
+      'Check',
+      name: 'ipQualityCheckAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Services`
+  String get ipQualitySources {
+    return Intl.message(
+      'Services',
+      name: 'ipQualitySources',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Result`
+  String get ipQualityResult {
+    return Intl.message('Result', name: 'ipQualityResult', desc: '', args: []);
+  }
+
+  /// `Quality`
+  String get ipQualityLevel {
+    return Intl.message('Quality', name: 'ipQualityLevel', desc: '', args: []);
+  }
+
+  /// `Good`
+  String get ipQualityGood {
+    return Intl.message('Good', name: 'ipQualityGood', desc: '', args: []);
+  }
+
+  /// `Normal`
+  String get ipQualityNormal {
+    return Intl.message('Normal', name: 'ipQualityNormal', desc: '', args: []);
+  }
+
+  /// `Risky`
+  String get ipQualityRisky {
+    return Intl.message('Risky', name: 'ipQualityRisky', desc: '', args: []);
+  }
+
+  /// `IP address`
+  String get ipAddress {
+    return Intl.message('IP address', name: 'ipAddress', desc: '', args: []);
+  }
+
+  /// `Type`
+  String get ipType {
+    return Intl.message('Type', name: 'ipType', desc: '', args: []);
+  }
+
+  /// `Residential`
+  String get ipTypeResidential {
+    return Intl.message(
+      'Residential',
+      name: 'ipTypeResidential',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mobile`
+  String get ipTypeMobile {
+    return Intl.message('Mobile', name: 'ipTypeMobile', desc: '', args: []);
+  }
+
+  /// `Business`
+  String get ipTypeBusiness {
+    return Intl.message('Business', name: 'ipTypeBusiness', desc: '', args: []);
+  }
+
+  /// `Hosting`
+  String get ipTypeHosting {
+    return Intl.message('Hosting', name: 'ipTypeHosting', desc: '', args: []);
+  }
+
+  /// `Organization`
+  String get ipOrganization {
+    return Intl.message(
+      'Organization',
+      name: 'ipOrganization',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ASN`
+  String get ipAsn {
+    return Intl.message('ASN', name: 'ipAsn', desc: '', args: []);
+  }
+
+  /// `Flags`
+  String get ipFlags {
+    return Intl.message('Flags', name: 'ipFlags', desc: '', args: []);
+  }
+
+  /// `Tor`
+  String get ipFlagTor {
+    return Intl.message('Tor', name: 'ipFlagTor', desc: '', args: []);
+  }
+
+  /// `Abuse reports`
+  String get ipFlagAbuser {
+    return Intl.message(
+      'Abuse reports',
+      name: 'ipFlagAbuser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VPN`
+  String get ipFlagVpn {
+    return Intl.message('VPN', name: 'ipFlagVpn', desc: '', args: []);
+  }
+
+  /// `Proxy`
+  String get ipFlagProxy {
+    return Intl.message('Proxy', name: 'ipFlagProxy', desc: '', args: []);
+  }
+
+  /// `Every service failed to answer`
+  String get ipQualityFailed {
+    return Intl.message(
+      'Every service failed to answer',
+      name: 'ipQualityFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get ipQualityRetry {
+    return Intl.message('Retry', name: 'ipQualityRetry', desc: '', args: []);
+  }
+
+  /// `No type reported`
+  String get ipSourceNoType {
+    return Intl.message(
+      'No type reported',
+      name: 'ipSourceNoType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rate limited`
+  String get ipSourceRateLimited {
+    return Intl.message(
+      'Rate limited',
+      name: 'ipSourceRateLimited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed`
+  String get ipSourceFailed {
+    return Intl.message('Failed', name: 'ipSourceFailed', desc: '', args: []);
+  }
+
+  /// `IP mismatch`
+  String get ipSourceIpMismatch {
+    return Intl.message(
+      'IP mismatch',
+      name: 'ipSourceIpMismatch',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
