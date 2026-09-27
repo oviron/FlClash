@@ -694,5 +694,9 @@
   "ipSourceNoType": "No type reported",
   "ipSourceRateLimited": "Rate limited",
   "ipSourceFailed": "Failed",
-  "ipSourceIpMismatch": "IP mismatch"
+  "ipSourceIpMismatch": "IP mismatch",
+  "userAgent": "User-Agent",
+  "userAgentDesc": "Sent when updating subscriptions and providers",
+  "userAgentCustom": "Custom",
+  "userAgentInvalid": "Printable ASCII only, on one line"
 }

@@ -5787,6 +5787,36 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `User-Agent`
+  String get userAgent {
+    return Intl.message('User-Agent', name: 'userAgent', desc: '', args: []);
+  }
+
+  /// `Sent when updating subscriptions and providers`
+  String get userAgentDesc {
+    return Intl.message(
+      'Sent when updating subscriptions and providers',
+      name: 'userAgentDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom`
+  String get userAgentCustom {
+    return Intl.message('Custom', name: 'userAgentCustom', desc: '', args: []);
+  }
+
+  /// `Printable ASCII only, on one line`
+  String get userAgentInvalid {
+    return Intl.message(
+      'Printable ASCII only, on one line',
+      name: 'userAgentInvalid',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

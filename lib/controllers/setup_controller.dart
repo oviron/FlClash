@@ -206,7 +206,7 @@ extension SetupControllerExt on AppController {
         overrideDns: overrideDns,
         appendSystemDns: appendSystemDns,
         profilesPath: await appPath.profilesPath,
-        defaultUserAgent: globalState.packageInfo.ua,
+        defaultUserAgent: ua,
       ),
     );
   }

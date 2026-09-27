@@ -13,7 +13,9 @@ extension StateControllerExt on AppController {
     return _ref.read(groupsProvider);
   }
 
-  String get ua => globalState.packageInfo.ua;
+  String get ua => _ref.read(appSettingProvider).userAgent.takeFirstValid([
+    globalState.packageInfo.ua,
+  ]);
 
   Mode get mode => _ref.read(patchClashConfigProvider).mode;
 

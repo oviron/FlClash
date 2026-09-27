@@ -1291,6 +1291,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlTip": m30,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
+    "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
+    "userAgentCustom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "userAgentDesc": MessageLookupByLibrary.simpleMessage(
+      "Sent when updating subscriptions and providers",
+    ),
+    "userAgentInvalid": MessageLookupByLibrary.simpleMessage(
+      "Printable ASCII only, on one line",
+    ),
     "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
     "value": MessageLookupByLibrary.simpleMessage("Value"),
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("Vibrant"),
