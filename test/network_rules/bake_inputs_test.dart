@@ -53,6 +53,16 @@ void main() {
     expect(await key(), isNot(before));
   });
 
+  test('a route mode change changes the key', () async {
+    final before = await key();
+
+    container
+        .read(networkSettingProvider.notifier)
+        .update((state) => state.copyWith(routeMode: RouteMode.bypassPrivate));
+
+    expect(await key(), isNot(before));
+  });
+
   test('a re-downloaded ruled profile changes the key', () async {
     final before = await key();
 

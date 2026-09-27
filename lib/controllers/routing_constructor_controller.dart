@@ -86,6 +86,11 @@ extension RoutingConstructorController on AppController {
     final error = await coreController.validateConfigWithData(next);
     if (error.isNotEmpty) return error;
     await file.safeWriteAsString(next);
+    // Like a raw-editor save, so everything keyed on the file (Network Rules bake) sees the edit.
+    final profile = _ref.read(profilesProvider).getProfile(profileId);
+    if (profile != null) {
+      putProfile(profile.copyWith(lastUpdateDate: DateTime.now()));
+    }
     if (profileId == _ref.read(currentProfileIdProvider)) {
       await applyProfile(force: true);
     }

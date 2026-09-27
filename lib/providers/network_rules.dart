@@ -22,6 +22,11 @@ Future<int> networkRulesBakeInputs(Ref ref) async {
   final parts = <Object?>[
     ref.watch(patchClashConfigProvider),
     ref.watch(vpnSettingProvider.select((state) => state.systemProxy)),
+    ref.watch(
+      networkSettingProvider.select(
+        (state) => (state.routeMode, state.appendSystemDns),
+      ),
+    ),
   ];
   final setupStates = <Future<SetupState>>[];
   for (final id in networkRuleProfileIds(rules)) {
