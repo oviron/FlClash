@@ -262,15 +262,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS hijacking"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS mode"),
+    "dnsOverrideKeys": MessageLookupByLibrary.simpleMessage("Keys to override"),
+    "dnsOverrideKeysAll": MessageLookupByLibrary.simpleMessage(
+      "All: the app\'s DNS block replaces the profile\'s",
+    ),
+    "dnsOverrideKeysNone": MessageLookupByLibrary.simpleMessage(
+      "None yet: the profile\'s DNS stays as is",
+    ),
+    "dnsOverrideKeysTip": MessageLookupByLibrary.simpleMessage(
+      "Only checked keys replace the profile\'s values. Editing a setting checks its key.",
+    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("Servers"),
     "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
       "The profile has no DNS of its own, so the settings below apply",
     ),
     "dnsSourceAppOverride": MessageLookupByLibrary.simpleMessage(
-      "The DNS settings below override the profile",
+      "The DNS keys picked below override the profile\'s",
     ),
     "dnsSourceProfile": MessageLookupByLibrary.simpleMessage(
-      "The profile defines its own DNS. Turn this on to apply the settings below",
+      "The profile defines its own DNS. Turn this on to apply the keys picked below",
     ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Do you want to pass",
@@ -509,7 +519,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Nameserver policy",
     ),
     "nameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
-      "Specify the corresponding nameserver policy",
+      "Nameservers per domain; separate several with commas",
     ),
     "networkDesc": MessageLookupByLibrary.simpleMessage(
       "Modify network-related settings",
@@ -708,7 +718,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Proxy Nameserver Policy",
     ),
     "proxyNameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
-      "Specify the nameserver policy for proxy nodes",
+      "Nameservers per domain for resolving proxy servers; separate several with commas",
     ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("Proxy providers"),
     "pruneCache": MessageLookupByLibrary.simpleMessage("Prune cache"),

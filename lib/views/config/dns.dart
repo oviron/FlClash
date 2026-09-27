@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -26,6 +27,71 @@ class OverrideItem extends ConsumerWidget {
   }
 }
 
+class OverrideKeysItem extends ConsumerWidget {
+  const OverrideKeysItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final keys = ref.watch(
+      patchClashConfigProvider.select((state) => state.dnsOverrideKeys),
+    );
+    return ListItem.open(
+      title: Text(appLocalizations.dnsOverrideKeys),
+      subtitle: Text(switch (keys) {
+        _ when keys.isEmpty => appLocalizations.dnsOverrideKeysNone,
+        _ when keys.containsAll(allDnsKeys) =>
+          appLocalizations.dnsOverrideKeysAll,
+        _ => allDnsKeys.where(keys.contains).join(', '),
+      }),
+      delegate: const OpenDelegate(widget: _OverrideKeysView()),
+    );
+  }
+}
+
+class _OverrideKeysView extends ConsumerWidget {
+  const _OverrideKeysView();
+
+  void _setKeys(WidgetRef ref, Set<String> keys) {
+    ref
+        .read(patchClashConfigProvider.notifier)
+        .update((state) => state.copyWith(dnsOverrideKeys: keys));
+  }
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final keys = ref.watch(
+      patchClashConfigProvider.select((state) => state.dnsOverrideKeys),
+    );
+    return BaseScaffold(
+      title: appLocalizations.dnsOverrideKeys,
+      actions: [
+        if (!keys.containsAll(allDnsKeys))
+          IconButton(
+            tooltip: appLocalizations.selectAll,
+            onPressed: () => _setKeys(ref, {...allDnsKeys}),
+            icon: const Icon(Icons.select_all),
+          ),
+      ],
+      body: ListView(
+        children: [
+          ListTile(title: Text(appLocalizations.dnsOverrideKeysTip)),
+          for (final key in allDnsKeys)
+            ListItem.checkbox(
+              title: Text(key),
+              delegate: CheckboxDelegate(
+                value: keys.contains(key),
+                onChanged: (value) => _setKeys(
+                  ref,
+                  value == true ? {...keys, key} : ({...keys}..remove(key)),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 class StatusItem extends ConsumerWidget {
   const StatusItem({super.key});
 
@@ -42,7 +108,9 @@ class StatusItem extends ConsumerWidget {
         onChanged: (bool value) async {
           ref
               .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.dns(enable: value));
+              .update(
+                (state) => state.withDns(state.dns.copyWith(enable: value)),
+              );
         },
       ),
     );
@@ -75,7 +143,9 @@ class ListenItem extends ConsumerWidget {
           }
           ref
               .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.dns(listen: value));
+              .update(
+                (state) => state.withDns(state.dns.copyWith(listen: value)),
+              );
         },
       ),
     );
@@ -98,7 +168,9 @@ class PreferH3Item extends ConsumerWidget {
         onChanged: (bool value) async {
           ref
               .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.dns(preferH3: value));
+              .update(
+                (state) => state.withDns(state.dns.copyWith(preferH3: value)),
+              );
         },
       ),
     );
@@ -121,7 +193,10 @@ class RespectRulesItem extends ConsumerWidget {
         onChanged: (bool value) async {
           ref
               .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.dns(respectRules: value));
+              .update(
+                (state) =>
+                    state.withDns(state.dns.copyWith(respectRules: value)),
+              );
         },
       ),
     );
@@ -148,7 +223,10 @@ class DnsModeItem extends ConsumerWidget {
           }
           ref
               .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.dns(enhancedMode: value));
+              .update(
+                (state) =>
+                    state.withDns(state.dns.copyWith(enhancedMode: value)),
+              );
         },
         textBuilder: (dnsMode) => dnsMode.name,
         value: enhancedMode,
@@ -183,7 +261,10 @@ class FakeIpRangeItem extends ConsumerWidget {
           }
           ref
               .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.dns(fakeIpRange: value));
+              .update(
+                (state) =>
+                    state.withDns(state.dns.copyWith(fakeIpRange: value)),
+              );
         },
       ),
     );
@@ -218,7 +299,9 @@ class FakeIpFilterItem extends ConsumerWidget {
           ref
               .read(patchClashConfigProvider.notifier)
               .update(
-                (state) => state.copyWith.dns(fakeIpFilter: List.from(items)),
+                (state) => state.withDns(
+                  state.dns.copyWith(fakeIpFilter: List.from(items)),
+                ),
               );
         },
       ),
@@ -247,8 +330,9 @@ class DefaultNameserverItem extends ConsumerWidget {
           ref
               .read(patchClashConfigProvider.notifier)
               .update(
-                (state) =>
-                    state.copyWith.dns(defaultNameserver: List.from(items)),
+                (state) => state.withDns(
+                  state.dns.copyWith(defaultNameserver: List.from(items)),
+                ),
               );
         },
       ),
@@ -277,7 +361,9 @@ class NameserverItem extends ConsumerWidget {
           ref
               .read(patchClashConfigProvider.notifier)
               .update(
-                (state) => state.copyWith.dns(nameserver: List.from(items)),
+                (state) => state.withDns(
+                  state.dns.copyWith(nameserver: List.from(items)),
+                ),
               );
         },
       ),
@@ -300,7 +386,9 @@ class UseHostsItem extends ConsumerWidget {
         onChanged: (bool value) async {
           ref
               .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.dns(useHosts: value));
+              .update(
+                (state) => state.withDns(state.dns.copyWith(useHosts: value)),
+              );
         },
       ),
     );
@@ -322,7 +410,10 @@ class UseSystemHostsItem extends ConsumerWidget {
         onChanged: (bool value) async {
           ref
               .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.dns(useSystemHosts: value));
+              .update(
+                (state) =>
+                    state.withDns(state.dns.copyWith(useSystemHosts: value)),
+              );
         },
       ),
     );
@@ -348,7 +439,10 @@ class NameserverPolicyItem extends ConsumerWidget {
         onChanged: (value) {
           ref
               .read(patchClashConfigProvider.notifier)
-              .update((state) => state.copyWith.dns(nameserverPolicy: value));
+              .update(
+                (state) =>
+                    state.withDns(state.dns.copyWith(nameserverPolicy: value)),
+              );
         },
       ),
     );
@@ -378,8 +472,9 @@ class ProxyServerNameserverItem extends ConsumerWidget {
           ref
               .read(patchClashConfigProvider.notifier)
               .update(
-                (state) =>
-                    state.copyWith.dns(proxyServerNameserver: List.from(items)),
+                (state) => state.withDns(
+                  state.dns.copyWith(proxyServerNameserver: List.from(items)),
+                ),
               );
         },
       ),
@@ -447,8 +542,9 @@ class ProxyServerNameserverPolicyItem extends ConsumerWidget {
           ref
               .read(patchClashConfigProvider.notifier)
               .update(
-                (state) =>
-                    state.copyWith.dns(proxyServerNameserverPolicy: value),
+                (state) => state.withDns(
+                  state.dns.copyWith(proxyServerNameserverPolicy: value),
+                ),
               );
         },
       ),
@@ -530,6 +626,7 @@ class _DnsAdvancedSection extends StatelessWidget {
 
 const dnsItems = <Widget>[
   OverrideItem(),
+  OverrideKeysItem(),
   _DnsCoreSection(),
   _DnsServersSection(),
   _DnsFakeIpSection(),

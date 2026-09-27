@@ -3,7 +3,11 @@ import 'package:fl_clash/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  SetupState stateWith({required bool overrideDns, required Dns dns}) {
+  SetupState stateWith({
+    required bool overrideDns,
+    required Dns dns,
+    Set<String> dnsOverrideKeys = const {},
+  }) {
     return SetupState(
       profileId: 7,
       profileLastUpdateDate: 1,
@@ -12,6 +16,7 @@ void main() {
       script: null,
       overrideDns: overrideDns,
       dns: dns,
+      dnsOverrideKeys: dnsOverrideKeys,
     );
   }
 
@@ -23,6 +28,17 @@ void main() {
     final next = stateWith(
       overrideDns: false,
       dns: defaultDns.copyWith(enhancedMode: DnsMode.redirHost),
+    );
+
+    expect(next.needSetup(last), isTrue);
+  });
+
+  test('picking another override key needs a rebuild', () {
+    final last = stateWith(overrideDns: true, dns: defaultDns);
+    final next = stateWith(
+      overrideDns: true,
+      dns: defaultDns,
+      dnsOverrideKeys: {'ipv6'},
     );
 
     expect(next.needSetup(last), isTrue);
