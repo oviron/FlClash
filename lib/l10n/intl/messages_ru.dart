@@ -303,8 +303,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "findProcessMode": MessageLookupByLibrary.simpleMessage(
       "Режим поиска процесса",
     ),
+    "findProcessModeAlways": MessageLookupByLibrary.simpleMessage(
+      "Для каждого соединения",
+    ),
     "findProcessModeDesc": MessageLookupByLibrary.simpleMessage(
-      "Используется, только если в YAML профиля не задано find-process-mode. Возможны небольшие потери производительности.",
+      "Используется, только если в YAML профиля не задан find-process-mode. Поиск приложения для каждого соединения расходует батарею.",
+    ),
+    "findProcessModeOff": MessageLookupByLibrary.simpleMessage("Выключен"),
+    "findProcessModeStrict": MessageLookupByLibrary.simpleMessage(
+      "Только когда нужно правилам",
     ),
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage(
       "Вы уверены, что хотите принудительно перезапустить ядро?",

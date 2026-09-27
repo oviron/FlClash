@@ -7,7 +7,7 @@ class Migration {
 
   Migration._internal();
 
-  final currentVersion = 1;
+  final currentVersion = 2;
 
   factory Migration() {
     _instance ??= Migration._internal();
@@ -19,9 +19,17 @@ class Migration {
     required Future<Config> Function(MigrationData data) sync,
   }) async {
     _oldVersion = await preferences.getVersion();
-    if (_oldVersion == currentVersion) {
+    if (_oldVersion >= 1) {
       try {
-        return Config.realFromJson(configMap);
+        if (_oldVersion == 1 && configMap != null) {
+          migrateFindProcessMode(configMap);
+        }
+        final config = Config.realFromJson(configMap);
+        if (_oldVersion != currentVersion) {
+          await preferences.saveConfig(config);
+          await preferences.setVersion(currentVersion);
+        }
+        return config;
       } catch (_) {
         final isV0 = configMap?['proxiesStyle'] != null;
         if (isV0) {
@@ -39,6 +47,8 @@ class Migration {
         await preferences.clearClashConfig();
       }
       data = await _oldToNow(configMap);
+      final migrated = data.configMap;
+      if (migrated != null) migrateFindProcessMode(migrated);
     }
     final res = await sync(data);
     await preferences.setVersion(currentVersion);
@@ -47,6 +57,14 @@ class Migration {
 
   Future<MigrationData> _oldToNow(Map<String, Object?> configMap) async {
     return await oldToNowTask(configMap);
+  }
+}
+
+// `always` was the stored default, indistinguishable from a deliberate choice.
+void migrateFindProcessMode(Map<String, Object?> configMap) {
+  final clash = configMap['patchClashConfig'];
+  if (clash is Map && clash['find-process-mode'] == 'always') {
+    clash['find-process-mode'] = 'strict';
   }
 }
 

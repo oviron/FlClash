@@ -20,6 +20,7 @@ void main() {
       for (final v in ProxyCardType.values) v.label,
       for (final v in RouteMode.values) v.label,
       for (final v in RestoreStrategy.values) v.label,
+      for (final v in FindProcessMode.values) v.label,
       for (final v in DynamicSchemeVariant.values) v.label,
       for (final l in AppLocalizations.delegate.supportedLocales)
         localeDisplayName(l.toString()),

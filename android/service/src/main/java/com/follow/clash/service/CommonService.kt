@@ -7,8 +7,6 @@ import android.os.IBinder
 import com.follow.clash.common.modules.moduleLoader
 import com.follow.clash.service.modules.NetworkObserveModule
 import com.follow.clash.service.modules.NotificationModule
-import com.follow.clash.service.modules.SuspendModule
-import io.github.oviron.libmihomo.Clash
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,7 +22,6 @@ class CommonService : Service(), IBaseService,
     private val loader = moduleLoader {
         install(NetworkObserveModule(self))
         install(NotificationModule(self))
-        install(SuspendModule(self))
     }
 
     override fun onCreate() {
@@ -37,11 +34,6 @@ class CommonService : Service(), IBaseService,
         loader.cancel()
         handleDestroy()
         super.onDestroy()
-    }
-
-    override fun onLowMemory() {
-        if (Clash.isLoaded()) Clash.forceGC()
-        super.onLowMemory()
     }
 
     private val binder = LocalBinder()

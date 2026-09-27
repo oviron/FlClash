@@ -234,9 +234,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "fileDesc": MessageLookupByLibrary.simpleMessage("直接上传配置文件"),
     "fileIsUpdate": MessageLookupByLibrary.simpleMessage("文件有修改，是否保存修改"),
     "findProcessMode": MessageLookupByLibrary.simpleMessage("查找进程"),
+    "findProcessModeAlways": MessageLookupByLibrary.simpleMessage("所有连接"),
     "findProcessModeDesc": MessageLookupByLibrary.simpleMessage(
-      "仅在配置文件 YAML 未指定 find-process-mode 时使用。开启后会有一定性能损耗。",
+      "仅在配置文件 YAML 未指定 find-process-mode 时使用。对每个连接查找应用会增加耗电。",
     ),
+    "findProcessModeOff": MessageLookupByLibrary.simpleMessage("关闭"),
+    "findProcessModeStrict": MessageLookupByLibrary.simpleMessage("仅在规则需要时"),
     "forceRestartCoreTip": MessageLookupByLibrary.simpleMessage("您确定要强制重启核心吗？"),
     "forkOf": m8,
     "fruitSaladScheme": MessageLookupByLibrary.simpleMessage("果缤纷"),
