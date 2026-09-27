@@ -7,7 +7,6 @@ import android.os.IBinder
 import com.follow.clash.common.modules.moduleLoader
 import com.follow.clash.service.modules.NetworkObserveModule
 import com.follow.clash.service.modules.NotificationModule
-import com.follow.clash.service.modules.SuspendModule
 import io.github.oviron.libmihomo.Clash
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +23,6 @@ class CommonService : Service(), IBaseService,
     private val loader = moduleLoader {
         install(NetworkObserveModule(self))
         install(NotificationModule(self))
-        install(SuspendModule(self))
     }
 
     override fun onCreate() {

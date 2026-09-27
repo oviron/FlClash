@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 // Owns the tunnel PARTIAL_WAKE_LOCK and holds it only while it earns its keep:
 // released after a grace period once the screen goes off, or immediately on
 // Doze, and re-acquired on screen-on. The WifiLock stays always-on in
-// VpnService (cheaper). Modelled on SuspendModule's screen flow.
+// VpnService (cheaper).
 class WakeLockModule(private val service: Service) : Module() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var wakeLock: PowerManager.WakeLock? = null
