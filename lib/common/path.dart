@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
@@ -7,27 +6,11 @@ import 'package:path_provider/path_provider.dart';
 
 class AppPath {
   static AppPath? _instance;
-  Completer<Directory> dataDir = Completer();
-  Completer<Directory> downloadDir = Completer();
-  Completer<Directory> tempDir = Completer();
-  Completer<Directory> cacheDir = Completer();
-  late String appDirPath;
+  late final Future<Directory> _dataDir = getApplicationSupportDirectory();
+  late final Future<Directory?> _downloadDir = getDownloadsDirectory();
+  late final Future<Directory> _tempDir = getTemporaryDirectory();
 
-  AppPath._internal() {
-    appDirPath = join(dirname(Platform.resolvedExecutable));
-    getApplicationSupportDirectory().then((value) {
-      dataDir.complete(value);
-    });
-    getTemporaryDirectory().then((value) {
-      tempDir.complete(value);
-    });
-    getDownloadsDirectory().then((value) {
-      downloadDir.complete(value);
-    });
-    getApplicationCacheDirectory().then((value) {
-      cacheDir.complete(value);
-    });
-  }
+  AppPath._internal();
 
   factory AppPath() {
     _instance ??= AppPath._internal();
@@ -45,17 +28,13 @@ class AppPath {
     return join(executableDirPath, 'FlClashCore$executableExtension');
   }
 
-  String get helperPath {
-    return join(executableDirPath, '$appHelperService$executableExtension');
-  }
-
-  Future<String> get downloadDirPath async {
-    final directory = await downloadDir.future;
-    return directory.path;
+  Future<String?> get downloadDirPath async {
+    final directory = await _downloadDir;
+    return directory?.path;
   }
 
   Future<String> get homeDirPath async {
-    final directory = await dataDir.future;
+    final directory = await _dataDir;
     return directory.path;
   }
 
@@ -75,7 +54,7 @@ class AppPath {
   }
 
   Future<String> get tempFilePath async {
-    final mTempDir = await tempDir.future;
+    final mTempDir = await _tempDir;
     return join(mTempDir.path, 'temp${utils.id}');
   }
 
@@ -89,11 +68,6 @@ class AppPath {
     return join(mHomeDirPath, 'config.yaml');
   }
 
-  Future<String> get sharedFilePath async {
-    final mHomeDirPath = await homeDirPath;
-    return join(mHomeDirPath, 'shared.json');
-  }
-
   Future<String> get networkRulesCacheDirPath async {
     final mHomeDirPath = await homeDirPath;
     return join(mHomeDirPath, 'network-rules-cache');
@@ -105,12 +79,12 @@ class AppPath {
   }
 
   Future<String> get sharedPreferencesPath async {
-    final directory = await dataDir.future;
+    final directory = await _dataDir;
     return join(directory.path, 'shared_preferences.json');
   }
 
   Future<String> get profilesPath async {
-    final directory = await dataDir.future;
+    final directory = await _dataDir;
     return join(directory.path, profilesDirectoryName);
   }
 
@@ -128,11 +102,6 @@ class AppPath {
     return join(path, '$fileName.js');
   }
 
-  Future<String> getIconsCacheDir() async {
-    final directory = await cacheDir.future;
-    return join(directory.path, 'icons');
-  }
-
   Future<String> getProvidersRootPath() async {
     final directory = await profilesPath;
     return join(directory, 'providers');
@@ -141,20 +110,6 @@ class AppPath {
   Future<String> getProvidersDirPath(String id) async {
     final directory = await profilesPath;
     return join(directory, 'providers', id);
-  }
-
-  Future<String> getProvidersFilePath(
-    String id,
-    String type,
-    String url,
-  ) async {
-    final directory = await profilesPath;
-    return join(directory, 'providers', id, type, url.toMd5());
-  }
-
-  Future<String> get tempPath async {
-    final directory = await tempDir.future;
-    return directory.path;
   }
 }
 
