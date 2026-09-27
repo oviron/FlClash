@@ -265,15 +265,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS-перехват"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("Режим DNS"),
+    "dnsOverrideKeys": MessageLookupByLibrary.simpleMessage(
+      "Какие ключи перекрывать",
+    ),
+    "dnsOverrideKeysAll": MessageLookupByLibrary.simpleMessage(
+      "Все: блок DNS приложения заменяет блок профиля",
+    ),
+    "dnsOverrideKeysNone": MessageLookupByLibrary.simpleMessage(
+      "Пока никакие: DNS профиля остаётся как есть",
+    ),
+    "dnsOverrideKeysTip": MessageLookupByLibrary.simpleMessage(
+      "Значения профиля заменяются только в отмеченных ключах. Изменённая настройка отмечается сама.",
+    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("Серверы"),
     "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
       "В профиле нет своего DNS, поэтому применяются настройки ниже",
     ),
     "dnsSourceAppOverride": MessageLookupByLibrary.simpleMessage(
-      "Настройки DNS ниже перекрывают профиль",
+      "Отмеченные ниже ключи DNS перекрывают профиль",
     ),
     "dnsSourceProfile": MessageLookupByLibrary.simpleMessage(
-      "Профиль задаёт свой DNS. Включите, чтобы применить настройки ниже",
+      "Профиль задаёт свой DNS. Включите, чтобы применить отмеченные ниже ключи",
     ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Вы хотите пропустить",
@@ -520,7 +532,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Политика сервера имен",
     ),
     "nameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
-      "Указать соответствующую политику сервера имен",
+      "DNS-серверы для доменов; несколько разделяйте запятыми",
     ),
     "networkDesc": MessageLookupByLibrary.simpleMessage(
       "Изменение настроек, связанных с сетью",

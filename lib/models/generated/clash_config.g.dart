@@ -340,6 +340,11 @@ _ClashConfig _$ClashConfigFromJson(Map<String, dynamic> json) => _ClashConfig(
   dns: json['dns'] == null
       ? defaultDns
       : Dns.safeDnsFromJson(json['dns'] as Map<String, Object?>),
+  dnsOverrideKeys:
+      (json['dns-override-keys'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toSet() ??
+      const {},
   geoXUrl: json['geox-url'] == null
       ? defaultGeoXUrl
       : GeoXUrl.safeFormJson(json['geox-url'] as Map<String, Object?>?),
@@ -377,6 +382,7 @@ Map<String, dynamic> _$ClashConfigToJson(_ClashConfig instance) =>
       'tcp-concurrent': instance.tcpConcurrent,
       'tun': instance.tun,
       'dns': instance.dns,
+      'dns-override-keys': instance.dnsOverrideKeys.toList(),
       'geox-url': instance.geoXUrl,
       'geodata-loader': _$GeodataLoaderEnumMap[instance.geodataLoader]!,
       'proxy-groups': instance.proxyGroups,

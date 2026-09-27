@@ -289,6 +289,34 @@ abstract class Dns with _$Dns {
   }
 }
 
+final Set<String> allDnsKeys = Set.unmodifiable(defaultDns.toJson().keys);
+
+const _dnsOverrideKeysJson = 'dns-override-keys';
+
+// Saved before the key set existed: the override then replaced the whole block.
+Map<String, Object?> _withLegacyDnsOverrideKeys(Map<String, Object?> json) =>
+    json.containsKey(_dnsOverrideKeysJson)
+    ? json
+    : {...json, _dnsOverrideKeysJson: allDnsKeys.toList()};
+
+extension ClashConfigDnsExt on ClashConfig {
+  // An edited key stays overridden even when set back to its default,
+  // so the app's default can still win over the profile's value.
+  ClashConfig withDns(Dns next) {
+    final before = dns.toJson();
+    final after = next.toJson();
+    return copyWith(
+      dns: next,
+      dnsOverrideKeys: {
+        ...dnsOverrideKeys,
+        for (final key in after.keys)
+          if (!const DeepCollectionEquality().equals(before[key], after[key]))
+            key,
+      },
+    );
+  }
+}
+
 @freezed
 abstract class GeoXUrl with _$GeoXUrl {
   // Defaults via jsDelivr (Fastly CDN, not github.com Fastly subnet which RKN
@@ -482,6 +510,10 @@ abstract class ClashConfig with _$ClashConfig {
     @Default(true) @JsonKey(name: 'tcp-concurrent') bool tcpConcurrent,
     @Default(defaultTun) @JsonKey(fromJson: Tun.safeFormJson) Tun tun,
     @Default(defaultDns) @JsonKey(fromJson: Dns.safeDnsFromJson) Dns dns,
+    // With the override on, only these DNS keys replace the profile's.
+    @Default({})
+    @JsonKey(name: _dnsOverrideKeysJson)
+    Set<String> dnsOverrideKeys,
     @Default(defaultGeoXUrl)
     @JsonKey(name: 'geox-url', fromJson: GeoXUrl.safeFormJson)
     GeoXUrl geoXUrl,
@@ -494,7 +526,7 @@ abstract class ClashConfig with _$ClashConfig {
   }) = _ClashConfig;
 
   factory ClashConfig.fromJson(Map<String, Object?> json) =>
-      _$ClashConfigFromJson(json);
+      _$ClashConfigFromJson(_withLegacyDnsOverrideKeys(json));
 
   factory ClashConfig.safeFormJson(Map<String, Object?>? json) {
     if (json == null) {

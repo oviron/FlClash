@@ -1744,10 +1744,10 @@ class AppLocalizations {
     );
   }
 
-  /// `The DNS settings below override the profile`
+  /// `The DNS keys picked below override the profile's`
   String get dnsSourceAppOverride {
     return Intl.message(
-      'The DNS settings below override the profile',
+      'The DNS keys picked below override the profile\'s',
       name: 'dnsSourceAppOverride',
       desc: '',
       args: [],
@@ -1764,11 +1764,51 @@ class AppLocalizations {
     );
   }
 
-  /// `The profile defines its own DNS. Turn this on to apply the settings below`
+  /// `The profile defines its own DNS. Turn this on to apply the keys picked below`
   String get dnsSourceProfile {
     return Intl.message(
-      'The profile defines its own DNS. Turn this on to apply the settings below',
+      'The profile defines its own DNS. Turn this on to apply the keys picked below',
       name: 'dnsSourceProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keys to override`
+  String get dnsOverrideKeys {
+    return Intl.message(
+      'Keys to override',
+      name: 'dnsOverrideKeys',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `None yet: the profile's DNS stays as is`
+  String get dnsOverrideKeysNone {
+    return Intl.message(
+      'None yet: the profile\'s DNS stays as is',
+      name: 'dnsOverrideKeysNone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All: the app's DNS block replaces the profile's`
+  String get dnsOverrideKeysAll {
+    return Intl.message(
+      'All: the app\'s DNS block replaces the profile\'s',
+      name: 'dnsOverrideKeysAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only checked keys replace the profile's values. Editing a setting checks its key.`
+  String get dnsOverrideKeysTip {
+    return Intl.message(
+      'Only checked keys replace the profile\'s values. Editing a setting checks its key.',
+      name: 'dnsOverrideKeysTip',
       desc: '',
       args: [],
     );
@@ -1904,10 +1944,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Specify the corresponding nameserver policy`
+  /// `Nameservers per domain; separate several with commas`
   String get nameserverPolicyDesc {
     return Intl.message(
-      'Specify the corresponding nameserver policy',
+      'Nameservers per domain; separate several with commas',
       name: 'nameserverPolicyDesc',
       desc: '',
       args: [],

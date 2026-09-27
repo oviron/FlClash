@@ -357,6 +357,7 @@ abstract class SetupState with _$SetupState {
     required Script? script,
     required bool overrideDns,
     required Dns dns,
+    required Set<String> dnsOverrideKeys,
   }) = _SetupState;
 }
 
@@ -396,6 +397,12 @@ extension SetupStateExt on SetupState {
     // block when the profile leaves dns.enable off, so an edit rebuilds either
     // way.
     if (dns != lastSetupState.dns) {
+      return true;
+    }
+    if (!const SetEquality<String>().equals(
+      dnsOverrideKeys,
+      lastSetupState.dnsOverrideKeys,
+    )) {
       return true;
     }
     return false;

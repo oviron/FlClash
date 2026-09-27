@@ -204,15 +204,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsFakeIpSection": MessageLookupByLibrary.simpleMessage("Fake-IP"),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS劫持"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS模式"),
+    "dnsOverrideKeys": MessageLookupByLibrary.simpleMessage("要覆写的键"),
+    "dnsOverrideKeysAll": MessageLookupByLibrary.simpleMessage(
+      "全部：用应用的 DNS 配置替换配置文件的",
+    ),
+    "dnsOverrideKeysNone": MessageLookupByLibrary.simpleMessage(
+      "暂无：保持配置文件的 DNS 不变",
+    ),
+    "dnsOverrideKeysTip": MessageLookupByLibrary.simpleMessage(
+      "只有勾选的键会替换配置文件的值。修改某项设置会自动勾选它的键。",
+    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("服务器"),
     "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
       "配置文件没有自己的 DNS，因此使用下方设置",
     ),
     "dnsSourceAppOverride": MessageLookupByLibrary.simpleMessage(
-      "下方的 DNS 设置将覆盖配置文件",
+      "下方选中的 DNS 键将覆盖配置文件",
     ),
     "dnsSourceProfile": MessageLookupByLibrary.simpleMessage(
-      "配置文件已自带 DNS。开启后才会应用下方设置",
+      "配置文件已自带 DNS。开启后才会应用下方选中的键",
     ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage("是否要通过"),
     "download": MessageLookupByLibrary.simpleMessage("下载"),
@@ -388,7 +398,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "nameserver": MessageLookupByLibrary.simpleMessage("域名服务器"),
     "nameserverDesc": MessageLookupByLibrary.simpleMessage("用于解析域名"),
     "nameserverPolicy": MessageLookupByLibrary.simpleMessage("域名服务器策略"),
-    "nameserverPolicyDesc": MessageLookupByLibrary.simpleMessage("指定对应域名服务器策略"),
+    "nameserverPolicyDesc": MessageLookupByLibrary.simpleMessage(
+      "按域名指定域名服务器，多个用逗号分隔",
+    ),
     "networkDesc": MessageLookupByLibrary.simpleMessage("修改网络相关设置"),
     "networkDetection": MessageLookupByLibrary.simpleMessage("网络检测"),
     "networkException": MessageLookupByLibrary.simpleMessage("网络异常，请检查连接后重试"),
