@@ -115,3 +115,12 @@ Future<void> seedGeositeIfMissing() async {
     commonPrint.log('geosite seed: $e', logLevel: LogLevel.warning);
   }
 }
+
+// A missing/stale/corrupt geo database breaks only the GeoSite/GeoIP rules; the
+// rest of the config still applies, so setup treats it as a warning.
+bool isGeoDataWarning(String message) {
+  final lower = message.toLowerCase();
+  return lower.contains('geosite data error') ||
+      lower.contains('geoip data error') ||
+      (lower.contains('decode') && lower.contains('geo'));
+}
