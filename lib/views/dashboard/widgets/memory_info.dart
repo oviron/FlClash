@@ -16,33 +16,17 @@ class MemoryInfo extends StatefulWidget {
   State<MemoryInfo> createState() => _MemoryInfoState();
 }
 
-class _MemoryInfoState extends State<MemoryInfo> {
-  Timer? timer;
+class _MemoryInfoState extends State<MemoryInfo>
+    with WidgetsBindingObserver, ActivePollingMixin<MemoryInfo> {
+  @override
+  Duration get pollInterval => const Duration(seconds: 2);
 
   @override
-  void initState() {
-    super.initState();
-    _updateMemory();
-  }
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
-  }
-
-  Future<void> _updateMemory() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final rss = ProcessInfo.currentRss;
-      if (coreController.isCompleted) {
-        _memoryStateNotifier.value = await coreController.getMemory() + rss;
-      } else {
-        _memoryStateNotifier.value = rss;
-      }
-      timer = Timer(const Duration(seconds: 2), () async {
-        unawaited(_updateMemory());
-      });
-    });
+  Future<void> poll() async {
+    final rss = ProcessInfo.currentRss;
+    _memoryStateNotifier.value = coreController.isCompleted
+        ? await coreController.getMemory() + rss
+        : rss;
   }
 
   @override

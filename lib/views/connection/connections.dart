@@ -18,13 +18,12 @@ class ConnectionsView extends ConsumerStatefulWidget {
   ConsumerState<ConnectionsView> createState() => _ConnectionsViewState();
 }
 
-class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
+class _ConnectionsViewState extends ConsumerState<ConnectionsView>
+    with WidgetsBindingObserver, ActivePollingMixin<ConnectionsView> {
   final _connectionsStateNotifier = ValueNotifier<TrackerInfosState>(
     const TrackerInfosState(),
   );
   final ScrollController _scrollController = ScrollController();
-
-  Timer? timer;
 
   Map<String, ({int upload, int download})> _prevBytes = {};
   DateTime? _lastUpdate;
@@ -79,25 +78,15 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
     );
   }
 
-  Future<void> _updateConnectionsTask() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (mounted) {
-        await _updateConnections();
-        timer = Timer(const Duration(seconds: 1), () async {
-          unawaited(_updateConnectionsTask());
-        });
-      }
-    });
-  }
+  @override
+  Duration get pollInterval => const Duration(seconds: 1);
 
   @override
-  void initState() {
-    super.initState();
-    _updateConnectionsTask();
-  }
+  Future<void> poll() => _updateConnections();
 
   Future<void> _updateConnections() async {
     final raw = await coreController.getConnections();
+    if (!mounted) return;
     final now = DateTime.now();
     final interval = _lastUpdate == null
         ? 0.0
@@ -120,10 +109,8 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
 
   @override
   void dispose() {
-    timer?.cancel();
     _connectionsStateNotifier.dispose();
     _scrollController.dispose();
-    timer = null;
     super.dispose();
   }
 
