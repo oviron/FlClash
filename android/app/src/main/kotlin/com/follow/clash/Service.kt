@@ -31,10 +31,11 @@ object Service {
 
     var onServiceDisconnected: ((String) -> Unit)? = null
 
+    // The plugin goes first: Dart must drop the dead core before a recovery start reaches it.
+    // Headless runs have no plugin, and their tunnel still needs recovering.
     private fun handleServiceDisconnected(message: String) {
-        onServiceDisconnected?.let {
-            it(message)
-        }
+        onServiceDisconnected?.invoke(message)
+        State.request { handleRemoteDied() }
     }
 
     fun bind() {

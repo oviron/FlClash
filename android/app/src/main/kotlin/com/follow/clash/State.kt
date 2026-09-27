@@ -10,6 +10,7 @@ import androidx.core.content.edit
 import androidx.core.net.toUri
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.LifecycleSequencer
+import com.follow.clash.common.RecoveryBudget
 import com.follow.clash.common.shouldShowTileActionToast
 import com.follow.clash.models.SharedState
 import com.follow.clash.plugins.AppPlugin
@@ -52,6 +53,9 @@ object State {
     private val lifecycle = LifecycleSequencer(GlobalState)
 
     private val runLock = lifecycle.lock
+
+    // A tunnel that dies on every start pauses instead of looping.
+    private val recoveryBudget = RecoveryBudget(maxAttempts = 3, windowMs = 10 * 60_000L)
 
     var runTime: Long = 0
 
@@ -111,10 +115,27 @@ object State {
 
     // A start waiting for consent stays PENDING: it binds a fresh :remote when it commits.
     suspend fun handleRemoteDied() {
-        runLock.withLock {
+        val lost = runLock.withLock {
             runTime = 0
-            if (runStateFlow.value == RunState.START) runStateFlow.tryEmit(RunState.STOP)
+            (runStateFlow.value == RunState.START).also {
+                if (it) runStateFlow.tryEmit(RunState.STOP)
+            }
         }
+        if (lost) recoverTunnel()
+    }
+
+    suspend fun handleRecoveryCheck() {
+        handleSyncState()
+        if (runStateFlow.value == RunState.STOP) recoverTunnel()
+    }
+
+    private suspend fun recoverTunnel() {
+        if (!recoveryBudget.tryAcquire()) {
+            GlobalState.log("Tunnel recovery paused: too many restarts")
+            return
+        }
+        GlobalState.log("Recovering the tunnel")
+        handleStartServiceAction()
     }
 
     // A START left behind by a service that died unseen would reject every later start.
@@ -246,7 +267,10 @@ object State {
                     settled = true
                     commitStartLocked(ticket, options)
                 }
-                if (started) appPlugin?.activity?.let(::requestBatteryExemptionOnce)
+                if (started) {
+                    RecoveryJob.schedule()
+                    appPlugin?.activity?.let(::requestBatteryExemptionOnce)
+                }
             } finally {
                 // Once settled, a PENDING seen here belongs to a later stop.
                 if (!settled && runStateFlow.value == RunState.PENDING) {
@@ -287,6 +311,7 @@ object State {
     }
 
     fun handleStopService() {
+        RecoveryJob.cancel()
         lifecycle.cancelStarts()
         lifecycle.launch {
             runLock.withLock {

@@ -18,6 +18,8 @@ class BroadcastReceiver : BroadcastReceiver() {
 
             BroadcastAction.SERVICE_DESTROYED.action -> {
                 GlobalState.log("Receiver service destroyed")
+                // Revoked: even a report the session check drops must not leave recovery armed.
+                RecoveryJob.cancel()
                 val session = intent.getLongExtra(EXTRA_RUN_TIME, 0L)
                 State.request { handleStopServiceAction(session = session) }
             }
