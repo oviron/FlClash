@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:fl_clash/core/interface.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -40,5 +41,18 @@ void main() {
     core.gate.complete();
     await reset;
     expect(done, isTrue);
+  });
+
+  test('resetTraffic gives up on a core that never answers', () {
+    fakeAsync((async) {
+      final core = _GatedCore();
+      var done = false;
+      core.resetTraffic().then((_) => done = true);
+
+      async.elapse(const Duration(seconds: 4));
+      expect(done, isFalse);
+      async.elapse(const Duration(seconds: 2));
+      expect(done, isTrue);
+    });
   });
 }

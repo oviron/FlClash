@@ -237,7 +237,10 @@ abstract class CoreHandlerInterface with CoreInterface {
   }
 
   @override
-  Future<void> resetTraffic() => _invoke(method: ActionMethod.resetTraffic);
+  // Awaited on the stop path; a hung core must not hold it for the 3 min default.
+  Future<void> resetTraffic() => _invoke(
+    method: ActionMethod.resetTraffic,
+  ).withTimeout(timeout: const Duration(seconds: 5), onTimeout: () => null);
 
   @override
   void startLog() {
