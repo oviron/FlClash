@@ -173,10 +173,11 @@ object State {
     // session is the run time a service-destroyed report belongs to; 0 when the stop is not such a report.
     suspend fun handleStopServiceAction(fromTile: Boolean = false, session: Long = 0L) {
         runLock.withLock {
-            // A late report about an earlier tunnel must not stop the one running now.
-            if (session != 0L && session != runTime) {
-                return
-            }
+            val stale = session != 0L && session != runTime
+            // A revoke disarms recovery; a late report about an earlier tunnel must not
+            // stop or disarm the one running now. A fresh UI process knows no tunnel.
+            if (session != 0L && (!stale || runStateFlow.value != RunState.START)) RecoveryJob.cancel()
+            if (stale) return
             if (flutterEngine != null) {
                 tilePlugin?.handleStop()
                 return
