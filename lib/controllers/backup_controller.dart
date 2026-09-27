@@ -72,6 +72,7 @@ extension BackupControllerExt on AppController {
         migrationData.rules,
         migrationData.links,
         isOverride: isOverride,
+        networkRules: migrationData.networkRules,
       );
       final configMap = migrationData.configMap;
       if (option == RestoreOption.onlyProfiles || configMap == null) {
