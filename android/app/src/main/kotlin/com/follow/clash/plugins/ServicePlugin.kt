@@ -129,7 +129,6 @@ class ServicePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
     private fun onServiceDisconnected(message: String) {
         pendingCalls.failAll()
-        State.request { handleRemoteDied() }
         if (attached) {
             flutterMethodChannel.invokeMethodOnMainThread<Any>(ServiceMethod.CRASH, message)
         }

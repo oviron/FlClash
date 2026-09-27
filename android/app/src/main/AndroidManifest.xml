@@ -138,6 +138,11 @@
         </receiver>
 
         <service
+            android:name=".RecoveryJobService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
             android:name=".networkrules.NetworkRulesService"
             android:exported="false"
             android:foregroundServiceType="specialUse">

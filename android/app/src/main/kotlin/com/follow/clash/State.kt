@@ -10,6 +10,7 @@ import androidx.core.content.edit
 import androidx.core.net.toUri
 import com.follow.clash.common.GlobalState
 import com.follow.clash.common.LifecycleSequencer
+import com.follow.clash.common.RecoveryBudget
 import com.follow.clash.common.shouldShowTileActionToast
 import com.follow.clash.models.SharedState
 import com.follow.clash.plugins.AppPlugin
@@ -52,6 +53,9 @@ object State {
     private val lifecycle = LifecycleSequencer(GlobalState)
 
     private val runLock = lifecycle.lock
+
+    // A tunnel that dies on every start pauses instead of looping.
+    private val recoveryBudget = RecoveryBudget(maxAttempts = 3, windowMs = 10 * 60_000L)
 
     var runTime: Long = 0
 
@@ -111,10 +115,35 @@ object State {
 
     // A start waiting for consent stays PENDING: it binds a fresh :remote when it commits.
     suspend fun handleRemoteDied() {
-        runLock.withLock {
+        val lost = runLock.withLock {
             runTime = 0
-            if (runStateFlow.value == RunState.START) runStateFlow.tryEmit(RunState.STOP)
+            (runStateFlow.value == RunState.START).also {
+                if (it) runStateFlow.tryEmit(RunState.STOP)
+            }
         }
+        if (lost) recoverTunnel()
+    }
+
+    // True when a recovery start went out. A stop since the job fired has disarmed it.
+    suspend fun handleRecoveryCheck(): Boolean {
+        handleSyncState()
+        val lost = runLock.withLock { runStateFlow.value == RunState.STOP && RecoveryJob.isArmed }
+        return lost && recoverTunnel()
+    }
+
+    // Under runLock so it lands after, never before, a start committing now.
+    suspend fun disarmRecovery() {
+        runLock.withLock { RecoveryJob.cancel() }
+    }
+
+    private suspend fun recoverTunnel(): Boolean {
+        if (!recoveryBudget.tryAcquire()) {
+            GlobalState.log("Tunnel recovery paused: too many restarts")
+            return false
+        }
+        GlobalState.log("Recovering the tunnel")
+        handleStartServiceAction()
+        return true
     }
 
     // A START left behind by a service that died unseen would reject every later start.
@@ -144,10 +173,11 @@ object State {
     // session is the run time a service-destroyed report belongs to; 0 when the stop is not such a report.
     suspend fun handleStopServiceAction(fromTile: Boolean = false, session: Long = 0L) {
         runLock.withLock {
-            // A late report about an earlier tunnel must not stop the one running now.
-            if (session != 0L && session != runTime) {
-                return
-            }
+            val stale = session != 0L && session != runTime
+            // A revoke disarms recovery; a late report about an earlier tunnel must not
+            // stop or disarm the one running now. A fresh UI process knows no tunnel.
+            if (session != 0L && (!stale || runStateFlow.value != RunState.START)) RecoveryJob.cancel()
+            if (stale) return
             if (flutterEngine != null) {
                 tilePlugin?.handleStop()
                 return
@@ -270,6 +300,7 @@ object State {
             if (!lifecycle.isCancelled(ticket)) {
                 runTime = startRemote(options)
                 started = runTime != 0L
+                if (started) RecoveryJob.schedule()
             }
         } finally {
             runStateFlow.tryEmit(if (started) RunState.START else RunState.STOP)
@@ -290,6 +321,7 @@ object State {
         lifecycle.cancelStarts()
         lifecycle.launch {
             runLock.withLock {
+                RecoveryJob.cancel()
                 if (runStateFlow.value != RunState.START) {
                     return@launch
                 }
