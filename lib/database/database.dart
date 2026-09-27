@@ -113,8 +113,12 @@ class Database extends _$Database {
                 b,
                 profiles.map((item) => item.toCompanion()),
               );
-        scriptsDao.setAllWithBatch(b, scripts);
-        rulesDao.restoreWithBatch(b, rules, links);
+        isOverride
+            ? scriptsDao.setAllWithBatch(b, scripts)
+            : scriptsDao.putAllWithBatch(b, scripts);
+        isOverride
+            ? rulesDao.setAllWithBatch(b, rules, links)
+            : rulesDao.putAllWithBatch(b, rules, links);
         isOverride
             ? networkRulesDao.setAllWithBatch(b, networkRules)
             : networkRulesDao.putAllWithBatch(b, networkRules);

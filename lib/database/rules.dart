@@ -65,7 +65,9 @@ class RulesDao extends DatabaseAccessor<Database> with _$RulesDaoMixin {
     });
   }
 
-  void restoreWithBatch(
+  // Merge restore: upsert without deleting rows absent from the backup, so
+  // rules added on this device since the backup survive.
+  void putAllWithBatch(
     Batch batch,
     Iterable<Rule> rules,
     Iterable<ProfileRuleLink> links,
@@ -74,12 +76,21 @@ class RulesDao extends DatabaseAccessor<Database> with _$RulesDaoMixin {
       this.rules,
       rules.map((item) => item.toCompanion()),
     );
-    final ruleIds = rules.map((item) => item.id);
-    batch.deleteWhere(this.rules, (t) => t.id.isNotIn(ruleIds));
     batch.insertAllOnConflictUpdate(
       profileRuleLinks,
       links.map((item) => item.toCompanion()),
     );
+  }
+
+  // Override restore: rows absent from the backup are deleted.
+  void setAllWithBatch(
+    Batch batch,
+    Iterable<Rule> rules,
+    Iterable<ProfileRuleLink> links,
+  ) {
+    putAllWithBatch(batch, rules, links);
+    final ruleIds = rules.map((item) => item.id);
+    batch.deleteWhere(this.rules, (t) => t.id.isNotIn(ruleIds));
     final linkKeys = links.map((item) => item.key);
     batch.deleteWhere(profileRuleLinks, (t) => t.id.isNotIn(linkKeys));
   }
