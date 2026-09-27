@@ -1534,6 +1534,16 @@ class AppLocalizations {
     return Intl.message('Speed', name: 'speed', desc: '', args: []);
   }
 
+  /// `All applications`
+  String get allApplications {
+    return Intl.message(
+      'All applications',
+      name: 'allApplications',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Proxy group`
   String get proxyGroup {
     return Intl.message('Proxy group', name: 'proxyGroup', desc: '', args: []);

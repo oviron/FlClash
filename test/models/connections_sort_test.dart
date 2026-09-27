@@ -9,12 +9,13 @@ TrackerInfo _t(
   int download = 0,
   int? uploadSpeed,
   int? downloadSpeed,
+  String process = '',
 }) => TrackerInfo(
   id: id,
   upload: upload,
   download: download,
   start: DateTime(2020),
-  metadata: const Metadata(),
+  metadata: Metadata(process: process),
   chains: const [],
   rule: '',
   rulePayload: '',
@@ -92,6 +93,72 @@ void main() {
       );
       expect(out.single.uploadSpeed, 0);
       expect(out.single.downloadSpeed, 0);
+    });
+  });
+
+  group('connectionProcesses', () {
+    test('distinct, non-empty, sorted case-insensitively', () {
+      final infos = [
+        _t('a', process: 'chrome'),
+        _t('b', process: 'Telegram'),
+        _t('c', process: 'chrome'),
+        _t('d', process: ''),
+      ];
+      expect(connectionProcesses(infos), ['chrome', 'Telegram']);
+    });
+  });
+
+  group('resolveProcessFilter', () {
+    test('keeps an empty filter (all) as-is', () {
+      expect(resolveProcessFilter('', ['chrome']), '');
+    });
+
+    test('keeps a filter that is still present', () {
+      expect(resolveProcessFilter('chrome', ['chrome', 'telegram']), 'chrome');
+    });
+
+    test('falls back to all once the app vanishes from the list', () {
+      expect(resolveProcessFilter('chrome', ['telegram']), '');
+      expect(resolveProcessFilter('chrome', []), '');
+    });
+  });
+
+  group('TrackerInfosState.list process filter', () {
+    final chrome1 = _t('a', process: 'chrome');
+    final chrome2 = _t('b', process: 'chrome');
+    final telegram = _t('c', process: 'telegram');
+    final infos = [chrome1, chrome2, telegram];
+
+    test('empty filter keeps everything', () {
+      final state = TrackerInfosState(trackerInfos: infos);
+      expect(state.list.map((e) => e.id).toSet(), {'a', 'b', 'c'});
+    });
+
+    test('a set filter keeps only that process', () {
+      final state = TrackerInfosState(
+        trackerInfos: infos,
+        processFilter: 'chrome',
+      );
+      expect(state.list.map((e) => e.id).toSet(), {'a', 'b'});
+    });
+
+    test('combines with the search query', () {
+      final state = TrackerInfosState(
+        trackerInfos: infos,
+        processFilter: 'chrome',
+        query: 'nonexistent-host',
+      );
+      expect(state.list, isEmpty);
+    });
+
+    test('a stale filter (its app is gone) falls back to all instead of an '
+        'empty screen', () {
+      final state = TrackerInfosState(
+        trackerInfos: [telegram],
+        processFilter: 'chrome',
+      );
+      expect(state.list.map((e) => e.id).toList(), ['c']);
+      expect(state.resolvedProcessFilter, '');
     });
   });
 }

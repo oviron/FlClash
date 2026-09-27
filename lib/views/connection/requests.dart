@@ -77,6 +77,7 @@ class _RequestsViewState extends ConsumerState<RequestsView> {
       title: appLocalizations.requests,
       searchState: AppBarSearchState(onSearch: _onSearch),
       onKeywordsUpdate: _onKeywordsUpdate,
+      actions: [buildProcessFilterAction(_requestsStateNotifier)],
       floatingActionButton: ValueListenableBuilder(
         valueListenable: _requestsStateNotifier,
         builder: (_, state, _) {

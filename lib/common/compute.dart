@@ -83,6 +83,30 @@ List<TrackerInfo> computeConnectionSpeeds(
   }).toList();
 }
 
+// Distinct process names present in the current connections, for the app
+// filter menu. Empty process (core couldn't resolve it) is left out.
+List<String> connectionProcesses(List<TrackerInfo> trackerInfos) {
+  final processes = trackerInfos
+      .map((info) => info.metadata.process)
+      .where((process) => process.isNotEmpty)
+      .toSet()
+      .toList();
+  processes.sort((a, b) => a.compareToLower(b));
+  return processes;
+}
+
+// A stale filter (its app closed/vanished from the connections list) falls
+// back to "all" instead of leaving an empty screen with no way to reset.
+String resolveProcessFilter(
+  String processFilter,
+  List<String> availableProcesses,
+) {
+  if (processFilter.isEmpty || availableProcesses.contains(processFilter)) {
+    return processFilter;
+  }
+  return '';
+}
+
 SelectedProxyState getRealSelectedProxyState(
   SelectedProxyState state, {
   required List<Group> groups,

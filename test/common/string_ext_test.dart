@@ -57,4 +57,19 @@ void main() {
       expect('single'.splitByMultipleSeparators, 'single');
     });
   });
+
+  group('countryCodeToEmoji', () {
+    test('builds the regional-indicator pair, case-insensitively', () {
+      expect(countryCodeToEmoji('US'), '🇺🇸');
+      expect(countryCodeToEmoji('us'), '🇺🇸');
+      expect(countryCodeToEmoji('jp'), '🇯🇵');
+    });
+
+    test('rejects anything that is not exactly two letters', () {
+      expect(countryCodeToEmoji('REJECT'), isNull);
+      expect(countryCodeToEmoji(''), isNull);
+      expect(countryCodeToEmoji('U'), isNull);
+      expect(countryCodeToEmoji('12'), isNull);
+    });
+  });
 }

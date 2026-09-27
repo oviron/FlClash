@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "addressTip": MessageLookupByLibrary.simpleMessage("请输入有效的WebDAV地址"),
     "advanced": MessageLookupByLibrary.simpleMessage("高级"),
     "agree": MessageLookupByLibrary.simpleMessage("同意"),
+    "allApplications": MessageLookupByLibrary.simpleMessage("所有应用"),
     "allowBypass": MessageLookupByLibrary.simpleMessage("允许应用绕过VPN"),
     "allowBypassDesc": MessageLookupByLibrary.simpleMessage("开启后部分应用可绕过VPN"),
     "allowLan": MessageLookupByLibrary.simpleMessage("局域网代理"),
