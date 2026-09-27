@@ -1368,6 +1368,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
     ),
+    "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
+    "userAgentCustom": MessageLookupByLibrary.simpleMessage("Свой"),
+    "userAgentDesc": MessageLookupByLibrary.simpleMessage(
+      "Отправляется при обновлении подписок и провайдеров",
+    ),
+    "userAgentInvalid": MessageLookupByLibrary.simpleMessage(
+      "Только печатные символы ASCII, одной строкой",
+    ),
     "userInterface": MessageLookupByLibrary.simpleMessage("Интерфейс"),
     "value": MessageLookupByLibrary.simpleMessage("Значение"),
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("Яркие"),

@@ -694,5 +694,9 @@
   "ipSourceNoType": "未返回类型",
   "ipSourceRateLimited": "请求过于频繁",
   "ipSourceFailed": "失败",
-  "ipSourceIpMismatch": "IP 不一致"
+  "ipSourceIpMismatch": "IP 不一致",
+  "userAgent": "User-Agent",
+  "userAgentDesc": "更新订阅和提供者时发送",
+  "userAgentCustom": "自定义",
+  "userAgentInvalid": "仅限单行可打印 ASCII 字符"
 }

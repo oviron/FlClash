@@ -45,6 +45,70 @@ class TestUrlItem extends ConsumerWidget {
   }
 }
 
+const _knownUserAgents = ['clash-verge/v2.4.2', 'ClashforWindows/0.19.23'];
+const _customUserAgentOption = '\u0000custom';
+final _userAgentPattern = RegExp(r'^[\x20-\x7E]+$');
+
+class UserAgentItem extends ConsumerWidget {
+  const UserAgentItem({super.key});
+
+  Future<void> _handleTap(WidgetRef ref, String userAgent) async {
+    final isCustom =
+        userAgent.isNotEmpty && !_knownUserAgents.contains(userAgent);
+    final option = await globalState.showCommonDialog<String>(
+      child: OptionsDialog<String>(
+        title: appLocalizations.userAgent,
+        options: const ['', ..._knownUserAgents, _customUserAgentOption],
+        value: isCustom ? _customUserAgentOption : userAgent,
+        textBuilder: (value) => switch (value) {
+          '' => appLocalizations.defaultText,
+          _customUserAgentOption => appLocalizations.userAgentCustom,
+          _ => value,
+        },
+      ),
+    );
+    if (option == null) return;
+    var value = option;
+    if (option == _customUserAgentOption) {
+      final input = await globalState.showCommonDialog<String>(
+        child: InputDialog(
+          title: appLocalizations.userAgentCustom,
+          value: isCustom ? userAgent : '',
+          validator: (value) {
+            final text = value?.trim() ?? '';
+            if (text.isEmpty) {
+              return appLocalizations.emptyTip(appLocalizations.userAgent);
+            }
+            if (!_userAgentPattern.hasMatch(text)) {
+              return appLocalizations.userAgentInvalid;
+            }
+            return null;
+          },
+        ),
+      );
+      if (input == null) return;
+      value = input.trim();
+    }
+    ref
+        .read(appSettingProvider.notifier)
+        .update((state) => state.copyWith(userAgent: value));
+  }
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final userAgent = ref.watch(
+      appSettingProvider.select((state) => state.userAgent),
+    );
+    final label = userAgent.isEmpty ? appLocalizations.defaultText : userAgent;
+    return ListItem(
+      leading: const Icon(Icons.badge_outlined),
+      title: Text(appLocalizations.userAgent),
+      subtitle: Text('$label\n${appLocalizations.userAgentDesc}'),
+      onTap: () => _handleTap(ref, userAgent),
+    );
+  }
+}
+
 class PortItem extends ConsumerWidget {
   const PortItem({super.key});
 
@@ -206,6 +270,7 @@ class GeodataLoaderItem extends ConsumerWidget {
 final generalItems = <Widget>[
   ...<Widget>[
     const TestUrlItem(),
+    const UserAgentItem(),
     const TcpConcurrentItem(),
     const HostsItem(),
   ].separated(const Divider(height: 0)),

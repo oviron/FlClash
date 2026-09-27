@@ -1057,6 +1057,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlTip": m30,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
+    "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
+    "userAgentCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
+    "userAgentDesc": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションとプロバイダーの更新時に送信されます",
+    ),
+    "userAgentInvalid": MessageLookupByLibrary.simpleMessage(
+      "1行の印字可能なASCII文字のみ",
+    ),
     "userInterface": MessageLookupByLibrary.simpleMessage("ユーザーインターフェース"),
     "value": MessageLookupByLibrary.simpleMessage("値"),
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("ビブラント"),

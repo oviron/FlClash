@@ -72,6 +72,7 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(false) bool fileLogEnabled,
     @Default(true) bool closeConnections,
     @Default(defaultTestUrl) String testUrl,
+    @Default('') String userAgent,
     @Default(true) bool isAnimateToPage,
     @Default(false) bool disclaimerAccepted,
     @Default(true) bool minimizeOnExit,

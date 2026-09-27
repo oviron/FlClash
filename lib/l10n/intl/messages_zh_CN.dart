@@ -952,6 +952,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlTip": m30,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系统Hosts"),
+    "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
+    "userAgentCustom": MessageLookupByLibrary.simpleMessage("自定义"),
+    "userAgentDesc": MessageLookupByLibrary.simpleMessage("更新订阅和提供者时发送"),
+    "userAgentInvalid": MessageLookupByLibrary.simpleMessage(
+      "仅限单行可打印 ASCII 字符",
+    ),
     "userInterface": MessageLookupByLibrary.simpleMessage("用户界面"),
     "value": MessageLookupByLibrary.simpleMessage("值"),
     "vibrantScheme": MessageLookupByLibrary.simpleMessage("活力"),

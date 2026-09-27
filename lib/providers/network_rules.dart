@@ -21,6 +21,7 @@ Future<int> networkRulesBakeInputs(Ref ref) async {
   final rules = ref.watch(networkRulesStreamProvider).value ?? const [];
   final parts = <Object?>[
     ref.watch(patchClashConfigProvider),
+    ref.watch(appSettingProvider.select((state) => state.userAgent)),
     ref.watch(vpnSettingProvider.select((state) => state.systemProxy)),
     ref.watch(
       networkSettingProvider.select(

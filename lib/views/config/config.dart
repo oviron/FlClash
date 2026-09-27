@@ -20,7 +20,10 @@ class ConfigView extends StatelessWidget {
             onConfirm: () async {
               ref
                   .read(appSettingProvider.notifier)
-                  .update((state) => state.copyWith(testUrl: defaultTestUrl));
+                  .update(
+                    (state) =>
+                        state.copyWith(testUrl: defaultTestUrl, userAgent: ''),
+                  );
               ref
                   .read(patchClashConfigProvider.notifier)
                   .update(

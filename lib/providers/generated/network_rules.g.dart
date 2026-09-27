@@ -87,7 +87,7 @@ final class NetworkRulesBakeInputsProvider
 }
 
 String _$networkRulesBakeInputsHash() =>
-    r'8d1c5da3eec95c096bdfac11cd9f166f38b07ecc';
+    r'40834cc623a7bbb28b482f99efd1c97647f6e1ea';
 
 /// Repository facade with CRUD + reorder. keepAlive because the engine
 /// needs to keep watching even when no UI page is mounted.

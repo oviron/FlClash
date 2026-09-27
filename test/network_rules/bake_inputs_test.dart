@@ -53,6 +53,16 @@ void main() {
     expect(await key(), isNot(before));
   });
 
+  test('a User-Agent change changes the key', () async {
+    final before = await key();
+
+    container
+        .read(appSettingProvider.notifier)
+        .update((state) => state.copyWith(userAgent: 'clash-verge/v2.4.2'));
+
+    expect(await key(), isNot(before));
+  });
+
   test('a route mode change changes the key', () async {
     final before = await key();
 

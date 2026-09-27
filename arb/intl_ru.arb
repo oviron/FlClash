@@ -694,5 +694,9 @@
   "ipSourceNoType": "Тип не определён",
   "ipSourceRateLimited": "Превышен лимит запросов",
   "ipSourceFailed": "Ошибка",
-  "ipSourceIpMismatch": "IP не совпадает"
+  "ipSourceIpMismatch": "IP не совпадает",
+  "userAgent": "User-Agent",
+  "userAgentDesc": "Отправляется при обновлении подписок и провайдеров",
+  "userAgentCustom": "Свой",
+  "userAgentInvalid": "Только печатные символы ASCII, одной строкой"
 }

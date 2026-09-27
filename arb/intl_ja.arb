@@ -694,5 +694,9 @@
   "ipSourceNoType": "種別を取得できません",
   "ipSourceRateLimited": "リクエスト制限超過",
   "ipSourceFailed": "失敗",
-  "ipSourceIpMismatch": "IPが一致しません"
+  "ipSourceIpMismatch": "IPが一致しません",
+  "userAgent": "User-Agent",
+  "userAgentDesc": "サブスクリプションとプロバイダーの更新時に送信されます",
+  "userAgentCustom": "カスタム",
+  "userAgentInvalid": "1行の印字可能なASCII文字のみ"
 }
