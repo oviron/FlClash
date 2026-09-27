@@ -2,25 +2,23 @@ import 'dart:async';
 
 import 'package:fl_clash/common/print.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/widgets/inherited.dart';
 import 'package:flutter/widgets.dart';
 
-// Polls on a timer while the app is in the foreground and the page is the
-// visible tab. A timer, not a post-frame callback: a poll that changes
-// nothing draws no frame, and a chain waiting on one stalls.
+// Polls on a timer while the app is in the foreground. A timer, not a
+// post-frame callback: a poll that changes nothing draws no frame, and a chain
+// waiting on one stalls. At most one poll runs at a time.
 mixin ActivePollingMixin<T extends StatefulWidget>
     on State<T>, WidgetsBindingObserver {
   Timer? _timer;
   bool _isForeground = true;
-  bool _isPageActive = true;
   bool _isPolling = false;
-  int _generation = 0;
+  bool _isRunning = false;
 
   Duration get pollInterval;
 
   Future<void> poll();
 
-  bool get _canPoll => mounted && _isForeground && _isPageActive;
+  bool get _canPoll => mounted && _isForeground;
 
   @override
   void initState() {
@@ -29,15 +27,6 @@ mixin ActivePollingMixin<T extends StatefulWidget>
     final lifecycle = WidgetsBinding.instance.lifecycleState;
     _isForeground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
     WidgetsBinding.instance.addPostFrameCallback((_) => _sync());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final isPageActive = PageActivityScope.isActiveOf(context);
-    if (isPageActive == _isPageActive) return;
-    _isPageActive = isPageActive;
-    _sync();
   }
 
   @override
@@ -61,20 +50,17 @@ mixin ActivePollingMixin<T extends StatefulWidget>
   void _start() {
     if (_isPolling) return;
     _isPolling = true;
-    unawaited(_run(++_generation));
+    if (!_isRunning) unawaited(_run());
   }
 
   void _stop() {
     _isPolling = false;
-    _generation++;
     _timer?.cancel();
     _timer = null;
   }
 
-  bool _isCurrent(int generation) =>
-      _isPolling && generation == _generation && _canPoll;
-
-  Future<void> _run(int generation) async {
+  Future<void> _run() async {
+    _isRunning = true;
     try {
       await poll();
     } catch (e) {
@@ -83,11 +69,13 @@ mixin ActivePollingMixin<T extends StatefulWidget>
         logLevel: LogLevel.warning,
       );
     } finally {
-      if (_isCurrent(generation)) {
-        _timer = Timer(pollInterval, () {
-          if (_isCurrent(generation)) unawaited(_run(generation));
-        });
-      }
+      _isRunning = false;
+      if (_isPolling && _canPoll) _timer = Timer(pollInterval, _tick);
     }
+  }
+
+  void _tick() {
+    _timer = null;
+    if (_isPolling && _canPoll) unawaited(_run());
   }
 }

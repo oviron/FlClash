@@ -83,17 +83,7 @@ class HomePage extends StatelessWidget {
                   final navigationItem = navigationItems[index];
                   return KeepScope(
                     keep: navigationItem.keep,
-                    child: Consumer(
-                      builder: (_, ref, child) => PageActivityScope(
-                        isActive: ref.watch(
-                          currentPageLabelProvider.select(
-                            (label) => label == navigationItem.label,
-                          ),
-                        ),
-                        child: child!,
-                      ),
-                      child: navigationItem.builder(context),
-                    ),
+                    child: navigationItem.builder(context),
                   );
                 },
               );

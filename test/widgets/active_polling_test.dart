@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:fl_clash/widgets/active_polling.dart';
-import 'package:fl_clash/widgets/inherited.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -33,8 +34,7 @@ void main() {
 
   setUp(() => polls = 0);
 
-  Widget host({bool isActive = true, Future<void> Function()? poll}) =>
-      PageActivityScope(isActive: isActive, child: _Poller(poll ?? onPoll));
+  Widget host({Future<void> Function()? poll}) => _Poller(poll ?? onPoll);
 
   // binding.delayed advances time without drawing a frame.
   Future<void> wait(WidgetTester tester, int intervals) =>
@@ -47,18 +47,36 @@ void main() {
     expect(polls, 5);
   });
 
-  testWidgets('polls only while its tab is the visible one', (tester) async {
-    await tester.pumpWidget(host(isActive: false));
-    await wait(tester, 4);
-    expect(polls, 0);
+  testWidgets('a pause and resume during a poll runs no second poll', (
+    tester,
+  ) async {
+    var running = 0;
+    var overlapped = false;
+    final pending = <Completer<void>>[];
+    await tester.pumpWidget(
+      host(
+        poll: () async {
+          polls++;
+          running++;
+          overlapped |= running > 1;
+          final done = Completer<void>();
+          pending.add(done);
+          await done.future;
+          running--;
+        },
+      ),
+    );
+    expect(polls, 1);
 
-    await tester.pumpWidget(host());
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await wait(tester, 2);
-    expect(polls, 3);
+    expect(polls, 1);
 
-    await tester.pumpWidget(host(isActive: false));
-    await wait(tester, 4);
-    expect(polls, 3);
+    pending.removeAt(0).complete();
+    await wait(tester, 1);
+    expect(polls, 2);
+    expect(overlapped, isFalse);
   });
 
   testWidgets('pauses in the background and resumes', (tester) async {
