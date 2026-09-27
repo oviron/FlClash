@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import com.follow.clash.common.GlobalState
 import com.follow.clash.common.QuickAction
 import com.follow.clash.common.quickIntent
+import com.follow.clash.common.tileSubtitle
 import com.follow.clash.common.toPendingIntent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +23,12 @@ class TileService : TileService() {
                 RunState.START -> Tile.STATE_ACTIVE
                 RunState.PENDING -> Tile.STATE_UNAVAILABLE
                 RunState.STOP -> Tile.STATE_INACTIVE
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                qsTile.subtitle = tileSubtitle(
+                    State.sharedState.currentProfileName,
+                    isRunning = runState == RunState.START,
+                )
             }
             qsTile.updateTile()
         }
@@ -38,8 +46,14 @@ class TileService : TileService() {
         }
     }
 
+    // startActivityAndCollapse is the only API that closes the shade; skip it
+    // when the user opted to leave the panel open.
     @SuppressLint("StartActivityAndCollapseDeprecated")
     private fun handleToggle() {
+        if (!State.sharedState.quickTileCollapsePanel) {
+            GlobalState.launch { State.handleToggleAction(fromTile = true) }
+            return
+        }
         val intent = QuickAction.TOGGLE.quickIntent
         val pendingIntent = intent.toPendingIntent
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

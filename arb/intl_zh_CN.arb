@@ -60,6 +60,8 @@
   "quickTileAdded": "磁贴已添加",
   "quickTileNotAdded": "未添加磁贴",
   "quickTileManual": "请从快捷设置编辑器添加：完全下拉通知栏，点按铅笔图标，将 FlClash 拖入",
+  "quickTileCollapsePanel": "点按后收起快捷设置面板",
+  "quickTileCollapsePanelDesc": "关闭后可在不收起面板的情况下切换磁贴",
   "refresh": "刷新",
   "resourceUsageTitle": "资源占用",
   "resourceUsageDesc": "本应用实际消耗的 CPU、唤醒锁与流量",
@@ -360,6 +362,12 @@
   "unknownNetworkError": "未知网络错误",
   "restoreException": "恢复异常",
   "networkException": "网络异常，请检查连接后重试",
+  "serverHttpError": "服务器返回 HTTP {code}",
+  "@serverHttpError": {
+    "placeholders": {
+      "code": {}
+    }
+  },
   "invalidBackupFile": "无效备份文件",
   "pruneCache": "修剪缓存",
   "backupAndRestore": "备份与恢复",
@@ -512,6 +520,12 @@
   "routingConnection": "连接",
   "routingGlobalRules": "全局规则",
   "routingGlobalRulesCount": "{count} 条规则",
+  "routingAddPreset": "添加预设",
+  "routingPresetPickerTitle": "规则预设",
+  "routingPresetBlockQuicStunDot": "屏蔽 QUIC / STUN / DoT",
+  "routingPresetLanDirect": "局域网直连",
+  "routingPresetSystemServicesDirect": "系统服务直连",
+  "routingPresetBittorrentDirect": "BitTorrent 直连",
   "routingMatcherDomain": "域名",
   "routingMatcherDomainSuffix": "域名后缀",
   "routingMatcherDomainKeyword": "域名关键词",

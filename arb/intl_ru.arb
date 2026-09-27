@@ -60,6 +60,8 @@
   "quickTileAdded": "Кнопка на месте",
   "quickTileNotAdded": "Кнопка не добавлена",
   "quickTileManual": "Добавьте через редактор шторки: потяните её вниз до конца, нажмите карандаш, перетащите FlClash",
+  "quickTileCollapsePanel": "Сворачивать шторку после нажатия",
+  "quickTileCollapsePanelDesc": "Выключите, чтобы переключать плитку без закрытия шторки",
   "refresh": "Обновить",
   "resourceUsageTitle": "Расход ресурсов",
   "resourceUsageDesc": "Сколько CPU, wakelock и трафика приложение реально потратило",
@@ -360,6 +362,12 @@
   "unknownNetworkError": "Неизвестная сетевая ошибка",
   "restoreException": "Ошибка восстановления",
   "networkException": "Ошибка сети, проверьте соединение и попробуйте еще раз",
+  "serverHttpError": "Сервер ответил HTTP {code}",
+  "@serverHttpError": {
+    "placeholders": {
+      "code": {}
+    }
+  },
   "invalidBackupFile": "Неверный файл резервной копии",
   "pruneCache": "Очистить кэш",
   "backupAndRestore": "Резервное копирование и восстановление",
@@ -522,6 +530,12 @@
   "routingConnection": "Подключение",
   "routingGlobalRules": "Общие правила",
   "routingGlobalRulesCount": "{count} правил",
+  "routingAddPreset": "Добавить пресет",
+  "routingPresetPickerTitle": "Пресеты правил",
+  "routingPresetBlockQuicStunDot": "Блокировать QUIC / STUN / DoT",
+  "routingPresetLanDirect": "Локальная сеть напрямую",
+  "routingPresetSystemServicesDirect": "Системные сервисы напрямую",
+  "routingPresetBittorrentDirect": "BitTorrent напрямую",
   "routingMatcherDomain": "Домен",
   "routingMatcherDomainSuffix": "Суффикс домена",
   "routingMatcherDomainKeyword": "Ключевое слово домена",

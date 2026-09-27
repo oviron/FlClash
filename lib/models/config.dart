@@ -76,6 +76,7 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(false) bool disclaimerAccepted,
     @Default(true) bool minimizeOnExit,
     @Default(false) bool hidden,
+    @Default(true) bool quickTileCollapsePanel,
     @Default(false) bool developerMode,
     @Default(RestoreStrategy.compatible) RestoreStrategy restoreStrategy,
     @Default(false) bool includeDavCredsInBackup,

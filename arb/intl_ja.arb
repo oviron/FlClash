@@ -60,6 +60,8 @@
   "quickTileAdded": "タイルを追加しました",
   "quickTileNotAdded": "タイルは追加されませんでした",
   "quickTileManual": "クイック設定の編集から追加してください。通知シェードを最後まで開き、鉛筆をタップして FlClash をドラッグします",
+  "quickTileCollapsePanel": "タップ後にクイック設定パネルを閉じる",
+  "quickTileCollapsePanelDesc": "オフにすると、パネルを閉じずにタイルを切り替えられます",
   "refresh": "更新",
   "resourceUsageTitle": "リソース使用状況",
   "resourceUsageDesc": "このアプリが実際に使った CPU・ウェイクロック・通信量",
@@ -360,6 +362,12 @@
   "unknownNetworkError": "不明なネットワークエラー",
   "restoreException": "復元例外",
   "networkException": "ネットワーク例外、接続を確認してもう一度お試しください",
+  "serverHttpError": "サーバーが HTTP {code} を返しました",
+  "@serverHttpError": {
+    "placeholders": {
+      "code": {}
+    }
+  },
   "invalidBackupFile": "無効なバックアップファイル",
   "pruneCache": "キャッシュの削除",
   "backupAndRestore": "バックアップと復元",
@@ -512,6 +520,12 @@
   "routingConnection": "接続",
   "routingGlobalRules": "グローバルルール",
   "routingGlobalRulesCount": "{count} 件のルール",
+  "routingAddPreset": "プリセットを追加",
+  "routingPresetPickerTitle": "ルールプリセット",
+  "routingPresetBlockQuicStunDot": "QUIC / STUN / DoT をブロック",
+  "routingPresetLanDirect": "LAN を直接接続",
+  "routingPresetSystemServicesDirect": "システムサービスを直接接続",
+  "routingPresetBittorrentDirect": "BitTorrent を直接接続",
   "routingMatcherDomain": "ドメイン",
   "routingMatcherDomainSuffix": "ドメインサフィックス",
   "routingMatcherDomainKeyword": "ドメインキーワード",

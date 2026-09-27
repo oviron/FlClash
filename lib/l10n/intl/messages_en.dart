@@ -78,17 +78,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m24(count) => "${count} items have been selected";
 
-  static String m25(count) =>
-      "${Intl.plural(count, one: '1 day left', other: '${count} days left')}";
+  static String m25(code) => "Server responded with HTTP ${code}";
 
   static String m26(count) =>
+      "${Intl.plural(count, one: '1 day left', other: '${count} days left')}";
+
+  static String m27(count) =>
       "${Intl.plural(count, one: '1 hour left', other: '${count} hours left')}";
 
-  static String m27(value) => "${value} left";
+  static String m28(value) => "${value} left";
 
-  static String m28(label) => "${label} must be a url";
+  static String m29(label) => "${label} must be a url";
 
-  static String m29(count) =>
+  static String m30(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -748,6 +750,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickTileAdded": MessageLookupByLibrary.simpleMessage(
       "Tile is in Quick Settings",
     ),
+    "quickTileCollapsePanel": MessageLookupByLibrary.simpleMessage(
+      "Collapse Quick Settings after tap",
+    ),
+    "quickTileCollapsePanelDesc": MessageLookupByLibrary.simpleMessage(
+      "Turn off to toggle the tile without closing the panel",
+    ),
     "quickTileDesc": MessageLookupByLibrary.simpleMessage(
       "Add a FlClash toggle next to the flashlight",
     ),
@@ -868,6 +876,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Add condition",
     ),
     "routingAddList": MessageLookupByLibrary.simpleMessage("Add list"),
+    "routingAddPreset": MessageLookupByLibrary.simpleMessage("Add preset"),
     "routingAddRule": MessageLookupByLibrary.simpleMessage("Add rule"),
     "routingAddServer": MessageLookupByLibrary.simpleMessage("Add server"),
     "routingAdvanced": MessageLookupByLibrary.simpleMessage("Advanced"),
@@ -1083,6 +1092,21 @@ class MessageLookup extends MessageLookupByLibrary {
       "One domain per line",
     ),
     "routingPickList": MessageLookupByLibrary.simpleMessage("Choose a list"),
+    "routingPresetBittorrentDirect": MessageLookupByLibrary.simpleMessage(
+      "BitTorrent direct",
+    ),
+    "routingPresetBlockQuicStunDot": MessageLookupByLibrary.simpleMessage(
+      "Block QUIC / STUN / DoT",
+    ),
+    "routingPresetLanDirect": MessageLookupByLibrary.simpleMessage(
+      "LAN direct",
+    ),
+    "routingPresetPickerTitle": MessageLookupByLibrary.simpleMessage(
+      "Rule presets",
+    ),
+    "routingPresetSystemServicesDirect": MessageLookupByLibrary.simpleMessage(
+      "System services direct",
+    ),
     "routingProxies": MessageLookupByLibrary.simpleMessage("Proxies"),
     "routingProxiesSubtitle": MessageLookupByLibrary.simpleMessage(
       "Servers and subscriptions",
@@ -1151,6 +1175,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
     "selectedCountTitle": m24,
+    "serverHttpError": m25,
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
     "size": MessageLookupByLibrary.simpleMessage("Size"),
@@ -1174,10 +1199,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "stop": MessageLookupByLibrary.simpleMessage("Stop"),
     "stopVpn": MessageLookupByLibrary.simpleMessage("Stopping VPN..."),
     "style": MessageLookupByLibrary.simpleMessage("Style"),
-    "subDaysLeft": m25,
+    "subDaysLeft": m26,
     "subExpired": MessageLookupByLibrary.simpleMessage("Expired"),
-    "subHoursLeft": m26,
-    "subRemaining": m27,
+    "subHoursLeft": m27,
+    "subRemaining": m28,
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
     "systemProxy": MessageLookupByLibrary.simpleMessage("System proxy"),
@@ -1219,7 +1244,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m28,
+    "urlTip": m29,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userInterface": MessageLookupByLibrary.simpleMessage("User interface"),
@@ -1236,7 +1261,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage(
       "WebDAV configuration",
     ),
-    "yearsAgo": m29,
+    "yearsAgo": m30,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };
 }

@@ -14,7 +14,7 @@ class FlClashHttpOverrides extends HttpOverrides {
     // fetching a subscription through the proxies it is still defining fails,
     // and a failed fetch then writes an empty provider that kills routing.
     final useProxy = appController.isStart && !globalState.bootstrappingConfig;
-    commonPrint.log('find $url proxy:$useProxy');
+    commonPrint.log('find ${url.host} proxy:$useProxy');
     if (!useProxy) return 'DIRECT';
     return 'PROXY localhost:$port';
   }

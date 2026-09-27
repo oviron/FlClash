@@ -71,15 +71,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m24(count) => "${count} 項目が選択されています";
 
-  static String m25(count) => "${Intl.plural(count, other: '残り${count}日')}";
+  static String m25(code) => "サーバーが HTTP ${code} を返しました";
 
-  static String m26(count) => "${Intl.plural(count, other: '残り${count}時間')}";
+  static String m26(count) => "${Intl.plural(count, other: '残り${count}日')}";
 
-  static String m27(value) => "残り${value}";
+  static String m27(count) => "${Intl.plural(count, other: '残り${count}時間')}";
 
-  static String m28(label) => "${label}はURLである必要があります";
+  static String m28(value) => "残り${value}";
 
-  static String m29(count) => "${count}年前";
+  static String m29(label) => "${label}はURLである必要があります";
+
+  static String m30(count) => "${count}年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -612,6 +614,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "quickStartVerified": MessageLookupByLibrary.simpleMessage("確認済み"),
     "quickStartVerifying": MessageLookupByLibrary.simpleMessage("接続を確認中..."),
     "quickTileAdded": MessageLookupByLibrary.simpleMessage("タイルを追加しました"),
+    "quickTileCollapsePanel": MessageLookupByLibrary.simpleMessage(
+      "タップ後にクイック設定パネルを閉じる",
+    ),
+    "quickTileCollapsePanelDesc": MessageLookupByLibrary.simpleMessage(
+      "オフにすると、パネルを閉じずにタイルを切り替えられます",
+    ),
     "quickTileDesc": MessageLookupByLibrary.simpleMessage(
       "ライトの隣に FlClash の切り替えを追加",
     ),
@@ -702,6 +710,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "routeMode_config": MessageLookupByLibrary.simpleMessage("設定を使用"),
     "routingAddCondition": MessageLookupByLibrary.simpleMessage("条件を追加"),
     "routingAddList": MessageLookupByLibrary.simpleMessage("リストを追加"),
+    "routingAddPreset": MessageLookupByLibrary.simpleMessage("プリセットを追加"),
     "routingAddRule": MessageLookupByLibrary.simpleMessage("ルールを追加"),
     "routingAddServer": MessageLookupByLibrary.simpleMessage("サーバーを追加"),
     "routingAdvanced": MessageLookupByLibrary.simpleMessage("詳細設定"),
@@ -867,6 +876,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "routingNoServers": MessageLookupByLibrary.simpleMessage("サーバーがありません"),
     "routingPasteHint": MessageLookupByLibrary.simpleMessage("1行に1ドメイン"),
     "routingPickList": MessageLookupByLibrary.simpleMessage("リストを選択"),
+    "routingPresetBittorrentDirect": MessageLookupByLibrary.simpleMessage(
+      "BitTorrent を直接接続",
+    ),
+    "routingPresetBlockQuicStunDot": MessageLookupByLibrary.simpleMessage(
+      "QUIC / STUN / DoT をブロック",
+    ),
+    "routingPresetLanDirect": MessageLookupByLibrary.simpleMessage("LAN を直接接続"),
+    "routingPresetPickerTitle": MessageLookupByLibrary.simpleMessage(
+      "ルールプリセット",
+    ),
+    "routingPresetSystemServicesDirect": MessageLookupByLibrary.simpleMessage(
+      "システムサービスを直接接続",
+    ),
     "routingProxies": MessageLookupByLibrary.simpleMessage("プロキシ"),
     "routingProxiesSubtitle": MessageLookupByLibrary.simpleMessage(
       "サーバーとサブスクリプション",
@@ -929,6 +951,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "search": MessageLookupByLibrary.simpleMessage("検索"),
     "selectAll": MessageLookupByLibrary.simpleMessage("すべて選択"),
     "selectedCountTitle": m24,
+    "serverHttpError": m25,
     "settings": MessageLookupByLibrary.simpleMessage("設定"),
     "shrink": MessageLookupByLibrary.simpleMessage("縮小"),
     "size": MessageLookupByLibrary.simpleMessage("サイズ"),
@@ -950,10 +973,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "stop": MessageLookupByLibrary.simpleMessage("停止"),
     "stopVpn": MessageLookupByLibrary.simpleMessage("VPNを停止中..."),
     "style": MessageLookupByLibrary.simpleMessage("スタイル"),
-    "subDaysLeft": m25,
+    "subDaysLeft": m26,
     "subExpired": MessageLookupByLibrary.simpleMessage("期限切れ"),
-    "subHoursLeft": m26,
-    "subRemaining": m27,
+    "subHoursLeft": m27,
+    "subRemaining": m28,
     "submit": MessageLookupByLibrary.simpleMessage("送信"),
     "sync": MessageLookupByLibrary.simpleMessage("同期"),
     "systemProxy": MessageLookupByLibrary.simpleMessage("システムプロキシ"),
@@ -987,7 +1010,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL経由でプロファイルを取得"),
-    "urlTip": m28,
+    "urlTip": m29,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
     "userInterface": MessageLookupByLibrary.simpleMessage("ユーザーインターフェース"),
@@ -1002,7 +1025,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN設定"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
-    "yearsAgo": m29,
+    "yearsAgo": m30,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
   };
 }

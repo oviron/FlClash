@@ -4,7 +4,7 @@
 
 Android `mihomo` client. Open source, no ads, no telemetry.
 
-A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash) (last upstream activity: February 2026). **Android-only**, `metacubex/mihomo v1.19.31` direct via 100% JNI, no REST controller. The mihomo bridge lives in [oviron/libmihomo-android](https://github.com/oviron/libmihomo-android). FlClash consumes it as a SHA-256 + GPG-pinned `.aar` download, no C/C++/Go code in this repo.
+A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash). **Android-only**, `metacubex/mihomo v1.19.31` direct via 100% JNI, no REST controller. The mihomo bridge lives in [oviron/libmihomo-android](https://github.com/oviron/libmihomo-android). FlClash consumes it as a SHA-256 + GPG-pinned `.aar` download, no C/C++/Go code in this repo.
 
 <p align="center">
     <img alt="mobile" src="snapshots/mobile.gif" width="45%">

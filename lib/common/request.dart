@@ -268,7 +268,7 @@ String? describeNetworkError(Object error) {
   return switch (error.type) {
     DioExceptionType.cancel => null,
     DioExceptionType.unknown => appLocalizations.unknownNetworkError,
-    DioExceptionType.badResponse ||
+    DioExceptionType.badResponse => _describeBadResponse(error),
     DioExceptionType.connectionTimeout ||
     DioExceptionType.sendTimeout ||
     DioExceptionType.receiveTimeout ||
@@ -276,3 +276,70 @@ String? describeNetworkError(Object error) {
     DioExceptionType.connectionError => appLocalizations.networkException,
   };
 }
+
+const _networkErrorBodyPreviewLimit = 200;
+
+// The subscription URL carries an auth token in its path/query, so it is
+// never shown; a status + body preview is enough to tell users what failed.
+String _describeBadResponse(DioException error) {
+  final statusCode = error.response?.statusCode;
+  final summary = statusCode == null
+      ? appLocalizations.networkException
+      : appLocalizations.serverHttpError(statusCode);
+  final body = _responseBodyPreview(
+    error.response?.data,
+    error.requestOptions.uri,
+  );
+  if (body == null) return summary;
+  return '$summary\n$body';
+}
+
+// Masks before truncating: a cut would leave a token fragment the mask no longer matches.
+String? _responseBodyPreview(Object? data, Uri requestUrl) {
+  final String text;
+  if (data is Uint8List) {
+    try {
+      text = utf8.decode(data);
+    } on FormatException {
+      return null;
+    }
+  } else if (data is String) {
+    text = data;
+  } else if (data is Map || data is List) {
+    text = jsonEncode(data);
+  } else {
+    return null;
+  }
+  final trimmed = _maskRequestUrl(text.trim(), requestUrl);
+  if (trimmed.isEmpty) return null;
+  return trimmed.length > _networkErrorBodyPreviewLimit
+      ? '${trimmed.substring(0, _networkErrorBodyPreviewLimit)}…'
+      : trimmed;
+}
+
+// A token can sit in the path or the query, and a server may echo any piece
+// of the URL back; every piece that could carry one is masked, longest first.
+String _maskRequestUrl(String body, Uri requestUrl) {
+  final url = requestUrl.toString();
+  final secrets =
+      {
+          url,
+          url.split('?').first,
+          if (requestUrl.hasQuery) requestUrl.query,
+          if (requestUrl.path.length > 1) requestUrl.path,
+          for (final piece in [
+            ...requestUrl.pathSegments,
+            ...requestUrl.queryParametersAll.values.expand((v) => v),
+          ])
+            if (piece.length >= _maskedPieceMinLength) piece,
+        }.where((secret) => secret.isNotEmpty).toList()
+        ..sort((a, b) => b.length.compareTo(a.length));
+  var result = body;
+  for (final secret in secrets) {
+    result = result.replaceAll(secret, '[url]');
+  }
+  return result;
+}
+
+// Shorter pieces are words like `api` or flags like `1`; masking them would garble the body.
+const _maskedPieceMinLength = 6;

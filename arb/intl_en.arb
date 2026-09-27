@@ -60,6 +60,8 @@
   "quickTileAdded": "Tile is in Quick Settings",
   "quickTileNotAdded": "Tile was not added",
   "quickTileManual": "Add it from the Quick Settings editor: pull the shade down fully, tap the pencil, drag FlClash in",
+  "quickTileCollapsePanel": "Collapse Quick Settings after tap",
+  "quickTileCollapsePanelDesc": "Turn off to toggle the tile without closing the panel",
   "refresh": "Refresh",
   "resourceUsageTitle": "Resource usage",
   "resourceUsageDesc": "CPU, wake lock and traffic this app actually used",
@@ -360,6 +362,12 @@
   "unknownNetworkError": "Unknown network error",
   "restoreException": "Recovery exception",
   "networkException": "Network exception, please check your connection and try again",
+  "serverHttpError": "Server responded with HTTP {code}",
+  "@serverHttpError": {
+    "placeholders": {
+      "code": {}
+    }
+  },
   "invalidBackupFile": "Invalid backup file",
   "pruneCache": "Prune cache",
   "backupAndRestore": "Backup and Restore",
@@ -524,6 +532,12 @@
   "routingConnection": "Connection",
   "routingGlobalRules": "Global rules",
   "routingGlobalRulesCount": "{count} rules",
+  "routingAddPreset": "Add preset",
+  "routingPresetPickerTitle": "Rule presets",
+  "routingPresetBlockQuicStunDot": "Block QUIC / STUN / DoT",
+  "routingPresetLanDirect": "LAN direct",
+  "routingPresetSystemServicesDirect": "System services direct",
+  "routingPresetBittorrentDirect": "BitTorrent direct",
   "routingMatcherDomain": "Domain",
   "routingMatcherDomainSuffix": "Domain suffix",
   "routingMatcherDomainKeyword": "Domain keyword",

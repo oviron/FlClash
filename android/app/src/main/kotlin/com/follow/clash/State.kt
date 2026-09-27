@@ -9,6 +9,7 @@ import android.provider.Settings
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import com.follow.clash.common.GlobalState
+import com.follow.clash.common.shouldShowTileActionToast
 import com.follow.clash.models.SharedState
 import com.follow.clash.plugins.AppPlugin
 import com.follow.clash.plugins.TilePlugin
@@ -52,7 +53,8 @@ object State {
 
     var runTime: Long = 0
 
-    var sharedState: SharedState = SharedState()
+    // A UI process restarted without Flutter still needs the tile's profile name and collapse choice.
+    var sharedState: SharedState = GlobalState.application.sharedState
 
     // Staged by NetworkRulesController before a headless start so a cold boot
     // picks up the target profile's proxy selections, not the last profile's.
@@ -69,14 +71,14 @@ object State {
     val tilePlugin: TilePlugin?
         get() = flutterEngine?.plugin<TilePlugin>()
 
-    suspend fun handleToggleAction() {
+    suspend fun handleToggleAction(fromTile: Boolean = false) {
         var action: (suspend () -> Unit)?
         runLock.withLock {
             dropStaleStartLocked()
             action = when (runStateFlow.value) {
                 RunState.PENDING -> null
-                RunState.START -> ::handleStopServiceAction
-                RunState.STOP -> ::handleStartServiceAction
+                RunState.START -> suspend { handleStopServiceAction(fromTile) }
+                RunState.STOP -> suspend { handleStartServiceAction(fromTile) }
             }
         }
         action?.invoke()
@@ -108,7 +110,7 @@ object State {
         if (runTime == 0L) runStateFlow.tryEmit(RunState.STOP)
     }
 
-    suspend fun handleStartServiceAction() {
+    suspend fun handleStartServiceAction(fromTile: Boolean = false) {
         runLock.withLock {
             dropStaleStartLocked()
             if (runStateFlow.value != RunState.STOP) {
@@ -118,12 +120,12 @@ object State {
             if (flutterEngine != null) {
                 return
             }
-            startServiceWithPref()
+            startServiceWithPref(fromTile)
         }
 
     }
 
-    suspend fun handleStopServiceAction() {
+    suspend fun handleStopServiceAction(fromTile: Boolean = false) {
         runLock.withLock {
             if (runStateFlow.value != RunState.START) {
                 return
@@ -132,7 +134,9 @@ object State {
             if (flutterEngine != null) {
                 return
             }
-            GlobalState.application.showToast(sharedState.stopTip)
+            if (shouldShowTileActionToast(fromTile, sharedState.quickTileCollapsePanel)) {
+                GlobalState.application.showToast(sharedState.stopTip)
+            }
             handleStopService()
         }
     }
@@ -148,14 +152,14 @@ object State {
         startService()
     }
 
-    private fun startServiceWithPref() {
+    private fun startServiceWithPref(fromTile: Boolean) {
         GlobalState.launch {
             runLock.withLock {
                 if (runStateFlow.value != RunState.STOP) {
                     return@launch
                 }
                 sharedState = GlobalState.application.sharedState
-                setupAndStart()
+                setupAndStart(fromTile)
             }
         }
     }
@@ -169,10 +173,12 @@ object State {
         )
     }
 
-    private suspend fun setupAndStart() {
+    private suspend fun setupAndStart(fromTile: Boolean = false) {
         Service.bind()
         syncState()
-        GlobalState.application.showToast(sharedState.startTip)
+        if (shouldShowTileActionToast(fromTile, sharedState.quickTileCollapsePanel)) {
+            GlobalState.application.showToast(sharedState.startTip)
+        }
         val initParams = mutableMapOf<String, Any>()
         initParams["home-dir"] = GlobalState.application.filesDir.path
         initParams["version"] = android.os.Build.VERSION.SDK_INT

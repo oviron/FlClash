@@ -514,6 +514,26 @@ class AppLocalizations {
     );
   }
 
+  /// `Collapse Quick Settings after tap`
+  String get quickTileCollapsePanel {
+    return Intl.message(
+      'Collapse Quick Settings after tap',
+      name: 'quickTileCollapsePanel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn off to toggle the tile without closing the panel`
+  String get quickTileCollapsePanelDesc {
+    return Intl.message(
+      'Turn off to toggle the tile without closing the panel',
+      name: 'quickTileCollapsePanelDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Refresh`
   String get refresh {
     return Intl.message('Refresh', name: 'refresh', desc: '', args: []);
@@ -2919,6 +2939,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Server responded with HTTP {code}`
+  String serverHttpError(Object code) {
+    return Intl.message(
+      'Server responded with HTTP $code',
+      name: 'serverHttpError',
+      desc: '',
+      args: [code],
+    );
+  }
+
   /// `Invalid backup file`
   String get invalidBackupFile {
     return Intl.message(
@@ -4371,6 +4401,66 @@ class AppLocalizations {
       name: 'routingGlobalRulesCount',
       desc: '',
       args: [count],
+    );
+  }
+
+  /// `Add preset`
+  String get routingAddPreset {
+    return Intl.message(
+      'Add preset',
+      name: 'routingAddPreset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rule presets`
+  String get routingPresetPickerTitle {
+    return Intl.message(
+      'Rule presets',
+      name: 'routingPresetPickerTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block QUIC / STUN / DoT`
+  String get routingPresetBlockQuicStunDot {
+    return Intl.message(
+      'Block QUIC / STUN / DoT',
+      name: 'routingPresetBlockQuicStunDot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LAN direct`
+  String get routingPresetLanDirect {
+    return Intl.message(
+      'LAN direct',
+      name: 'routingPresetLanDirect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System services direct`
+  String get routingPresetSystemServicesDirect {
+    return Intl.message(
+      'System services direct',
+      name: 'routingPresetSystemServicesDirect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BitTorrent direct`
+  String get routingPresetBittorrentDirect {
+    return Intl.message(
+      'BitTorrent direct',
+      name: 'routingPresetBittorrentDirect',
+      desc: '',
+      args: [],
     );
   }
 

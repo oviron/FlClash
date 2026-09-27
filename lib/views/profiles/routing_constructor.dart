@@ -13,6 +13,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/services/country_codes.dart';
 import 'package:fl_clash/services/quickstart_config_service.dart';
 import 'package:fl_clash/services/routing_model.dart';
+import 'package:fl_clash/services/routing_rule_presets.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -1396,11 +1397,31 @@ class _GlobalRulesViewState extends State<_GlobalRulesView>
     if (row != null) await _writeRules([..._model!.globalRules, row]);
   }
 
+  Future<void> _addPreset() async {
+    final selected = await BaseNavigator.push<List<RulePreset>>(
+      context,
+      const _RulePresetPicker(),
+    );
+    if (selected == null || selected.isEmpty) return;
+    var rules = _model!.globalRules;
+    for (final preset in selected) {
+      rules = addRulePreset(rules, preset);
+    }
+    await _writeRules(rules);
+  }
+
   @override
   Widget build(BuildContext context) {
     final m = _model;
     return CommonScaffold(
       title: appLocalizations.routingGlobalRules,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.playlist_add),
+          tooltip: appLocalizations.routingAddPreset,
+          onPressed: m == null ? null : _addPreset,
+        ),
+      ],
       floatingActionButton: CommonFloatingActionButton(
         icon: const Icon(Icons.add),
         label: appLocalizations.routingAddRule,
@@ -1488,6 +1509,56 @@ class _GlobalRulesViewState extends State<_GlobalRulesView>
                 if (j != i) m.globalRules[j],
             ]),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+// A checklist of curated rule bundles; returns the picked presets so the
+// caller can merge each one in with dedup (see [addRulePreset]).
+class _RulePresetPicker extends StatefulWidget {
+  const _RulePresetPicker();
+
+  @override
+  State<_RulePresetPicker> createState() => _RulePresetPickerState();
+}
+
+class _RulePresetPickerState extends State<_RulePresetPicker> {
+  final _selected = <RulePreset>{};
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = _locale(context);
+    return CommonScaffold(
+      title: appLocalizations.routingPresetPickerTitle,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.check),
+          onPressed: _selected.isEmpty
+              ? null
+              : () => Navigator.pop(context, _selected.toList()),
+        ),
+      ],
+      body: ListView(
+        children: [
+          for (final preset in RulePreset.values)
+            CheckboxListTile(
+              value: _selected.contains(preset),
+              title: Text(preset.label(appLocalizations)),
+              subtitle: Text(
+                preset.rules
+                    .map((r) => _ruleLabel(r, const [], locale))
+                    .join(', '),
+              ),
+              onChanged: (checked) => setState(() {
+                if (checked ?? false) {
+                  _selected.add(preset);
+                } else {
+                  _selected.remove(preset);
+                }
+              }),
+            ),
         ],
       ),
     );
