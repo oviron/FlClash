@@ -339,7 +339,7 @@ class VpnService : SystemVpnService(), IBaseService,
 
     override fun stop() {
         releaseLocks()
-        handleDestroy()
+        handleDestroy(requested = true)
         loader.cancel()
         if (Clash.isLoaded()) Clash.stopTun()
         stopSelf()

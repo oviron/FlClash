@@ -63,7 +63,7 @@ class CommonService : Service(), IBaseService,
     }
 
     override fun stop() {
-        handleDestroy()
+        handleDestroy(requested = true)
         loader.cancel()
         stopSelf()
     }
