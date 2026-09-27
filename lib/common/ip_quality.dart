@@ -42,10 +42,8 @@ Future<IpQualityReport> lookupIpQuality(
   return aggregateIpQuality(ip, results);
 }
 
-// Picks a definitive (non-inferred) answer when one exists, otherwise falls
-// back to the first inferred one; risk flags are OR-ed across every source
-// that answered, so one source flagging Tor/VPN/proxy/abuse is enough to
-// carry into the verdict even when the winning source stayed silent on it.
+// A stated type beats an inferred one; a risk flag from any source that
+// answered carries into the verdict.
 IpQualityReport aggregateIpQuality(
   String ip,
   List<IpQualitySourceResult> results,
@@ -99,9 +97,6 @@ Future<IpQualitySourceResult> _query(
   }
 }
 
-// The transport-free half of a source query: given a status code and body,
-// decides the outcome. No Dio/network involved, so it is covered directly
-// with fixed JSON fixtures instead of a mocked HTTP client.
 IpQualitySourceResult parseIpQualityResponse(
   IpQualitySource source,
   String ip,
