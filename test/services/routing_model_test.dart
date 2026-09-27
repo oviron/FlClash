@@ -750,6 +750,25 @@ rules:
       expect(provider.raw['payload'], ['example.org']);
     });
 
+    test('a file rule-provider keeps its type through a write', () {
+      const base = '''
+rule-providers:
+  local:
+    type: file
+    path: ./local.yaml
+    behavior: domain
+rules:
+  - RULE-SET,local,DIRECT
+  - MATCH,DIRECT
+''';
+      final written = RoutingModel.fromYaml(base).toYaml(base);
+
+      final local = ProfileRulesDocument(written).ruleProviders['local']!;
+      expect(local.type, 'file');
+      expect(local.path, './local.yaml');
+      expect(local.behavior, 'domain');
+    });
+
     test('a removed list stays removed after a write and a re-read', () {
       final written = RoutingModel.fromYaml(
         _reference,

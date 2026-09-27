@@ -875,6 +875,10 @@ ProviderSpec _listToProvider(RoutingList l, ProviderSpec? existing) {
     if (l.behavior != null) m['behavior'] = l.behavior;
     return ProviderSpec(m);
   }
+  // A provider without a URL (type: file) is not a link list; keep its type.
+  if (l.url == null && existing != null) {
+    return existing.copyWith(behavior: l.behavior, format: l.format);
+  }
   return base.copyWith(
     type: 'http',
     url: l.url,
