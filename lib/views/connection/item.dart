@@ -81,6 +81,7 @@ class TrackerInfoItem extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _CountryFlag(ip: trackerInfo.metadata.destinationIP),
             Flexible(
@@ -416,8 +417,9 @@ class _CountryFlagState extends State<_CountryFlag> {
       _emoji = _emojiFor(countryCodeCache.peek(widget.ip));
       return;
     }
-    countryCodeCache.resolve(widget.ip).then((info) {
-      if (!mounted) return;
+    final ip = widget.ip;
+    countryCodeCache.resolve(ip).then((info) {
+      if (!mounted || widget.ip != ip) return;
       final emoji = _emojiFor(info);
       if (emoji == null) return;
       setState(() => _emoji = emoji);

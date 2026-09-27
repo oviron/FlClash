@@ -37,6 +37,20 @@ void main() {
       expect(shouldLookUpCountryCode('fe80::1'), isFalse);
     });
 
+    test('rejects other reserved ranges', () {
+      expect(shouldLookUpCountryCode('0.1.2.3'), isFalse);
+      expect(shouldLookUpCountryCode('255.255.255.255'), isFalse);
+      expect(shouldLookUpCountryCode('198.18.0.1'), isFalse);
+      expect(shouldLookUpCountryCode('198.19.255.254'), isFalse);
+      expect(shouldLookUpCountryCode('2001:db8::1'), isFalse);
+    });
+
+    test('judges an IPv4-mapped IPv6 address by its IPv4 part', () {
+      expect(shouldLookUpCountryCode('::ffff:10.0.0.1'), isFalse);
+      expect(shouldLookUpCountryCode('::ffff:192.168.1.1'), isFalse);
+      expect(shouldLookUpCountryCode('::ffff:8.8.8.8'), isTrue);
+    });
+
     test('accepts a public IPv4 address', () {
       expect(shouldLookUpCountryCode('8.8.8.8'), isTrue);
     });
