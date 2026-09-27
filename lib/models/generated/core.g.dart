@@ -22,7 +22,7 @@ _UpdateParams _$UpdateParamsFromJson(Map<String, dynamic> json) =>
       tun: Tun.fromJson(json['tun'] as Map<String, dynamic>),
       mixedPort: (json['mixed-port'] as num).toInt(),
       allowLan: json['allow-lan'] as bool,
-      findProcessMode: $enumDecode(
+      findProcessMode: $enumDecodeNullable(
         _$FindProcessModeEnumMap,
         json['find-process-mode'],
       ),
@@ -37,7 +37,7 @@ Map<String, dynamic> _$UpdateParamsToJson(_UpdateParams instance) =>
       'tun': instance.tun,
       'mixed-port': instance.mixedPort,
       'allow-lan': instance.allowLan,
-      'find-process-mode': _$FindProcessModeEnumMap[instance.findProcessMode]!,
+      'find-process-mode': _$FindProcessModeEnumMap[instance.findProcessMode],
       'mode': _$ModeEnumMap[instance.mode]!,
       'log-level': _$LogLevelEnumMap[instance.logLevel]!,
       'ipv6': instance.ipv6,

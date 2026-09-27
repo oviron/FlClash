@@ -74,12 +74,24 @@ extension SetupControllerExt on AppController {
           return;
         }
         final realTunEnable = _ref.read(realTunEnableProvider);
+        final params = updateParams.copyWith.tun(enable: realTunEnable);
         final message = await coreController.updateConfig(
-          updateParams.copyWith.tun(enable: realTunEnable),
+          await _profileSetsFindProcessMode()
+              ? params.copyWith(findProcessMode: null)
+              : params,
         );
         if (message.isNotEmpty) throw message;
       });
     });
+  }
+
+  // The core leaves find-process-mode alone when the update carries none.
+  Future<bool> _profileSetsFindProcessMode() async {
+    final profileId = _ref.read(currentProfileIdProvider);
+    if (profileId == null) return false;
+    final file = File(await appPath.getProfilePath('$profileId'));
+    return await file.exists() &&
+        profileSetsKey(await file.readAsString(), 'find-process-mode');
   }
 
   void addCheckIp() {

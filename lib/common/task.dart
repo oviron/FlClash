@@ -70,6 +70,11 @@ Future<List<Group>> _toGroupsTask(ComputeGroupsState state) async {
   );
 }
 
+bool profileSetsKey(String profileYaml, String key) => RegExp(
+  '^\\uFEFF?["\']?${RegExp.escape(key)}["\']?\\s*:',
+  multiLine: true,
+).hasMatch(profileYaml);
+
 // The core parses a profile into mihomo's RawConfig, which fills these in when
 // the YAML leaves them out; dropping them lets the app settings apply.
 Map<String, dynamic> dropCoreDefaults(
@@ -79,11 +84,7 @@ Map<String, dynamic> dropCoreDefaults(
   const keys = ['find-process-mode', 'global-ua'];
   return {
     for (final entry in rawConfig.entries)
-      if (!keys.contains(entry.key) ||
-          RegExp(
-            '^["\']?${RegExp.escape(entry.key)}["\']?\\s*:',
-            multiLine: true,
-          ).hasMatch(profileYaml))
+      if (!keys.contains(entry.key) || profileSetsKey(profileYaml, entry.key))
         entry.key: entry.value,
   };
 }

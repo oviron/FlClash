@@ -57,6 +57,28 @@ find-process-mode: strict
       expect(config['global-ua'], 'clash.meta/1.10.0');
     });
 
+    test('a byte-order mark or CRLF line ends do not hide a key', () async {
+      for (final yaml in [
+        '\uFEFFfind-process-mode: strict\r\nmode: rule\r\n',
+        'mode: rule\r\nfind-process-mode: strict\r\n',
+      ]) {
+        final config = await _build(
+          dropCoreDefaults(coreDefaults, yaml),
+          realPatchConfig: patch,
+        );
+        expect(config['find-process-mode'], 'strict');
+      }
+    });
+
+    test('a commented-out key does not count', () async {
+      final config = await _build(
+        dropCoreDefaults(coreDefaults, '# find-process-mode: strict\n'),
+        realPatchConfig: patch,
+      );
+
+      expect(config['find-process-mode'], 'always');
+    });
+
     test('a nested key of the same name does not count', () async {
       const yaml = '''
 tun:
