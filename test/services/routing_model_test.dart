@@ -722,6 +722,21 @@ rules:
         contains('category-bank-ru'),
       );
     });
+
+    test('a removed list stays removed after a write and a re-read', () {
+      final written = RoutingModel.fromYaml(
+        _reference,
+      ).removeList('ads').toYaml(_reference);
+
+      expect(
+        ProfileRulesDocument(written).ruleProviders,
+        isNot(contains('ads')),
+      );
+      expect(
+        RoutingModel.fromYaml(written).lists.map((l) => l.id),
+        isNot(contains('ads')),
+      );
+    });
   });
 
   group('A1: delete prunes emptied groups', () {
