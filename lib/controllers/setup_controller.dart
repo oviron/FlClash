@@ -15,14 +15,21 @@ extension SetupControllerExt on AppController {
       globalState.statusQueue.run(() => _updateStatus(isStart, isInit: isInit));
 
   // For requests made against a state that may change before they run, such as
-  // a tile action queued behind the stop before it.
-  Future<void> ensureStatus(bool isStart) => globalState.statusQueue.run(() {
-    final current = _ref.read(isStartProvider);
-    if (isStart ? current && coreController.isCompleted : !current) {
-      return Future.value();
+  // a tile action queued behind the stop before it, or one sent while attach runs.
+  Future<void> ensureStatus(bool isStart) {
+    if (!_startup.isOpen) {
+      commonPrint.log('ensureStatus($isStart) waits for attach');
     }
-    return _updateStatus(isStart);
-  });
+    return _startup.after(
+      () => globalState.statusQueue.run(() {
+        final current = _ref.read(isStartProvider);
+        if (isStart ? current && coreController.isCompleted : !current) {
+          return Future.value();
+        }
+        return _updateStatus(isStart);
+      }),
+    );
+  }
 
   Future<void> _updateStatus(bool isStart, {bool isInit = false}) async {
     if (isStart) {
