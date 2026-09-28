@@ -1,3 +1,7 @@
+## v0.17.0-rc7
+
+- Opening the app right after an update while the VPN was on no longer leaves it half-started. The update restarts the VPN from the background, and that start could collide with the app's own startup. When that happened, picking another profile highlighted it but kept the old config until the app was closed and reopened. A start that arrives while the app is starting now waits until startup has finished
+
 ## v0.17.0-rc6
 
 - VPN start and stop requests run in the order they were made. A stop followed by a start could run the other way round, a late report from an earlier session could stop the next one or restart a tunnel the user had just stopped, and a quick stop then start from the notification lost the start. A start whose reply never comes is cancelled, so the app and the VPN process no longer disagree, and the dashboard no longer flickers to "stopped" during every start
