@@ -44,3 +44,15 @@ class SerialQueue {
     return result;
   }
 }
+
+// Closed until opened once; work queued behind it runs after, in call order.
+class Gate {
+  final _opened = Completer<void>();
+
+  bool get isOpen => _opened.isCompleted;
+
+  Future<T> after<T>(Future<T> Function() task) =>
+      _opened.future.then((_) => task());
+
+  void open() => _opened.safeCompleter(null);
+}

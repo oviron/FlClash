@@ -48,7 +48,7 @@ extension CoreControllerExt on AppController {
   }
 
   Future<bool> tryStartCore([bool start = false]) async {
-    if (coreController.isCompleted) {
+    if (!_startup.isOpen || coreController.isCompleted) {
       return false;
     }
     await restartCore(start);

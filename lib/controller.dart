@@ -50,6 +50,9 @@ class AppController {
   late WidgetRef _ref;
   bool isAttach = false;
 
+  // Opens when attach settles, pass or fail: until then attach owns connecting the core.
+  final _startup = Gate();
+
   static AppController? _instance;
 
   AppController._internal();
@@ -61,8 +64,12 @@ class AppController {
 
   Future<void> attach(WidgetRef ref) async {
     _ref = ref;
-    await _init();
-    isAttach = true;
+    try {
+      await _init();
+      isAttach = true;
+    } finally {
+      _startup.open();
+    }
   }
 }
 
