@@ -34,7 +34,13 @@ extension CoreControllerExt on AppController {
     return Result.success(enableTun);
   }
 
-  Future<void> restartCore([bool start = false]) async {
+  // Runs in the status queue, so a dashboard restart and a resume start cannot
+  // both connect the core: CoreLib.preload completes its completer only once.
+  Future<void> restartCore([bool start = false]) => _startup.after(
+    () => globalState.statusQueue.run(() => _restartCore(start)),
+  );
+
+  Future<void> _restartCore(bool start) async {
     _ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
     await coreController.shutdown(true);
     clearDelay();
@@ -48,11 +54,16 @@ extension CoreControllerExt on AppController {
   }
 
   Future<bool> tryStartCore([bool start = false]) async {
-    if (!_startup.isOpen || coreController.isCompleted) {
+    if (!_startup.isOpen) {
       return false;
     }
-    await restartCore(start);
-    return true;
+    return globalState.statusQueue.run(() async {
+      if (coreController.isCompleted) {
+        return false;
+      }
+      await _restartCore(start);
+      return true;
+    });
   }
 
   void handleCoreDisconnected() {
