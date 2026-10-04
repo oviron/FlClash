@@ -32,6 +32,41 @@ void main() {
     );
   });
 
+  // A group member shows the delay of the node it resolves to, so it ties
+  // with that node; the group goes first.
+  test('a group ties with its resolved node and sorts ahead of it', () {
+    final groups = [
+      const Group(
+        type: GroupType.Selector,
+        name: 'Select',
+        all: [
+          Proxy(name: 'HK', type: 'Vless'),
+          Proxy(name: 'Auto', type: 'URLTest'),
+          Proxy(name: 'JP', type: 'Vless'),
+        ],
+      ),
+      const Group(
+        type: GroupType.URLTest,
+        name: 'Auto',
+        now: 'HK',
+        all: [
+          Proxy(name: 'HK', type: 'Vless'),
+          Proxy(name: 'JP', type: 'Vless'),
+        ],
+      ),
+    ];
+    final sorted = computeSort(
+      groups: groups,
+      sortType: ProxiesSortType.delay,
+      delayMap: {
+        _url: {'HK': 50, 'JP': 80},
+      },
+      selectedMap: const {},
+      defaultTestUrl: _url,
+    );
+    expect(sorted.first.all.map((proxy) => proxy.name), ['Auto', 'HK', 'JP']);
+  });
+
   // A running delay test re-sorts many times; untested and failed nodes must
   // keep their order between passes instead of reshuffling on every result.
   test('keeps input order among equal delays in a large group', () {

@@ -115,8 +115,8 @@ SelectedProxyState getRealSelectedProxyState(
 }) {
   if (state.proxyName.isEmpty) return state;
   final index = groups.indexWhere((element) => element.name == state.proxyName);
+  if (index == -1) return state;
   final newState = state.copyWith(group: true);
-  if (index == -1) return newState;
   final group = groups[index];
   final currentSelectedName = group.getCurrentSelectedName(
     selectedMap[newState.proxyName] ?? '',
