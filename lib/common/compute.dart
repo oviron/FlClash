@@ -16,23 +16,24 @@ List<Group> computeSort({
     required Map<String, String> selectedMap,
     required String testUrl,
   }) {
-    return List.from(proxies)..sort((a, b) {
-      final aDelayState = computeProxyDelayState(
-        proxyName: a.name,
-        testUrl: testUrl,
-        groups: groups,
-        selectedMap: selectedMap,
-        delayMap: delayMap,
-      );
-      final bDelayState = computeProxyDelayState(
-        proxyName: b.name,
-        testUrl: testUrl,
-        groups: groups,
-        selectedMap: selectedMap,
-        delayMap: delayMap,
-      );
-      return aDelayState.compareTo(bDelayState);
-    });
+    final states = [
+      for (final proxy in proxies)
+        computeProxyDelayState(
+          proxyName: proxy.name,
+          testUrl: testUrl,
+          groups: groups,
+          selectedMap: selectedMap,
+          delayMap: delayMap,
+        ),
+    ];
+    // List.sort is not stable; ties fall back to the input order so repeated
+    // passes during a delay test do not reshuffle untested or failed nodes.
+    final order = List.generate(proxies.length, (index) => index)
+      ..sort((a, b) {
+        final byDelay = states[a].compareTo(states[b]);
+        return byDelay != 0 ? byDelay : a.compareTo(b);
+      });
+    return [for (final index in order) proxies[index]];
   }
 
   List<Proxy> sortOfName(List<Proxy> proxies) {

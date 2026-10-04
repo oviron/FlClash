@@ -67,6 +67,7 @@ Future<void> delayTest(List<Proxy> proxies, [String? testUrl]) async {
     }
     appController.setDelay(Delay(url: url, name: name, value: 0));
     appController.setDelay(await coreController.getDelay(url, name));
+    appController.resortGroupsByDelayThrottle();
   }).toList();
 
   final batchesDelayProxies = delayProxies.batch(100);
