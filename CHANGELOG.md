@@ -1,3 +1,11 @@
+## v0.17.0-rc8
+
+- Sorting by delay works while the test runs. Nodes move into place as their results come in, instead of the whole list reordering once at the end. Nodes that are untested or failed keep their order instead of shuffling on every pass
+
+- On a delay tie, a group now sorts ahead of the node it currently points to, for example `Auto` above the `HK` node it picked. This was meant to happen before but never did
+
+- Core: mihomo `v1.19.32` (libmihomo-android `v0.3.6`). Fixes a crash when an h2 connection is cancelled while it is being set up, half-close in sing-mux, MSS with TCP options and a race in anytls. The new upstream default TUN stack (`mips`) does not apply here: the app always sets its own stack (`mixed` by default)
+
 ## v0.17.0-rc7
 
 - Opening the app right after an update while the VPN was on no longer leaves it half-started. The update restarts the VPN from the background, and that start could collide with the app's own startup. When that happened, picking another profile highlighted it but kept the old config until the app was closed and reopened. A start that arrives while the app is starting now waits until startup has finished
