@@ -17,7 +17,11 @@ class Profiles extends Table {
 
   TextColumn get overwriteType => textEnum<OverwriteType>()();
 
-  IntColumn get scriptId => integer().nullable()();
+  IntColumn get scriptId => integer().nullable().references(
+    Scripts,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
 
   IntColumn get autoUpdateDurationMillis => integer()();
 

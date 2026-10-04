@@ -24,7 +24,7 @@ class Database extends _$Database {
   Database([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -76,6 +76,13 @@ class Database extends _$Database {
       if (from < 10) {
         await _purgeOrphans();
       }
+      // v11: profile -> script and network rule -> profile become foreign keys;
+      // SQLite cannot add a constraint in place, so both tables are rebuilt.
+      if (from < 11) {
+        await _clearDanglingRefs();
+        await m.alterTable(TableMigration(profiles));
+        await m.alterTable(TableMigration(networkRules));
+      }
     },
     beforeOpen: (_) => customStatement('PRAGMA foreign_keys = ON'),
   );
@@ -124,6 +131,7 @@ class Database extends _$Database {
             : networkRulesDao.putAllWithBatch(b, networkRules);
       });
       await _purgeOrphans();
+      await _clearDanglingRefs();
     });
   }
 
@@ -143,6 +151,21 @@ class Database extends _$Database {
           (t.profileId.isNotNull() & t.profileId.isNotInQuery(profileIds)),
     );
     await rulesDao.delUnlinkedRules();
+  }
+
+  Future<void> _clearDanglingRefs() async {
+    final scriptIds = selectOnly(scripts)..addColumns([scripts.id]);
+    await (update(profiles)..where(
+          (t) => t.scriptId.isNotNull() & t.scriptId.isNotInQuery(scriptIds),
+        ))
+        .write(const ProfilesCompanion(scriptId: Value(null)));
+    final profileIds = selectOnly(profiles)..addColumns([profiles.id]);
+    await (update(networkRules)..where(
+          (t) =>
+              t.actionProfileId.isNotNull() &
+              t.actionProfileId.isNotInQuery(profileIds),
+        ))
+        .write(const NetworkRulesCompanion(actionProfileId: Value(null)));
   }
 }
 

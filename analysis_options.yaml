@@ -19,6 +19,7 @@ analyzer:
     - lib/**/*.g.dart
     - lib/**/*.freezed.dart
     - lib/models/generated/**
+    - test/generated_migrations/**
     - build/**
     - plugins/**
 

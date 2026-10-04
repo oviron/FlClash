@@ -68,4 +68,12 @@ void migrateFindProcessMode(Map<String, Object?> configMap) {
   }
 }
 
+// Backups carry the preferences version they were written at.
+void migrateBackupConfig(Map<String, Object?> configMap) {
+  final version = configMap['version'];
+  if (version is! int || version < 2) {
+    migrateFindProcessMode(configMap);
+  }
+}
+
 final migration = Migration();

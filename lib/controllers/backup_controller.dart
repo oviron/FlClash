@@ -78,6 +78,7 @@ extension BackupControllerExt on AppController {
       if (option == RestoreOption.onlyProfiles || configMap == null) {
         return;
       }
+      migrateBackupConfig(configMap);
       final config = Config.fromJson(configMap);
       _ref.read(patchClashConfigProvider.notifier).value =
           config.patchClashConfig;
