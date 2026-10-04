@@ -19,7 +19,11 @@ class NetworkRules extends Table {
   IntColumn get action => integer()();
 
   // Profile-switch target; null = leave profile as-is.
-  IntColumn get actionProfileId => integer().nullable()();
+  IntColumn get actionProfileId => integer().nullable().references(
+    Profiles,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
 
   IntColumn get priority => integer()();
 

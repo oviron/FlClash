@@ -29,4 +29,28 @@ void main() {
       expect(empty, isEmpty);
     });
   });
+
+  group('migrateBackupConfig', () {
+    Map<String, Object?> backup(Object? version) => {
+      'version': ?version,
+      'patchClashConfig': {'find-process-mode': 'always'},
+    };
+
+    String? mode(Map<String, Object?> map) =>
+        (map['patchClashConfig'] as Map)['find-process-mode'] as String?;
+
+    test('moves always to strict in a backup written before version 2', () {
+      for (final version in [null, 0, 1]) {
+        final map = backup(version);
+        migrateBackupConfig(map);
+        expect(mode(map), 'strict', reason: 'version $version');
+      }
+    });
+
+    test('keeps always chosen in a backup from version 2 on', () {
+      final map = backup(2);
+      migrateBackupConfig(map);
+      expect(mode(map), 'always');
+    });
+  });
 }

@@ -3,6 +3,256 @@
 part of '../database.dart';
 
 // ignore_for_file: type=lint
+class $ScriptsTable extends Scripts with TableInfo<$ScriptsTable, RawScript> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ScriptsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUpdateTimeMeta = const VerificationMeta(
+    'lastUpdateTime',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUpdateTime =
+      GeneratedColumn<DateTime>(
+        'last_update_time',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [id, label, lastUpdateTime];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scripts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RawScript> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('last_update_time')) {
+      context.handle(
+        _lastUpdateTimeMeta,
+        lastUpdateTime.isAcceptableOrUnknown(
+          data['last_update_time']!,
+          _lastUpdateTimeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUpdateTimeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RawScript map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RawScript(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      lastUpdateTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_update_time'],
+      )!,
+    );
+  }
+
+  @override
+  $ScriptsTable createAlias(String alias) {
+    return $ScriptsTable(attachedDatabase, alias);
+  }
+}
+
+class RawScript extends DataClass implements Insertable<RawScript> {
+  final int id;
+  final String label;
+  final DateTime lastUpdateTime;
+  const RawScript({
+    required this.id,
+    required this.label,
+    required this.lastUpdateTime,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['label'] = Variable<String>(label);
+    map['last_update_time'] = Variable<DateTime>(lastUpdateTime);
+    return map;
+  }
+
+  ScriptsCompanion toCompanion(bool nullToAbsent) {
+    return ScriptsCompanion(
+      id: Value(id),
+      label: Value(label),
+      lastUpdateTime: Value(lastUpdateTime),
+    );
+  }
+
+  factory RawScript.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RawScript(
+      id: serializer.fromJson<int>(json['id']),
+      label: serializer.fromJson<String>(json['label']),
+      lastUpdateTime: serializer.fromJson<DateTime>(json['lastUpdateTime']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'label': serializer.toJson<String>(label),
+      'lastUpdateTime': serializer.toJson<DateTime>(lastUpdateTime),
+    };
+  }
+
+  RawScript copyWith({int? id, String? label, DateTime? lastUpdateTime}) =>
+      RawScript(
+        id: id ?? this.id,
+        label: label ?? this.label,
+        lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
+      );
+  RawScript copyWithCompanion(ScriptsCompanion data) {
+    return RawScript(
+      id: data.id.present ? data.id.value : this.id,
+      label: data.label.present ? data.label.value : this.label,
+      lastUpdateTime: data.lastUpdateTime.present
+          ? data.lastUpdateTime.value
+          : this.lastUpdateTime,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RawScript(')
+          ..write('id: $id, ')
+          ..write('label: $label, ')
+          ..write('lastUpdateTime: $lastUpdateTime')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, label, lastUpdateTime);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RawScript &&
+          other.id == this.id &&
+          other.label == this.label &&
+          other.lastUpdateTime == this.lastUpdateTime);
+}
+
+class ScriptsCompanion extends UpdateCompanion<RawScript> {
+  final Value<int> id;
+  final Value<String> label;
+  final Value<DateTime> lastUpdateTime;
+  const ScriptsCompanion({
+    this.id = const Value.absent(),
+    this.label = const Value.absent(),
+    this.lastUpdateTime = const Value.absent(),
+  });
+  ScriptsCompanion.insert({
+    this.id = const Value.absent(),
+    required String label,
+    required DateTime lastUpdateTime,
+  }) : label = Value(label),
+       lastUpdateTime = Value(lastUpdateTime);
+  static Insertable<RawScript> custom({
+    Expression<int>? id,
+    Expression<String>? label,
+    Expression<DateTime>? lastUpdateTime,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (label != null) 'label': label,
+      if (lastUpdateTime != null) 'last_update_time': lastUpdateTime,
+    });
+  }
+
+  ScriptsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? label,
+    Value<DateTime>? lastUpdateTime,
+  }) {
+    return ScriptsCompanion(
+      id: id ?? this.id,
+      label: label ?? this.label,
+      lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (lastUpdateTime.present) {
+      map['last_update_time'] = Variable<DateTime>(lastUpdateTime.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ScriptsCompanion(')
+          ..write('id: $id, ')
+          ..write('label: $label, ')
+          ..write('lastUpdateTime: $lastUpdateTime')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $ProfilesTable extends Profiles
     with TableInfo<$ProfilesTable, RawProfile> {
   @override
@@ -78,6 +328,9 @@ class $ProfilesTable extends Profiles
     true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES scripts (id) ON DELETE SET NULL',
+    ),
   );
   static const VerificationMeta _autoUpdateDurationMillisMeta =
       const VerificationMeta('autoUpdateDurationMillis');
@@ -915,256 +1168,6 @@ class ProfilesCompanion extends UpdateCompanion<RawProfile> {
   }
 }
 
-class $ScriptsTable extends Scripts with TableInfo<$ScriptsTable, RawScript> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $ScriptsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _labelMeta = const VerificationMeta('label');
-  @override
-  late final GeneratedColumn<String> label = GeneratedColumn<String>(
-    'label',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _lastUpdateTimeMeta = const VerificationMeta(
-    'lastUpdateTime',
-  );
-  @override
-  late final GeneratedColumn<DateTime> lastUpdateTime =
-      GeneratedColumn<DateTime>(
-        'last_update_time',
-        aliasedName,
-        false,
-        type: DriftSqlType.dateTime,
-        requiredDuringInsert: true,
-      );
-  @override
-  List<GeneratedColumn> get $columns => [id, label, lastUpdateTime];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'scripts';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<RawScript> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('label')) {
-      context.handle(
-        _labelMeta,
-        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_labelMeta);
-    }
-    if (data.containsKey('last_update_time')) {
-      context.handle(
-        _lastUpdateTimeMeta,
-        lastUpdateTime.isAcceptableOrUnknown(
-          data['last_update_time']!,
-          _lastUpdateTimeMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_lastUpdateTimeMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  RawScript map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return RawScript(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      label: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}label'],
-      )!,
-      lastUpdateTime: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_update_time'],
-      )!,
-    );
-  }
-
-  @override
-  $ScriptsTable createAlias(String alias) {
-    return $ScriptsTable(attachedDatabase, alias);
-  }
-}
-
-class RawScript extends DataClass implements Insertable<RawScript> {
-  final int id;
-  final String label;
-  final DateTime lastUpdateTime;
-  const RawScript({
-    required this.id,
-    required this.label,
-    required this.lastUpdateTime,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['label'] = Variable<String>(label);
-    map['last_update_time'] = Variable<DateTime>(lastUpdateTime);
-    return map;
-  }
-
-  ScriptsCompanion toCompanion(bool nullToAbsent) {
-    return ScriptsCompanion(
-      id: Value(id),
-      label: Value(label),
-      lastUpdateTime: Value(lastUpdateTime),
-    );
-  }
-
-  factory RawScript.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return RawScript(
-      id: serializer.fromJson<int>(json['id']),
-      label: serializer.fromJson<String>(json['label']),
-      lastUpdateTime: serializer.fromJson<DateTime>(json['lastUpdateTime']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'label': serializer.toJson<String>(label),
-      'lastUpdateTime': serializer.toJson<DateTime>(lastUpdateTime),
-    };
-  }
-
-  RawScript copyWith({int? id, String? label, DateTime? lastUpdateTime}) =>
-      RawScript(
-        id: id ?? this.id,
-        label: label ?? this.label,
-        lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
-      );
-  RawScript copyWithCompanion(ScriptsCompanion data) {
-    return RawScript(
-      id: data.id.present ? data.id.value : this.id,
-      label: data.label.present ? data.label.value : this.label,
-      lastUpdateTime: data.lastUpdateTime.present
-          ? data.lastUpdateTime.value
-          : this.lastUpdateTime,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('RawScript(')
-          ..write('id: $id, ')
-          ..write('label: $label, ')
-          ..write('lastUpdateTime: $lastUpdateTime')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, label, lastUpdateTime);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is RawScript &&
-          other.id == this.id &&
-          other.label == this.label &&
-          other.lastUpdateTime == this.lastUpdateTime);
-}
-
-class ScriptsCompanion extends UpdateCompanion<RawScript> {
-  final Value<int> id;
-  final Value<String> label;
-  final Value<DateTime> lastUpdateTime;
-  const ScriptsCompanion({
-    this.id = const Value.absent(),
-    this.label = const Value.absent(),
-    this.lastUpdateTime = const Value.absent(),
-  });
-  ScriptsCompanion.insert({
-    this.id = const Value.absent(),
-    required String label,
-    required DateTime lastUpdateTime,
-  }) : label = Value(label),
-       lastUpdateTime = Value(lastUpdateTime);
-  static Insertable<RawScript> custom({
-    Expression<int>? id,
-    Expression<String>? label,
-    Expression<DateTime>? lastUpdateTime,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (label != null) 'label': label,
-      if (lastUpdateTime != null) 'last_update_time': lastUpdateTime,
-    });
-  }
-
-  ScriptsCompanion copyWith({
-    Value<int>? id,
-    Value<String>? label,
-    Value<DateTime>? lastUpdateTime,
-  }) {
-    return ScriptsCompanion(
-      id: id ?? this.id,
-      label: label ?? this.label,
-      lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (label.present) {
-      map['label'] = Variable<String>(label.value);
-    }
-    if (lastUpdateTime.present) {
-      map['last_update_time'] = Variable<DateTime>(lastUpdateTime.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('ScriptsCompanion(')
-          ..write('id: $id, ')
-          ..write('label: $label, ')
-          ..write('lastUpdateTime: $lastUpdateTime')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $RulesTable extends Rules with TableInfo<$RulesTable, RawRule> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -1784,6 +1787,9 @@ class $NetworkRulesTable extends NetworkRules
     true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES profiles (id) ON DELETE SET NULL',
+    ),
   );
   static const VerificationMeta _priorityMeta = const VerificationMeta(
     'priority',
@@ -2223,8 +2229,8 @@ class NetworkRulesCompanion extends UpdateCompanion<RawNetworkRule> {
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(e);
   $DatabaseManager get managers => $DatabaseManager(this);
-  late final $ProfilesTable profiles = $ProfilesTable(this);
   late final $ScriptsTable scripts = $ScriptsTable(this);
+  late final $ProfilesTable profiles = $ProfilesTable(this);
   late final $RulesTable rules = $RulesTable(this);
   late final $ProfileRuleLinksTable profileRuleLinks = $ProfileRuleLinksTable(
     this,
@@ -2245,8 +2251,8 @@ abstract class _$Database extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-    profiles,
     scripts,
+    profiles,
     rules,
     profileRuleLinks,
     networkRules,
@@ -2254,6 +2260,13 @@ abstract class _$Database extends GeneratedDatabase {
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'scripts',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('profiles', kind: UpdateKind.update)],
+    ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
         'profiles',
@@ -2268,9 +2281,270 @@ abstract class _$Database extends GeneratedDatabase {
       ),
       result: [TableUpdate('profile_rule_mapping', kind: UpdateKind.delete)],
     ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'profiles',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('network_rules', kind: UpdateKind.update)],
+    ),
   ]);
 }
 
+typedef $$ScriptsTableCreateCompanionBuilder =
+    ScriptsCompanion Function({
+      Value<int> id,
+      required String label,
+      required DateTime lastUpdateTime,
+    });
+typedef $$ScriptsTableUpdateCompanionBuilder =
+    ScriptsCompanion Function({
+      Value<int> id,
+      Value<String> label,
+      Value<DateTime> lastUpdateTime,
+    });
+
+final class $$ScriptsTableReferences
+    extends BaseReferences<_$Database, $ScriptsTable, RawScript> {
+  $$ScriptsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$ProfilesTable, List<RawProfile>>
+  _profilesRefsTable(_$Database db) => MultiTypedResultKey.fromTable(
+    db.profiles,
+    aliasName: $_aliasNameGenerator(db.scripts.id, db.profiles.scriptId),
+  );
+
+  $$ProfilesTableProcessedTableManager get profilesRefs {
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.scriptId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_profilesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ScriptsTableFilterComposer extends Composer<_$Database, $ScriptsTable> {
+  $$ScriptsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUpdateTime => $composableBuilder(
+    column: $table.lastUpdateTime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> profilesRefs(
+    Expression<bool> Function($$ProfilesTableFilterComposer f) f,
+  ) {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.scriptId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ScriptsTableOrderingComposer
+    extends Composer<_$Database, $ScriptsTable> {
+  $$ScriptsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUpdateTime => $composableBuilder(
+    column: $table.lastUpdateTime,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ScriptsTableAnnotationComposer
+    extends Composer<_$Database, $ScriptsTable> {
+  $$ScriptsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUpdateTime => $composableBuilder(
+    column: $table.lastUpdateTime,
+    builder: (column) => column,
+  );
+
+  Expression<T> profilesRefs<T extends Object>(
+    Expression<T> Function($$ProfilesTableAnnotationComposer a) f,
+  ) {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.scriptId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ScriptsTableTableManager
+    extends
+        RootTableManager<
+          _$Database,
+          $ScriptsTable,
+          RawScript,
+          $$ScriptsTableFilterComposer,
+          $$ScriptsTableOrderingComposer,
+          $$ScriptsTableAnnotationComposer,
+          $$ScriptsTableCreateCompanionBuilder,
+          $$ScriptsTableUpdateCompanionBuilder,
+          (RawScript, $$ScriptsTableReferences),
+          RawScript,
+          PrefetchHooks Function({bool profilesRefs})
+        > {
+  $$ScriptsTableTableManager(_$Database db, $ScriptsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ScriptsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ScriptsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ScriptsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<DateTime> lastUpdateTime = const Value.absent(),
+              }) => ScriptsCompanion(
+                id: id,
+                label: label,
+                lastUpdateTime: lastUpdateTime,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String label,
+                required DateTime lastUpdateTime,
+              }) => ScriptsCompanion.insert(
+                id: id,
+                label: label,
+                lastUpdateTime: lastUpdateTime,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ScriptsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({profilesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (profilesRefs) db.profiles],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (profilesRefs)
+                    await $_getPrefetchedData<
+                      RawScript,
+                      $ScriptsTable,
+                      RawProfile
+                    >(
+                      currentTable: table,
+                      referencedTable: $$ScriptsTableReferences
+                          ._profilesRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$ScriptsTableReferences(db, table, p0).profilesRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.scriptId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ScriptsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Database,
+      $ScriptsTable,
+      RawScript,
+      $$ScriptsTableFilterComposer,
+      $$ScriptsTableOrderingComposer,
+      $$ScriptsTableAnnotationComposer,
+      $$ScriptsTableCreateCompanionBuilder,
+      $$ScriptsTableUpdateCompanionBuilder,
+      (RawScript, $$ScriptsTableReferences),
+      RawScript,
+      PrefetchHooks Function({bool profilesRefs})
+    >;
 typedef $$ProfilesTableCreateCompanionBuilder =
     ProfilesCompanion Function({
       Value<int> id,
@@ -2312,6 +2586,24 @@ final class $$ProfilesTableReferences
     extends BaseReferences<_$Database, $ProfilesTable, RawProfile> {
   $$ProfilesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
+  static $ScriptsTable _scriptIdTable(_$Database db) => db.scripts.createAlias(
+    $_aliasNameGenerator(db.profiles.scriptId, db.scripts.id),
+  );
+
+  $$ScriptsTableProcessedTableManager? get scriptId {
+    final $_column = $_itemColumn<int>('script_id');
+    if ($_column == null) return null;
+    final manager = $$ScriptsTableTableManager(
+      $_db,
+      $_db.scripts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_scriptIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
   static MultiTypedResultKey<$ProfileRuleLinksTable, List<RawProfileRuleLink>>
   _profileRuleLinksRefsTable(_$Database db) => MultiTypedResultKey.fromTable(
     db.profileRuleLinks,
@@ -2330,6 +2622,27 @@ final class $$ProfilesTableReferences
     final cache = $_typedResult.readTableOrNull(
       _profileRuleLinksRefsTable($_db),
     );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$NetworkRulesTable, List<RawNetworkRule>>
+  _networkRulesRefsTable(_$Database db) => MultiTypedResultKey.fromTable(
+    db.networkRules,
+    aliasName: $_aliasNameGenerator(
+      db.profiles.id,
+      db.networkRules.actionProfileId,
+    ),
+  );
+
+  $$NetworkRulesTableProcessedTableManager get networkRulesRefs {
+    final manager = $$NetworkRulesTableTableManager(
+      $_db,
+      $_db.networkRules,
+    ).filter((f) => f.actionProfileId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_networkRulesRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -2374,11 +2687,6 @@ class $$ProfilesTableFilterComposer
   get overwriteType => $composableBuilder(
     column: $table.overwriteType,
     builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
-
-  ColumnFilters<int> get scriptId => $composableBuilder(
-    column: $table.scriptId,
-    builder: (column) => ColumnFilters(column),
   );
 
   ColumnFilters<int> get autoUpdateDurationMillis => $composableBuilder(
@@ -2434,6 +2742,29 @@ class $$ProfilesTableFilterComposer
     builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
+  $$ScriptsTableFilterComposer get scriptId {
+    final $$ScriptsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.scriptId,
+      referencedTable: $db.scripts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScriptsTableFilterComposer(
+            $db: $db,
+            $table: $db.scripts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   Expression<bool> profileRuleLinksRefs(
     Expression<bool> Function($$ProfileRuleLinksTableFilterComposer f) f,
   ) {
@@ -2450,6 +2781,31 @@ class $$ProfilesTableFilterComposer
           }) => $$ProfileRuleLinksTableFilterComposer(
             $db: $db,
             $table: $db.profileRuleLinks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> networkRulesRefs(
+    Expression<bool> Function($$NetworkRulesTableFilterComposer f) f,
+  ) {
+    final $$NetworkRulesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.networkRules,
+      getReferencedColumn: (t) => t.actionProfileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$NetworkRulesTableFilterComposer(
+            $db: $db,
+            $table: $db.networkRules,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2499,11 +2855,6 @@ class $$ProfilesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get scriptId => $composableBuilder(
-    column: $table.scriptId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get autoUpdateDurationMillis => $composableBuilder(
     column: $table.autoUpdateDurationMillis,
     builder: (column) => ColumnOrderings(column),
@@ -2543,6 +2894,29 @@ class $$ProfilesTableOrderingComposer
     column: $table.appFilterStash,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$ScriptsTableOrderingComposer get scriptId {
+    final $$ScriptsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.scriptId,
+      referencedTable: $db.scripts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScriptsTableOrderingComposer(
+            $db: $db,
+            $table: $db.scripts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$ProfilesTableAnnotationComposer
@@ -2578,9 +2952,6 @@ class $$ProfilesTableAnnotationComposer
         column: $table.overwriteType,
         builder: (column) => column,
       );
-
-  GeneratedColumn<int> get scriptId =>
-      $composableBuilder(column: $table.scriptId, builder: (column) => column);
 
   GeneratedColumn<int> get autoUpdateDurationMillis => $composableBuilder(
     column: $table.autoUpdateDurationMillis,
@@ -2622,6 +2993,29 @@ class $$ProfilesTableAnnotationComposer
     builder: (column) => column,
   );
 
+  $$ScriptsTableAnnotationComposer get scriptId {
+    final $$ScriptsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.scriptId,
+      referencedTable: $db.scripts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScriptsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.scripts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
   Expression<T> profileRuleLinksRefs<T extends Object>(
     Expression<T> Function($$ProfileRuleLinksTableAnnotationComposer a) f,
   ) {
@@ -2646,6 +3040,31 @@ class $$ProfilesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> networkRulesRefs<T extends Object>(
+    Expression<T> Function($$NetworkRulesTableAnnotationComposer a) f,
+  ) {
+    final $$NetworkRulesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.networkRules,
+      getReferencedColumn: (t) => t.actionProfileId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$NetworkRulesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.networkRules,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ProfilesTableTableManager
@@ -2661,7 +3080,11 @@ class $$ProfilesTableTableManager
           $$ProfilesTableUpdateCompanionBuilder,
           (RawProfile, $$ProfilesTableReferences),
           RawProfile,
-          PrefetchHooks Function({bool profileRuleLinksRefs})
+          PrefetchHooks Function({
+            bool scriptId,
+            bool profileRuleLinksRefs,
+            bool networkRulesRefs,
+          })
         > {
   $$ProfilesTableTableManager(_$Database db, $ProfilesTable table)
     : super(
@@ -2754,37 +3177,98 @@ class $$ProfilesTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({profileRuleLinksRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (profileRuleLinksRefs) db.profileRuleLinks,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (profileRuleLinksRefs)
-                    await $_getPrefetchedData<
-                      RawProfile,
-                      $ProfilesTable,
-                      RawProfileRuleLink
-                    >(
-                      currentTable: table,
-                      referencedTable: $$ProfilesTableReferences
-                          ._profileRuleLinksRefsTable(db),
-                      managerFromTypedResult: (p0) => $$ProfilesTableReferences(
-                        db,
-                        table,
-                        p0,
-                      ).profileRuleLinksRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.profileId == item.id),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({
+                scriptId = false,
+                profileRuleLinksRefs = false,
+                networkRulesRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (profileRuleLinksRefs) db.profileRuleLinks,
+                    if (networkRulesRefs) db.networkRules,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (scriptId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.scriptId,
+                                    referencedTable: $$ProfilesTableReferences
+                                        ._scriptIdTable(db),
+                                    referencedColumn: $$ProfilesTableReferences
+                                        ._scriptIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (profileRuleLinksRefs)
+                        await $_getPrefetchedData<
+                          RawProfile,
+                          $ProfilesTable,
+                          RawProfileRuleLink
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._profileRuleLinksRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).profileRuleLinksRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.profileId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (networkRulesRefs)
+                        await $_getPrefetchedData<
+                          RawProfile,
+                          $ProfilesTable,
+                          RawNetworkRule
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ProfilesTableReferences
+                              ._networkRulesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).networkRulesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.actionProfileId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -2801,158 +3285,11 @@ typedef $$ProfilesTableProcessedTableManager =
       $$ProfilesTableUpdateCompanionBuilder,
       (RawProfile, $$ProfilesTableReferences),
       RawProfile,
-      PrefetchHooks Function({bool profileRuleLinksRefs})
-    >;
-typedef $$ScriptsTableCreateCompanionBuilder =
-    ScriptsCompanion Function({
-      Value<int> id,
-      required String label,
-      required DateTime lastUpdateTime,
-    });
-typedef $$ScriptsTableUpdateCompanionBuilder =
-    ScriptsCompanion Function({
-      Value<int> id,
-      Value<String> label,
-      Value<DateTime> lastUpdateTime,
-    });
-
-class $$ScriptsTableFilterComposer extends Composer<_$Database, $ScriptsTable> {
-  $$ScriptsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get label => $composableBuilder(
-    column: $table.label,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get lastUpdateTime => $composableBuilder(
-    column: $table.lastUpdateTime,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$ScriptsTableOrderingComposer
-    extends Composer<_$Database, $ScriptsTable> {
-  $$ScriptsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get label => $composableBuilder(
-    column: $table.label,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get lastUpdateTime => $composableBuilder(
-    column: $table.lastUpdateTime,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$ScriptsTableAnnotationComposer
-    extends Composer<_$Database, $ScriptsTable> {
-  $$ScriptsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get label =>
-      $composableBuilder(column: $table.label, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get lastUpdateTime => $composableBuilder(
-    column: $table.lastUpdateTime,
-    builder: (column) => column,
-  );
-}
-
-class $$ScriptsTableTableManager
-    extends
-        RootTableManager<
-          _$Database,
-          $ScriptsTable,
-          RawScript,
-          $$ScriptsTableFilterComposer,
-          $$ScriptsTableOrderingComposer,
-          $$ScriptsTableAnnotationComposer,
-          $$ScriptsTableCreateCompanionBuilder,
-          $$ScriptsTableUpdateCompanionBuilder,
-          (RawScript, BaseReferences<_$Database, $ScriptsTable, RawScript>),
-          RawScript,
-          PrefetchHooks Function()
-        > {
-  $$ScriptsTableTableManager(_$Database db, $ScriptsTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$ScriptsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$ScriptsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$ScriptsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> label = const Value.absent(),
-                Value<DateTime> lastUpdateTime = const Value.absent(),
-              }) => ScriptsCompanion(
-                id: id,
-                label: label,
-                lastUpdateTime: lastUpdateTime,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String label,
-                required DateTime lastUpdateTime,
-              }) => ScriptsCompanion.insert(
-                id: id,
-                label: label,
-                lastUpdateTime: lastUpdateTime,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$ScriptsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$Database,
-      $ScriptsTable,
-      RawScript,
-      $$ScriptsTableFilterComposer,
-      $$ScriptsTableOrderingComposer,
-      $$ScriptsTableAnnotationComposer,
-      $$ScriptsTableCreateCompanionBuilder,
-      $$ScriptsTableUpdateCompanionBuilder,
-      (RawScript, BaseReferences<_$Database, $ScriptsTable, RawScript>),
-      RawScript,
-      PrefetchHooks Function()
+      PrefetchHooks Function({
+        bool scriptId,
+        bool profileRuleLinksRefs,
+        bool networkRulesRefs,
+      })
     >;
 typedef $$RulesTableCreateCompanionBuilder =
     RulesCompanion Function({Value<int> id, required String value});
@@ -3617,6 +3954,30 @@ typedef $$NetworkRulesTableUpdateCompanionBuilder =
       Value<bool> enabled,
     });
 
+final class $$NetworkRulesTableReferences
+    extends BaseReferences<_$Database, $NetworkRulesTable, RawNetworkRule> {
+  $$NetworkRulesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ProfilesTable _actionProfileIdTable(_$Database db) =>
+      db.profiles.createAlias(
+        $_aliasNameGenerator(db.networkRules.actionProfileId, db.profiles.id),
+      );
+
+  $$ProfilesTableProcessedTableManager? get actionProfileId {
+    final $_column = $_itemColumn<int>('action_profile_id');
+    if ($_column == null) return null;
+    final manager = $$ProfilesTableTableManager(
+      $_db,
+      $_db.profiles,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_actionProfileIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
 class $$NetworkRulesTableFilterComposer
     extends Composer<_$Database, $NetworkRulesTable> {
   $$NetworkRulesTableFilterComposer({
@@ -3651,11 +4012,6 @@ class $$NetworkRulesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get actionProfileId => $composableBuilder(
-    column: $table.actionProfileId,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<int> get priority => $composableBuilder(
     column: $table.priority,
     builder: (column) => ColumnFilters(column),
@@ -3665,6 +4021,29 @@ class $$NetworkRulesTableFilterComposer
     column: $table.enabled,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$ProfilesTableFilterComposer get actionProfileId {
+    final $$ProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.actionProfileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$NetworkRulesTableOrderingComposer
@@ -3701,11 +4080,6 @@ class $$NetworkRulesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get actionProfileId => $composableBuilder(
-    column: $table.actionProfileId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get priority => $composableBuilder(
     column: $table.priority,
     builder: (column) => ColumnOrderings(column),
@@ -3715,6 +4089,29 @@ class $$NetworkRulesTableOrderingComposer
     column: $table.enabled,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$ProfilesTableOrderingComposer get actionProfileId {
+    final $$ProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.actionProfileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$NetworkRulesTableAnnotationComposer
@@ -3743,16 +4140,34 @@ class $$NetworkRulesTableAnnotationComposer
   GeneratedColumn<int> get action =>
       $composableBuilder(column: $table.action, builder: (column) => column);
 
-  GeneratedColumn<int> get actionProfileId => $composableBuilder(
-    column: $table.actionProfileId,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<int> get priority =>
       $composableBuilder(column: $table.priority, builder: (column) => column);
 
   GeneratedColumn<bool> get enabled =>
       $composableBuilder(column: $table.enabled, builder: (column) => column);
+
+  $$ProfilesTableAnnotationComposer get actionProfileId {
+    final $$ProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.actionProfileId,
+      referencedTable: $db.profiles,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.profiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$NetworkRulesTableTableManager
@@ -3766,12 +4181,9 @@ class $$NetworkRulesTableTableManager
           $$NetworkRulesTableAnnotationComposer,
           $$NetworkRulesTableCreateCompanionBuilder,
           $$NetworkRulesTableUpdateCompanionBuilder,
-          (
-            RawNetworkRule,
-            BaseReferences<_$Database, $NetworkRulesTable, RawNetworkRule>,
-          ),
+          (RawNetworkRule, $$NetworkRulesTableReferences),
           RawNetworkRule,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool actionProfileId})
         > {
   $$NetworkRulesTableTableManager(_$Database db, $NetworkRulesTable table)
     : super(
@@ -3825,9 +4237,54 @@ class $$NetworkRulesTableTableManager
                 enabled: enabled,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$NetworkRulesTableReferences(db, table, e),
+                ),
+              )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({actionProfileId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (actionProfileId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.actionProfileId,
+                                referencedTable: $$NetworkRulesTableReferences
+                                    ._actionProfileIdTable(db),
+                                referencedColumn: $$NetworkRulesTableReferences
+                                    ._actionProfileIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ),
       );
 }
@@ -3842,21 +4299,18 @@ typedef $$NetworkRulesTableProcessedTableManager =
       $$NetworkRulesTableAnnotationComposer,
       $$NetworkRulesTableCreateCompanionBuilder,
       $$NetworkRulesTableUpdateCompanionBuilder,
-      (
-        RawNetworkRule,
-        BaseReferences<_$Database, $NetworkRulesTable, RawNetworkRule>,
-      ),
+      (RawNetworkRule, $$NetworkRulesTableReferences),
       RawNetworkRule,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool actionProfileId})
     >;
 
 class $DatabaseManager {
   final _$Database _db;
   $DatabaseManager(this._db);
-  $$ProfilesTableTableManager get profiles =>
-      $$ProfilesTableTableManager(_db, _db.profiles);
   $$ScriptsTableTableManager get scripts =>
       $$ScriptsTableTableManager(_db, _db.scripts);
+  $$ProfilesTableTableManager get profiles =>
+      $$ProfilesTableTableManager(_db, _db.profiles);
   $$RulesTableTableManager get rules =>
       $$RulesTableTableManager(_db, _db.rules);
   $$ProfileRuleLinksTableTableManager get profileRuleLinks =>
@@ -3866,6 +4320,7 @@ class $DatabaseManager {
 }
 
 mixin _$ProfilesDaoMixin on DatabaseAccessor<Database> {
+  $ScriptsTable get scripts => attachedDatabase.scripts;
   $ProfilesTable get profiles => attachedDatabase.profiles;
 }
 mixin _$ScriptsDaoMixin on DatabaseAccessor<Database> {
@@ -3873,10 +4328,13 @@ mixin _$ScriptsDaoMixin on DatabaseAccessor<Database> {
 }
 mixin _$RulesDaoMixin on DatabaseAccessor<Database> {
   $RulesTable get rules => attachedDatabase.rules;
+  $ScriptsTable get scripts => attachedDatabase.scripts;
   $ProfilesTable get profiles => attachedDatabase.profiles;
   $ProfileRuleLinksTable get profileRuleLinks =>
       attachedDatabase.profileRuleLinks;
 }
 mixin _$NetworkRulesDaoMixin on DatabaseAccessor<Database> {
+  $ScriptsTable get scripts => attachedDatabase.scripts;
+  $ProfilesTable get profiles => attachedDatabase.profiles;
   $NetworkRulesTable get networkRules => attachedDatabase.networkRules;
 }
