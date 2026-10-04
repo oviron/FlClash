@@ -1,3 +1,19 @@
+## v0.17.0-rc9
+
+- A DNS queries page under Tools → Diagnostics lists the lookups the core resolved through the tunnel, newest first: the domain, its answers or the failure, record type, delay and time. It refreshes once a second while open, can be searched by domain or answer, and can be cleared. The core keeps the last 500 queries
+
+- Targets Android 17 (API 37). Android 17 blocks connections to the local network unless the app holds the Nearby devices permission, and that includes LAN traffic the profile sends DIRECT. The app asks for it when the VPN starts, together with notifications, and before downloading a subscription from a local address. Saying no does not stop the VPN; LAN addresses stay unreachable until the permission is granted. A downloaded core version is now stored read-only, as Android 17 refuses to load writable libraries
+
+- Resuming the app while a core restart from the dashboard was still running could leave profile switches without effect until the app was reopened, the same symptom rc7 fixed for app updates. Core restarts now run one after another
+
+- Restoring a backup made before the Find process default changed to `strict` no longer brings back `always`
+
+- A deleted script or profile can no longer leave a profile pointing at a missing script, or a Network Rule pointing at a missing profile. The database upgrade clears such references once
+
+- The app picker in Routing rules shows the same "Open settings" banner as the Apps tab when the system hides installed apps
+
+- Core: libmihomo-android `v0.3.7`, still mihomo `v1.19.32`. Adds the DNS query history
+
 ## v0.17.0-rc8
 
 - Sorting by delay works while the test runs. Nodes move into place as their results come in, instead of the whole list reordering once at the end. Nodes that are untested or failed keep their order instead of shuffling on every pass
