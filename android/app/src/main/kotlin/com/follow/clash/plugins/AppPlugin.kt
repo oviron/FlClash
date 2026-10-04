@@ -63,7 +63,7 @@ private object AppMethod {
     const val IS_AUTO_START_ENABLED = "isAutoStartEnabled"
     const val SET_AUTO_START_ENABLED = "setAutoStartEnabled"
     const val GET_LOG_DIRECTORY = "getLogDirectory"
-    const val REQUEST_NOTIFICATIONS_PERMISSION = "requestNotificationsPermission"
+    const val REQUEST_LOCAL_NETWORK_PERMISSION = "requestLocalNetworkPermission"
     const val OPEN_FILE = "openFile"
     const val GET_HEALTH_STATS = "getHealthStats"
     const val REQUEST_ADD_TILE = "requestAddTile"
@@ -90,6 +90,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     companion object {
         const val VPN_PERMISSION_REQUEST_CODE = 1001
         const val START_PERMISSIONS_REQUEST_CODE = 1002
+        const val LOCAL_NETWORK_REQUEST_CODE = 1003
     }
 
     private var activityRef: WeakReference<Activity>? = null
@@ -105,6 +106,8 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     private var vpnConsent: CompletableDeferred<Boolean>? = null
 
     private var startPermissionsCallback: (() -> Unit)? = null
+
+    private var localNetworkCallback: ((Boolean) -> Unit)? = null
 
     private val packages = mutableListOf<Package>()
     private val packagesLock = Any()
@@ -227,6 +230,10 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 }
             }
 
+            AppMethod.REQUEST_LOCAL_NETWORK_PERMISSION -> {
+                requestLocalNetworkPermission { result.success(it) }
+            }
+
             AppMethod.IS_INSTALLED_APPS_PERMISSION_MISSING -> {
                 result.success(isInstalledAppsPermissionMissing())
             }
@@ -242,8 +249,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
             }
 
             AppMethod.TIP -> {
-                val message = call.argument<String>("message")
-                tip(message)
+                GlobalState.application.showToast(call.argument<String>("message"))
                 result.success(true)
             }
 
@@ -322,10 +328,6 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         )
     }
 
-    private fun tip(message: String?) {
-        GlobalState.application.showToast(message)
-    }
-
     @Suppress("DEPRECATION")
     private fun updateExcludeFromRecents(value: Boolean?) {
         val am = getSystemService(GlobalState.application, ActivityManager::class.java)
@@ -387,7 +389,15 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     // Asked once per process; a denial still lets the VPN start.
     fun requestStartPermissions(callBack: () -> Unit) {
         startPermissionsCallback = callBack
-        val missing = startPermissions().filter {
+        // ACCESS_LOCAL_NETWORK: from target 37 the core's DIRECT dials and allow-lan inbound
+        // to LAN addresses are blocked without it.
+        val wanted = buildList {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            if (Build.VERSION.SDK_INT >= 37) add(Manifest.permission.ACCESS_LOCAL_NETWORK)
+        }
+        val missing = wanted.filter {
             ContextCompat.checkSelfPermission(GlobalState.application, it) !=
                 PackageManager.PERMISSION_GRANTED
         }
@@ -401,13 +411,24 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         )
     }
 
-    // ACCESS_LOCAL_NETWORK: from target 37 the core's DIRECT dials and allow-lan inbound
-    // to LAN addresses are blocked without it.
-    private fun startPermissions(): List<String> = buildList {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            add(Manifest.permission.POST_NOTIFICATIONS)
+    // A subscription on a LAN host is fetched before any VPN start has asked for it.
+    private fun requestLocalNetworkPermission(callBack: (Boolean) -> Unit) {
+        if (Build.VERSION.SDK_INT < 37 || ContextCompat.checkSelfPermission(
+                GlobalState.application, Manifest.permission.ACCESS_LOCAL_NETWORK
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            callBack(true)
+            return
         }
-        if (Build.VERSION.SDK_INT >= 37) add(Manifest.permission.ACCESS_LOCAL_NETWORK)
+        val activity = activityRef?.get()
+        if (activity == null || localNetworkCallback != null) {
+            callBack(false)
+            return
+        }
+        localNetworkCallback = callBack
+        ActivityCompat.requestPermissions(
+            activity, arrayOf(Manifest.permission.ACCESS_LOCAL_NETWORK), LOCAL_NETWORK_REQUEST_CODE
+        )
     }
 
     fun invokeStartPermissionsCallback() {
@@ -548,6 +569,8 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         activityRef = null
         resolveVpnConsent(false)
         startPermissionsCallback = null
+        localNetworkCallback?.invoke(false)
+        localNetworkCallback = null
     }
 
     private fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
@@ -559,9 +582,21 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     private fun onRequestPermissionsResultListener(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ): Boolean {
-        if (requestCode != START_PERMISSIONS_REQUEST_CODE) return false
-        startPermissionsAsked = true
-        invokeStartPermissionsCallback()
+        when (requestCode) {
+            START_PERMISSIONS_REQUEST_CODE -> {
+                startPermissionsAsked = true
+                invokeStartPermissionsCallback()
+            }
+
+            LOCAL_NETWORK_REQUEST_CODE -> {
+                localNetworkCallback?.invoke(
+                    grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED
+                )
+                localNetworkCallback = null
+            }
+
+            else -> return false
+        }
         return true
     }
 }

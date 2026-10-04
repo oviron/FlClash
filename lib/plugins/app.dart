@@ -60,10 +60,11 @@ class App {
     return packageNamesRaw.map((e) => e.toString()).toList();
   }
 
-  Future<bool?> requestNotificationsPermission() async {
+  Future<bool> requestLocalNetworkPermission() async {
     return await methodChannel.invokeMethod<bool>(
-      AppMethod.requestNotificationsPermission,
-    );
+          AppMethod.requestLocalNetworkPermission,
+        ) ??
+        false;
   }
 
   Future<bool> openFile(String path) async {
