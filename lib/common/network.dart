@@ -64,3 +64,35 @@ bool shouldLookUpCountryCode(String address) {
   if (parsed == null) return false;
   return !parsed.isPrivateOrReserved;
 }
+
+bool _isLocalNetworkAddress(InternetAddress address) {
+  if (address.isLinkLocal || address.isMulticast) return true;
+  final bytes = address.rawAddress;
+  if (!address.isIPv4) return bytes[0] & 0xfe == 0xfc; // fc00::/7 ULA
+  final a = bytes[0], b = bytes[1];
+  return a == 10 || (a == 172 && b >= 16 && b <= 31) || (a == 192 && b == 168);
+}
+
+Future<List<String>> _systemLookup(String host) async {
+  final addresses = await InternetAddress.lookup(
+    host,
+  ).timeout(const Duration(seconds: 3));
+  return addresses.map((a) => a.address).toList();
+}
+
+// The address ranges Android 17 gates behind ACCESS_LOCAL_NETWORK.
+Future<bool> isLocalNetworkHost(
+  String host, {
+  Future<List<String>> Function(String host) lookup = _systemLookup,
+}) async {
+  final literal = InternetAddress.tryParse(host);
+  if (literal != null) return _isLocalNetworkAddress(literal);
+  try {
+    final resolved = await lookup(host);
+    return resolved
+        .map(InternetAddress.tryParse)
+        .any((a) => a != null && _isLocalNetworkAddress(a));
+  } catch (_) {
+    return false;
+  }
+}

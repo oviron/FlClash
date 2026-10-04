@@ -9,6 +9,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -48,6 +49,11 @@ class Request {
     var currentUrl = url;
     var currentHeaders = headers;
     for (var i = 0; i < 5; i++) {
+      final appPlugin = app;
+      if (appPlugin != null &&
+          await isLocalNetworkHost(Uri.parse(currentUrl).host)) {
+        await appPlugin.requestLocalNetworkPermission();
+      }
       final res = await _clashDio
           .get<T>(
             currentUrl,
