@@ -796,6 +796,7 @@ Future<String?> _pickFromList(
   required List<({String value, String label, String detail})> options,
   String? searchHint,
   IconData leading = Icons.dns_outlined,
+  Widget? header,
 }) => showSheet<String>(
   context: context,
   props: const SheetProps(isScrollControlled: true),
@@ -805,6 +806,7 @@ Future<String?> _pickFromList(
     options: options,
     searchHint: searchHint,
     leading: leading,
+    header: header,
   ),
 );
 
@@ -814,6 +816,7 @@ class _SearchPickBody extends StatefulWidget {
   final List<({String value, String label, String detail})> options;
   final String? searchHint;
   final IconData leading;
+  final Widget? header;
 
   const _SearchPickBody({
     required this.type,
@@ -821,6 +824,7 @@ class _SearchPickBody extends StatefulWidget {
     required this.options,
     this.searchHint,
     this.leading = Icons.dns_outlined,
+    this.header,
   });
 
   @override
@@ -855,6 +859,7 @@ class _SearchPickBodyState extends State<_SearchPickBody> {
           height: (maxHeight - insets).clamp(240.0, maxHeight),
           child: Column(
             children: [
+              ?widget.header,
               Padding(
                 padding: EdgeInsets.all(16.mAp),
                 child: TextField(
@@ -891,6 +896,40 @@ class _SearchPickBodyState extends State<_SearchPickBody> {
       ),
     );
   }
+}
+
+// Some vendors hide installed apps until GET_INSTALLED_APPS is granted.
+class _AppListRestrictedBanner extends StatelessWidget {
+  const _AppListRestrictedBanner();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    margin: EdgeInsets.fromLTRB(16.mAp, 16.mAp, 16.mAp, 0),
+    padding: EdgeInsets.all(12.mAp),
+    decoration: BoxDecoration(
+      color: context.colorScheme.secondaryContainer,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      children: [
+        Icon(
+          Icons.info_outline,
+          color: context.colorScheme.onSecondaryContainer,
+        ),
+        SizedBox(width: 12.mAp),
+        Expanded(
+          child: Text(
+            appLocalizations.appListRestrictedBody,
+            style: TextStyle(color: context.colorScheme.onSecondaryContainer),
+          ),
+        ),
+        TextButton(
+          onPressed: openAppSettings,
+          child: Text(appLocalizations.openSettings),
+        ),
+      ],
+    ),
+  );
 }
 
 enum _RuleKind { list, matcher, logic }
@@ -1176,12 +1215,14 @@ Future<String?> _pickAppPackage(BuildContext context) async {
         ..sort(
           (a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()),
         );
+  final restricted = await app?.isInstalledAppsPermissionMissing() ?? false;
   if (!context.mounted) return null;
   return _pickFromList(
     context,
     title: appLocalizations.routingMatcherApp,
     searchHint: appLocalizations.appRoutingSearchHint,
     leading: Icons.apps_outlined,
+    header: restricted ? const _AppListRestrictedBanner() : null,
     options: [
       for (final p in packages)
         (value: p.packageName, label: p.label, detail: p.packageName),
@@ -2611,34 +2652,6 @@ class _AppsViewState extends State<_AppsView>
     ),
   );
 
-  Widget _appListBanner() => Container(
-    margin: EdgeInsets.fromLTRB(16.mAp, 16.mAp, 16.mAp, 0),
-    padding: EdgeInsets.all(12.mAp),
-    decoration: BoxDecoration(
-      color: context.colorScheme.secondaryContainer,
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: Row(
-      children: [
-        Icon(
-          Icons.info_outline,
-          color: context.colorScheme.onSecondaryContainer,
-        ),
-        SizedBox(width: 12.mAp),
-        Expanded(
-          child: Text(
-            appLocalizations.appListRestrictedBody,
-            style: TextStyle(color: context.colorScheme.onSecondaryContainer),
-          ),
-        ),
-        TextButton(
-          onPressed: openAppSettings,
-          child: Text(appLocalizations.openSettings),
-        ),
-      ],
-    ),
-  );
-
   Widget _appChip(AppAssignment? a) {
     final dest = a?.dest ?? _defaultDest;
     final style = _destStyle(context, dest);
@@ -2773,7 +2786,7 @@ class _AppsViewState extends State<_AppsView>
       body: Column(
         children: [
           if (degenerate) _bothBanner(model),
-          if (_appListRestricted && !allMode) _appListBanner(),
+          if (_appListRestricted && !allMode) const _AppListRestrictedBanner(),
           if (!allMode)
             _dim(
               degenerate,
