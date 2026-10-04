@@ -19,6 +19,8 @@ A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash). 
 - **Bundled GeoSite baseline + background auto-update**, so a first connect on a GitHub-blocked network never stalls on a geo-DB download.
 - **Subscription support:** xray/v2ray subscription ingest with per-remark grouping and per-provider quota (used / total / expiry).
 - **Network Rules:** automatic VPN on/off based on the current network (WifiNamed / AnyWifi / AnyCellular).
+- **Diagnostics:** a history of the DNS queries the core resolved, and an on-demand IP quality check against five HTTPS services.
+- **Targets Android 17 (API 37):** asks for local network access at VPN start so LAN traffic keeps working.
 - **Backend:** `metacubex/mihomo v1.19.32` direct, with CMfA-style patterns: type-explicit providers API, async-callback path, push subscription for connections/log, INNER-bypass via Dart pre-process.
 - **Dashboard checkIp probe:** JNI `WithSpecialProxy` bypasses user rules so the real exit-IP shows even on whitelist profiles with `MATCH,REJECT`.
 - Stability stack: wake/Wi-Fi locks, idempotent module loader, defensive Go type-assertions, MATCH-rule guard for upstream #1959, Global proxy watchdog.
@@ -41,7 +43,7 @@ cd FlClash
 dart setup.dart android
 ```
 
-Requires Flutter, Android SDK + NDK 28. The build script downloads a SHA-256-pinned `libmihomo-android-<version>.aar` from GitHub Releases, extracts `libclash.so` per ABI, and produces split APKs for `arm`, `arm64`, and `x86_64` in `dist/`.
+Requires Flutter, Android SDK platform 37 and NDK 28. The build script downloads `libmihomo-android-<version>.aar` from GitHub Releases into `android/core/libs/`, checks it against the pinned SHA-256 and its GPG signature, and produces split APKs for `arm`, `arm64`, and `x86_64` in `dist/` (`--arch` builds one).
 
 ## Development
 
@@ -51,7 +53,7 @@ Pre-commit hook runs `dart format --set-exit-if-changed` and `flutter analyze --
 ln -s ../../scripts/pre-commit.sh .git/hooks/pre-commit
 ```
 
-CI enforces the same checks plus `flutter test`, `detekt` on Kotlin sources, `gitleaks` secret scan, and CodeQL on every push and PR to `main`.
+CI runs the same checks plus `flutter test`, DCM dead-code, `detekt` on Kotlin sources, locale parity, `shellcheck` and a `gitleaks` secret scan on every push and PR to `main`. Pushes to `main` also build the APKs; `v*` tags add an emulator smoke test and publish signed APKs to Releases.
 
 ## License
 
