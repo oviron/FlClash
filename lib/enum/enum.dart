@@ -234,6 +234,7 @@ enum FunctionTag {
   setupConfig,
   updateStatus,
   updateGroups,
+  resortGroupsByDelay,
   addCheckIpNum,
   applyProfile,
   savePreferences,

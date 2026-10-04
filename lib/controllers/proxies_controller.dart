@@ -52,6 +52,28 @@ extension ProxiesControllerExt on AppController {
     }
   }
 
+  // Re-sorts the groups already in memory, without a core round-trip, so a
+  // running delay test reorders the list as results arrive.
+  void resortGroupsByDelayThrottle() {
+    throttler.call(FunctionTag.resortGroupsByDelay, () {
+      final sortType = _ref.read(
+        proxiesStyleSettingProvider.select((state) => state.sortType),
+      );
+      if (sortType != ProxiesSortType.delay) return;
+      _ref.read(groupsProvider.notifier).value = computeSort(
+        groups: _ref.read(groupsProvider),
+        sortType: sortType,
+        delayMap: _ref.read(delayDataSourceProvider),
+        selectedMap: _ref.read(
+          currentProfileProvider.select((state) => state?.selectedMap ?? {}),
+        ),
+        defaultTestUrl: _ref.read(
+          appSettingProvider.select((state) => state.testUrl),
+        ),
+      );
+    }, duration: commonDuration);
+  }
+
   void updateCurrentGroupName(String groupName) {
     final profile = _ref.read(currentProfileProvider);
     if (profile == null || profile.currentGroupName == groupName) {
