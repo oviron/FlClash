@@ -4,6 +4,7 @@ import android.content.Context
 import com.follow.clash.common.ActiveLibs
 import com.follow.clash.common.Logger
 import io.github.oviron.libmihomo.Clash
+import java.io.File
 
 object LibraryLoader {
     private var attempted: Boolean = false
@@ -12,6 +13,8 @@ object LibraryLoader {
     fun load(context: Context) {
         if (attempted) return
         val active = ActiveLibs.dirFor(context, ActiveLibs.MIHOMO, ActiveLibs.MIHOMO_SO)
+        // Target 37 refuses to System.load a writable .so; installs before that were writable.
+        active?.let { dir -> ActiveLibs.MIHOMO_SO.forEach { File(dir, it).setReadOnly() } }
         val dir = active ?: context.applicationInfo.nativeLibraryDir
         Clash.load(dir)
         if (Clash.isLoaded()) {

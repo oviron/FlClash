@@ -89,7 +89,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
     companion object {
         const val VPN_PERMISSION_REQUEST_CODE = 1001
-        const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1002
+        const val START_PERMISSIONS_REQUEST_CODE = 1002
     }
 
     private var activityRef: WeakReference<Activity>? = null
@@ -104,7 +104,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     @Volatile
     private var vpnConsent: CompletableDeferred<Boolean>? = null
 
-    private var requestNotificationCallback: (() -> Unit)? = null
+    private var startPermissionsCallback: (() -> Unit)? = null
 
     private val packages = mutableListOf<Package>()
     private val packagesLock = Any()
@@ -201,7 +201,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         return -1
     }
 
-    private var isBlockNotification: Boolean = false
+    private var startPermissionsAsked: Boolean = false
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
@@ -331,9 +331,9 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         val am = getSystemService(GlobalState.application, ActivityManager::class.java)
         val task = am?.appTasks?.firstOrNull {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                it.taskInfo.taskId == activityRef?.get()?.taskId
+                it.taskInfo?.taskId == activityRef?.get()?.taskId
             } else {
-                it.taskInfo.id == activityRef?.get()?.taskId
+                it.taskInfo?.id == activityRef?.get()?.taskId
             }
         }
 
@@ -384,36 +384,35 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         }
     }
 
-    fun requestNotificationsPermission(callBack: () -> Unit) {
-        requestNotificationCallback = callBack
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val permission = ContextCompat.checkSelfPermission(
-                GlobalState.application, Manifest.permission.POST_NOTIFICATIONS
-            )
-            if (permission == PackageManager.PERMISSION_GRANTED || isBlockNotification) {
-                invokeRequestNotificationCallback()
-                return
-            }
-            val activity = activityRef?.get()
-            if (activity == null) {
-                invokeRequestNotificationCallback()
-                return
-            }
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                NOTIFICATION_PERMISSION_REQUEST_CODE
-            )
-            return
-        } else {
-            invokeRequestNotificationCallback()
+    // Asked once per process; a denial still lets the VPN start.
+    fun requestStartPermissions(callBack: () -> Unit) {
+        startPermissionsCallback = callBack
+        val missing = startPermissions().filter {
+            ContextCompat.checkSelfPermission(GlobalState.application, it) !=
+                PackageManager.PERMISSION_GRANTED
         }
-
+        val activity = activityRef?.get()
+        if (missing.isEmpty() || startPermissionsAsked || activity == null) {
+            invokeStartPermissionsCallback()
+            return
+        }
+        ActivityCompat.requestPermissions(
+            activity, missing.toTypedArray(), START_PERMISSIONS_REQUEST_CODE
+        )
     }
 
-    fun invokeRequestNotificationCallback() {
-        requestNotificationCallback?.invoke()
-        requestNotificationCallback = null
+    // ACCESS_LOCAL_NETWORK: from target 37 the core's DIRECT dials and allow-lan inbound
+    // to LAN addresses are blocked without it.
+    private fun startPermissions(): List<String> = buildList {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            add(Manifest.permission.POST_NOTIFICATIONS)
+        }
+        if (Build.VERSION.SDK_INT >= 37) add(Manifest.permission.ACCESS_LOCAL_NETWORK)
+    }
+
+    fun invokeStartPermissionsCallback() {
+        startPermissionsCallback?.invoke()
+        startPermissionsCallback = null
     }
 
     suspend fun prepareVpn(): Boolean {
@@ -548,7 +547,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         channel.invokeMethod(AppMethod.EXIT, null)
         activityRef = null
         resolveVpnConsent(false)
-        requestNotificationCallback = null
+        startPermissionsCallback = null
     }
 
     private fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
@@ -560,9 +559,9 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     private fun onRequestPermissionsResultListener(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ): Boolean {
-        if (requestCode != NOTIFICATION_PERMISSION_REQUEST_CODE) return false
-        isBlockNotification = true
-        invokeRequestNotificationCallback()
+        if (requestCode != START_PERMISSIONS_REQUEST_CODE) return false
+        startPermissionsAsked = true
+        invokeStartPermissionsCallback()
         return true
     }
 }
