@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'connection/connections.dart';
 import 'connection/requests.dart';
 import 'dashboard/dashboard.dart';
+import 'dns_queries.dart';
 import 'logs.dart';
 import 'profiles/profiles.dart';
 import 'proxies/proxies.dart';
@@ -50,6 +51,13 @@ class Navigation {
         label: PageLabel.connections,
         builder: (_) =>
             const ConnectionsView(key: GlobalObjectKey(PageLabel.connections)),
+        isMore: true,
+      ),
+      NavigationItem(
+        icon: const Icon(Icons.dns_outlined),
+        label: PageLabel.dnsQueries,
+        builder: (_) =>
+            const DnsQueriesView(key: GlobalObjectKey(PageLabel.dnsQueries)),
         isMore: true,
       ),
       NavigationItem(

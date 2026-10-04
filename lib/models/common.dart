@@ -131,6 +131,22 @@ extension TrackerInfoExt on TrackerInfo {
   }
 }
 
+@freezed
+abstract class DnsQuery with _$DnsQuery {
+  const factory DnsQuery({
+    required String domain,
+    required String type,
+    @Default([]) List<String> answers,
+    @Default('') String rcode,
+    @Default('') String error,
+    @Default(0) int delay,
+    required DateTime time,
+  }) = _DnsQuery;
+
+  factory DnsQuery.fromJson(Map<String, Object?> json) =>
+      _$DnsQueryFromJson(json);
+}
+
 String _logDateTime(dynamic _) {
   return DateTime.now().showFull;
 }

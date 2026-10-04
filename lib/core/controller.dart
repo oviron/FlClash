@@ -124,6 +124,19 @@ class CoreController {
         .toList();
   }
 
+  Future<List<DnsQuery>> getDnsQueries() async {
+    final res = await _interface.getDnsQueries();
+    if (res.isEmpty) return const [];
+    return (json.decode(res) as List? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .map(DnsQuery.fromJson)
+        .toList();
+  }
+
+  Future<void> clearDnsQueries() async {
+    await _interface.clearDnsQueries();
+  }
+
   Future<void> subscribeConnections() async {
     await _interface.subscribeConnections();
   }

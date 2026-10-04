@@ -660,6 +660,8 @@
   "fruitSaladScheme": "果缤纷",
   "requestsDesc": "查看最近请求记录",
   "connectionsDesc": "查看当前连接数据",
+  "dnsQueries": "DNS 查询",
+  "dnsQueriesDesc": "核心处理的最近 DNS 查询",
   "logsDesc": "日志捕获记录",
   "resourcesDesc": "外部资源相关信息",
   "ipQualityCheck": "IP 质量检测",

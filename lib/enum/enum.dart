@@ -221,6 +221,8 @@ enum ActionMethod {
   unsubscribeConnections,
   closeConnection,
   closeAllConnections,
+  getDnsQueries,
+  clearDnsQueries,
   queryProxyGroupOrder,
   setLogcatLevel,
   setFileLevel,
@@ -304,6 +306,7 @@ enum PageLabel {
   requests,
   resources,
   connections,
+  dnsQueries,
 }
 
 enum RuleAction {
