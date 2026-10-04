@@ -217,6 +217,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsOverrideKeysTip": MessageLookupByLibrary.simpleMessage(
       "只有勾选的键会替换配置文件的值。修改某项设置会自动勾选它的键。",
     ),
+    "dnsQueries": MessageLookupByLibrary.simpleMessage("DNS 查询"),
+    "dnsQueriesDesc": MessageLookupByLibrary.simpleMessage("核心处理的最近 DNS 查询"),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("服务器"),
     "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
       "配置文件没有自己的 DNS，因此使用下方设置",

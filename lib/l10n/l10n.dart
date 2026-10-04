@@ -5573,6 +5573,21 @@ class AppLocalizations {
     );
   }
 
+  /// `DNS queries`
+  String get dnsQueries {
+    return Intl.message('DNS queries', name: 'dnsQueries', desc: '', args: []);
+  }
+
+  /// `Recent DNS lookups handled by the core`
+  String get dnsQueriesDesc {
+    return Intl.message(
+      'Recent DNS lookups handled by the core',
+      name: 'dnsQueriesDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Log capture records`
   String get logsDesc {
     return Intl.message(

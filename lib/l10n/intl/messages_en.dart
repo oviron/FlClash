@@ -276,6 +276,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsOverrideKeysTip": MessageLookupByLibrary.simpleMessage(
       "Only checked keys replace the profile\'s values. Editing a setting checks its key.",
     ),
+    "dnsQueries": MessageLookupByLibrary.simpleMessage("DNS queries"),
+    "dnsQueriesDesc": MessageLookupByLibrary.simpleMessage(
+      "Recent DNS lookups handled by the core",
+    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("Servers"),
     "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
       "The profile has no DNS of its own, so the settings below apply",

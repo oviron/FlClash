@@ -660,6 +660,8 @@
   "fruitSaladScheme": "FruitSalad",
   "requestsDesc": "View recently request records",
   "connectionsDesc": "View current connections data",
+  "dnsQueries": "DNS queries",
+  "dnsQueriesDesc": "Recent DNS lookups handled by the core",
   "logsDesc": "Log capture records",
   "resourcesDesc": "External resource related info",
   "ipQualityCheck": "IP quality check",

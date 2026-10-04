@@ -660,6 +660,8 @@
   "fruitSaladScheme": "フルーツサラダ",
   "requestsDesc": "最近のリクエスト記録を表示",
   "connectionsDesc": "現在の接続データを表示",
+  "dnsQueries": "DNS クエリ",
+  "dnsQueriesDesc": "コアが処理した最近の DNS クエリ",
   "logsDesc": "ログキャプチャ記録",
   "resourcesDesc": "外部リソース関連情報",
   "ipQualityCheck": "IP品質チェック",

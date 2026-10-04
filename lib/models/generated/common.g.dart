@@ -104,6 +104,28 @@ Map<String, dynamic> _$TrackerInfoToJson(_TrackerInfo instance) =>
       'uploadSpeed': instance.uploadSpeed,
     };
 
+_DnsQuery _$DnsQueryFromJson(Map<String, dynamic> json) => _DnsQuery(
+  domain: json['domain'] as String,
+  type: json['type'] as String,
+  answers:
+      (json['answers'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  rcode: json['rcode'] as String? ?? '',
+  error: json['error'] as String? ?? '',
+  delay: (json['delay'] as num?)?.toInt() ?? 0,
+  time: DateTime.parse(json['time'] as String),
+);
+
+Map<String, dynamic> _$DnsQueryToJson(_DnsQuery instance) => <String, dynamic>{
+  'domain': instance.domain,
+  'type': instance.type,
+  'answers': instance.answers,
+  'rcode': instance.rcode,
+  'error': instance.error,
+  'delay': instance.delay,
+  'time': instance.time.toIso8601String(),
+};
+
 _Log _$LogFromJson(Map<String, dynamic> json) => _Log(
   logLevel:
       $enumDecodeNullable(_$LogLevelEnumMap, json['LogLevel']) ?? LogLevel.info,

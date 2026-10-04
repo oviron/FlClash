@@ -281,6 +281,8 @@ const _$ActionMethodEnumMap = {
   ActionMethod.unsubscribeConnections: 'unsubscribeConnections',
   ActionMethod.closeConnection: 'closeConnection',
   ActionMethod.closeAllConnections: 'closeAllConnections',
+  ActionMethod.getDnsQueries: 'getDnsQueries',
+  ActionMethod.clearDnsQueries: 'clearDnsQueries',
   ActionMethod.queryProxyGroupOrder: 'queryProxyGroupOrder',
   ActionMethod.setLogcatLevel: 'setLogcatLevel',
   ActionMethod.setFileLevel: 'setFileLevel',

@@ -24,12 +24,14 @@ extension PageLabelL10n on PageLabel {
     PageLabel.requests => appLocalizations.requests,
     PageLabel.resources => appLocalizations.resources,
     PageLabel.connections => appLocalizations.connections,
+    PageLabel.dnsQueries => appLocalizations.dnsQueries,
   };
 
   /// Subtitle shown on the "more" tools rows; null for primary pages.
   String? get moreDescription => switch (this) {
     PageLabel.requests => appLocalizations.requestsDesc,
     PageLabel.connections => appLocalizations.connectionsDesc,
+    PageLabel.dnsQueries => appLocalizations.dnsQueriesDesc,
     PageLabel.logs => appLocalizations.logsDesc,
     PageLabel.resources => appLocalizations.resourcesDesc,
     _ => null,

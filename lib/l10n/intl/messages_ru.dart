@@ -281,6 +281,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsOverrideKeysTip": MessageLookupByLibrary.simpleMessage(
       "Значения профиля заменяются только в отмеченных ключах. Изменённая настройка отмечается сама.",
     ),
+    "dnsQueries": MessageLookupByLibrary.simpleMessage("DNS-запросы"),
+    "dnsQueriesDesc": MessageLookupByLibrary.simpleMessage(
+      "Последние DNS-запросы, обработанные ядром",
+    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("Серверы"),
     "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
       "В профиле нет своего DNS, поэтому применяются настройки ниже",

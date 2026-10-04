@@ -236,6 +236,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsOverrideKeysTip": MessageLookupByLibrary.simpleMessage(
       "チェックしたキーだけがプロファイルの値を置き換えます。設定を変更するとそのキーは自動でチェックされます。",
     ),
+    "dnsQueries": MessageLookupByLibrary.simpleMessage("DNS クエリ"),
+    "dnsQueriesDesc": MessageLookupByLibrary.simpleMessage(
+      "コアが処理した最近の DNS クエリ",
+    ),
     "dnsServersSection": MessageLookupByLibrary.simpleMessage("サーバー"),
     "dnsSourceAppFallback": MessageLookupByLibrary.simpleMessage(
       "プロファイルに DNS がないため、以下の設定が適用されます",
