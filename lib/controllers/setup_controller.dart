@@ -214,6 +214,9 @@ extension SetupControllerExt on AppController {
         appendSystemDns: appendSystemDns,
         profilesPath: await appPath.profilesPath,
         defaultUserAgent: ua,
+        geoUpdateInterval: _ref.read(
+          appSettingProvider.select((state) => state.geoUpdateInterval),
+        ),
       ),
     );
   }

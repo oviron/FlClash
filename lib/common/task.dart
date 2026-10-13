@@ -81,7 +81,12 @@ Map<String, dynamic> dropCoreDefaults(
   Map<String, dynamic> rawConfig,
   String profileYaml,
 ) {
-  const keys = ['find-process-mode', 'global-ua'];
+  const keys = [
+    'find-process-mode',
+    'global-ua',
+    'geo-auto-update',
+    'geo-update-interval',
+  ];
   return {
     for (final entry in rawConfig.entries)
       if (!keys.contains(entry.key) || profileSetsKey(profileYaml, entry.key))
@@ -179,6 +184,14 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   confineProviders('rule-providers', 'rules');
   _mapAt(rawConfig, 'profile')['store-selected'] = false;
   rawConfig['geox-url'] = realPatchConfig.geoXUrl.toJson();
+  // One schedule, two timers: ours fires on launch, the core's keeps the
+  // databases fresh while the app is closed. A profile that schedules it
+  // itself keeps its own values; see dropCoreDefaults.
+  final geoHours = data.geoUpdateInterval.duration?.inHours ?? 0;
+  rawConfig['geo-auto-update'] ??= geoHours > 0;
+  if (geoHours > 0) {
+    rawConfig['geo-update-interval'] ??= geoHours;
+  }
   rawConfig['global-ua'] ??= defaultUA;
   final clientFingerprint = rawConfig['global-client-fingerprint'];
   if (clientFingerprint is! String || clientFingerprint.isEmpty) {

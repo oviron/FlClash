@@ -332,6 +332,7 @@ abstract class MakeRealProfileState with _$MakeRealProfileState {
     required bool appendSystemDns,
     required List<Rule> addedRules,
     required String defaultUA,
+    @Default(GeoUpdateInterval.off) GeoUpdateInterval geoUpdateInterval,
   }) = _MakeRealProfileState;
 }
 

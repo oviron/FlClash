@@ -20,6 +20,7 @@ class ProfileSetupRequest {
   final bool appendSystemDns;
   final String profilesPath;
   final String defaultUserAgent;
+  final GeoUpdateInterval geoUpdateInterval;
 
   const ProfileSetupRequest({
     required this.setupState,
@@ -29,6 +30,7 @@ class ProfileSetupRequest {
     required this.appendSystemDns,
     required this.profilesPath,
     required this.defaultUserAgent,
+    required this.geoUpdateInterval,
   });
 }
 
@@ -81,6 +83,7 @@ class ProfileSetupService {
         appendSystemDns: request.appendSystemDns,
         addedRules: addedRules,
         defaultUA: request.defaultUserAgent,
+        geoUpdateInterval: request.geoUpdateInterval,
       ),
     );
   }
