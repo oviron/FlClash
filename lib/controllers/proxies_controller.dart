@@ -118,9 +118,12 @@ extension ProxiesControllerExt on AppController {
     required String groupName,
     required String proxyName,
   }) async {
-    await coreController.changeProxy(
+    final error = await coreController.changeProxy(
       ChangeProxyParams(groupName: groupName, proxyName: proxyName),
     );
+    // The core refused the switch, so the old node still carries the traffic:
+    // tearing its connections down would drop live sessions for nothing.
+    if (error.isNotEmpty) return;
     if (_ref.read(appSettingProvider).closeConnections) {
       coreController.closeAllConnections();
     } else {
