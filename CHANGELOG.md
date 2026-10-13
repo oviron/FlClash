@@ -1,3 +1,37 @@
+## v0.17.0-rc10
+
+- Testing delays now re-picks at once. An unpinned url-test group moves to its fastest node as soon as its test finishes, instead of keeping a slower one until a later health check beats it by more than the tolerance. The test measures the way the core picks: nested groups first, each under its own test URL, so a group measures the route it will actually use. A pin stays, including one set while the test runs, and a reply outside the group's `expected-status` counts as a failure
+
+- Results arrive group by group. Each group's numbers and new pick show up when that group is done, instead of all at once after the slowest; sorting by delay re-sorts a group at the same moment
+
+- The Proxies and Dashboard screens follow the core. A url-test group re-picks on its own health checks, and the app did not notice, so a tile could stay marked in use while the traffic went elsewhere. While either screen is open, the app re-reads the picks every 3 seconds. Nothing runs in the background or with the screen off
+
+- A tile of a nested group names the node it leads to, `→ node`, instead of repeating the group's type
+
+- The bar of a pinned group names the pinned node. Right after pinning a node with no test result yet, the core keeps routing through its own pick, and the bar used to label that pick as pinned. It now names the pin and, on a second line, what carries the traffic until the core takes the pin up
+
+- The bar and the chain show the latency of a node a nested group picked; they looked it up under the outer group's test URL and showed none
+
+- Subscriptions and rule sets that several profiles use are downloaded and stored once. Switching profiles reuses them instead of fetching them again. A profile's files from earlier versions move into the shared cache the next time that profile is applied, and deleting a profile keeps what another profile still uses
+
+- A url-test or fallback group now says whether it is still picking for itself or has a node pinned inside it. A bar above the group names the state, spells out the path from what the group picked down to the node that carries the traffic with its latency, and offers one tap back to automatic. A pinned tile is marked with a pin instead of the check mark a manual choice uses, and the group header in the list view carries the same pin
+
+- Clearing a pin in such a group now reaches the core. It was sent as a lookup for the empty name, which the core refuses, so the group went on serving the pinned node until the core restarted
+
+- The chain on the Proxies screen showed a single group name instead of the path to the node actually in use
+
+- A node switch the core refuses now says why. The app stores the pick before asking the core, so a refusal left a node marked on screen that carries nothing
+
+- The Geo update schedule now reaches the core as well. Until now it only fired when the app launched, so a phone that keeps the tunnel up for days ran on stale databases. The core checks hourly whether the interval has passed and refreshes only the databases the rules use. A profile that schedules the update itself keeps its own values
+
+- Switching to a node no longer tears down live connections when the core refuses the switch. The old node goes on carrying the traffic, and its sessions were being dropped for nothing
+
+- A group with `lazy: false` keeps its eager health check when the profile is saved. Saving any edit used to drop the flag and quietly make the check lazy again
+
+- A profile card's group and server counts are re-read after a subscription refresh or a routing edit, instead of showing the old numbers until the next app start
+
+- Core: libmihomo-android `v0.3.9`, still mihomo `v1.19.32`. Adds the group test, clears a pin in url-test and fallback groups, and runs `geo-auto-update`, which the core accepted but never started
+
 ## v0.17.0-rc9
 
 - A DNS queries page under Tools → Diagnostics lists the lookups the core resolved through the tunnel, newest first: the domain, its answers or the failure, record type, delay and time. It refreshes once a second while open, can be searched by domain or answer, and can be cleared. The core keeps the last 500 queries
