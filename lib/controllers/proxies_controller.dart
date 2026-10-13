@@ -122,8 +122,12 @@ extension ProxiesControllerExt on AppController {
       ChangeProxyParams(groupName: groupName, proxyName: proxyName),
     );
     // The core refused the switch, so the old node still carries the traffic:
-    // tearing its connections down would drop live sessions for nothing.
-    if (error.isNotEmpty) return;
+    // tearing its connections down would drop live sessions for nothing. The
+    // app already stored the pick, so say why the node on screen is not live.
+    if (error.isNotEmpty) {
+      globalState.showNotifier(error);
+      return;
+    }
     if (_ref.read(appSettingProvider).closeConnections) {
       coreController.closeAllConnections();
     } else {
