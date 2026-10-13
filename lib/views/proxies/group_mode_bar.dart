@@ -143,7 +143,9 @@ class GroupModeBarView extends ConsumerWidget {
     final delay = ref.watch(
       getDelayProvider(
         proxyName: chain.isEmpty ? group.name : chain.last,
-        testUrl: group.testUrl,
+        testUrl: chain.isEmpty
+            ? group.testUrl
+            : leafTestUrl(groups, [group.name, ...chain]),
       ),
     );
     return GroupModeBar(

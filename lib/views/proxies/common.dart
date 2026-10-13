@@ -42,9 +42,14 @@ Future<void> proxyDelayTest(Proxy proxy, [String? testUrl]) async {
   appController.setDelay(
     Delay(url: delayTestUrl, name: state.proxyName, value: 0),
   );
-  appController.setDelay(
-    await coreController.getDelay(delayTestUrl, state.proxyName),
-  );
+  globalState.delayTests++;
+  try {
+    appController.setDelay(
+      await coreController.getDelay(delayTestUrl, state.proxyName),
+    );
+  } finally {
+    globalState.delayTests--;
+  }
 }
 
 /// Tests [groups] the way the core picks: one round for the whole tree, after
@@ -75,7 +80,7 @@ Future<void> groupsDelayTest(List<Group> groups) async {
     }
   }
   appController.setDelays(pending);
-  globalState.groupTests++;
+  globalState.delayTests++;
   try {
     final results = await coreController
         .testGroups(
@@ -89,7 +94,7 @@ Future<void> groupsDelayTest(List<Group> groups) async {
     appController.setDelays(settleDelays(pending: pending, results: results));
     await appController.updateGroups();
   } finally {
-    globalState.groupTests--;
+    globalState.delayTests--;
   }
 }
 

@@ -113,7 +113,7 @@ class _GroupsPollingState extends ConsumerState<_GroupsPolling>
   @override
   Future<void> poll() async {
     if (!_pages.contains(ref.read(currentPageLabelProvider))) return;
-    if (!ref.read(isStartProvider) || globalState.groupTests > 0) return;
+    if (!ref.read(isStartProvider) || globalState.delayTests > 0) return;
     await appController.updateGroups();
   }
 

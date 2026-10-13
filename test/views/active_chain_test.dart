@@ -3,8 +3,12 @@ import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/views/proxies/group_chain.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Group _g(String name, {String? now, GroupType type = GroupType.Selector}) =>
-    Group(name: name, type: type, now: now);
+Group _g(
+  String name, {
+  String? now,
+  GroupType type = GroupType.Selector,
+  String? testUrl,
+}) => Group(name: name, type: type, now: now, testUrl: testUrl);
 
 void main() {
   test('walks the entry group through nested groups to the leaf', () {
@@ -50,6 +54,23 @@ void main() {
 
     test('falls back to the entry name when the group is gone', () {
       expect(activeChain([_g('VPN', now: '')], []), ['VPN']);
+    });
+  });
+
+  group('the url the leaf is measured under', () {
+    test('is that of the group that picked it, not the outer one', () {
+      final groups = [
+        _g('Outer', now: 'Inner', testUrl: 'https://outer'),
+        _g('Inner', now: 'node', testUrl: 'https://inner'),
+      ];
+      expect(
+        leafTestUrl(groups, resolveChain(groups, 'Outer')),
+        'https://inner',
+      );
+    });
+
+    test('is the default for a chain of one', () {
+      expect(leafTestUrl([_g('VPN', testUrl: 'https://vpn')], ['VPN']), isNull);
     });
   });
 }

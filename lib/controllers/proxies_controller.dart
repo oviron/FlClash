@@ -48,8 +48,9 @@ extension ProxiesControllerExt on AppController {
         unawaited(preferences.saveGroupsSnapshot(profileId, groups));
       }
     } catch (e) {
-      commonPrint.log('updateGroups error: $e');
+      // A profile without groups lands here on every poll: report the change once.
       if (_ref.read(groupsProvider).isNotEmpty) {
+        commonPrint.log('updateGroups error: $e');
         _ref.read(groupsProvider.notifier).value = [];
       }
     }
