@@ -248,7 +248,10 @@ class ProfileItem extends StatelessWidget {
     return [
       const SizedBox(height: 8),
       updated,
-      _ProfileStatLine(profileId: profile.id),
+      _ProfileStatLine(
+        profileId: profile.id,
+        lastUpdateDate: profile.lastUpdateDate,
+      ),
     ];
   }
 
@@ -259,7 +262,10 @@ class ProfileItem extends StatelessWidget {
         profile.lastUpdateDate?.lastUpdateTimeDesc ?? '',
         style: context.textTheme.labelMedium?.toLight,
       ),
-      _ProfileStatLine(profileId: profile.id),
+      _ProfileStatLine(
+        profileId: profile.id,
+        lastUpdateDate: profile.lastUpdateDate,
+      ),
     ];
   }
 
@@ -433,22 +439,27 @@ class ProfileItem extends StatelessWidget {
 class _ProfileStatLine extends StatefulWidget {
   final int profileId;
 
-  const _ProfileStatLine({required this.profileId});
+  // Every writer of a profile file bumps it, so it is the signal that the
+  // counts on disk have moved.
+  final DateTime? lastUpdateDate;
+
+  const _ProfileStatLine({required this.profileId, this.lastUpdateDate});
 
   @override
   State<_ProfileStatLine> createState() => _ProfileStatLineState();
 }
 
 class _ProfileStatLineState extends State<_ProfileStatLine> {
-  // Read once per profileId: a profile switch rebuilds the whole grid, so a
-  // per-build future would re-read every card's file on every switch.
+  // Read once per profile and per write: a profile switch rebuilds the whole
+  // grid, so a per-build future would re-read every card's file on every switch.
   late Future<({int groups, int nodes, int providers})> _stats = appController
       .readProfileStats(widget.profileId);
 
   @override
   void didUpdateWidget(_ProfileStatLine old) {
     super.didUpdateWidget(old);
-    if (old.profileId != widget.profileId) {
+    if (old.profileId != widget.profileId ||
+        old.lastUpdateDate != widget.lastUpdateDate) {
       _stats = appController.readProfileStats(widget.profileId);
     }
   }
