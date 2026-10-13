@@ -143,6 +143,22 @@ SelectedProxyState computeRealSelectedProxyState(
   );
 }
 
+// A tile's second line: a node shows its protocol, a group the node it leads
+// to. Naming the group's own type there repeats what the tile already is.
+String computeProxyDesc(
+  Proxy proxy, {
+  required List<Group> groups,
+  required Map<String, String> selectedMap,
+}) {
+  final state = computeRealSelectedProxyState(
+    proxy.name,
+    groups: groups,
+    selectedMap: selectedMap,
+  );
+  if (!state.group) return proxy.type;
+  return state.proxyName == proxy.name ? '—' : '→ ${state.proxyName}';
+}
+
 DelayState computeProxyDelayState({
   required String proxyName,
   required String testUrl,

@@ -430,16 +430,16 @@ String? getSelectedProxyName(Ref ref, String groupName) {
 
 @riverpod
 String getProxyDesc(Ref ref, Proxy proxy) {
-  final groupTypeNamesList = GroupType.values.map((e) => e.name).toList();
-  if (!groupTypeNamesList.contains(proxy.type)) {
+  // A node's type never names a group, so plain nodes keep out of the groups
+  // list and are spared a rebuild on every delay result.
+  if (!GroupType.values.any((e) => e.name == proxy.type)) {
     return proxy.type;
-  } else {
-    final groups = ref.watch(groupsProvider);
-    final index = groups.indexWhere((element) => element.name == proxy.name);
-    if (index == -1) return proxy.type;
-    final state = ref.watch(realSelectedProxyStateProvider(proxy.name));
-    return "${proxy.type}(${state.proxyName.isNotEmpty ? state.proxyName : '*'})";
   }
+  return computeProxyDesc(
+    proxy,
+    groups: ref.watch(groupsProvider),
+    selectedMap: ref.watch(selectedMapProvider),
+  );
 }
 
 @riverpod
