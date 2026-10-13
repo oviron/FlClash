@@ -97,9 +97,7 @@ class ProxiesListViewState extends State<ProxiesListView> {
     if (_isDelayTesting) return;
     _isDelayTesting = true;
     try {
-      for (final group in appController.getCurrentGroups()) {
-        await delayTest(group.all, group.testUrl);
-      }
+      await groupsDelayTest(appController.getCurrentGroups());
     } finally {
       _isDelayTesting = false;
     }
@@ -423,7 +421,7 @@ class _ProxyGroupHeaderState extends State<ProxyGroupHeader> {
     if (isLock) return;
     isLock = true;
     try {
-      await delayTest(widget.group.all, widget.group.testUrl);
+      await groupsDelayTest([widget.group]);
     } finally {
       isLock = false;
     }

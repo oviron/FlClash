@@ -57,6 +57,10 @@ class GlobalState {
   // Set while a profile apply is rebuilding the core config; see handleFindProxy.
   bool bootstrappingConfig = false;
 
+  // Group tests in flight. The groups poll waits for them, so new picks and
+  // their delays land together instead of a tile losing its spinner midway.
+  int groupTests = 0;
+
   GlobalState._internal();
 
   factory GlobalState() {

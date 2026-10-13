@@ -81,7 +81,7 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
     final group = groups[_visualIndex().clamp(0, groups.length - 1)];
     if (!_testingGroups.add(group.name)) return;
     try {
-      await delayTest(group.all, group.testUrl);
+      await groupsDelayTest([group]);
     } finally {
       _testingGroups.remove(group.name);
     }

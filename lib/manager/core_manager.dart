@@ -107,6 +107,14 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     }
   }
 
+  // One url-test group finished its part of a group test: show its numbers and
+  // its new pick now rather than when the whole tree is done.
+  @override
+  void onGroupDelay(List<Delay> delays) {
+    appController.setDelays(delays.map(displayDelay));
+    unawaited(appController.updateGroups());
+  }
+
   @override
   void dispose() {
     coreEventManager.removeListener(this);

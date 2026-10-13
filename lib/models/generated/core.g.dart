@@ -152,6 +152,7 @@ const _$CoreEventTypeEnumMap = {
   CoreEventType.log: 'log',
   CoreEventType.crash: 'crash',
   CoreEventType.connections: 'connections',
+  CoreEventType.groupDelay: 'groupDelay',
 };
 
 _InvokeMessage _$InvokeMessageFromJson(Map<String, dynamic> json) =>
@@ -269,6 +270,7 @@ const _$ActionMethodEnumMap = {
   ActionMethod.getProxies: 'getProxies',
   ActionMethod.changeProxy: 'changeProxy',
   ActionMethod.testDelay: 'testDelay',
+  ActionMethod.testGroups: 'testGroups',
   ActionMethod.probeCurrentProxyIp: 'probeCurrentProxyIp',
   ActionMethod.queryExternalProviders: 'queryExternalProviders',
   ActionMethod.getExternalProvider: 'getExternalProvider',

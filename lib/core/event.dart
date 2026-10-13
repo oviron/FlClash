@@ -10,6 +10,8 @@ abstract mixin class CoreEventListener {
   void onCrash(String message) {}
 
   void onConnections(List<TrackerInfo> trackers) {}
+
+  void onGroupDelay(List<Delay> delays) {}
 }
 
 class CoreEventManager {
@@ -34,6 +36,16 @@ class CoreEventManager {
               connections
                   .whereType<Map<String, dynamic>>()
                   .map(TrackerInfo.fromJson)
+                  .toList(),
+            );
+            break;
+          case CoreEventType.groupDelay:
+            final raw = event.data;
+            if (raw is! List) break;
+            listener.onGroupDelay(
+              raw
+                  .whereType<Map<String, dynamic>>()
+                  .map((e) => Delay.fromJson(e))
                   .toList(),
             );
             break;

@@ -125,7 +125,7 @@ enum ResultType {
   error,
 }
 
-enum CoreEventType { log, crash, connections }
+enum CoreEventType { log, crash, connections, groupDelay }
 
 enum InvokeMessageType { protect, process }
 
@@ -209,6 +209,7 @@ enum ActionMethod {
   getProxies,
   changeProxy,
   testDelay,
+  testGroups,
   probeCurrentProxyIp,
   queryExternalProviders,
   getExternalProvider,
@@ -236,7 +237,6 @@ enum FunctionTag {
   setupConfig,
   updateStatus,
   updateGroups,
-  resortGroupsByDelay,
   addCheckIpNum,
   applyProfile,
   savePreferences,

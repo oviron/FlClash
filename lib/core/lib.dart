@@ -164,6 +164,22 @@ class CoreLib extends CoreHandlerInterface {
   }
 
   @override
+  Future<String> testGroups(
+    List<String> groupNames,
+    String defaultTestUrl,
+  ) async {
+    return (await invoke<String>(
+          method: ActionMethod.testGroups,
+          data: json.encode({
+            'group-names': groupNames,
+            'test-url': defaultTestUrl,
+            'timeout': 5000,
+          }),
+        )) ??
+        '[]';
+  }
+
+  @override
   Future<String> probeCurrentProxyIp({String mode = ''}) async {
     return (await invoke<String>(
           method: ActionMethod.probeCurrentProxyIp,
