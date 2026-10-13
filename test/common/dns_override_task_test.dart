@@ -21,7 +21,6 @@ Future<Map<String, dynamic>> _build({
   return makeRealProfileTask(
     MakeRealProfileState(
       profilesPath: '/profiles',
-      profileId: 1,
       rawConfig: rawConfig ?? _subscription(),
       realPatchConfig: defaultClashConfig.copyWith(
         dns: dns,

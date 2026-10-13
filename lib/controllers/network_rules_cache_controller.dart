@@ -22,14 +22,20 @@ extension NetworkRulesCacheControllerExt on AppController {
       if (config.isEmpty) {
         continue;
       }
-      await ensureInboundAuth(
-        config,
-        systemProxy: _ref.read(vpnSettingProvider).systemProxy,
-      );
-      final yamlString = await encodeYamlTask(config);
-      await File(
-        await appPath.networkRulesCachePath(id),
-      ).safeWriteAsString(yamlString);
+      // The resident applies this config itself; its provider files count too.
+      final releaseCache = await reserveProviderFiles(id, config);
+      try {
+        await ensureInboundAuth(
+          config,
+          systemProxy: _ref.read(vpnSettingProvider).systemProxy,
+        );
+        final yamlString = await encodeYamlTask(config);
+        await File(
+          await appPath.networkRulesCachePath(id),
+        ).safeWriteAsString(yamlString);
+      } finally {
+        releaseCache();
+      }
       final profile = _ref.read(profileProvider(id));
       entries[id] = (
         selectedMap: profile?.selectedMap ?? const {},

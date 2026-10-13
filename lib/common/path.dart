@@ -120,11 +120,6 @@ class AppPath {
     final directory = await profilesPath;
     return join(directory, 'providers');
   }
-
-  Future<String> getProvidersDirPath(String id) async {
-    final directory = await profilesPath;
-    return join(directory, 'providers', id);
-  }
 }
 
 final appPath = AppPath();

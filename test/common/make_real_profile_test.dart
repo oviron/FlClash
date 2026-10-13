@@ -12,7 +12,6 @@ Future<Map<String, dynamic>> _build(
   return makeRealProfileTask(
     MakeRealProfileState(
       profilesPath: '/profiles',
-      profileId: 1,
       rawConfig: rawConfig,
       realPatchConfig: realPatchConfig,
       overrideDns: false,

@@ -76,7 +76,6 @@ class ProfileSetupService {
     return buildRealProfile(
       MakeRealProfileState(
         profilesPath: request.profilesPath,
-        profileId: profileId,
         rawConfig: rawConfig,
         realPatchConfig: realPatchConfig,
         overrideDns: request.overrideDns,

@@ -236,6 +236,38 @@ extension SetupControllerExt on AppController {
     return res;
   }
 
+  Future<void Function()> reserveProviderFiles(
+    int profileId,
+    Map<String, dynamic> config,
+  ) async {
+    try {
+      return await reserveProviderCache(
+        await appPath.getProvidersRootPath(),
+        profileId,
+        config,
+      );
+    } catch (e) {
+      commonPrint.log('reserveProviderCache: $e');
+      return () {};
+    }
+  }
+
+  Future<void> _claimProviderFiles(
+    int profileId,
+    Map<String, dynamic> config,
+  ) async {
+    try {
+      await claimProviderCache(
+        await appPath.getProvidersRootPath(),
+        profileId,
+        config,
+        _ref.read(profilesProvider).map((profile) => profile.id),
+      );
+    } catch (e) {
+      commonPrint.log('claimProviderCache: $e');
+    }
+  }
+
   Future<void> _setupConfig([Future<void> Function()? onConfigApplied]) async {
     globalState.bootstrappingConfig = true;
     try {
@@ -280,28 +312,40 @@ extension SetupControllerExt on AppController {
       config,
       systemProxy: _ref.read(vpnSettingProvider).systemProxy,
     );
-    await _materializeSubscriptions(config, profile);
-    final configFilePath = await appPath.configFilePath;
-    final yamlString = await encodeYamlTask(config);
-    await File(configFilePath).safeWriteAsStringAtomic(yamlString);
-    final selectedMap = _ref.read(selectedMapProvider);
-    final testUrl = _ref.read(
-      appSettingProvider.select((state) => state.testUrl),
-    );
-    final message = await coreController.setupConfig(
-      setupState: setupState,
-      params: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
-    );
-    if (message.isNotEmpty) {
-      if (!isGeoDataWarning(message)) throw message;
-      // A GeoSite/GeoIP rule couldn't resolve (missing/stale/corrupt database);
-      // the rest of the config still applied, so heal the geo data in the
-      // background instead of alarming the user with the raw core error.
-      commonPrint.log(
-        'geo data warning on setup: $message',
-        logLevel: LogLevel.warning,
+    // Before materializing: a subscription's cached copy is its failover.
+    final releaseCache = profile == null
+        ? () {}
+        : await reserveProviderFiles(profile.id, config);
+    try {
+      await _materializeSubscriptions(config, profile);
+      final configFilePath = await appPath.configFilePath;
+      final yamlString = await encodeYamlTask(config);
+      await File(configFilePath).safeWriteAsStringAtomic(yamlString);
+      final selectedMap = _ref.read(selectedMapProvider);
+      final testUrl = _ref.read(
+        appSettingProvider.select((state) => state.testUrl),
       );
-      unawaited(seedGeositeIfMissing().then((_) => updateGeoDatabases()));
+      final message = await coreController.setupConfig(
+        setupState: setupState,
+        params: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
+      );
+      if (message.isNotEmpty) {
+        if (!isGeoDataWarning(message)) throw message;
+        // A GeoSite/GeoIP rule couldn't resolve (missing/stale/corrupt database);
+        // the rest of the config still applied, so heal the geo data in the
+        // background instead of alarming the user with the raw core error.
+        commonPrint.log(
+          'geo data warning on setup: $message',
+          logLevel: LogLevel.warning,
+        );
+        unawaited(seedGeositeIfMissing().then((_) => updateGeoDatabases()));
+      }
+      // A Geo error leaves the core on a config other than this one.
+      if (profile != null && message.isEmpty) {
+        await _claimProviderFiles(profile.id, config);
+      }
+    } finally {
+      releaseCache();
     }
     await onConfigApplied?.call();
     addCheckIp();
@@ -351,11 +395,17 @@ extension SetupControllerExt on AppController {
 
   Future<({String key, List<RemarkGroup> remarks})?> _materializeOneProvider(
     dynamic entry,
-    ProviderSpec spec,
+    ProviderSpec onDisk,
     String key,
     int profileId,
   ) async {
     if (entry is! Map) return null;
+    // Fetch what the built config, scripts applied, asks for: its cache path
+    // is keyed by that request, and another profile may share it.
+    final spec = ProviderSpec({
+      ...onDisk.raw,
+      ...entry.cast<String, dynamic>(),
+    });
     final path = (entry['path'] ?? spec.path)?.toString();
     if (path == null) return null;
 
