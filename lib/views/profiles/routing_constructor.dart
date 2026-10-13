@@ -2137,7 +2137,7 @@ class _GroupEditorViewState extends ConsumerState<_GroupEditorView>
   bool _fromSub = false;
   final Set<String> _members = {};
   final Set<String> _use = {};
-  bool _lazy = false;
+  bool? _lazy;
   bool _hidden = false;
   Map<String, dynamic> _extra = const {};
 
@@ -2449,7 +2449,7 @@ class _GroupEditorViewState extends ConsumerState<_GroupEditorView>
                   ListItem.switchItem(
                     title: Text(appLocalizations.routingGroupLazy),
                     delegate: SwitchDelegate<bool>(
-                      value: _lazy,
+                      value: _lazy ?? true,
                       onChanged: (v) => setState(() => _lazy = v),
                     ),
                   ),

@@ -44,7 +44,9 @@ class GroupSpec {
 
   int? get interval => asInt(raw['interval']);
 
-  bool get lazy => raw['lazy'] == true;
+  // Tri-state: mihomo starts a group lazy, so an explicit `lazy: false` is a
+  // real setting and must not be confused with the key being absent.
+  bool? get lazy => raw['lazy'] is bool ? raw['lazy'] as bool : null;
 
   bool get hidden => raw['hidden'] == true;
 
@@ -64,7 +66,7 @@ class GroupSpec {
     Object? filter = _unset,
     Object? url = _unset,
     Object? interval = _unset,
-    bool? lazy,
+    Object? lazy = _unset,
     bool? hidden,
     Object? tolerance = _unset,
   }) {
@@ -84,8 +86,8 @@ class GroupSpec {
     if (!identical(interval, _unset)) {
       interval == null ? m.remove('interval') : m['interval'] = interval;
     }
-    if (lazy != null) {
-      lazy ? m['lazy'] = true : m.remove('lazy');
+    if (!identical(lazy, _unset)) {
+      lazy == null ? m.remove('lazy') : m['lazy'] = lazy;
     }
     if (hidden != null) {
       hidden ? m['hidden'] = true : m.remove('hidden');

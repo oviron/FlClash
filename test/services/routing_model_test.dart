@@ -377,6 +377,27 @@ rules:
       expect(fast.lazy, isTrue);
     });
 
+    // lazy: false is not the core's default (mihomo starts groups lazy), so
+    // dropping it on save turns an eager health check back into a lazy one.
+    test('an eager health check survives a save', () {
+      const eager = '''
+proxy-groups:
+  - name: VPN
+    type: url-test
+    proxies: [node-a, node-b]
+    lazy: false
+rules:
+  - MATCH,VPN
+''';
+      final out = RoutingModel.fromYaml(eager).toYaml(eager);
+
+      expect(
+        RoutingModel.fromYaml(out).groups.whereType<SmartGroup>().first.lazy,
+        isFalse,
+      );
+      expect(out.contains('lazy: false'), isTrue);
+    });
+
     test('editing the filter round-trips', () {
       final edited = model.copyWith(
         groups: [

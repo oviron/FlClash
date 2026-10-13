@@ -81,7 +81,12 @@ Map<String, dynamic> dropCoreDefaults(
   Map<String, dynamic> rawConfig,
   String profileYaml,
 ) {
-  const keys = ['find-process-mode', 'global-ua'];
+  const keys = [
+    'find-process-mode',
+    'global-ua',
+    'geo-auto-update',
+    'geo-update-interval',
+  ];
   return {
     for (final entry in rawConfig.entries)
       if (!keys.contains(entry.key) || profileSetsKey(profileYaml, entry.key))
@@ -104,21 +109,10 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   final rawConfig = Map.from(data.rawConfig);
   final realPatchConfig = data.realPatchConfig;
   final profilesPath = data.profilesPath;
-  final profileId = data.profileId;
   final overrideDns = data.overrideDns;
   final addedRules = data.addedRules;
   final appendSystemDns = data.appendSystemDns;
   final defaultUA = data.defaultUA;
-  String getProvidersFilePathInner(String type, String url) {
-    return join(
-      profilesPath,
-      'providers',
-      profileId.toString(),
-      type,
-      url.toMd5(),
-    );
-  }
-
   rawConfig['external-ui'] = '';
   rawConfig['interface-name'] = '';
   rawConfig['external-ui-url'] = '';
@@ -163,13 +157,18 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     if (providers is! Map) {
       return;
     }
-    for (final provider in providers.values) {
+    for (final MapEntry(:key, value: provider) in providers.entries) {
       if (provider is! Map || provider['type'] != 'http') {
         continue;
       }
-      final url = provider['url'];
-      if (url is String) {
-        provider['path'] = getProvidersFilePathInner(type, url);
+      if (provider['url'] is String) {
+        provider['path'] = providerCachePath(
+          join(profilesPath, 'providers'),
+          type,
+          '$key',
+          provider,
+          userAgent: rawConfig['global-ua'] ?? defaultUA,
+        );
       }
       provider['proxy'] ??= 'DIRECT';
     }
@@ -179,6 +178,14 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   confineProviders('rule-providers', 'rules');
   _mapAt(rawConfig, 'profile')['store-selected'] = false;
   rawConfig['geox-url'] = realPatchConfig.geoXUrl.toJson();
+  // One schedule, two timers: ours fires on launch, the core's keeps the
+  // databases fresh while the app is closed. A profile that schedules it
+  // itself keeps its own values; see dropCoreDefaults.
+  final geoHours = data.geoUpdateInterval.duration?.inHours ?? 0;
+  rawConfig['geo-auto-update'] ??= geoHours > 0;
+  if (geoHours > 0) {
+    rawConfig['geo-update-interval'] ??= geoHours;
+  }
   rawConfig['global-ua'] ??= defaultUA;
   final clientFingerprint = rawConfig['global-client-fingerprint'];
   if (clientFingerprint is! String || clientFingerprint.isEmpty) {
@@ -331,7 +338,6 @@ Future<List<String>> _shakingProfileTask(
   BackgroundIsolateBinaryMessenger.ensureInitialized(token);
   final profilesDir = Directory(await appPath.profilesPath);
   final scriptsDir = Directory(await appPath.scriptsDirPath);
-  final providersDir = Directory(await appPath.getProvidersRootPath());
   final List<String> targets = [];
   void scanDirectory(
     Directory dir,
@@ -356,7 +362,6 @@ Future<List<String>> _shakingProfileTask(
   }
 
   scanDirectory(profilesDir, profileIds, skipProvidersFolder: true);
-  scanDirectory(providersDir, profileIds);
   scanDirectory(scriptsDir, scriptIds);
   return targets;
 }

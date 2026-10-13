@@ -23,6 +23,10 @@ mixin CoreInterface {
 
   Future<String> asyncTestDelay(String url, String proxyName);
 
+  /// Measures the named groups and their nested groups the way the core picks,
+  /// re-seating each unpinned url-test group on its fastest member.
+  Future<String> testGroups(List<String> groupNames, String defaultTestUrl);
+
   /// Probe exit-IP for the default route. `mode` is the Dart-side value
   /// ('rule'/'global'/'direct') passed to avoid a race with mihomo's
   /// debounced config sync.

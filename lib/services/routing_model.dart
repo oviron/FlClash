@@ -261,7 +261,7 @@ final class SmartGroup extends ServerGroup {
   final List<String> use;
   final String? filter;
   final int? interval;
-  final bool lazy;
+  final bool? lazy;
 
   final String? url;
   final bool hidden;
@@ -276,7 +276,7 @@ final class SmartGroup extends ServerGroup {
     this.use = const [],
     this.filter,
     this.interval,
-    this.lazy = false,
+    this.lazy,
     this.url,
     this.hidden = false,
     this.tolerance,

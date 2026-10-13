@@ -143,6 +143,41 @@ SelectedProxyState computeRealSelectedProxyState(
   );
 }
 
+// A tile's second line: a node shows its protocol, a group the node it leads
+// to. Naming the group's own type there repeats what the tile already is.
+// The core measures DIRECT under the group's url; the app keys it under its own.
+Delay displayDelay(Delay delay) => delay.copyWith(
+  url: getDelayTestUrl(proxyName: delay.name, testUrl: delay.url),
+);
+
+// A tile the core left unanswered stops spinning as a timeout.
+List<Delay> settleDelays({
+  required Iterable<Delay> pending,
+  required List<Delay> results,
+}) {
+  final answered = {for (final delay in results) (delay.url, delay.name)};
+  return [
+    ...results,
+    for (final delay in pending)
+      if (!answered.contains((delay.url, delay.name)))
+        delay.copyWith(value: -1),
+  ];
+}
+
+String computeProxyDesc(
+  Proxy proxy, {
+  required List<Group> groups,
+  required Map<String, String> selectedMap,
+}) {
+  final state = computeRealSelectedProxyState(
+    proxy.name,
+    groups: groups,
+    selectedMap: selectedMap,
+  );
+  if (!state.group) return proxy.type;
+  return state.proxyName == proxy.name ? '—' : '→ ${state.proxyName}';
+}
+
 DelayState computeProxyDelayState({
   required String proxyName,
   required String testUrl,

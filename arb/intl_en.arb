@@ -129,6 +129,8 @@
   "themeColor": "Theme color",
   "preview": "Preview",
   "auto": "Auto",
+  "pinned": "Pinned",
+  "inUse": "In use",
   "light": "Light",
   "dark": "Dark",
   "importFromURL": "Import from URL",

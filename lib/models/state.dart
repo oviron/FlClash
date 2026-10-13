@@ -325,13 +325,13 @@ abstract class ComputeGroupsState with _$ComputeGroupsState {
 abstract class MakeRealProfileState with _$MakeRealProfileState {
   const factory MakeRealProfileState({
     required String profilesPath,
-    required int profileId,
     required Map<String, dynamic> rawConfig,
     required ClashConfig realPatchConfig,
     required bool overrideDns,
     required bool appendSystemDns,
     required List<Rule> addedRules,
     required String defaultUA,
+    @Default(GeoUpdateInterval.off) GeoUpdateInterval geoUpdateInterval,
   }) = _MakeRealProfileState;
 }
 

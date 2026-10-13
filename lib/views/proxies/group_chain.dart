@@ -30,3 +30,17 @@ List<String> resolveChain(List<Group> groups, String start) {
   }
   return out;
 }
+
+/// The url a chain's last hop is measured under: that of the group that
+/// picked it, which a nested group's own url can differ from.
+String? leafTestUrl(List<Group> groups, List<String> chain) =>
+    chain.length < 2 ? null : groups.getGroup(chain[chain.length - 2])?.testUrl;
+
+/// The chain the Proxies strip shows: the entry group comes from the
+/// mode-filtered list, the hops from the full one — `currentGroupsState`
+/// blanks `now`, so resolving inside it would stop at the entry name.
+List<String> activeChain(List<Group> visible, List<Group> all) {
+  final start = primaryGroup(visible);
+  if (start == null) return const [];
+  return resolveChain(all, start.name);
+}

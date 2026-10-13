@@ -203,15 +203,17 @@ class DelayDataSource extends _$DelayDataSource with AutoDisposeNotifierMixin {
     return {};
   }
 
-  void setDelay(Delay delay) {
-    if (state[delay.url]?[delay.name] != delay.value) {
-      final DelayMap newDelayMap = Map.from(state);
-      if (newDelayMap[delay.url] == null) {
-        newDelayMap[delay.url] = {};
-      }
-      newDelayMap[delay.url]![delay.name] = delay.value;
-      value = newDelayMap;
+  void setDelay(Delay delay) => setDelays([delay]);
+
+  // One assignment for a whole batch, so a group test lands as one rebuild.
+  void setDelays(Iterable<Delay> delays) {
+    DelayMap? next;
+    for (final delay in delays) {
+      if ((next ?? state)[delay.url]?[delay.name] == delay.value) continue;
+      next ??= Map.of(state);
+      next[delay.url] = {...?next[delay.url], delay.name: delay.value};
     }
+    if (next != null) value = next;
   }
 }
 

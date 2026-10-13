@@ -325,6 +325,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "inAppLogBufferDesc": MessageLookupByLibrary.simpleMessage(
       "最近のイベントをログ画面に保持します（内部バッファ、adb logcat とは別）",
     ),
+    "inUse": MessageLookupByLibrary.simpleMessage("使用中"),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
       "バックアップにWebDAVの認証情報を含める",
     ),
@@ -582,6 +583,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "permissionAllow": MessageLookupByLibrary.simpleMessage("許可"),
     "permissionNotNow": MessageLookupByLibrary.simpleMessage("今はしない"),
     "permissionRequiredHint": MessageLookupByLibrary.simpleMessage("権限が必要です"),
+    "pinned": MessageLookupByLibrary.simpleMessage("固定中"),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "WebDAVをバインドしてください",
     ),

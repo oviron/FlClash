@@ -1104,6 +1104,16 @@ class AppLocalizations {
     return Intl.message('Auto', name: 'auto', desc: '', args: []);
   }
 
+  /// `Pinned`
+  String get pinned {
+    return Intl.message('Pinned', name: 'pinned', desc: '', args: []);
+  }
+
+  /// `In use`
+  String get inUse {
+    return Intl.message('In use', name: 'inUse', desc: '', args: []);
+  }
+
   /// `Light`
   String get light {
     return Intl.message('Light', name: 'light', desc: '', args: []);

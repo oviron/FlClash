@@ -219,6 +219,20 @@ class CoreController {
     return Delay.fromJson(json.decode(data));
   }
 
+  Future<List<Delay>> testGroups(
+    List<String> groupNames,
+    String defaultTestUrl,
+  ) async {
+    final data = await _interface.testGroups(groupNames, defaultTestUrl);
+    final list = data.isEmpty ? const [] : json.decode(data) as List;
+    return list
+        .map(
+          (item) =>
+              displayDelay(Delay.fromJson(Map<String, Object?>.from(item))),
+        )
+        .toList();
+  }
+
   Future<Map<String, dynamic>> getConfig(int id) async {
     final profilePath = await appPath.getProfilePath(id.toString());
     final res = await _interface.getConfig(profilePath);

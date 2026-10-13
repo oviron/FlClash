@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/location_permission.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/widgets/active_polling.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -86,8 +88,37 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return _GroupsPolling(child: widget.child);
   }
+}
+
+// Url-test groups re-pick inside the core on every health check. Re-reading
+// them while a screen shows the pick keeps the app on the node really in use.
+class _GroupsPolling extends ConsumerStatefulWidget {
+  final Widget child;
+
+  const _GroupsPolling({required this.child});
+
+  @override
+  ConsumerState<_GroupsPolling> createState() => _GroupsPollingState();
+}
+
+class _GroupsPollingState extends ConsumerState<_GroupsPolling>
+    with WidgetsBindingObserver, ActivePollingMixin<_GroupsPolling> {
+  static const _pages = {PageLabel.dashboard, PageLabel.proxies};
+
+  @override
+  Duration get pollInterval => const Duration(seconds: 3);
+
+  @override
+  Future<void> poll() async {
+    if (!_pages.contains(ref.read(currentPageLabelProvider))) return;
+    if (!ref.read(isStartProvider) || globalState.delayTests > 0) return;
+    await appController.updateGroups();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 class AppEnvManager extends StatelessWidget {

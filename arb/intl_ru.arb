@@ -129,6 +129,8 @@
   "themeColor": "Цвет темы",
   "preview": "Предпросмотр",
   "auto": "Авто",
+  "pinned": "Закреплён",
+  "inUse": "Сейчас",
   "light": "Светлый",
   "dark": "Темный",
   "importFromURL": "Импорт из URL",

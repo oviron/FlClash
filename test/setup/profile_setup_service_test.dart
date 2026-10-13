@@ -34,7 +34,7 @@ void main() {
         loadScriptContent: (_) async => null,
         buildRealProfile: (state) async {
           captured = state;
-          return {'built': true, 'profileId': state.profileId};
+          return {'built': true};
         },
       );
 
@@ -49,11 +49,11 @@ void main() {
           appendSystemDns: true,
           profilesPath: '/profiles',
           defaultUserAgent: 'FlClash-test',
+          geoUpdateInterval: GeoUpdateInterval.off,
         ),
       );
 
-      expect(result, {'built': true, 'profileId': 7});
-      expect(captured.profileId, 7);
+      expect(result, {'built': true});
       expect(captured.rawConfig['profileId'], 7);
       expect(captured.addedRules.single.value, 'DOMAIN,test,DIRECT');
       expect(captured.overrideDns, isTrue);
@@ -95,6 +95,7 @@ void main() {
         appendSystemDns: false,
         profilesPath: '/profiles',
         defaultUserAgent: 'ua',
+        geoUpdateInterval: GeoUpdateInterval.off,
       ),
     );
 
@@ -120,6 +121,7 @@ void main() {
         appendSystemDns: false,
         profilesPath: '/profiles',
         defaultUserAgent: 'ua',
+        geoUpdateInterval: GeoUpdateInterval.off,
       ),
     );
 

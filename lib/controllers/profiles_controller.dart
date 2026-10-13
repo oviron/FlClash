@@ -266,15 +266,20 @@ extension ProfilesControllerExt on AppController {
   }
 
   Future<void> clearEffect(int profileId) async {
+    try {
+      await releaseProviderCache(
+        await appPath.getProvidersRootPath(),
+        profileId,
+        _ref.read(profilesProvider).map((profile) => profile.id),
+      );
+    } catch (e) {
+      commonPrint.log('releaseProviderCache: $e');
+    }
     final profilePath = await appPath.getProfilePath(profileId.toString());
-    final providersDirPath = await appPath.getProvidersDirPath(
-      profileId.toString(),
-    );
     final profileFile = File(profilePath);
     final isExists = await profileFile.exists();
     if (isExists) {
       await profileFile.safeDelete(recursive: true);
     }
-    await coreController.deleteFile(providersDirPath);
   }
 }

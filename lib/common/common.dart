@@ -36,6 +36,7 @@ export 'picker.dart';
 export 'groups_snapshot.dart';
 export 'preferences.dart';
 export 'print.dart';
+export 'provider_cache.dart';
 export 'request.dart';
 export 'scroll.dart';
 export 'share_link.dart';

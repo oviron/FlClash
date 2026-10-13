@@ -11,13 +11,12 @@ extension ProxiesControllerExt on AppController {
       String proxyName,
     ) async {
       await changeProxy(groupName: groupName, proxyName: proxyName);
-      updateGroupsDebounce();
+      await updateGroups();
     }, args: [groupName, proxyName]);
   }
 
   Future<void> updateGroups() async {
     try {
-      commonPrint.log('updateGroups');
       final groups = await retry(
         task: () async {
           final sortType = _ref.read(
@@ -39,6 +38,8 @@ extension ProxiesControllerExt on AppController {
         },
         retryIf: (res) => res.isEmpty,
       );
+      // Polled every few seconds: an unchanged list must not rebuild the tiles.
+      if (listEquality.equals(groups, _ref.read(groupsProvider))) return;
       _ref.read(groupsProvider.notifier).value = groups;
       // Persist a cold-start snapshot for the active profile so the next launch
       // hydrates the Proxies screen before the core loads (see state.dart).
@@ -47,31 +48,12 @@ extension ProxiesControllerExt on AppController {
         unawaited(preferences.saveGroupsSnapshot(profileId, groups));
       }
     } catch (e) {
-      commonPrint.log('updateGroups error: $e');
-      _ref.read(groupsProvider.notifier).value = [];
+      // A profile without groups lands here on every poll: report the change once.
+      if (_ref.read(groupsProvider).isNotEmpty) {
+        commonPrint.log('updateGroups error: $e');
+        _ref.read(groupsProvider.notifier).value = [];
+      }
     }
-  }
-
-  // Re-sorts the groups already in memory, without a core round-trip, so a
-  // running delay test reorders the list as results arrive.
-  void resortGroupsByDelayThrottle() {
-    throttler.call(FunctionTag.resortGroupsByDelay, () {
-      final sortType = _ref.read(
-        proxiesStyleSettingProvider.select((state) => state.sortType),
-      );
-      if (sortType != ProxiesSortType.delay) return;
-      _ref.read(groupsProvider.notifier).value = computeSort(
-        groups: _ref.read(groupsProvider),
-        sortType: sortType,
-        delayMap: _ref.read(delayDataSourceProvider),
-        selectedMap: _ref.read(
-          currentProfileProvider.select((state) => state?.selectedMap ?? {}),
-        ),
-        defaultTestUrl: _ref.read(
-          appSettingProvider.select((state) => state.testUrl),
-        ),
-      );
-    }, duration: commonDuration);
   }
 
   void updateCurrentGroupName(String groupName) {
@@ -110,6 +92,10 @@ extension ProxiesControllerExt on AppController {
     _ref.read(delayDataSourceProvider.notifier).setDelay(delay);
   }
 
+  void setDelays(Iterable<Delay> delays) {
+    _ref.read(delayDataSourceProvider.notifier).setDelays(delays);
+  }
+
   void clearDelay() {
     _ref.read(delayDataSourceProvider.notifier).value = {};
   }
@@ -118,9 +104,16 @@ extension ProxiesControllerExt on AppController {
     required String groupName,
     required String proxyName,
   }) async {
-    await coreController.changeProxy(
+    final error = await coreController.changeProxy(
       ChangeProxyParams(groupName: groupName, proxyName: proxyName),
     );
+    // The core refused the switch, so the old node still carries the traffic:
+    // tearing its connections down would drop live sessions for nothing. The
+    // app already stored the pick, so say why the node on screen is not live.
+    if (error.isNotEmpty) {
+      globalState.showNotifier(error);
+      return;
+    }
     if (_ref.read(appSettingProvider).closeConnections) {
       coreController.closeAllConnections();
     } else {

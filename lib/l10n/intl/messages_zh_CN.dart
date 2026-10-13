@@ -296,6 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "inAppLogBufferDesc": MessageLookupByLibrary.simpleMessage(
       "在日志页保留最近事件（内部缓冲，与 adb logcat 分开）",
     ),
+    "inUse": MessageLookupByLibrary.simpleMessage("正在使用"),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
       "备份中包含 WebDAV 凭据",
     ),
@@ -533,6 +534,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "permissionAllow": MessageLookupByLibrary.simpleMessage("允许"),
     "permissionNotNow": MessageLookupByLibrary.simpleMessage("暂不允许"),
     "permissionRequiredHint": MessageLookupByLibrary.simpleMessage("需要权限"),
+    "pinned": MessageLookupByLibrary.simpleMessage("已固定"),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage("请绑定WebDAV"),
     "pleaseEnterScriptName": MessageLookupByLibrary.simpleMessage("请输入脚本名称"),
     "port": MessageLookupByLibrary.simpleMessage("端口"),

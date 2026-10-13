@@ -42,39 +42,60 @@ Future<void> proxyDelayTest(Proxy proxy, [String? testUrl]) async {
   appController.setDelay(
     Delay(url: delayTestUrl, name: state.proxyName, value: 0),
   );
-  appController.setDelay(
-    await coreController.getDelay(delayTestUrl, state.proxyName),
-  );
+  globalState.delayTests++;
+  try {
+    appController.setDelay(
+      await coreController.getDelay(delayTestUrl, state.proxyName),
+    );
+  } finally {
+    globalState.delayTests--;
+  }
 }
 
-Future<void> delayTest(List<Proxy> proxies, [String? testUrl]) async {
-  final proxyNames = proxies.map((proxy) => proxy.name).toSet().toList();
-
-  final delayProxies = proxyNames.map<Future<void>>((proxyName) async {
-    final groups = appController.groups;
-    final selectedMap = appController.currentProfile?.selectedMap ?? {};
-    final state = computeRealSelectedProxyState(
-      proxyName,
-      groups: groups,
-      selectedMap: selectedMap,
-    );
-    final url = state.testUrl.takeFirstValid([
-      appController.getRealTestUrl(testUrl),
-    ]);
-    final name = state.proxyName;
-    if (name.isEmpty) {
-      return;
+/// Tests [groups] the way the core picks: one round for the whole tree, after
+/// which an unpinned url-test group already sits on its fastest member.
+Future<void> groupsDelayTest(List<Group> groups) async {
+  if (groups.isEmpty) return;
+  final allGroups = appController.groups;
+  final selectedMap = appController.currentProfile?.selectedMap ?? {};
+  final pending = <Delay>{};
+  for (final group in groups) {
+    for (final proxy in group.all) {
+      final state = computeRealSelectedProxyState(
+        proxy.name,
+        groups: allGroups,
+        selectedMap: selectedMap,
+      );
+      if (state.proxyName.isEmpty) continue;
+      final url = state.testUrl.takeFirstValid([
+        appController.getRealTestUrl(group.testUrl),
+      ]);
+      pending.add(
+        Delay(
+          name: state.proxyName,
+          url: getDelayTestUrl(proxyName: state.proxyName, testUrl: url),
+          value: 0,
+        ),
+      );
     }
-    appController.setDelay(Delay(url: url, name: name, value: 0));
-    appController.setDelay(await coreController.getDelay(url, name));
-    appController.resortGroupsByDelayThrottle();
-  }).toList();
-
-  final batchesDelayProxies = delayProxies.batch(100);
-  for (final batchDelayProxies in batchesDelayProxies) {
-    await Future.wait(batchDelayProxies);
   }
-  appController.addSortNum();
+  appController.setDelays(pending);
+  globalState.delayTests++;
+  try {
+    final results = await coreController
+        .testGroups(
+          groups.map((group) => group.name).toList(),
+          appController.getRealTestUrl(null),
+        )
+        .catchError((e) {
+          commonPrint.log('testGroups failed: $e', logLevel: LogLevel.warning);
+          return const <Delay>[];
+        });
+    appController.setDelays(settleDelays(pending: pending, results: results));
+    await appController.updateGroups();
+  } finally {
+    globalState.delayTests--;
+  }
 }
 
 double getScrollToSelectedOffset({
