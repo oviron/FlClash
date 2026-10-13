@@ -129,6 +129,7 @@
   "themeColor": "テーマカラー",
   "preview": "プレビュー",
   "auto": "自動",
+  "pinned": "固定中",
   "light": "ライト",
   "dark": "ダーク",
   "importFromURL": "URLからインポート",

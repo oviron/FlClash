@@ -214,7 +214,7 @@ class _ProxyComputedMark extends ConsumerWidget {
           shape: BoxShape.circle,
           color: Theme.of(context).colorScheme.secondaryContainer,
         ),
-        child: const SelectIcon(),
+        child: const Icon(Icons.push_pin, size: 16),
       ),
     );
   }

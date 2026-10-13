@@ -698,6 +698,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "permissionRequiredHint": MessageLookupByLibrary.simpleMessage(
       "Permission required",
     ),
+    "pinned": MessageLookupByLibrary.simpleMessage("Pinned"),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "Please bind WebDAV",
     ),

@@ -129,6 +129,7 @@
   "themeColor": "Theme color",
   "preview": "Preview",
   "auto": "Auto",
+  "pinned": "Pinned",
   "light": "Light",
   "dark": "Dark",
   "importFromURL": "Import from URL",

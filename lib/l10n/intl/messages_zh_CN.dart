@@ -533,6 +533,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "permissionAllow": MessageLookupByLibrary.simpleMessage("允许"),
     "permissionNotNow": MessageLookupByLibrary.simpleMessage("暂不允许"),
     "permissionRequiredHint": MessageLookupByLibrary.simpleMessage("需要权限"),
+    "pinned": MessageLookupByLibrary.simpleMessage("已固定"),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage("请绑定WebDAV"),
     "pleaseEnterScriptName": MessageLookupByLibrary.simpleMessage("请输入脚本名称"),
     "port": MessageLookupByLibrary.simpleMessage("端口"),

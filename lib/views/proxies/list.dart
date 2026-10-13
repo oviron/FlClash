@@ -530,6 +530,15 @@ class _ProxyGroupHeaderState extends State<ProxyGroupHeader> {
                                           ),
                                         )
                                         .takeFirstValid([]);
+                                    final isPinned =
+                                        widget.group.type.isComputedSelected &&
+                                        (ref.watch(
+                                                  getProxyNameProvider(
+                                                    groupName,
+                                                  ),
+                                                ) ??
+                                                '')
+                                            .isNotEmpty;
                                     return Row(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment:
@@ -537,6 +546,18 @@ class _ProxyGroupHeaderState extends State<ProxyGroupHeader> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
+                                        if (isPinned) ...[
+                                          const SizedBox(width: 4),
+                                          Icon(
+                                            Icons.push_pin,
+                                            size: 12,
+                                            color: context
+                                                .textTheme
+                                                .labelMedium
+                                                ?.toLight
+                                                .color,
+                                          ),
+                                        ],
                                         if (proxyName.isNotEmpty) ...[
                                           Flexible(
                                             flex: 1,

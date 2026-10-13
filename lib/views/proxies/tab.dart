@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'card.dart';
 import 'common.dart';
+import 'group_mode_bar.dart';
 
 typedef ProxyGroupViewKeyMap =
     Map<String, GlobalObjectKey<_ProxyGroupViewState>>;
@@ -366,6 +367,15 @@ class _ProxyGroupViewState extends ConsumerState<ProxyGroupView> {
     final proxies = group.all;
     testUrl = group.testUrl;
     currentProxies = proxies;
+    return Column(
+      children: [
+        GroupModeBarView(groupName: group.name),
+        Expanded(child: _buildGrid(group)),
+      ],
+    );
+  }
+
+  Widget _buildGrid(Group group) {
     return CommonScrollBar(
       controller: _controller,
       child: GridView.builder(

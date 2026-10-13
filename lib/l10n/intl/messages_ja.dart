@@ -582,6 +582,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "permissionAllow": MessageLookupByLibrary.simpleMessage("許可"),
     "permissionNotNow": MessageLookupByLibrary.simpleMessage("今はしない"),
     "permissionRequiredHint": MessageLookupByLibrary.simpleMessage("権限が必要です"),
+    "pinned": MessageLookupByLibrary.simpleMessage("固定中"),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "WebDAVをバインドしてください",
     ),
