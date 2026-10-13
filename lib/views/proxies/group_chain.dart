@@ -30,3 +30,12 @@ List<String> resolveChain(List<Group> groups, String start) {
   }
   return out;
 }
+
+/// The chain the Proxies strip shows: the entry group comes from the
+/// mode-filtered list, the hops from the full one — `currentGroupsState`
+/// blanks `now`, so resolving inside it would stop at the entry name.
+List<String> activeChain(List<Group> visible, List<Group> all) {
+  final start = primaryGroup(visible);
+  if (start == null) return const [];
+  return resolveChain(all, start.name);
+}

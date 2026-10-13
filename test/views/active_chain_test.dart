@@ -28,4 +28,28 @@ void main() {
     final groups = [_g('A', now: 'B'), _g('B', now: 'A')];
     expect(resolveChain(groups, 'A'), ['A', 'B']);
   });
+
+  group('the chain the strip shows', () {
+    test('resolves hops outside the mode-filtered list', () {
+      // currentGroupsState blanks `now`, so resolving inside it would stop at
+      // the entry group and the strip would show a single name.
+      final visible = [
+        _g('VPN', now: ''),
+        _g('Auto', now: '', type: GroupType.URLTest),
+      ];
+      final all = [
+        _g('VPN', now: 'Auto'),
+        _g('Auto', now: 'qde-direct', type: GroupType.URLTest),
+      ];
+      expect(activeChain(visible, all), ['VPN', 'Auto', 'qde-direct']);
+    });
+
+    test('is empty when no group is visible in this mode', () {
+      expect(activeChain([], [_g('VPN', now: 'node-1')]), isEmpty);
+    });
+
+    test('falls back to the entry name when the group is gone', () {
+      expect(activeChain([_g('VPN', now: '')], []), ['VPN']);
+    });
+  });
 }
