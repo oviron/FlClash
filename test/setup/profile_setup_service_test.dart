@@ -49,6 +49,7 @@ void main() {
           appendSystemDns: true,
           profilesPath: '/profiles',
           defaultUserAgent: 'FlClash-test',
+          geoUpdateInterval: GeoUpdateInterval.off,
         ),
       );
 
@@ -95,6 +96,7 @@ void main() {
         appendSystemDns: false,
         profilesPath: '/profiles',
         defaultUserAgent: 'ua',
+        geoUpdateInterval: GeoUpdateInterval.off,
       ),
     );
 
@@ -120,6 +122,7 @@ void main() {
         appendSystemDns: false,
         profilesPath: '/profiles',
         defaultUserAgent: 'ua',
+        geoUpdateInterval: GeoUpdateInterval.off,
       ),
     );
 

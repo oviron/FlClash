@@ -391,7 +391,10 @@ rules:
 ''';
       final out = RoutingModel.fromYaml(eager).toYaml(eager);
 
-      expect(RoutingModel.fromYaml(out).groups.whereType<SmartGroup>().first.lazy, isFalse);
+      expect(
+        RoutingModel.fromYaml(out).groups.whereType<SmartGroup>().first.lazy,
+        isFalse,
+      );
       expect(out.contains('lazy: false'), isTrue);
     });
 

@@ -200,16 +200,18 @@ tun:
   group('the Geo update schedule', () {
     const coreDefaults = {'geo-auto-update': false, 'geo-update-interval': 24};
 
-    test('reaches the core so the databases stay fresh while app is closed',
-        () async {
-      final config = await _build(
-        dropCoreDefaults(coreDefaults, 'mode: rule\n'),
-        geoUpdateInterval: GeoUpdateInterval.weekly,
-      );
+    test(
+      'reaches the core so the databases stay fresh while app is closed',
+      () async {
+        final config = await _build(
+          dropCoreDefaults(coreDefaults, 'mode: rule\n'),
+          geoUpdateInterval: GeoUpdateInterval.weekly,
+        );
 
-      expect(config['geo-auto-update'], isTrue);
-      expect(config['geo-update-interval'], 168);
-    });
+        expect(config['geo-auto-update'], isTrue);
+        expect(config['geo-update-interval'], 168);
+      },
+    );
 
     test('leaves no interval behind when it is off', () async {
       final config = await _build(
