@@ -296,6 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "inAppLogBufferDesc": MessageLookupByLibrary.simpleMessage(
       "在日志页保留最近事件（内部缓冲，与 adb logcat 分开）",
     ),
+    "inUse": MessageLookupByLibrary.simpleMessage("正在使用"),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
       "备份中包含 WebDAV 凭据",
     ),

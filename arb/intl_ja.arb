@@ -130,6 +130,7 @@
   "preview": "プレビュー",
   "auto": "自動",
   "pinned": "固定中",
+  "inUse": "使用中",
   "light": "ライト",
   "dark": "ダーク",
   "importFromURL": "URLからインポート",

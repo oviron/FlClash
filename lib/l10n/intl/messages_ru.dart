@@ -386,6 +386,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "inAppLogBufferDesc": MessageLookupByLibrary.simpleMessage(
       "Хранить последние события на экране Логи (внутренний буфер, не Android logcat)",
     ),
+    "inUse": MessageLookupByLibrary.simpleMessage("Сейчас"),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
       "Включить учётные данные WebDAV в резервную копию",
     ),

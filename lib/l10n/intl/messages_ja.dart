@@ -325,6 +325,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "inAppLogBufferDesc": MessageLookupByLibrary.simpleMessage(
       "最近のイベントをログ画面に保持します（内部バッファ、adb logcat とは別）",
     ),
+    "inUse": MessageLookupByLibrary.simpleMessage("使用中"),
     "includeDavCredsInBackup": MessageLookupByLibrary.simpleMessage(
       "バックアップにWebDAVの認証情報を含める",
     ),

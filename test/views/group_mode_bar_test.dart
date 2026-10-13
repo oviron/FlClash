@@ -9,7 +9,7 @@ void main() {
   Future<void> pumpBar(
     WidgetTester tester, {
     List<String> chain = const ['vless-qde', 'qde'],
-    bool pinned = false,
+    String pinnedName = '',
     VoidCallback? onAuto,
     int? delay,
   }) async {
@@ -26,7 +26,7 @@ void main() {
         home: Scaffold(
           body: GroupModeBar(
             chain: chain,
-            pinned: pinned,
+            pinnedName: pinnedName,
             onAuto: onAuto ?? () {},
             delay: delay,
           ),
@@ -42,8 +42,11 @@ void main() {
     await pumpBar(tester);
 
     expect(find.text('Auto'), findsOneWidget);
-    expect(find.textContaining('vless-qde'), findsOneWidget);
-    expect(find.textContaining('qde'), findsOneWidget);
+    expect(
+      find.textContaining('vless-qde', findRichText: true),
+      findsOneWidget,
+    );
+    expect(find.textContaining('qde', findRichText: true), findsOneWidget);
     expect(find.widgetWithText(TextButton, 'Auto'), findsNothing);
   });
 
@@ -51,7 +54,12 @@ void main() {
     tester,
   ) async {
     var released = 0;
-    await pumpBar(tester, pinned: true, onAuto: () => released++);
+    await pumpBar(
+      tester,
+      chain: const ['vless-qde', 'qde'],
+      pinnedName: 'vless-qde',
+      onAuto: () => released++,
+    );
 
     expect(find.text('Pinned'), findsOneWidget);
     await tester.tap(find.widgetWithText(TextButton, 'Auto'));
@@ -60,13 +68,27 @@ void main() {
     expect(released, 1);
   });
 
+  testWidgets('a pin the group has not taken up names both nodes', (
+    tester,
+  ) async {
+    // mihomo skips a pinned node that is not alive yet, so the pin and the node
+    // actually carrying the traffic can differ.
+    await pumpBar(tester, chain: const ['amsterdam'], pinnedName: 'fujairah');
+
+    expect(find.textContaining('fujairah', findRichText: true), findsOneWidget);
+    expect(
+      find.textContaining('amsterdam', findRichText: true),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('a group that picked nothing says so instead of going blank', (
     tester,
   ) async {
     await pumpBar(tester, chain: const []);
 
     expect(find.text('Auto'), findsOneWidget);
-    expect(find.text('—'), findsOneWidget);
+    expect(find.text('—', findRichText: true), findsOneWidget);
   });
 
   testWidgets('the delay of the leaf rides along', (tester) async {

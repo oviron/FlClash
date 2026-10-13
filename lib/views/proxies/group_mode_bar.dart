@@ -10,64 +10,113 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Tells a url-test/fallback group apart from a node pinned inside it, and
 /// gives the pin a visible way out.
+///
+/// [chain] is what the group actually routes through, which a pin does not
+/// always match: mihomo skips a pinned node until it passes a health check.
 class GroupModeBar extends StatelessWidget {
   final List<String> chain;
-  final bool pinned;
+  final String pinnedName;
   final VoidCallback onAuto;
   final int? delay;
 
   const GroupModeBar({
     super.key,
     required this.chain,
-    required this.pinned,
+    required this.pinnedName,
     required this.onAuto,
     this.delay,
   });
 
+  bool get _pinned => pinnedName.isNotEmpty;
+
+  bool get _pinTakenUp => chain.isNotEmpty && chain.first == pinnedName;
+
+  Widget _label(BuildContext context) {
+    final scheme = context.colorScheme;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          _pinned ? Icons.push_pin : Icons.auto_mode,
+          size: 16,
+          color: scheme.onSurfaceVariant,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          _pinned ? appLocalizations.pinned : appLocalizations.auto,
+          style: context.textTheme.labelMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: scheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _path(BuildContext context, {required String text, bool dim = false}) {
+    final style = dim
+        ? context.textTheme.labelMedium?.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
+          )
+        : context.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700);
+    return EmojiText(
+      text,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: style,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = context.colorScheme;
+    final path = chain.isEmpty ? '—' : chain.join('  →  ');
+    final split = _pinned && !_pinTakenUp;
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       padding: const EdgeInsets.fromLTRB(12, 6, 8, 6),
       decoration: BoxDecoration(
-        color: pinned ? scheme.secondaryContainer : scheme.surfaceContainerLow,
+        color: _pinned ? scheme.secondaryContainer : scheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: scheme.outlineVariant),
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            pinned ? Icons.push_pin : Icons.auto_mode,
-            size: 16,
-            color: scheme.onSurfaceVariant,
+          Row(
+            children: [
+              _label(context),
+              const SizedBox(width: 10),
+              Expanded(child: _path(context, text: split ? pinnedName : path)),
+              const SizedBox(width: 8),
+              if (!split) LatencyBadge(delay),
+              if (_pinned)
+                TextButton(
+                  onPressed: onAuto,
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  child: Text(appLocalizations.auto),
+                ),
+            ],
           ),
-          const SizedBox(width: 6),
-          Text(
-            pinned ? appLocalizations.pinned : appLocalizations.auto,
-            style: context.textTheme.labelMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              chain.isEmpty ? '—' : chain.join('  →  '),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w700,
+          if (split)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Row(
+                children: [
+                  Text(
+                    '${appLocalizations.inUse}  ',
+                    style: context.textTheme.labelMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                  Flexible(child: _path(context, text: path, dim: true)),
+                  const SizedBox(width: 8),
+                  LatencyBadge(delay),
+                ],
               ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          LatencyBadge(delay),
-          if (pinned)
-            TextButton(
-              onPressed: onAuto,
-              style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
-              child: Text(appLocalizations.auto),
             ),
         ],
       ),
@@ -99,7 +148,7 @@ class GroupModeBarView extends ConsumerWidget {
     );
     return GroupModeBar(
       chain: chain,
-      pinned: pinnedName.isNotEmpty,
+      pinnedName: pinnedName,
       delay: delay,
       onAuto: () => appController.selectGroupMember(
         groupName: groupName,

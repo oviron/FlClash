@@ -130,6 +130,7 @@
   "preview": "预览",
   "auto": "自动",
   "pinned": "已固定",
+  "inUse": "正在使用",
   "light": "浅色",
   "dark": "深色",
   "importFromURL": "从URL导入",
