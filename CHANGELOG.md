@@ -1,3 +1,11 @@
+## v0.17.0-rc14
+
+- After an app update the VPN comes back at once if it was on. An update stops the app, and until now the tunnel returned only on the next background check, up to 15 minutes later, unless autostart or Network Rules restarted it
+
+- Each core log line reaches logcat once instead of twice
+
+- The core library moves to libmihomo-android 0.3.11, which makes it about 7 MB smaller per ABI; mihomo itself stays on v1.19.32
+
 ## v0.17.0-rc13
 
 - The core library moves to libmihomo-android 0.3.10, with newer `golang.org/x/sys` and `golang.org/x/sync`; mihomo itself stays on v1.19.32, its latest release
