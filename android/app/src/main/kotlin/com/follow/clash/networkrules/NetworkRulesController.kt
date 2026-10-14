@@ -6,6 +6,7 @@ import com.follow.clash.RunState
 import com.follow.clash.Service
 import com.follow.clash.State
 import com.follow.clash.common.GlobalState
+import com.follow.clash.appliedProfileId
 import com.follow.clash.saveAppliedProfileId
 import com.follow.clash.common.networkrules.NetworkDecision
 import com.follow.clash.common.networkrules.NetworkResolution
@@ -19,6 +20,8 @@ import com.follow.clash.common.networkrules.NetworkSnapshot
 import com.follow.clash.common.networkrules.RulesMirror
 import com.follow.clash.service.models.NotificationParams
 import com.google.gson.Gson
+import com.google.gson.JsonParser
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,6 +30,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
 import java.util.concurrent.atomic.AtomicLong
 
@@ -232,17 +236,33 @@ object NetworkRulesController {
         val envelope = Gson().toJson(
             mapOf("id" to "nr-$profileId", "method" to "setupConfig", "data" to data),
         )
-        val result = Service.invokeAction(envelope, null)
-        if (result.isFailure) {
-            GlobalState.log("network-rules: hot apply failed for profile $profileId: ${result.exceptionOrNull()}")
+        val reply = CompletableDeferred<String>()
+        val sent = Service.invokeAction(envelope) { reply.complete(it) }
+        if (sent.isFailure) {
+            GlobalState.log("network-rules: hot apply failed for profile $profileId: ${sent.exceptionOrNull()}")
             return
         }
-        // As a switch in the UI: the core keeps the last profile's connections open.
-        GlobalState.application.saveAppliedProfileId(profileId)
-        val close = Gson().toJson(
-            mapOf("id" to "nr-close-$profileId", "method" to "closeAllConnections", "data" to ""),
-        )
-        Service.invokeAction(close, null)
+        val message = withTimeoutOrNull(APPLY_WAIT_MS) { reply.await() }?.let { json ->
+            // code 0 with empty data is the core's success for setupConfig.
+            runCatching { JsonParser.parseString(json).asJsonObject }.getOrNull()
+                ?.takeIf { it.get("code")?.asInt == 0 }?.get("data")?.asString
+        }
+        // As SetupController does: any error leaves the core on its default config,
+        // and the core keeps the last profile's connections open across configs.
+        val applied = profileId.takeIf { message == "" }
+        val app = GlobalState.application
+        val previous = app.appliedProfileId()
+        if (applied != previous) app.saveAppliedProfileId(applied)
+        if (previous != null && previous != applied) {
+            val close = Gson().toJson(
+                mapOf("id" to "nr-close-$profileId", "method" to "closeAllConnections", "data" to ""),
+            )
+            Service.invokeAction(close, null)
+        }
+        if (applied == null) {
+            GlobalState.log("network-rules: core did not take profile $profileId: ${message ?: "no reply"}")
+            return
+        }
         // Retitle the notification only after the core accepted the config; on
         // failure it keeps showing the actually-active profile.
         if (profileName != null) {
@@ -338,5 +358,6 @@ object NetworkRulesController {
     private const val CACHE_DIR = "network-rules-cache"
     private const val CONFIG_FILE = "config.yaml"
     private const val GUARD_MS = 6000L
+    private const val APPLY_WAIT_MS = 30_000L
     private const val NO_NETWORK = Long.MIN_VALUE
 }

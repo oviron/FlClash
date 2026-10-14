@@ -57,9 +57,14 @@ fun Application.saveTunnelAccessControl(props: AccessControlProps) {
 // The profile the core last took, shared with lib/state.dart.
 private const val APPLIED_PROFILE_PREFS_KEY = "flutter.appliedProfileId"
 
-fun Application.saveAppliedProfileId(profileId: Long) {
+fun Application.appliedProfileId(): Long? =
+    getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).run {
+        if (contains(APPLIED_PROFILE_PREFS_KEY)) getLong(APPLIED_PROFILE_PREFS_KEY, 0) else null
+    }
+
+fun Application.saveAppliedProfileId(profileId: Long?) {
     getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
-        putLong(APPLIED_PROFILE_PREFS_KEY, profileId)
+        if (profileId == null) remove(APPLIED_PROFILE_PREFS_KEY) else putLong(APPLIED_PROFILE_PREFS_KEY, profileId)
     }
 }
 
