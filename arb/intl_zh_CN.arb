@@ -702,5 +702,21 @@
   "userAgent": "User-Agent",
   "userAgentDesc": "更新订阅和提供者时发送",
   "userAgentCustom": "自定义",
-  "userAgentInvalid": "仅限单行可打印 ASCII 字符"
+  "userAgentInvalid": "仅限单行可打印 ASCII 字符",
+  "otherBuild": "其他构建",
+  "transferFrom": "从 {app} 迁移",
+  "@transferFrom": {
+    "placeholders": {
+      "app": {}
+    }
+  },
+  "transferFromDesc": "此处的所有配置和设置将被替换为对方的数据",
+  "transferConfirm": "用 {app} 的数据替换此处的全部数据？Android 权限按应用授予，之后会重新询问。",
+  "@transferConfirm": {
+    "placeholders": {
+      "app": {}
+    }
+  },
+  "transferSuccess": "数据已迁移",
+  "backupFromNewerApp": "该备份来自更新版本的应用，请先更新本应用"
 }

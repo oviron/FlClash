@@ -10,6 +10,7 @@ import 'package:fl_clash/ingest/pipeline.dart';
 import 'package:fl_clash/ingest/synthesize.dart';
 import 'package:fl_clash/manager/effects/geo_refresh_effect.dart';
 import 'package:fl_clash/plugins/app.dart';
+import 'package:fl_clash/plugins/transfer.dart';
 import 'package:fl_clash/providers/network_rules_settings.dart';
 import 'package:fl_clash/profile_routing/provider_spec.dart';
 import 'package:fl_clash/profile_routing/yaml_rules_io.dart';
@@ -24,6 +25,7 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' show join;
 
 import 'common/common.dart';
 import 'database/database.dart';

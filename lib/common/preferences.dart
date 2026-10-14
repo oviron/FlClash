@@ -121,6 +121,24 @@ class Preferences {
     return decodeGroupsSnapshot(raw);
   }
 
+  /// Device values the other local build of the app hands over with its data;
+  /// group snapshots are keyed by profile ids that come along.
+  Future<void> importTransferred(Map<String, Object?> values) async {
+    final preferences = await sharedPreferencesCompleter.future;
+    if (preferences == null) return;
+    for (final key in preferences.getKeys()) {
+      if (key.startsWith('groupsSnapshot.')) await preferences.remove(key);
+    }
+    for (final MapEntry(:key, :value) in values.entries) {
+      if (value is String &&
+          (key == 'happHwid' ||
+              key == 'inboundAuth' ||
+              key.startsWith('groupsSnapshot.'))) {
+        await preferences.setString(key, value);
+      }
+    }
+  }
+
   Future<void> clearPreferences() async {
     final sharedPreferencesIns = await sharedPreferencesCompleter.future;
     await sharedPreferencesIns?.clear();

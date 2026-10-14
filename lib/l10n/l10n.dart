@@ -5842,6 +5842,61 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Other build`
+  String get otherBuild {
+    return Intl.message('Other build', name: 'otherBuild', desc: '', args: []);
+  }
+
+  /// `Transfer from {app}`
+  String transferFrom(Object app) {
+    return Intl.message(
+      'Transfer from $app',
+      name: 'transferFrom',
+      desc: '',
+      args: [app],
+    );
+  }
+
+  /// `All profiles and settings here are replaced with the ones from there`
+  String get transferFromDesc {
+    return Intl.message(
+      'All profiles and settings here are replaced with the ones from there',
+      name: 'transferFromDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replace all data here with the data from {app}? Android permissions are granted per app and will be asked again.`
+  String transferConfirm(Object app) {
+    return Intl.message(
+      'Replace all data here with the data from $app? Android permissions are granted per app and will be asked again.',
+      name: 'transferConfirm',
+      desc: '',
+      args: [app],
+    );
+  }
+
+  /// `Data transferred`
+  String get transferSuccess {
+    return Intl.message(
+      'Data transferred',
+      name: 'transferSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The backup comes from a newer version of the app; update this one first`
+  String get backupFromNewerApp {
+    return Intl.message(
+      'The backup comes from a newer version of the app; update this one first',
+      name: 'backupFromNewerApp',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

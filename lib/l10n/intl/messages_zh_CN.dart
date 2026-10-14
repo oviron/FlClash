@@ -81,9 +81,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m29(value) => "剩余${value}";
 
-  static String m30(label) => "${label}必须为URL";
+  static String m30(app) => "用 ${app} 的数据替换此处的全部数据？Android 权限按应用授予，之后会重新询问。";
 
-  static String m31(count) => "${count} 年前";
+  static String m31(app) => "从 ${app} 迁移";
+
+  static String m32(label) => "${label}必须为URL";
+
+  static String m33(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -130,6 +134,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "backupAndRestore": MessageLookupByLibrary.simpleMessage("备份与恢复"),
     "backupAndRestoreDesc": MessageLookupByLibrary.simpleMessage(
       "通过WebDAV或者文件同步数据",
+    ),
+    "backupFromNewerApp": MessageLookupByLibrary.simpleMessage(
+      "该备份来自更新版本的应用，请先更新本应用",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage("备份成功"),
     "bind": MessageLookupByLibrary.simpleMessage("绑定"),
@@ -520,6 +527,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "onlyIcon": MessageLookupByLibrary.simpleMessage("仅图标"),
     "openSettings": MessageLookupByLibrary.simpleMessage("打开设置"),
     "options": MessageLookupByLibrary.simpleMessage("选项"),
+    "otherBuild": MessageLookupByLibrary.simpleMessage("其他构建"),
     "outboundMode": MessageLookupByLibrary.simpleMessage("出站模式"),
     "override": MessageLookupByLibrary.simpleMessage("覆写"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("覆写DNS"),
@@ -947,13 +955,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy端口"),
     "traffic": MessageLookupByLibrary.simpleMessage("流量"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("流量统计"),
+    "transferConfirm": m30,
+    "transferFrom": m31,
+    "transferFromDesc": MessageLookupByLibrary.simpleMessage(
+      "此处的所有配置和设置将被替换为对方的数据",
+    ),
+    "transferSuccess": MessageLookupByLibrary.simpleMessage("数据已迁移"),
     "undo": MessageLookupByLibrary.simpleMessage("撤销"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("未知网络错误"),
     "unnamed": MessageLookupByLibrary.simpleMessage("未命名"),
     "upload": MessageLookupByLibrary.simpleMessage("上传"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过URL获取配置文件"),
-    "urlTip": m30,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用Hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("使用系统Hosts"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
@@ -974,7 +988,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN 设置"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV配置"),
-    "yearsAgo": m31,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
   };
 }

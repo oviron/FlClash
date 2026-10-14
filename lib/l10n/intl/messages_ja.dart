@@ -82,9 +82,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m29(value) => "残り${value}";
 
-  static String m30(label) => "${label}はURLである必要があります";
+  static String m30(app) =>
+      "ここのすべてのデータを ${app} のデータで置き換えますか？Android の権限はアプリごとに付与されるため、改めて確認されます。";
 
-  static String m31(count) => "${count}年前";
+  static String m31(app) => "${app} から移行";
+
+  static String m32(label) => "${label}はURLである必要があります";
+
+  static String m33(count) => "${count}年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -137,6 +142,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "backupAndRestore": MessageLookupByLibrary.simpleMessage("バックアップと復元"),
     "backupAndRestoreDesc": MessageLookupByLibrary.simpleMessage(
       "WebDAVまたはファイルを介してデータを同期する",
+    ),
+    "backupFromNewerApp": MessageLookupByLibrary.simpleMessage(
+      "このバックアップは新しいバージョンのアプリで作成されています。先にこのアプリを更新してください",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage("バックアップ成功"),
     "bind": MessageLookupByLibrary.simpleMessage("バインド"),
@@ -569,6 +577,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "onlyIcon": MessageLookupByLibrary.simpleMessage("アイコンのみ"),
     "openSettings": MessageLookupByLibrary.simpleMessage("設定を開く"),
     "options": MessageLookupByLibrary.simpleMessage("オプション"),
+    "otherBuild": MessageLookupByLibrary.simpleMessage("別のビルド"),
     "outboundMode": MessageLookupByLibrary.simpleMessage("アウトバウンドモード"),
     "override": MessageLookupByLibrary.simpleMessage("上書き"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("DNS上書き"),
@@ -1054,13 +1063,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxyポート"),
     "traffic": MessageLookupByLibrary.simpleMessage("通信量"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("トラフィック使用量"),
+    "transferConfirm": m30,
+    "transferFrom": m31,
+    "transferFromDesc": MessageLookupByLibrary.simpleMessage(
+      "ここのすべてのプロファイルと設定が、あちらのデータに置き換わります",
+    ),
+    "transferSuccess": MessageLookupByLibrary.simpleMessage("データを移行しました"),
     "undo": MessageLookupByLibrary.simpleMessage("元に戻す"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage("不明なネットワークエラー"),
     "unnamed": MessageLookupByLibrary.simpleMessage("無題"),
     "upload": MessageLookupByLibrary.simpleMessage("アップロード"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL経由でプロファイルを取得"),
-    "urlTip": m30,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("ホストを使用"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("システムホストを使用"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
@@ -1083,7 +1098,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "vpnSettings": MessageLookupByLibrary.simpleMessage("VPN設定"),
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage("WebDAV設定"),
-    "yearsAgo": m31,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
   };
 }

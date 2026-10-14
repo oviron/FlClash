@@ -702,5 +702,21 @@
   "userAgent": "User-Agent",
   "userAgentDesc": "Sent when updating subscriptions and providers",
   "userAgentCustom": "Custom",
-  "userAgentInvalid": "Printable ASCII only, on one line"
+  "userAgentInvalid": "Printable ASCII only, on one line",
+  "otherBuild": "Other build",
+  "transferFrom": "Transfer from {app}",
+  "@transferFrom": {
+    "placeholders": {
+      "app": {}
+    }
+  },
+  "transferFromDesc": "All profiles and settings here are replaced with the ones from there",
+  "transferConfirm": "Replace all data here with the data from {app}? Android permissions are granted per app and will be asked again.",
+  "@transferConfirm": {
+    "placeholders": {
+      "app": {}
+    }
+  },
+  "transferSuccess": "Data transferred",
+  "backupFromNewerApp": "The backup comes from a newer version of the app; update this one first"
 }

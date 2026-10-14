@@ -6,4 +6,8 @@
     <string name="widget_on">On</string>
     <string name="widget_off">Off</string>
     <string name="widget_pending">Switching…</string>
+    <string name="transfer_title">Data transfer</string>
+    <string name="transfer_message">Hand all profiles and settings over to %1$s? Its own data will be replaced.</string>
+    <string name="transfer_confirm">Transfer</string>
+    <string name="transfer_progress">Packing data…</string>
 </resources>

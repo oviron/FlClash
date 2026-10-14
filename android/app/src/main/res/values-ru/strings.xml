@@ -6,4 +6,8 @@
     <string name="widget_on">Включён</string>
     <string name="widget_off">Выключен</string>
     <string name="widget_pending">Переключение…</string>
+    <string name="transfer_title">Перенос данных</string>
+    <string name="transfer_message">Передать все профили и настройки в %1$s? Его данные будут заменены.</string>
+    <string name="transfer_confirm">Передать</string>
+    <string name="transfer_progress">Собираю данные…</string>
 </resources>

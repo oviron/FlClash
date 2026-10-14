@@ -101,6 +101,20 @@ Future<void> releaseProviderCache(
   await _deleteDir(join(providersPath, '$profileId'));
 });
 
+/// Takes in the cache the other local build of the app handed over in [from],
+/// its index included; files only this build used go with the next sweep.
+Future<void> importProviderCache(String providersPath, String from) => _serial(
+  () async {
+    if (!await Directory(from).exists()) return;
+    await for (final file in Directory(from).list(recursive: true)) {
+      if (file is! File) continue;
+      final target = File(join(providersPath, relative(file.path, from: from)));
+      await target.parent.create(recursive: true);
+      await file.copy(target.path);
+    }
+  },
+);
+
 // The cache files [config] uses, whether a file provider still reads the old
 // per-profile folder, and a copy of each old file the shared cache lacks.
 Future<({List<String> used, bool legacyInUse})> _scan(

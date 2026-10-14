@@ -702,5 +702,21 @@
   "userAgent": "User-Agent",
   "userAgentDesc": "Отправляется при обновлении подписок и провайдеров",
   "userAgentCustom": "Свой",
-  "userAgentInvalid": "Только печатные символы ASCII, одной строкой"
+  "userAgentInvalid": "Только печатные символы ASCII, одной строкой",
+  "otherBuild": "Другая сборка",
+  "transferFrom": "Перенести из {app}",
+  "@transferFrom": {
+    "placeholders": {
+      "app": {}
+    }
+  },
+  "transferFromDesc": "Все профили и настройки здесь заменятся данными оттуда",
+  "transferConfirm": "Заменить все данные здесь данными из {app}? Разрешения Android выдаются каждому приложению отдельно, их спросят заново.",
+  "@transferConfirm": {
+    "placeholders": {
+      "app": {}
+    }
+  },
+  "transferSuccess": "Данные перенесены",
+  "backupFromNewerApp": "Копия сделана более новой версией приложения: сначала обновите это"
 }

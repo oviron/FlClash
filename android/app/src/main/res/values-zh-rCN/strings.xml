@@ -6,4 +6,8 @@
     <string name="widget_on">已开启</string>
     <string name="widget_off">已关闭</string>
     <string name="widget_pending">切换中…</string>
+    <string name="transfer_title">数据迁移</string>
+    <string name="transfer_message">将全部配置和设置交给 %1$s？其现有数据将被替换。</string>
+    <string name="transfer_confirm">迁移</string>
+    <string name="transfer_progress">正在打包数据…</string>
 </resources>
