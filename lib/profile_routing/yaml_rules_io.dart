@@ -225,14 +225,3 @@ class ProfileRulesWriteException implements Exception {
   @override
   String toString() => 'ProfileRulesWriteException: $message';
 }
-
-// Only a change to the tun package sets needs a tunnel re-establish; every
-// other routing change hot-reloads.
-bool tunPackagesChanged(String before, String after) {
-  bool sameSet(List<String> x, List<String> y) =>
-      x.length == y.length && x.toSet().containsAll(y);
-  final a = ProfileRulesDocument(before);
-  final b = ProfileRulesDocument(after);
-  return !sameSet(a.includedPackages, b.includedPackages) ||
-      !sameSet(a.excludedPackages, b.excludedPackages);
-}

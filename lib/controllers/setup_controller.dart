@@ -1,21 +1,12 @@
 part of '../controller.dart';
 
 extension SetupControllerExt on AppController {
-  /// [switched]: another profile replaced a running one, whose connections
-  /// would otherwise go on through its servers.
-  void fullSetup({bool switched = false}) {
+  void fullSetup() {
     if (!_ref.read(initProvider)) {
       return;
     }
     _ref.read(delayDataSourceProvider.notifier).value = {};
-    applyProfile(
-      force: true,
-      onConfigApplied: () async {
-        if (switched && _ref.read(isStartProvider)) {
-          coreController.closeAllConnections();
-        }
-      },
-    );
+    applyProfile(force: true);
     _ref.read(logsProvider.notifier).value = FixedList(500);
     _ref.read(requestsProvider.notifier).value = FixedList(500);
   }
@@ -42,8 +33,6 @@ extension SetupControllerExt on AppController {
 
   Future<void> _updateStatus(bool isStart, {bool isInit = false}) async {
     if (isStart) {
-      // The tunnel takes the current app list; the next setup only records it.
-      globalState.lastAccessControl = null;
       await coreController.pendingTrafficReset;
       if (!isInit) {
         final res = await tryStartCore(true);
@@ -53,17 +42,21 @@ extension SetupControllerExt on AppController {
         if (!_ref.read(initProvider)) {
           return;
         }
+        await recordTunnelAccessControl();
         await globalState.handleStart([updateRunTime, updateTraffic]);
         applyProfileDebounce(force: true, silence: true);
       } else {
         globalState.needInitStatus = false;
         await applyProfile(
           force: true,
-          onConfigApplied: () =>
-              globalState.handleStart([updateRunTime, updateTraffic]),
+          onConfigApplied: () async {
+            await recordTunnelAccessControl();
+            await globalState.handleStart([updateRunTime, updateTraffic]);
+          },
         );
       }
     } else {
+      globalState.tunnelAccessControl = null;
       await globalState.handleStop();
       _ref.read(trafficsProvider.notifier).clear();
       _ref.read(totalTrafficProvider.notifier).value = const Traffic();
@@ -72,6 +65,14 @@ extension SetupControllerExt on AppController {
       // Last, so a reconnecting core does not stall the stop UI; a start waits for it.
       await coreController.resetTraffic();
     }
+  }
+
+  // Taken as the tunnel comes up: establish bakes in the app list it has then.
+  Future<void> recordTunnelAccessControl() async {
+    if (!system.isAndroid) return;
+    globalState.tunnelAccessControl = await _ref.read(
+      effectiveAccessControlProvider.future,
+    );
   }
 
   Future<bool> needSetup() async {
@@ -279,14 +280,15 @@ extension SetupControllerExt on AppController {
     }
   }
 
-  Future<void> _setupConfig([Future<void> Function()? onConfigApplied]) async {
-    globalState.bootstrappingConfig = true;
-    try {
-      await _setupConfigInner(onConfigApplied);
-    } finally {
-      globalState.bootstrappingConfig = false;
-    }
-  }
+  Future<void> _setupConfig([Future<void> Function()? onConfigApplied]) =>
+      globalState.setupQueue.run(() async {
+        globalState.bootstrappingConfig = true;
+        try {
+          await _setupConfigInner(onConfigApplied);
+        } finally {
+          globalState.bootstrappingConfig = false;
+        }
+      });
 
   Future<void> _setupConfigInner([
     Future<void> Function()? onConfigApplied,
@@ -307,19 +309,12 @@ extension SetupControllerExt on AppController {
     final realPatchConfig = patchConfig.copyWith.tun(enable: realTunEnable);
     final setupState = await _ref.read(setupStateProvider(profile?.id).future);
     globalState.lastSetupState = setupState;
+    AccessControlProps? accessControl;
     if (system.isAndroid) {
       // Per-app ACL is off-graph (getConfig) and baked only at establish; resolve
       // it before snapshotting sharedState, or a just-edited (invalidated) set
       // reads a stale `.value` and the tunnel re-establishes with the old list.
-      final accessControl = await _ref.read(
-        effectiveAccessControlProvider.future,
-      );
-      // Another profile, a subscription update or an edit changed the app list.
-      final previous = globalState.lastAccessControl;
-      globalState.lastAccessControl = accessControl;
-      if (previous != null && previous != accessControl) {
-        _ref.read(vpnReestablishSignalProvider.notifier).bump();
-      }
+      accessControl = await _ref.read(effectiveAccessControlProvider.future);
       globalState.lastVpnState = _ref.read(vpnStateProvider);
       unawaited(preferences.saveShareState(this.sharedState));
     }
@@ -332,6 +327,7 @@ extension SetupControllerExt on AppController {
       systemProxy: _ref.read(vpnSettingProvider).systemProxy,
     );
     // Before materializing: a subscription's cached copy is its failover.
+    var applied = false;
     final releaseCache = profile == null
         ? () {}
         : await reserveProviderFiles(profile.id, config);
@@ -344,14 +340,25 @@ extension SetupControllerExt on AppController {
       final testUrl = _ref.read(
         appSettingProvider.select((state) => state.testUrl),
       );
+      final previousProfileId = globalState.appliedProfileId;
+      // Any error leaves the core on its default config.
+      globalState.appliedProfileId = null;
       final message = await coreController.setupConfig(
         setupState: setupState,
         params: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
       );
+      applied = message.isEmpty;
+      if (applied) globalState.appliedProfileId = profile?.id;
+      // The core keeps open connections across configs, so the last profile's
+      // would go on through its servers.
+      if (previousProfileId != null &&
+          previousProfileId != globalState.appliedProfileId) {
+        coreController.closeAllConnections();
+      }
       if (message.isNotEmpty) {
         if (!isGeoDataWarning(message)) throw message;
-        // A GeoSite/GeoIP rule couldn't resolve (missing/stale/corrupt database);
-        // the rest of the config still applied, so heal the geo data in the
+        // A GeoSite/GeoIP rule couldn't resolve (missing/stale/corrupt database)
+        // and the core fell back to its default; heal the geo data in the
         // background instead of alarming the user with the raw core error.
         commonPrint.log(
           'geo data warning on setup: $message',
@@ -360,11 +367,20 @@ extension SetupControllerExt on AppController {
         unawaited(seedGeositeIfMissing().then((_) => updateGeoDatabases()));
       }
       // A Geo error leaves the core on a config other than this one.
-      if (profile != null && message.isEmpty) {
+      if (profile != null && applied) {
         await _claimProviderFiles(profile.id, config);
       }
     } finally {
       releaseCache();
+    }
+    // A profile switched meanwhile queues an apply of its own, which checks it.
+    final tunnel = globalState.tunnelAccessControl;
+    if (applied &&
+        tunnel != null &&
+        accessControl != null &&
+        profile?.id == _ref.read(currentProfileIdProvider) &&
+        !tunnel.sameTunnelApps(accessControl)) {
+      _ref.read(vpnReestablishSignalProvider.notifier).bump();
     }
     await onConfigApplied?.call();
     addCheckIp();

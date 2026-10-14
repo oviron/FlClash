@@ -55,8 +55,19 @@ extension CommonControllerExt on AppController {
         _captureHealthBaseline(startTime);
         addCheckIp();
       }
+      // A tile start or a cold attach: the UI did not see the establish.
+      if (system.isAndroid && globalState.tunnelAccessControl == null) {
+        unawaited(
+          _ref.read(effectiveAccessControlProvider.future).then((acl) {
+            if (globalState.startTime != null) {
+              globalState.tunnelAccessControl ??= acl;
+            }
+          }, onError: (_) {}),
+        );
+      }
       return;
     }
+    globalState.tunnelAccessControl = null;
     globalState.stopUpdateTasks();
     if (wasStart) {
       _ref.read(trafficsProvider.notifier).clear();

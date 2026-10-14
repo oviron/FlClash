@@ -27,19 +27,7 @@ extension RoutingConstructorController on AppController {
     } on ProfileRulesWriteException catch (e) {
       return e.message;
     }
-    final error = await _writeValidatedApply(file, profileId, next);
-    if (error == null) _signalTunAclChanged(profileId, raw, next);
-    return error;
-  }
-
-  // Establish-only ACL: the tunnel bakes the allow/disallow list at establish, a
-  // hot-apply never re-applies it, and effectiveAccessControl reads YAML
-  // off-graph -> invalidate it and re-establish on an active-profile tun change.
-  void _signalTunAclChanged(int profileId, String before, String after) {
-    if (profileId != _ref.read(currentProfileIdProvider)) return;
-    if (!tunPackagesChanged(before, after)) return;
-    _ref.invalidate(effectiveAccessControlProvider);
-    _ref.read(vpnReestablishSignalProvider.notifier).bump();
+    return _writeValidatedApply(file, profileId, next);
   }
 
   // Switches tunnel mode, preserving each mode's app selection via the
@@ -92,6 +80,8 @@ extension RoutingConstructorController on AppController {
       putProfile(profile.copyWith(lastUpdateDate: DateTime.now()));
     }
     if (profileId == _ref.read(currentProfileIdProvider)) {
+      // The apply compares the tunnel's app list with this off-graph YAML read.
+      _ref.invalidate(effectiveAccessControlProvider);
       await applyProfile(force: true);
     }
     return null;

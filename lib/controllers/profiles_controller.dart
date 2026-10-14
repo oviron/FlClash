@@ -60,35 +60,8 @@ extension ProfilesControllerExt on AppController {
     _ref.read(currentProfileIdProvider.notifier).value = profile.id;
   }
 
-  Future<String> _readProfileYaml(int profileId) async {
-    try {
-      return await File(
-        await appPath.getProfilePath(profileId.toString()),
-      ).readAsString();
-    } catch (_) {
-      return '';
-    }
-  }
-
-  // Re-establish when a file-rewriting save (raw editor, upload, url re-download,
-  // sync) changed the active profile's tun package set.
-  Future<void> _reestablishIfTunChanged(
-    int profileId,
-    String beforeYaml,
-  ) async {
-    _signalTunAclChanged(
-      profileId,
-      beforeYaml,
-      await _readProfileYaml(profileId),
-    );
-  }
-
-  // Re-establishes the tunnel if a raw-editor/upload save changed the active
-  // profile's app ACL.
   Future<void> saveProfileFile(Profile profile, Uint8List bytes) async {
-    final before = await _readProfileYaml(profile.id);
     putProfile(await profile.saveFile(bytes));
-    await _reestablishIfTunChanged(profile.id, before);
   }
 
   Future<void> updateProfiles() async {
@@ -109,12 +82,10 @@ extension ProfilesControllerExt on AppController {
         _ref.read(isUpdatingProvider(profile.updatingKey).notifier).value =
             true;
       }
-      final before = await _readProfileYaml(profile.id);
       final newProfile = await profile.update();
       _ref.read(profilesProvider.notifier).put(newProfile);
       if (profile.id == _ref.read(currentProfileIdProvider)) {
         applyProfileDebounce(silence: true);
-        await _reestablishIfTunChanged(profile.id, before);
       }
     } finally {
       _ref.read(isUpdatingProvider(profile.updatingKey).notifier).value = false;

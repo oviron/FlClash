@@ -39,6 +39,12 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     ref.listenManual(vpnReestablishSignalProvider, (prev, next) {
       if (prev != next) _schedule(force: true);
     });
+    // A stop drops the pending change and a start takes it in.
+    ref.listenManual(isStartProvider, (prev, next) {
+      if (prev == next) return;
+      _debounce?.cancel();
+      _forceReestablish = false;
+    });
   }
 
   void _schedule({bool force = false}) {
@@ -62,6 +68,8 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     try {
       globalState.showNotifier(appLocalizations.vpnReestablishing);
       await globalState.statusQueue.run(() async {
+        // A stop queued ahead of this one wins.
+        if (!ref.read(isStartProvider)) return;
         await globalState.handleStop();
         await appController.updateStatus(true);
       });

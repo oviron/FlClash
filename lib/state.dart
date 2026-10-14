@@ -48,8 +48,12 @@ class GlobalState {
   UpdateTasks tasks = [];
   SetupState? lastSetupState;
   VpnState? lastVpnState;
-  // The app list the tunnel runs with: baked at establish, changed only by a new one.
-  AccessControlProps? lastAccessControl;
+  // Baked into the tunnel at establish, changed only by a new one; null while down.
+  AccessControlProps? tunnelAccessControl;
+  // The profile the core last took; null after a failed apply left it on its default.
+  int? appliedProfileId;
+  // Config applies run one at a time, so a slower one cannot land after a newer one.
+  final setupQueue = SerialQueue();
 
   // Counter reading taken when the tunnel came up, so usage can be reported for
   // this session. Null after a cold start into a running tunnel — the baseline
