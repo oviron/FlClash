@@ -49,6 +49,7 @@ object NetworkRulesController {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val mutex = Mutex()
     private val appliedMutex = Mutex()
+    private val hotSeq = AtomicLong()
     private val swapSeq = AtomicLong(0)
 
     private var observer: NetworkRulesObserver? = null
@@ -237,20 +238,23 @@ object NetworkRulesController {
         )
         // Handled in the callback, not here: a network change cancels this
         // coroutine, and loading geo data can outlast any timeout.
+        val seq = hotSeq.incrementAndGet()
         val sent = Service.invokeAction(envelope) { reply ->
-            scope.launch { onHotApplied(profileId, profileName, reply) }
+            scope.launch { onHotApplied(seq, profileId, profileName, reply) }
         }
         if (sent.isFailure) {
             GlobalState.log("network-rules: hot apply failed for profile $profileId: ${sent.exceptionOrNull()}")
         }
     }
 
-    private suspend fun onHotApplied(profileId: Long, profileName: String?, reply: String) {
+    private suspend fun onHotApplied(seq: Long, profileId: Long, profileName: String?, reply: String) {
         // code 0 with empty data is the core's success for setupConfig.
         val message = runCatching { JsonParser.parseString(reply).asJsonObject }.getOrNull()
             ?.takeIf { it.get("code")?.asInt == 0 }?.get("data")?.asString
         val applied = profileId.takeIf { message == "" }
         appliedMutex.withLock {
+            // Replies may arrive out of order; a newer switch's reply settles this one.
+            if (seq != hotSeq.get()) return
             // As SetupController does: any error leaves the core on its default config,
             // and the core keeps the last profile's connections open across configs.
             val app = GlobalState.application

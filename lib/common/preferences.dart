@@ -134,8 +134,11 @@ class Preferences {
     }
   }
 
+  // The profile the core last took; null after a failed apply left it on its
+  // default. On disk, as the core outlives the UI and Network Rules writes it too.
   Future<int?> getAppliedProfileId() async {
     final preferences = await sharedPreferencesCompleter.future;
+    await preferences?.reload();
     return preferences?.getInt('appliedProfileId');
   }
 

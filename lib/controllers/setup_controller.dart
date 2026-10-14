@@ -338,24 +338,21 @@ extension SetupControllerExt on AppController {
       final testUrl = _ref.read(
         appSettingProvider.select((state) => state.testUrl),
       );
-      final previousProfileId = globalState.appliedProfileId;
-      // Any error leaves the core on its default config.
-      globalState.appliedProfileId = null;
       final message = await coreController.setupConfig(
         setupState: setupState,
         params: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
       );
       applied = message.isEmpty;
-      if (applied) globalState.appliedProfileId = profile?.id;
-      if (globalState.appliedProfileId != previousProfileId) {
-        unawaited(
-          preferences.setAppliedProfileId(globalState.appliedProfileId),
-        );
+      // Read after the reply, as a background switch may have landed meanwhile.
+      // Any error leaves the core on its default config.
+      final previousProfileId = await preferences.getAppliedProfileId();
+      final appliedProfileId = applied ? profile?.id : null;
+      if (appliedProfileId != previousProfileId) {
+        await preferences.setAppliedProfileId(appliedProfileId);
       }
       // The core keeps open connections across configs, so the last profile's
       // would go on through its servers.
-      if (previousProfileId != null &&
-          previousProfileId != globalState.appliedProfileId) {
+      if (previousProfileId != null && previousProfileId != appliedProfileId) {
         coreController.closeAllConnections();
       }
       if (message.isNotEmpty) {
