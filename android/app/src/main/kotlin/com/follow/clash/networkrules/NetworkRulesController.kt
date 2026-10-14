@@ -6,6 +6,7 @@ import com.follow.clash.RunState
 import com.follow.clash.Service
 import com.follow.clash.State
 import com.follow.clash.common.GlobalState
+import com.follow.clash.saveAppliedProfileId
 import com.follow.clash.common.networkrules.NetworkDecision
 import com.follow.clash.common.networkrules.NetworkResolution
 import com.follow.clash.common.networkrules.NetworkRulesCodec
@@ -213,6 +214,7 @@ object NetworkRulesController {
             swapConfig(profileTarget) -> {
                 State.pendingSelectedMap = resolution.selectedMap
                 State.pendingProfileName = resolution.profileName
+                GlobalState.application.saveAppliedProfileId(profileTarget)
             }
         }
     }
@@ -235,6 +237,12 @@ object NetworkRulesController {
             GlobalState.log("network-rules: hot apply failed for profile $profileId: ${result.exceptionOrNull()}")
             return
         }
+        // As a switch in the UI: the core keeps the last profile's connections open.
+        GlobalState.application.saveAppliedProfileId(profileId)
+        val close = Gson().toJson(
+            mapOf("id" to "nr-close-$profileId", "method" to "closeAllConnections", "data" to ""),
+        )
+        Service.invokeAction(close, null)
         // Retitle the notification only after the core accepted the config; on
         // failure it keeps showing the actually-active profile.
         if (profileName != null) {

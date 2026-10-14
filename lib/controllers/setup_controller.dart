@@ -65,6 +65,14 @@ extension SetupControllerExt on AppController {
     }
   }
 
+  // The tunnel keeps the app list it was established with; another needs a new one.
+  void checkTunnelApps(AccessControlProps current) {
+    final tunnel = globalState.tunnelAccessControl;
+    if (tunnel != null && !tunnel.sameTunnelApps(current)) {
+      _ref.read(vpnReestablishSignalProvider.notifier).bump();
+    }
+  }
+
   Future<bool> needSetup() async {
     final profileId = _ref.read(currentProfileIdProvider);
     if (profileId == null) {
@@ -369,13 +377,10 @@ extension SetupControllerExt on AppController {
       releaseCache();
     }
     // A profile switched meanwhile queues an apply of its own, which checks it.
-    final tunnel = globalState.tunnelAccessControl;
     if (applied &&
-        tunnel != null &&
         accessControl != null &&
-        profile?.id == _ref.read(currentProfileIdProvider) &&
-        !tunnel.sameTunnelApps(accessControl)) {
-      _ref.read(vpnReestablishSignalProvider.notifier).bump();
+        profile?.id == _ref.read(currentProfileIdProvider)) {
+      checkTunnelApps(accessControl);
     }
     await onConfigApplied?.call();
     addCheckIp();

@@ -61,11 +61,17 @@ extension CommonControllerExt on AppController {
         globalState.tunnelAccessControlStart = startTime;
         globalState.tunnelAccessControl = null;
         unawaited(
-          preferences.getTunnelAccessControl().then((acl) {
-            if (globalState.tunnelAccessControlStart == startTime) {
-              globalState.tunnelAccessControl = acl;
-            }
-          }),
+          preferences
+              .getTunnelAccessControl()
+              .then((acl) async {
+                if (globalState.tunnelAccessControlStart != startTime) return;
+                globalState.tunnelAccessControl = acl;
+                // An apply that landed before this read had nothing to compare.
+                checkTunnelApps(
+                  await _ref.read(effectiveAccessControlProvider.future),
+                );
+              })
+              .catchError((_) {}),
         );
       }
       return;

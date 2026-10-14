@@ -54,6 +54,15 @@ fun Application.saveTunnelAccessControl(props: AccessControlProps) {
     }
 }
 
+// The profile the core last took, shared with lib/state.dart.
+private const val APPLIED_PROFILE_PREFS_KEY = "flutter.appliedProfileId"
+
+fun Application.saveAppliedProfileId(profileId: Long) {
+    getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
+        putLong(APPLIED_PROFILE_PREFS_KEY, profileId)
+    }
+}
+
 private var lastToast: Toast? = null
 
 fun Application.showToast(text: String?) {
