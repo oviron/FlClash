@@ -268,6 +268,9 @@ Future<MigrationData> _restoreTask(RootIsolateToken token) async {
   if (!await backupDatabaseFile.exists()) {
     return migrationData;
   }
+  if (await databaseUserVersion(backupDatabaseFile) > databaseSchemaVersion) {
+    throw appLocalizations.backupFromNewerApp;
+  }
   final database = Database(
     driftDatabase(
       name: 'database',
@@ -307,6 +310,18 @@ Future<MigrationData> _restoreTask(RootIsolateToken token) async {
   );
   await database.close();
   return migrationData;
+}
+
+/// The schema version drift keeps in the SQLite header, read without opening it.
+Future<int> databaseUserVersion(File database) async {
+  final file = await database.open();
+  try {
+    await file.setPosition(60);
+    final bytes = await file.read(4);
+    return bytes.length < 4 ? 0 : ByteData.sublistView(bytes).getInt32(0);
+  } finally {
+    await file.close();
+  }
 }
 
 Future<void> _copyWithMapList(List<VM2<String, String>> copyMapList) async {

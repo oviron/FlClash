@@ -90,9 +90,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m29(value) => "осталось ${value}";
 
-  static String m30(label) => "${label} должен быть URL";
+  static String m30(app) =>
+      "Заменить все данные здесь данными из ${app}? Разрешения Android выдаются каждому приложению отдельно, их спросят заново.";
 
-  static String m31(count) =>
+  static String m31(app) => "Перенести из ${app}";
+
+  static String m32(label) => "${label} должен быть URL";
+
+  static String m33(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -166,6 +171,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "backupAndRestoreDesc": MessageLookupByLibrary.simpleMessage(
       "Синхронизация данных через WebDAV или файлы",
+    ),
+    "backupFromNewerApp": MessageLookupByLibrary.simpleMessage(
+      "Копия сделана более новой версией приложения: сначала обновите это",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage(
       "Резервное копирование успешно",
@@ -706,6 +714,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "onlyIcon": MessageLookupByLibrary.simpleMessage("Только иконка"),
     "openSettings": MessageLookupByLibrary.simpleMessage("Открыть настройки"),
     "options": MessageLookupByLibrary.simpleMessage("Опции"),
+    "otherBuild": MessageLookupByLibrary.simpleMessage("Другая сборка"),
     "outboundMode": MessageLookupByLibrary.simpleMessage(
       "Режим исходящего трафика",
     ),
@@ -1359,6 +1368,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "trafficUsage": MessageLookupByLibrary.simpleMessage(
       "Использование трафика",
     ),
+    "transferConfirm": m30,
+    "transferFrom": m31,
+    "transferFromDesc": MessageLookupByLibrary.simpleMessage(
+      "Все профили и настройки здесь заменятся данными оттуда",
+    ),
+    "transferSuccess": MessageLookupByLibrary.simpleMessage(
+      "Данные перенесены",
+    ),
     "undo": MessageLookupByLibrary.simpleMessage("Отменить"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Неизвестная сетевая ошибка",
@@ -1369,7 +1386,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Получить профиль через URL",
     ),
-    "urlTip": m30,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage(
       "Использовать системные hosts",
@@ -1396,7 +1413,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage(
       "Конфигурация WebDAV",
     ),
-    "yearsAgo": m31,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
   };
 }

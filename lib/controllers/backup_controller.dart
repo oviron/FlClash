@@ -10,21 +10,20 @@ extension BackupControllerExt on AppController {
         (state) async => (await state).map((item) => item.id),
       ),
     );
-    final pathsToDelete = await shakingProfileTask(VM2(profileIds, scriptIds));
-    if (pathsToDelete.isNotEmpty) {
-      final deleteFutures = pathsToDelete.map((path) async {
-        try {
-          final res = await coreController.deleteFile(path);
-          if (res.isNotEmpty) {
-            throw res;
-          }
-        } catch (e) {
-          rethrow;
-        }
-      });
+    await _deleteStoreFilesExcept(profileIds, scriptIds);
+  }
 
-      await Future.wait(deleteFutures);
-    }
+  Future<void> _deleteStoreFilesExcept(
+    Iterable<int> profileIds,
+    Iterable<int> scriptIds,
+  ) async {
+    final pathsToDelete = await shakingProfileTask(VM2(profileIds, scriptIds));
+    await Future.wait(
+      pathsToDelete.map((path) async {
+        final res = await coreController.deleteFile(path);
+        if (res.isNotEmpty) throw res;
+      }),
+    );
   }
 
   Future<String> backup() async {
@@ -54,18 +53,33 @@ extension BackupControllerExt on AppController {
     ]);
   }
 
-  Future<void> restore(RestoreOption option) async {
+  /// Replaces all of this build's data with the other local build's; false
+  /// if the user declined there.
+  Future<bool> transferFromSibling() async {
+    final archive = File(await appPath.backupFilePath);
+    try {
+      if (await transfer?.pull(archive.path) != true) return false;
+      await restore(RestoreOption.all, fromSibling: true);
+      return true;
+    } finally {
+      await archive.safeDelete();
+    }
+  }
+
+  Future<void> restore(RestoreOption option, {bool fromSibling = false}) async {
     final restoreDirPath = await appPath.restoreDirPath;
     final restoreDir = Directory(restoreDirPath);
     final restoreStrategy = _ref.read(
       appSettingProvider.select((state) => state.restoreStrategy),
     );
-    final isOverride = restoreStrategy == RestoreStrategy.override;
+    final isOverride =
+        fromSibling || restoreStrategy == RestoreStrategy.override;
     try {
       final migrationData = await restoreTask();
       if (!await restoreDir.exists()) {
         throw appLocalizations.restoreException;
       }
+      if (fromSibling) await _importTransferExtras(restoreDirPath);
       await database.restore(
         migrationData.profiles,
         migrationData.scripts,
@@ -74,6 +88,13 @@ extension BackupControllerExt on AppController {
         isOverride: isOverride,
         networkRules: migrationData.networkRules,
       );
+      if (fromSibling) {
+        // The files of the profiles and scripts the transfer replaced.
+        await _deleteStoreFilesExcept(
+          migrationData.profiles.map((item) => item.id),
+          migrationData.scripts.map((item) => item.id),
+        );
+      }
       final configMap = migrationData.configMap;
       if (option == RestoreOption.onlyProfiles || configMap == null) {
         return;
@@ -99,5 +120,29 @@ extension BackupControllerExt on AppController {
     } finally {
       await restoreDir.safeDelete(recursive: true);
     }
+  }
+
+  // What a backup leaves out: device values, Geo databases and the provider
+  // cache, taken in before the restored config is applied so nothing is fetched.
+  Future<void> _importTransferExtras(String restoreDirPath) async {
+    final extras = File(join(restoreDirPath, 'transfer.json'));
+    if (await extras.exists()) {
+      final data = json.decode(await extras.readAsString());
+      if (data case {'prefs': final Map<String, Object?> prefs}) {
+        await preferences.importTransferred(prefs);
+      }
+    }
+    final home = await appPath.homeDirPath;
+    for (final name in [MMDB, ASN, GEOIP, GEOSITE]) {
+      final file = File(join(restoreDirPath, name));
+      if (!await file.exists()) continue;
+      // A rename keeps the copy the core has mapped intact until it reloads.
+      final copy = await file.copy(join(home, '$name.transfer'));
+      await copy.rename(join(home, name));
+    }
+    await importProviderCache(
+      await appPath.getProvidersRootPath(),
+      join(restoreDirPath, profilesDirectoryName, 'providers'),
+    );
   }
 }

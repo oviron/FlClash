@@ -6,4 +6,8 @@
     <string name="widget_on">オン</string>
     <string name="widget_off">オフ</string>
     <string name="widget_pending">切り替え中…</string>
+    <string name="transfer_title">データ移行</string>
+    <string name="transfer_message">すべてのプロファイルと設定を %1$s に渡しますか？そちらのデータは置き換えられます。</string>
+    <string name="transfer_confirm">移行</string>
+    <string name="transfer_progress">データをまとめています…</string>
 </resources>

@@ -702,5 +702,21 @@
   "userAgent": "User-Agent",
   "userAgentDesc": "サブスクリプションとプロバイダーの更新時に送信されます",
   "userAgentCustom": "カスタム",
-  "userAgentInvalid": "1行の印字可能なASCII文字のみ"
+  "userAgentInvalid": "1行の印字可能なASCII文字のみ",
+  "otherBuild": "別のビルド",
+  "transferFrom": "{app} から移行",
+  "@transferFrom": {
+    "placeholders": {
+      "app": {}
+    }
+  },
+  "transferFromDesc": "ここのすべてのプロファイルと設定が、あちらのデータに置き換わります",
+  "transferConfirm": "ここのすべてのデータを {app} のデータで置き換えますか？Android の権限はアプリごとに付与されるため、改めて確認されます。",
+  "@transferConfirm": {
+    "placeholders": {
+      "app": {}
+    }
+  },
+  "transferSuccess": "データを移行しました",
+  "backupFromNewerApp": "このバックアップは新しいバージョンのアプリで作成されています。先にこのアプリを更新してください"
 }

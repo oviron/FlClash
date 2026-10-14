@@ -37,6 +37,11 @@ abstract final class NetworkRulesMethod {
   static const switchProfile = 'switchProfile';
 }
 
+abstract final class TransferMethod {
+  static const sibling = 'sibling';
+  static const pull = 'pull';
+}
+
 abstract final class AppMethod {
   static const exit = 'exit';
   static const moveTaskToBack = 'moveTaskToBack';

@@ -91,9 +91,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m29(value) => "${value} left";
 
-  static String m30(label) => "${label} must be a url";
+  static String m30(app) =>
+      "Replace all data here with the data from ${app}? Android permissions are granted per app and will be asked again.";
 
-  static String m31(count) =>
+  static String m31(app) => "Transfer from ${app}";
+
+  static String m32(label) => "${label} must be a url";
+
+  static String m33(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -165,6 +170,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "backupAndRestoreDesc": MessageLookupByLibrary.simpleMessage(
       "Sync data via WebDAV or files",
+    ),
+    "backupFromNewerApp": MessageLookupByLibrary.simpleMessage(
+      "The backup comes from a newer version of the app; update this one first",
     ),
     "backupSuccess": MessageLookupByLibrary.simpleMessage("Backup success"),
     "bind": MessageLookupByLibrary.simpleMessage("Bind"),
@@ -683,6 +691,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "onlyIcon": MessageLookupByLibrary.simpleMessage("Icon"),
     "openSettings": MessageLookupByLibrary.simpleMessage("Open settings"),
     "options": MessageLookupByLibrary.simpleMessage("Options"),
+    "otherBuild": MessageLookupByLibrary.simpleMessage("Other build"),
     "outboundMode": MessageLookupByLibrary.simpleMessage("Outbound mode"),
     "override": MessageLookupByLibrary.simpleMessage("Override"),
     "overrideDns": MessageLookupByLibrary.simpleMessage("Override Dns"),
@@ -1284,6 +1293,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy Port"),
     "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Traffic usage"),
+    "transferConfirm": m30,
+    "transferFrom": m31,
+    "transferFromDesc": MessageLookupByLibrary.simpleMessage(
+      "All profiles and settings here are replaced with the ones from there",
+    ),
+    "transferSuccess": MessageLookupByLibrary.simpleMessage("Data transferred"),
     "undo": MessageLookupByLibrary.simpleMessage("undo"),
     "unknownNetworkError": MessageLookupByLibrary.simpleMessage(
       "Unknown network error",
@@ -1294,7 +1309,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain profile through URL",
     ),
-    "urlTip": m30,
+    "urlTip": m32,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useSystemHosts": MessageLookupByLibrary.simpleMessage("Use system hosts"),
     "userAgent": MessageLookupByLibrary.simpleMessage("User-Agent"),
@@ -1319,7 +1334,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "webDAVConfiguration": MessageLookupByLibrary.simpleMessage(
       "WebDAV configuration",
     ),
-    "yearsAgo": m31,
+    "yearsAgo": m33,
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };
 }

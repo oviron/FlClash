@@ -98,6 +98,28 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".transfer.ExportActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|screenLayout|uiMode|density"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.follow.clash.action.EXPORT_DATA" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name=".transfer.TransferFileProvider"
+            android:authorities="${applicationId}.transfer"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/transfer_paths" />
+        </provider>
+
         <service
             android:name=".TileService"
             android:exported="true"

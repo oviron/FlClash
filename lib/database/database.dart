@@ -16,6 +16,9 @@ part 'profiles.dart';
 part 'rules.dart';
 part 'scripts.dart';
 
+/// Restoring a database written by a newer schema would run migrations backwards.
+const databaseSchemaVersion = 11;
+
 @DriftDatabase(
   tables: [Profiles, Scripts, Rules, ProfileRuleLinks, NetworkRules],
   daos: [ProfilesDao, ScriptsDao, RulesDao, NetworkRulesDao],
@@ -24,7 +27,7 @@ class Database extends _$Database {
   Database([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => databaseSchemaVersion;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

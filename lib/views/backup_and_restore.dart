@@ -6,6 +6,7 @@ import 'package:fl_clash/common/dav_client.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/plugins/transfer.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
@@ -287,6 +288,7 @@ class BackupAndRestore extends ConsumerWidget {
             title: Text(appLocalizations.restore),
             subtitle: Text(appLocalizations.restoreFromFileDesc),
           ),
+          const _SiblingTransfer(),
           ListHeader(title: appLocalizations.options),
           Consumer(
             builder: (_, ref, _) {
@@ -333,6 +335,60 @@ class BackupAndRestore extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// Shown only while the other local build (release or dev) is installed.
+class _SiblingTransfer extends StatefulWidget {
+  const _SiblingTransfer();
+
+  @override
+  State<_SiblingTransfer> createState() => _SiblingTransferState();
+}
+
+class _SiblingTransferState extends State<_SiblingTransfer> {
+  final _sibling = transfer?.sibling() ?? Future<String?>.value();
+
+  Future<void> _transfer(String sibling) async {
+    final confirmed = await globalState.showMessage(
+      title: appLocalizations.transferFrom(sibling),
+      message: TextSpan(text: appLocalizations.transferConfirm(sibling)),
+    );
+    if (confirmed != true) return;
+    final res = await appController.loadingRun<bool>(
+      appController.transferFromSibling,
+      tag: LoadingTag.backup_restore,
+      title: appLocalizations.transferFrom(sibling),
+    );
+    if (res != true) return;
+    unawaited(
+      globalState.showMessage(
+        title: appLocalizations.transferFrom(sibling),
+        message: TextSpan(text: appLocalizations.transferSuccess),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String?>(
+      future: _sibling,
+      builder: (_, snapshot) {
+        final sibling = snapshot.data;
+        if (sibling == null) return const SizedBox.shrink();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ListHeader(title: appLocalizations.otherBuild),
+            ListItem(
+              onTap: () => _transfer(sibling),
+              title: Text(appLocalizations.transferFrom(sibling)),
+              subtitle: Text(appLocalizations.transferFromDesc),
+            ),
+          ],
+        );
+      },
     );
   }
 }
