@@ -320,7 +320,10 @@ object State {
             if (!lifecycle.isCancelled(ticket)) {
                 runTime = startRemote(options)
                 started = runTime != 0L
-                if (started) RecoveryJob.schedule()
+                if (started) {
+                    RecoveryJob.schedule()
+                    GlobalState.application.saveTunnelAccessControl(options.accessControlProps)
+                }
             }
         } finally {
             runStateFlow.tryEmit(if (started) RunState.START else RunState.STOP)

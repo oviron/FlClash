@@ -121,6 +121,33 @@ class Preferences {
     return decodeGroupsSnapshot(raw);
   }
 
+  // Written by the Android side at each establish (Ext.kt), so reread from disk.
+  Future<AccessControlProps?> getTunnelAccessControl() async {
+    final preferences = await sharedPreferencesCompleter.future;
+    await preferences?.reload();
+    final raw = preferences?.getString('tunnelAccessControl');
+    if (raw == null) return null;
+    try {
+      return AccessControlProps.fromJson(json.decode(raw));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<int?> getAppliedProfileId() async {
+    final preferences = await sharedPreferencesCompleter.future;
+    return preferences?.getInt('appliedProfileId');
+  }
+
+  Future<void> setAppliedProfileId(int? profileId) async {
+    final preferences = await sharedPreferencesCompleter.future;
+    if (profileId == null) {
+      await preferences?.remove('appliedProfileId');
+    } else {
+      await preferences?.setInt('appliedProfileId', profileId);
+    }
+  }
+
   /// Device values the other local build of the app hands over with its data;
   /// group snapshots are keyed by profile ids that come along.
   Future<void> importTransferred(Map<String, Object?> values) async {

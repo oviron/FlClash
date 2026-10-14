@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/manager/effects/vpn_reestablish_effect.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/providers/vpn_reestablish_signal.dart';
 import 'package:fl_clash/state.dart';
@@ -54,9 +55,16 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     _debounce = Timer(_window, _reestablish);
   }
 
+  // A later apply may have brought the app list back to the tunnel's.
+  bool get _appsChanged {
+    final tunnel = globalState.tunnelAccessControl;
+    final current = ref.read(effectiveAccessControlProvider).value;
+    return tunnel == null || current == null || !tunnel.sameTunnelApps(current);
+  }
+
   bool get _dirty => shouldRunVpnReestablish(
     isStarted: ref.read(isStartProvider),
-    forceReestablish: _forceReestablish,
+    forceReestablish: _forceReestablish && _appsChanged,
     currentVpnState: ref.read(vpnStateProvider),
     lastVpnState: globalState.lastVpnState,
   );

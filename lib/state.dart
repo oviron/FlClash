@@ -50,7 +50,8 @@ class GlobalState {
   VpnState? lastVpnState;
   // Baked into the tunnel at establish, changed only by a new one; null while down.
   AccessControlProps? tunnelAccessControl;
-  // The profile the core last took; null after a failed apply left it on its default.
+  // The profile the core last took; null after a failed apply left it on its
+  // default. Kept on disk, as the core outlives a restart of the UI process.
   int? appliedProfileId;
   // Config applies run one at a time, so a slower one cannot land after a newer one.
   final setupQueue = SerialQueue();
@@ -127,6 +128,7 @@ class GlobalState {
     final container = ProviderContainer(overrides: overrides);
     final profiles = await database.profilesDao.all().get();
     container.read(profilesProvider.notifier).setAndReorder(profiles);
+    appliedProfileId = await preferences.getAppliedProfileId();
     // Hydrate the proxy groups from the last persisted snapshot so the Proxies
     // screen renders immediately instead of blinking empty until the core loads.
     final currentProfileId = config.currentProfileId;

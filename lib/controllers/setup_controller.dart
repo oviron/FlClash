@@ -349,6 +349,11 @@ extension SetupControllerExt on AppController {
       );
       applied = message.isEmpty;
       if (applied) globalState.appliedProfileId = profile?.id;
+      if (globalState.appliedProfileId != previousProfileId) {
+        unawaited(
+          preferences.setAppliedProfileId(globalState.appliedProfileId),
+        );
+      }
       // The core keeps open connections across configs, so the last profile's
       // would go on through its servers.
       if (previousProfileId != null &&

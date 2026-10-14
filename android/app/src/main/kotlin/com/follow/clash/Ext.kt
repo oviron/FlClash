@@ -9,9 +9,11 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.core.graphics.drawable.toBitmap
 import com.follow.clash.common.GlobalState
 import com.follow.clash.models.SharedState
+import com.follow.clash.service.models.AccessControlProps
 import com.google.gson.Gson
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -43,6 +45,14 @@ val Application.sharedState: SharedState
         }
     }
 
+// The app list a tunnel was established with, for a UI that restarts under it.
+private const val TUNNEL_ACL_PREFS_KEY = "flutter.tunnelAccessControl"
+
+fun Application.saveTunnelAccessControl(props: AccessControlProps) {
+    getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
+        putString(TUNNEL_ACL_PREFS_KEY, Gson().toJson(props))
+    }
+}
 
 private var lastToast: Toast? = null
 

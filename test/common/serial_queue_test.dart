@@ -51,4 +51,31 @@ void main() {
 
     expect(log, ['outer:begin', 'inner', 'outer:end']);
   });
+
+  test('a task a finished task left behind waits its turn', () async {
+    final queue = SerialQueue();
+    final log = <String>[];
+    final gate = Completer<void>();
+    final timerFired = Completer<void>();
+    Future<void>? late;
+
+    await queue.run(() async {
+      Timer(const Duration(milliseconds: 10), () {
+        late = queue.run(() async => log.add('late'));
+        timerFired.complete();
+      });
+    });
+    final blocking = queue.run(() async {
+      log.add('newer:begin');
+      await gate.future;
+      log.add('newer:end');
+    });
+
+    await timerFired.future;
+    expect(log, ['newer:begin']);
+    gate.complete();
+    await Future.wait([blocking, late!]);
+
+    expect(log, ['newer:begin', 'newer:end', 'late']);
+  });
 }

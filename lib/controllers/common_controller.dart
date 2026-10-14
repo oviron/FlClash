@@ -58,11 +58,11 @@ extension CommonControllerExt on AppController {
       // A tile start or a cold attach: the UI did not see the establish.
       if (system.isAndroid && globalState.tunnelAccessControl == null) {
         unawaited(
-          _ref.read(effectiveAccessControlProvider.future).then((acl) {
+          preferences.getTunnelAccessControl().then((acl) {
             if (globalState.startTime != null) {
               globalState.tunnelAccessControl ??= acl;
             }
-          }, onError: (_) {}),
+          }),
         );
       }
       return;
