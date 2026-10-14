@@ -1,3 +1,7 @@
+## v0.17.0-rc13
+
+- The core library moves to libmihomo-android 0.3.10, with newer `golang.org/x/sys` and `golang.org/x/sync`; mihomo itself stays on v1.19.32, its latest release
+
 ## v0.17.0-rc12
 
 - Switching profiles while the VPN runs now switches everything, as stopping the VPN, switching and starting it again would, but without a gap where traffic leaves around the VPN. Connections opened under the last profile are closed, so nothing goes on through its servers. The tunnel is re-established only when the new profile routes a different set of apps, and the hint to restart the VPN by hand is gone
