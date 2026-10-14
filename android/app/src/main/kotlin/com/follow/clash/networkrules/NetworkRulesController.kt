@@ -6,6 +6,8 @@ import com.follow.clash.RunState
 import com.follow.clash.Service
 import com.follow.clash.State
 import com.follow.clash.common.GlobalState
+import com.follow.clash.appliedProfileId
+import com.follow.clash.saveAppliedProfileId
 import com.follow.clash.common.networkrules.NetworkDecision
 import com.follow.clash.common.networkrules.NetworkResolution
 import com.follow.clash.common.networkrules.NetworkRulesCodec
@@ -18,6 +20,7 @@ import com.follow.clash.common.networkrules.NetworkSnapshot
 import com.follow.clash.common.networkrules.RulesMirror
 import com.follow.clash.service.models.NotificationParams
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,6 +48,8 @@ object NetworkRulesController {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val mutex = Mutex()
+    private val appliedMutex = Mutex()
+    private val hotSeq = AtomicLong()
     private val swapSeq = AtomicLong(0)
 
     private var observer: NetworkRulesObserver? = null
@@ -213,6 +218,7 @@ object NetworkRulesController {
             swapConfig(profileTarget) -> {
                 State.pendingSelectedMap = resolution.selectedMap
                 State.pendingProfileName = resolution.profileName
+                GlobalState.application.saveAppliedProfileId(profileTarget)
             }
         }
     }
@@ -230,9 +236,39 @@ object NetworkRulesController {
         val envelope = Gson().toJson(
             mapOf("id" to "nr-$profileId", "method" to "setupConfig", "data" to data),
         )
-        val result = Service.invokeAction(envelope, null)
-        if (result.isFailure) {
-            GlobalState.log("network-rules: hot apply failed for profile $profileId: ${result.exceptionOrNull()}")
+        // Handled in the callback, not here: a network change cancels this
+        // coroutine, and loading geo data can outlast any timeout.
+        val seq = hotSeq.incrementAndGet()
+        val sent = Service.invokeAction(envelope) { reply ->
+            scope.launch { onHotApplied(seq, profileId, profileName, reply) }
+        }
+        if (sent.isFailure) {
+            GlobalState.log("network-rules: hot apply failed for profile $profileId: ${sent.exceptionOrNull()}")
+        }
+    }
+
+    private suspend fun onHotApplied(seq: Long, profileId: Long, profileName: String?, reply: String) {
+        // code 0 with empty data is the core's success for setupConfig.
+        val message = runCatching { JsonParser.parseString(reply).asJsonObject }.getOrNull()
+            ?.takeIf { it.get("code")?.asInt == 0 }?.get("data")?.asString
+        val applied = profileId.takeIf { message == "" }
+        appliedMutex.withLock {
+            // Replies may arrive out of order; a newer switch's reply settles this one.
+            if (seq != hotSeq.get()) return
+            // As SetupController does: any error leaves the core on its default config,
+            // and the core keeps the last profile's connections open across configs.
+            val app = GlobalState.application
+            val previous = app.appliedProfileId()
+            if (applied != previous) app.saveAppliedProfileId(applied)
+            if (previous != null && previous != applied) {
+                val close = Gson().toJson(
+                    mapOf("id" to "nr-close-$profileId", "method" to "closeAllConnections", "data" to ""),
+                )
+                Service.invokeAction(close, null)
+            }
+        }
+        if (applied == null) {
+            GlobalState.log("network-rules: core did not take profile $profileId: $message")
             return
         }
         // Retitle the notification only after the core accepted the config; on

@@ -921,9 +921,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "restartCoreTip": MessageLookupByLibrary.simpleMessage(
       "Вы уверены, что хотите перезапустить ядро?",
     ),
-    "restartVpnToApply": MessageLookupByLibrary.simpleMessage(
-      "Перезапустите VPN чтобы применить новый список приложений.",
-    ),
     "restore": MessageLookupByLibrary.simpleMessage("Восстановить"),
     "restoreAllData": MessageLookupByLibrary.simpleMessage(
       "Восстановить все данные",

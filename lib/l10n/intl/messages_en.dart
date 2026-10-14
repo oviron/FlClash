@@ -894,9 +894,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "restartCoreTip": MessageLookupByLibrary.simpleMessage(
       "Are you sure you want to restart the core?",
     ),
-    "restartVpnToApply": MessageLookupByLibrary.simpleMessage(
-      "Restart VPN to apply the new app list.",
-    ),
     "restore": MessageLookupByLibrary.simpleMessage("Restore"),
     "restoreAllData": MessageLookupByLibrary.simpleMessage("Restore all data"),
     "restoreException": MessageLookupByLibrary.simpleMessage(

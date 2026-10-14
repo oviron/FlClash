@@ -55,8 +55,29 @@ extension CommonControllerExt on AppController {
         _captureHealthBaseline(startTime);
         addCheckIp();
       }
+      // A start request may find the tunnel up, so only a new one is read.
+      if (system.isAndroid &&
+          globalState.tunnelAccessControlStart != startTime) {
+        globalState.tunnelAccessControlStart = startTime;
+        globalState.tunnelAccessControl = null;
+        unawaited(
+          preferences
+              .getTunnelAccessControl()
+              .then((acl) async {
+                if (globalState.tunnelAccessControlStart != startTime) return;
+                globalState.tunnelAccessControl = acl;
+                // An apply that landed before this read had nothing to compare.
+                checkTunnelApps(
+                  await _ref.read(effectiveAccessControlProvider.future),
+                );
+              })
+              .catchError((_) {}),
+        );
+      }
       return;
     }
+    globalState.tunnelAccessControl = null;
+    globalState.tunnelAccessControlStart = null;
     globalState.stopUpdateTasks();
     if (wasStart) {
       _ref.read(trafficsProvider.notifier).clear();

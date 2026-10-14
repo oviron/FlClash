@@ -364,7 +364,6 @@
   "hoursAgo": "{count}時間前",
   "minutesAgo": "{count}分前",
   "justNow": "たった今",
-  "restartVpnToApply": "新しいアプリリストを適用するには VPN を再起動してください。",
   "vpnReestablishing": "変更を適用するため再接続しています。アクティブな接続が一瞬途切れます。",
   "unknownNetworkError": "不明なネットワークエラー",
   "restoreException": "復元例外",

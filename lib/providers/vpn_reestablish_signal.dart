@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Bumped when the active profile's tun package set changes: VpnService.Builder
+// Bumped when the app list of the applied config changes: VpnService.Builder
 // allow/disallow is baked at establish (not hot-reloadable) and vpnState doesn't
 // reflect a per-profile ACL change, so VpnManager watches this to re-establish.
 class VpnReestablishSignal extends Notifier<int> {

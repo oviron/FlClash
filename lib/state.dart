@@ -48,6 +48,12 @@ class GlobalState {
   UpdateTasks tasks = [];
   SetupState? lastSetupState;
   VpnState? lastVpnState;
+  // Baked into the tunnel at establish and written by the Android side, keyed
+  // by the tunnel's start time; null while down.
+  AccessControlProps? tunnelAccessControl;
+  DateTime? tunnelAccessControlStart;
+  // Config applies run one at a time, so a slower one cannot land after a newer one.
+  final setupQueue = SerialQueue();
 
   // Counter reading taken when the tunnel came up, so usage can be reported for
   // this session. Null after a cold start into a running tunnel — the baseline

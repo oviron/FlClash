@@ -53,6 +53,8 @@ extension SetupControllerExt on AppController {
         );
       }
     } else {
+      globalState.tunnelAccessControl = null;
+      globalState.tunnelAccessControlStart = null;
       await globalState.handleStop();
       _ref.read(trafficsProvider.notifier).clear();
       _ref.read(totalTrafficProvider.notifier).value = const Traffic();
@@ -60,6 +62,14 @@ extension SetupControllerExt on AppController {
       addCheckIp();
       // Last, so a reconnecting core does not stall the stop UI; a start waits for it.
       await coreController.resetTraffic();
+    }
+  }
+
+  // The tunnel keeps the app list it was established with; another needs a new one.
+  void checkTunnelApps(AccessControlProps current) {
+    final tunnel = globalState.tunnelAccessControl;
+    if (tunnel != null && !tunnel.sameTunnelApps(current)) {
+      _ref.read(vpnReestablishSignalProvider.notifier).bump();
     }
   }
 
@@ -268,14 +278,15 @@ extension SetupControllerExt on AppController {
     }
   }
 
-  Future<void> _setupConfig([Future<void> Function()? onConfigApplied]) async {
-    globalState.bootstrappingConfig = true;
-    try {
-      await _setupConfigInner(onConfigApplied);
-    } finally {
-      globalState.bootstrappingConfig = false;
-    }
-  }
+  Future<void> _setupConfig([Future<void> Function()? onConfigApplied]) =>
+      globalState.setupQueue.run(() async {
+        globalState.bootstrappingConfig = true;
+        try {
+          await _setupConfigInner(onConfigApplied);
+        } finally {
+          globalState.bootstrappingConfig = false;
+        }
+      });
 
   Future<void> _setupConfigInner([
     Future<void> Function()? onConfigApplied,
@@ -296,11 +307,12 @@ extension SetupControllerExt on AppController {
     final realPatchConfig = patchConfig.copyWith.tun(enable: realTunEnable);
     final setupState = await _ref.read(setupStateProvider(profile?.id).future);
     globalState.lastSetupState = setupState;
+    AccessControlProps? accessControl;
     if (system.isAndroid) {
       // Per-app ACL is off-graph (getConfig) and baked only at establish; resolve
       // it before snapshotting sharedState, or a just-edited (invalidated) set
       // reads a stale `.value` and the tunnel re-establishes with the old list.
-      await _ref.read(effectiveAccessControlProvider.future);
+      accessControl = await _ref.read(effectiveAccessControlProvider.future);
       globalState.lastVpnState = _ref.read(vpnStateProvider);
       unawaited(preferences.saveShareState(this.sharedState));
     }
@@ -313,6 +325,7 @@ extension SetupControllerExt on AppController {
       systemProxy: _ref.read(vpnSettingProvider).systemProxy,
     );
     // Before materializing: a subscription's cached copy is its failover.
+    var applied = false;
     final releaseCache = profile == null
         ? () {}
         : await reserveProviderFiles(profile.id, config);
@@ -329,10 +342,23 @@ extension SetupControllerExt on AppController {
         setupState: setupState,
         params: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
       );
+      applied = message.isEmpty;
+      // Read after the reply, as a background switch may have landed meanwhile.
+      // Any error leaves the core on its default config.
+      final previousProfileId = await preferences.getAppliedProfileId();
+      final appliedProfileId = applied ? profile?.id : null;
+      if (appliedProfileId != previousProfileId) {
+        await preferences.setAppliedProfileId(appliedProfileId);
+      }
+      // The core keeps open connections across configs, so the last profile's
+      // would go on through its servers.
+      if (previousProfileId != null && previousProfileId != appliedProfileId) {
+        coreController.closeAllConnections();
+      }
       if (message.isNotEmpty) {
         if (!isGeoDataWarning(message)) throw message;
-        // A GeoSite/GeoIP rule couldn't resolve (missing/stale/corrupt database);
-        // the rest of the config still applied, so heal the geo data in the
+        // A GeoSite/GeoIP rule couldn't resolve (missing/stale/corrupt database)
+        // and the core fell back to its default; heal the geo data in the
         // background instead of alarming the user with the raw core error.
         commonPrint.log(
           'geo data warning on setup: $message',
@@ -341,11 +367,17 @@ extension SetupControllerExt on AppController {
         unawaited(seedGeositeIfMissing().then((_) => updateGeoDatabases()));
       }
       // A Geo error leaves the core on a config other than this one.
-      if (profile != null && message.isEmpty) {
+      if (profile != null && applied) {
         await _claimProviderFiles(profile.id, config);
       }
     } finally {
       releaseCache();
+    }
+    // A profile switched meanwhile queues an apply of its own, which checks it.
+    if (applied &&
+        accessControl != null &&
+        profile?.id == _ref.read(currentProfileIdProvider)) {
+      checkTunnelApps(accessControl);
     }
     await onConfigApplied?.call();
     addCheckIp();

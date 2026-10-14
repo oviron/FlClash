@@ -159,34 +159,49 @@ void main() {
     });
   });
 
-  group('tunPackagesChanged', () {
-    test('identical documents are unchanged', () {
-      const doc = 'tun:\n  include-package:\n    - com.a\n    - com.b\n';
-      expect(tunPackagesChanged(doc, doc), isFalse);
+  group('sameTunnelApps', () {
+    const accept = AccessControlProps(
+      enable: true,
+      mode: AccessControlMode.acceptSelected,
+      acceptList: ['com.a', 'com.b'],
+    );
+
+    test('order, sort and filters are not a change', () {
+      final other = accept.copyWith(
+        acceptList: ['com.b', 'com.a'],
+        sort: AccessSortType.name,
+        isFilterSystemApp: false,
+      );
+      expect(accept.sameTunnelApps(other), isTrue);
     });
 
-    test('reordering the same set is not a change', () {
-      const a = 'tun:\n  include-package:\n    - com.a\n    - com.b\n';
-      const b = 'tun:\n  include-package:\n    - com.b\n    - com.a\n';
-      expect(tunPackagesChanged(a, b), isFalse);
+    test('the inactive list is not a change', () {
+      expect(
+        accept.sameTunnelApps(accept.copyWith(rejectList: ['com.c'])),
+        isTrue,
+      );
     });
 
-    test('adding an included package is a change', () {
-      const a = 'tun:\n  include-package:\n    - com.a\n';
-      const b = 'tun:\n  include-package:\n    - com.a\n    - com.b\n';
-      expect(tunPackagesChanged(a, b), isTrue);
+    test('lists do not matter while disabled', () {
+      const off = AccessControlProps();
+      expect(off.sameTunnelApps(off.copyWith(rejectList: ['com.a'])), isTrue);
     });
 
-    test('dropping to no keys (all mode) is a change', () {
-      const a = 'tun:\n  exclude-package:\n    - com.a\n';
-      const b = 'tun:\n  enable: true\n';
-      expect(tunPackagesChanged(a, b), isTrue);
+    test('another app set is a change', () {
+      expect(
+        accept.sameTunnelApps(accept.copyWith(acceptList: ['com.a'])),
+        isFalse,
+      );
     });
 
-    test('switching include to exclude is a change', () {
-      const a = 'tun:\n  include-package:\n    - com.a\n';
-      const b = 'tun:\n  exclude-package:\n    - com.a\n';
-      expect(tunPackagesChanged(a, b), isTrue);
+    test('switching the mode or turning it off is a change', () {
+      expect(
+        accept.sameTunnelApps(
+          accept.copyWith(mode: AccessControlMode.rejectSelected),
+        ),
+        isFalse,
+      );
+      expect(accept.sameTunnelApps(accept.copyWith(enable: false)), isFalse);
     });
   });
 

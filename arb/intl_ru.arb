@@ -364,7 +364,6 @@
   "hoursAgo": "{count, plural, one{{count} час назад} few{{count} часа назад} many{{count} часов назад} other{{count} часа назад}}",
   "minutesAgo": "{count, plural, one{{count} минута назад} few{{count} минуты назад} many{{count} минут назад} other{{count} минуты назад}}",
   "justNow": "Только что",
-  "restartVpnToApply": "Перезапустите VPN чтобы применить новый список приложений.",
   "vpnReestablishing": "Переподключение для применения изменения. Активные соединения ненадолго прервутся.",
   "unknownNetworkError": "Неизвестная сетевая ошибка",
   "restoreException": "Ошибка восстановления",

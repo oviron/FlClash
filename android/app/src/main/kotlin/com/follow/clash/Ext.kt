@@ -9,9 +9,11 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.core.graphics.drawable.toBitmap
 import com.follow.clash.common.GlobalState
 import com.follow.clash.models.SharedState
+import com.follow.clash.service.models.AccessControlProps
 import com.google.gson.Gson
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -43,6 +45,28 @@ val Application.sharedState: SharedState
         }
     }
 
+// The app list a tunnel was established with, for a UI that restarts under it.
+private const val TUNNEL_ACL_PREFS_KEY = "flutter.tunnelAccessControl"
+
+fun Application.saveTunnelAccessControl(props: AccessControlProps) {
+    getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
+        putString(TUNNEL_ACL_PREFS_KEY, Gson().toJson(props))
+    }
+}
+
+// The profile the core last took, shared with lib/state.dart.
+private const val APPLIED_PROFILE_PREFS_KEY = "flutter.appliedProfileId"
+
+fun Application.appliedProfileId(): Long? =
+    getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).run {
+        if (contains(APPLIED_PROFILE_PREFS_KEY)) getLong(APPLIED_PROFILE_PREFS_KEY, 0) else null
+    }
+
+fun Application.saveAppliedProfileId(profileId: Long?) {
+    getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).edit {
+        if (profileId == null) remove(APPLIED_PROFILE_PREFS_KEY) else putLong(APPLIED_PROFILE_PREFS_KEY, profileId)
+    }
+}
 
 private var lastToast: Toast? = null
 

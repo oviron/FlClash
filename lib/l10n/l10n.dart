@@ -2949,16 +2949,6 @@ class AppLocalizations {
     return Intl.message('Just now', name: 'justNow', desc: '', args: []);
   }
 
-  /// `Restart VPN to apply the new app list.`
-  String get restartVpnToApply {
-    return Intl.message(
-      'Restart VPN to apply the new app list.',
-      name: 'restartVpnToApply',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Reconnecting to apply the change. Active connections briefly drop.`
   String get vpnReestablishing {
     return Intl.message(

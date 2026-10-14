@@ -121,6 +121,17 @@ extension AccessControlPropsExt on AccessControlProps {
     AccessControlMode.acceptSelected => copyWith(acceptList: value),
     AccessControlMode.rejectSelected => copyWith(rejectList: value),
   };
+
+  // Only these reach VpnService.Builder; order, sort and filters are UI-only.
+  bool sameTunnelApps(AccessControlProps other) {
+    if (enable != other.enable) return false;
+    if (!enable) return true;
+    final apps = currentList.toSet();
+    final otherApps = other.currentList.toSet();
+    return mode == other.mode &&
+        apps.length == otherApps.length &&
+        apps.containsAll(otherApps);
+  }
 }
 
 // Per-profile memory of each mode's app selection so switching through `all`

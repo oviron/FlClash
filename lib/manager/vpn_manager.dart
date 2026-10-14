@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/manager/effects/vpn_reestablish_effect.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/providers/vpn_reestablish_signal.dart';
 import 'package:fl_clash/state.dart';
@@ -39,6 +40,12 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     ref.listenManual(vpnReestablishSignalProvider, (prev, next) {
       if (prev != next) _schedule(force: true);
     });
+    // A stop drops the pending change and a start takes it in.
+    ref.listenManual(isStartProvider, (prev, next) {
+      if (prev == next) return;
+      _debounce?.cancel();
+      _forceReestablish = false;
+    });
   }
 
   void _schedule({bool force = false}) {
@@ -48,9 +55,16 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     _debounce = Timer(_window, _reestablish);
   }
 
+  // A later apply may have brought the app list back to the tunnel's.
+  bool get _appsChanged {
+    final tunnel = globalState.tunnelAccessControl;
+    final current = ref.read(effectiveAccessControlProvider).value;
+    return tunnel == null || current == null || !tunnel.sameTunnelApps(current);
+  }
+
   bool get _dirty => shouldRunVpnReestablish(
     isStarted: ref.read(isStartProvider),
-    forceReestablish: _forceReestablish,
+    forceReestablish: _forceReestablish && _appsChanged,
     currentVpnState: ref.read(vpnStateProvider),
     lastVpnState: globalState.lastVpnState,
   );
@@ -62,6 +76,8 @@ class _VpnContainerState extends ConsumerState<VpnManager> {
     try {
       globalState.showNotifier(appLocalizations.vpnReestablishing);
       await globalState.statusQueue.run(() async {
+        // A stop queued ahead of this one wins.
+        if (!ref.read(isStartProvider)) return;
         await globalState.handleStop();
         await appController.updateStatus(true);
       });
