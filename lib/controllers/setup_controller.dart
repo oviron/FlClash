@@ -1,12 +1,21 @@
 part of '../controller.dart';
 
 extension SetupControllerExt on AppController {
-  void fullSetup() {
+  /// [switched]: another profile replaced a running one, whose connections
+  /// would otherwise go on through its servers.
+  void fullSetup({bool switched = false}) {
     if (!_ref.read(initProvider)) {
       return;
     }
     _ref.read(delayDataSourceProvider.notifier).value = {};
-    applyProfile(force: true);
+    applyProfile(
+      force: true,
+      onConfigApplied: () async {
+        if (switched && _ref.read(isStartProvider)) {
+          coreController.closeAllConnections();
+        }
+      },
+    );
     _ref.read(logsProvider.notifier).value = FixedList(500);
     _ref.read(requestsProvider.notifier).value = FixedList(500);
   }
@@ -33,6 +42,8 @@ extension SetupControllerExt on AppController {
 
   Future<void> _updateStatus(bool isStart, {bool isInit = false}) async {
     if (isStart) {
+      // The tunnel takes the current app list; the next setup only records it.
+      globalState.lastAccessControl = null;
       await coreController.pendingTrafficReset;
       if (!isInit) {
         final res = await tryStartCore(true);
@@ -300,7 +311,15 @@ extension SetupControllerExt on AppController {
       // Per-app ACL is off-graph (getConfig) and baked only at establish; resolve
       // it before snapshotting sharedState, or a just-edited (invalidated) set
       // reads a stale `.value` and the tunnel re-establishes with the old list.
-      await _ref.read(effectiveAccessControlProvider.future);
+      final accessControl = await _ref.read(
+        effectiveAccessControlProvider.future,
+      );
+      // Another profile, a subscription update or an edit changed the app list.
+      final previous = globalState.lastAccessControl;
+      globalState.lastAccessControl = accessControl;
+      if (previous != null && previous != accessControl) {
+        _ref.read(vpnReestablishSignalProvider.notifier).bump();
+      }
       globalState.lastVpnState = _ref.read(vpnStateProvider);
       unawaited(preferences.saveShareState(this.sharedState));
     }

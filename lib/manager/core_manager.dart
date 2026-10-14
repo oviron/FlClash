@@ -28,6 +28,7 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     with CoreEventListener {
   static const _seenIdsCapacity = 10000;
   final LinkedHashSet<String> _seenIds = LinkedHashSet<String>();
+  int? _profileId;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,12 @@ class _CoreContainerState extends ConsumerState<CoreManager>
     ref.listenManual(
       currentSetupStateProvider.select((state) => state?.profileId),
       (prev, next) {
-        if (prev != next) appController.fullSetup();
+        if (prev == next) return;
+        // The setup state of the next profile may be null while it loads.
+        final switched =
+            _profileId != null && next != null && next != _profileId;
+        if (next != null) _profileId = next;
+        appController.fullSetup(switched: switched);
       },
     );
     ref.listenManual(updateParamsProvider, (prev, next) {

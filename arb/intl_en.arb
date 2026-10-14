@@ -364,7 +364,6 @@
   "hoursAgo": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
   "minutesAgo": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
   "justNow": "Just now",
-  "restartVpnToApply": "Restart VPN to apply the new app list.",
   "vpnReestablishing": "Reconnecting to apply the change. Active connections briefly drop.",
   "unknownNetworkError": "Unknown network error",
   "restoreException": "Recovery exception",

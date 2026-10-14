@@ -670,9 +670,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "DNS连接跟随rules,需配置proxy-server-nameserver",
     ),
     "restartCoreTip": MessageLookupByLibrary.simpleMessage("您确定要重启核心吗？"),
-    "restartVpnToApply": MessageLookupByLibrary.simpleMessage(
-      "请重启 VPN 以应用新的应用列表。",
-    ),
     "restore": MessageLookupByLibrary.simpleMessage("恢复"),
     "restoreAllData": MessageLookupByLibrary.simpleMessage("恢复所有数据"),
     "restoreException": MessageLookupByLibrary.simpleMessage("恢复异常"),

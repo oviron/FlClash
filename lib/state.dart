@@ -48,6 +48,8 @@ class GlobalState {
   UpdateTasks tasks = [];
   SetupState? lastSetupState;
   VpnState? lastVpnState;
+  // The app list the tunnel runs with: baked at establish, changed only by a new one.
+  AccessControlProps? lastAccessControl;
 
   // Counter reading taken when the tunnel came up, so usage can be reported for
   // this session. Null after a cold start into a running tunnel — the baseline

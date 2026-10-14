@@ -364,7 +364,6 @@
   "hoursAgo": "{count} 小时前",
   "minutesAgo": "{count} 分钟前",
   "justNow": "刚刚",
-  "restartVpnToApply": "请重启 VPN 以应用新的应用列表。",
   "vpnReestablishing": "正在重新连接以应用更改。当前连接会短暂中断。",
   "unknownNetworkError": "未知网络错误",
   "restoreException": "恢复异常",
