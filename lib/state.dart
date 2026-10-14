@@ -48,8 +48,10 @@ class GlobalState {
   UpdateTasks tasks = [];
   SetupState? lastSetupState;
   VpnState? lastVpnState;
-  // Baked into the tunnel at establish, changed only by a new one; null while down.
+  // Baked into the tunnel at establish and written by the Android side, keyed
+  // by the tunnel's start time; null while down.
   AccessControlProps? tunnelAccessControl;
+  DateTime? tunnelAccessControlStart;
   // The profile the core last took; null after a failed apply left it on its
   // default. Kept on disk, as the core outlives a restart of the UI process.
   int? appliedProfileId;

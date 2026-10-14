@@ -42,21 +42,19 @@ extension SetupControllerExt on AppController {
         if (!_ref.read(initProvider)) {
           return;
         }
-        await recordTunnelAccessControl();
         await globalState.handleStart([updateRunTime, updateTraffic]);
         applyProfileDebounce(force: true, silence: true);
       } else {
         globalState.needInitStatus = false;
         await applyProfile(
           force: true,
-          onConfigApplied: () async {
-            await recordTunnelAccessControl();
-            await globalState.handleStart([updateRunTime, updateTraffic]);
-          },
+          onConfigApplied: () =>
+              globalState.handleStart([updateRunTime, updateTraffic]),
         );
       }
     } else {
       globalState.tunnelAccessControl = null;
+      globalState.tunnelAccessControlStart = null;
       await globalState.handleStop();
       _ref.read(trafficsProvider.notifier).clear();
       _ref.read(totalTrafficProvider.notifier).value = const Traffic();
@@ -65,14 +63,6 @@ extension SetupControllerExt on AppController {
       // Last, so a reconnecting core does not stall the stop UI; a start waits for it.
       await coreController.resetTraffic();
     }
-  }
-
-  // Taken as the tunnel comes up: establish bakes in the app list it has then.
-  Future<void> recordTunnelAccessControl() async {
-    if (!system.isAndroid) return;
-    globalState.tunnelAccessControl = await _ref.read(
-      effectiveAccessControlProvider.future,
-    );
   }
 
   Future<bool> needSetup() async {
