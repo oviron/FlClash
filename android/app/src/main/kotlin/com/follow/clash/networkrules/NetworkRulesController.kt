@@ -21,7 +21,6 @@ import com.follow.clash.common.networkrules.RulesMirror
 import com.follow.clash.service.models.NotificationParams
 import com.google.gson.Gson
 import com.google.gson.JsonParser
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,7 +29,6 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
 import java.util.concurrent.atomic.AtomicLong
 
@@ -50,6 +48,7 @@ object NetworkRulesController {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val mutex = Mutex()
+    private val appliedMutex = Mutex()
     private val swapSeq = AtomicLong(0)
 
     private var observer: NetworkRulesObserver? = null
@@ -236,31 +235,36 @@ object NetworkRulesController {
         val envelope = Gson().toJson(
             mapOf("id" to "nr-$profileId", "method" to "setupConfig", "data" to data),
         )
-        val reply = CompletableDeferred<String>()
-        val sent = Service.invokeAction(envelope) { reply.complete(it) }
+        // Handled in the callback, not here: a network change cancels this
+        // coroutine, and loading geo data can outlast any timeout.
+        val sent = Service.invokeAction(envelope) { reply ->
+            scope.launch { onHotApplied(profileId, profileName, reply) }
+        }
         if (sent.isFailure) {
             GlobalState.log("network-rules: hot apply failed for profile $profileId: ${sent.exceptionOrNull()}")
-            return
         }
-        val message = withTimeoutOrNull(APPLY_WAIT_MS) { reply.await() }?.let { json ->
-            // code 0 with empty data is the core's success for setupConfig.
-            runCatching { JsonParser.parseString(json).asJsonObject }.getOrNull()
-                ?.takeIf { it.get("code")?.asInt == 0 }?.get("data")?.asString
-        }
-        // As SetupController does: any error leaves the core on its default config,
-        // and the core keeps the last profile's connections open across configs.
+    }
+
+    private suspend fun onHotApplied(profileId: Long, profileName: String?, reply: String) {
+        // code 0 with empty data is the core's success for setupConfig.
+        val message = runCatching { JsonParser.parseString(reply).asJsonObject }.getOrNull()
+            ?.takeIf { it.get("code")?.asInt == 0 }?.get("data")?.asString
         val applied = profileId.takeIf { message == "" }
-        val app = GlobalState.application
-        val previous = app.appliedProfileId()
-        if (applied != previous) app.saveAppliedProfileId(applied)
-        if (previous != null && previous != applied) {
-            val close = Gson().toJson(
-                mapOf("id" to "nr-close-$profileId", "method" to "closeAllConnections", "data" to ""),
-            )
-            Service.invokeAction(close, null)
+        appliedMutex.withLock {
+            // As SetupController does: any error leaves the core on its default config,
+            // and the core keeps the last profile's connections open across configs.
+            val app = GlobalState.application
+            val previous = app.appliedProfileId()
+            if (applied != previous) app.saveAppliedProfileId(applied)
+            if (previous != null && previous != applied) {
+                val close = Gson().toJson(
+                    mapOf("id" to "nr-close-$profileId", "method" to "closeAllConnections", "data" to ""),
+                )
+                Service.invokeAction(close, null)
+            }
         }
         if (applied == null) {
-            GlobalState.log("network-rules: core did not take profile $profileId: ${message ?: "no reply"}")
+            GlobalState.log("network-rules: core did not take profile $profileId: $message")
             return
         }
         // Retitle the notification only after the core accepted the config; on
@@ -358,6 +362,5 @@ object NetworkRulesController {
     private const val CACHE_DIR = "network-rules-cache"
     private const val CONFIG_FILE = "config.yaml"
     private const val GUARD_MS = 6000L
-    private const val APPLY_WAIT_MS = 30_000L
     private const val NO_NETWORK = Long.MIN_VALUE
 }

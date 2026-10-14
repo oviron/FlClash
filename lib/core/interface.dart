@@ -198,13 +198,14 @@ abstract class CoreHandlerInterface with CoreInterface {
     return res ?? Result.success({});
   }
 
+  // No reply leaves it unknown which config the core is on, so it is not a success.
   @override
   Future<String> setupConfig(SetupParams setupParams) async {
     return await _invoke<String>(
           method: ActionMethod.setupConfig,
           data: json.encode(setupParams),
         ) ??
-        '';
+        'No reply from the core';
   }
 
   @override
