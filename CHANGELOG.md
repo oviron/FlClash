@@ -1,3 +1,9 @@
+## v0.17.0-rc11
+
+- With the regular build and the dev build installed side by side, Backup and Restore offers to transfer everything from the other one: profiles, settings, the provider cache, Geo databases and the device ID. The other build asks for confirmation before it hands anything over, and only answers a build signed by the same developer. Everything in the receiving build is replaced, so nothing has to be downloaded again
+
+- Restoring a backup made by a newer version of the app is refused instead of breaking the database
+
 ## v0.17.0-rc10
 
 - Testing delays now re-picks at once. An unpinned url-test group moves to its fastest node as soon as its test finishes, instead of keeping a slower one until a later health check beats it by more than the tolerance. The test measures the way the core picks: nested groups first, each under its own test URL, so a group measures the route it will actually use. A pin stays, including one set while the test runs, and a reply outside the group's `expected-status` counts as a failure
