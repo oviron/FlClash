@@ -1,3 +1,11 @@
+## v0.17.0-rc12
+
+- Switching profiles while the VPN runs now switches everything, as stopping the VPN, switching and starting it again would, but without a gap where traffic leaves around the VPN. Connections opened under the last profile are closed, so nothing goes on through its servers. The tunnel is re-established only when the new profile routes a different set of apps, and the hint to restart the VPN by hand is gone
+
+- A background switch by Network Rules does the same: it closes the last profile's connections once the core took the new config, and re-applying the same profile keeps them
+
+- Config applies run one at a time, so a slower one can no longer land after a newer one; editing a profile's app list reconnects the tunnel once instead of twice
+
 ## v0.17.0-rc11
 
 - With the regular build and the dev build installed side by side, Backup and Restore offers to transfer everything from the other one: profiles, settings, the provider cache, Geo databases and the device ID. The other build asks for confirmation before it hands anything over, and only answers a build signed by the same developer. Everything in the receiving build is replaced, so nothing has to be downloaded again
