@@ -1,3 +1,29 @@
+## v0.17.0
+
+The first stable release since v0.16.0. The highlights are below; the rc sections that follow list every change.
+
+- Switching profiles while the VPN runs switches everything, without a gap where traffic leaves around the VPN. Connections opened under the last profile are closed, and the tunnel is re-established only when the new profile routes a different set of apps. Network Rules switch the same way in the background
+
+- The tunnel comes back on its own. If the VPN process dies, it restarts in under a second; if Android kills the whole app, a background job brings it back within 15 minutes; after an app update it comes back at once. At most three restarts per 10 minutes, and a stop by the user, by Network Rules or by revoking the VPN always wins
+
+- VPN start and stop run in the order they were made, and a failed start is reported as a failure instead of a tunnel that looks connected but carries nothing
+
+- Testing delays re-picks at once: an unpinned url-test group moves to its fastest node when its test finishes, nested groups are measured under their own test URLs, and a pin survives the test. The Proxies and Dashboard screens follow the core's own picks, and a url-test or fallback group shows whether it picks for itself or has a node pinned
+
+- Subscriptions and rule sets that several profiles use are downloaded and stored once
+
+- New: a DNS queries page under Tools, a home screen widget, an IP quality check on the Network detection card, a User-Agent setting, country flags and an app filter in Connections, and rule presets on the Global rules screen. With the regular and the dev build installed side by side, Backup and Restore can transfer everything from one to the other
+
+- Override DNS replaces only the keys you pick instead of the profile's whole `dns` block
+
+- Targets Android 17 (API 37). LAN traffic needs the Nearby devices permission there, and the app asks for it when the VPN starts
+
+- Security: TLS certificate checks are no longer switched off app-wide, and subscription URLs and tokens stay out of the log and error messages
+
+- Battery: the core is no longer suspended in Doze, `find-process-mode` defaults to `strict`, and the notification and watchdog timers stop with the screen off or the app in the background
+
+- Core: libmihomo-android 0.3.11 with mihomo v1.19.32, built with Go 1.27; `libclash.so` is about 7 MB smaller per ABI than in rc13
+
 ## v0.17.0-rc14
 
 - After an app update the VPN comes back at once if it was on. An update stops the app, and until now the tunnel returned only on the next background check, up to 15 minutes later, unless autostart or Network Rules restarted it
