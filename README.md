@@ -4,7 +4,7 @@
 
 Android `mihomo` client. Open source, no ads, no telemetry.
 
-A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash). **Android-only**, `metacubex/mihomo v1.19.32` direct via 100% JNI, no REST controller. The mihomo bridge lives in [oviron/libmihomo-android](https://github.com/oviron/libmihomo-android). FlClash consumes it as a SHA-256 + GPG-pinned `.aar` download, no C/C++/Go code in this repo.
+A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash). **Android-only**, `metacubex/mihomo v1.19.33` direct via 100% JNI, no REST controller. The mihomo bridge lives in [oviron/libmihomo-android](https://github.com/oviron/libmihomo-android). FlClash consumes it as a SHA-256 + GPG-pinned `.aar` download, no C/C++/Go code in this repo.
 
 <p align="center">
     <img alt="mobile" src="snapshots/mobile.gif" width="45%">
@@ -21,7 +21,7 @@ A maintained fork of [chen08209/FlClash](https://github.com/chen08209/FlClash). 
 - **Network Rules:** automatic VPN on/off based on the current network (WifiNamed / AnyWifi / AnyCellular).
 - **Diagnostics:** a history of the DNS queries the core resolved, and an on-demand IP quality check against five HTTPS services.
 - **Targets Android 17 (API 37):** asks for local network access at VPN start so LAN traffic keeps working.
-- **Backend:** `metacubex/mihomo v1.19.32` direct, with CMfA-style patterns: type-explicit providers API, async-callback path, push subscription for connections/log, INNER-bypass via Dart pre-process.
+- **Backend:** `metacubex/mihomo v1.19.33` direct, with CMfA-style patterns: type-explicit providers API, async-callback path, push subscription for connections/log, INNER-bypass via Dart pre-process.
 - **Dashboard checkIp probe:** JNI `WithSpecialProxy` bypasses user rules so the real exit-IP shows even on whitelist profiles with `MATCH,REJECT`.
 - Stability stack: wake/Wi-Fi locks, idempotent module loader, defensive Go type-assertions, MATCH-rule guard for upstream #1959, Global proxy watchdog.
 
