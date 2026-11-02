@@ -721,5 +721,6 @@
   "libRunning": "Running",
   "libNotAttached": "Selected {version} did not attach",
   "libRunningUnknown": "Cannot tell",
-  "libCore": "Core {version}"
+  "libCore": "Core {version}",
+  "libLoadFailed": "Selected {version} failed to load"
 }

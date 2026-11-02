@@ -721,5 +721,6 @@
   "libRunning": "動作中",
   "libNotAttached": "選択した {version} を読み込めませんでした",
   "libRunningUnknown": "特定できません",
-  "libCore": "コア {version}"
+  "libCore": "コア {version}",
+  "libLoadFailed": "選択した {version} の読み込みに失敗しました"
 }

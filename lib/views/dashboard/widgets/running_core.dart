@@ -7,22 +7,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Only for a downloaded core: its version while it runs, an error card when
-// another core answers instead. The bundled default needs no note.
+// another core answers instead or the selection failed to load. The bundled
+// default needs no note.
 class RunningCoreNote extends ConsumerWidget {
   const RunningCoreNote({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final running = ref.watch(runningCoreProvider).value;
-    final selected = running?.selectedDir;
-    if (running == null || selected == null) return const SizedBox.shrink();
+    if (running == null) return const SizedBox.shrink();
     final scheme = context.colorScheme;
-    final version = libVersionFromDir(selected);
-    if (!running.selectionFailed) {
+    final problem = runningCoreProblem(running);
+    if (problem == null) {
+      final selected = running.selectedDir;
+      if (selected == null) return const SizedBox.shrink();
       return Padding(
         padding: const EdgeInsets.only(top: 6),
         child: Text(
-          appLocalizations.libCore(version),
+          appLocalizations.libCore(libVersionFromDir(selected)),
           style: context.textTheme.labelSmall?.copyWith(
             color: scheme.onSurfaceVariant,
           ),
@@ -32,6 +34,9 @@ class RunningCoreNote extends ConsumerWidget {
     final bundled =
         (ref.watch(libraryBundledVersionsProvider).value ??
         const {})[kLibMihomo];
+    final detailStyle = context.textTheme.bodyMedium?.copyWith(
+      color: scheme.onSurfaceVariant,
+    );
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: CommonCard(
@@ -50,7 +55,7 @@ class RunningCoreNote extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      appLocalizations.libNotAttached(version),
+                      problem.title,
                       style: context.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -58,13 +63,26 @@ class RunningCoreNote extends ConsumerWidget {
                     Text(
                       '${appLocalizations.libRunning}: '
                       '${runningCoreLabel(running, bundled)}',
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
+                      style: detailStyle,
                     ),
+                    if (problem.detail != null)
+                      Text(
+                        problem.detail!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: detailStyle,
+                      ),
                   ],
                 ),
               ),
+              if (running.loadFailure != null)
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  onPressed: () => ref
+                      .read(libraryControllerProvider.notifier)
+                      .dismissLoadFailure(kLibMihomo),
+                ),
             ],
           ),
         ),

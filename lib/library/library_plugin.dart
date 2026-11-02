@@ -84,6 +84,9 @@ class LibraryPlugin {
   Future<void> clearActive(String label) =>
       _channel.invokeMethod(LibraryMethod.clearActive, {'label': label});
 
+  Future<void> clearLoadFailure(String label) =>
+      _channel.invokeMethod(LibraryMethod.clearLoadFailure, {'label': label});
+
   // Null when :remote did not answer.
   Future<RunningCore?> runningCore() async {
     final raw = await _channel.invokeMethod<String>(LibraryMethod.runningCore);

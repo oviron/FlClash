@@ -92,6 +92,46 @@ void main() {
       expect(rc('/f/libs/mihomo-v1', ['/other']).selectionFailed, isTrue);
     });
 
+    test('a selection that failed to load is reported next to bundled', () {
+      final r = RunningCore.fromMap({
+        'selected': null,
+        'cores': ['bundled'],
+        'failed': {
+          'dir': '/f/libs/mihomo-v0.3.13-oviron.1',
+          'reason': 'dlopen failed: libclash.so is too small',
+          'at': 1793620800000,
+        },
+      });
+      expect(r.source, RunningCoreSource.bundled);
+      expect(r.selectionFailed, isFalse);
+      final failure = r.loadFailure!;
+      expect(failure.version, 'v0.3.13-oviron.1');
+      expect(failure.reason, 'dlopen failed: libclash.so is too small');
+      expect(failure.at, DateTime.fromMillisecondsSinceEpoch(1793620800000));
+    });
+
+    test('no failure record means no load failure', () {
+      expect(rc(null, ['bundled']).loadFailure, isNull);
+      expect(
+        RunningCore.fromMap({
+          'selected': null,
+          'cores': ['bundled'],
+          'failed': null,
+        }).loadFailure,
+        isNull,
+      );
+    });
+
+    test('a failure record without a time still parses', () {
+      final failure = RunningCore.fromMap({
+        'selected': null,
+        'cores': ['bundled'],
+        'failed': {'dir': '/f/libs/mihomo-v1', 'reason': 'missing libclash.so'},
+      }).loadFailure!;
+      expect(failure.reason, 'missing libclash.so');
+      expect(failure.at, isNull);
+    });
+
     test('version comes from the install dir name', () {
       expect(
         libVersionFromDir('/data/user/0/x/files/libs/mihomo-v0.3.12-oviron.1'),

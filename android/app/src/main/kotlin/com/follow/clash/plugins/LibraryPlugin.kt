@@ -31,6 +31,7 @@ private object LibraryMethod {
     const val INSTALL_FROM_AAR = "installFromAar"
     const val SET_ACTIVE = "setActive"
     const val CLEAR_ACTIVE = "clearActive"
+    const val CLEAR_LOAD_FAILURE = "clearLoadFailure"
     const val DELETE_INSTALLED = "deleteInstalled"
     const val RUNNING_CORE = "runningCore"
 }
@@ -85,6 +86,11 @@ class LibraryPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
 
             LibraryMethod.CLEAR_ACTIVE -> {
                 ActiveLibs.setActive(applicationContext, call.argument<String>("label")!!, null)
+                result.success(true)
+            }
+
+            LibraryMethod.CLEAR_LOAD_FAILURE -> {
+                ActiveLibs.clearFailure(applicationContext, call.argument<String>("label")!!)
                 result.success(true)
             }
 
