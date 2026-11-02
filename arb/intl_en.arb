@@ -717,5 +717,9 @@
     }
   },
   "transferSuccess": "Data transferred",
-  "backupFromNewerApp": "The backup comes from a newer version of the app; update this one first"
+  "backupFromNewerApp": "The backup comes from a newer version of the app; update this one first",
+  "libRunning": "Running",
+  "libNotAttached": "Selected {version} did not attach",
+  "libRunningUnknown": "Cannot tell",
+  "libCore": "Core {version}"
 }

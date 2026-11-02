@@ -717,5 +717,9 @@
     }
   },
   "transferSuccess": "データを移行しました",
-  "backupFromNewerApp": "このバックアップは新しいバージョンのアプリで作成されています。先にこのアプリを更新してください"
+  "backupFromNewerApp": "このバックアップは新しいバージョンのアプリで作成されています。先にこのアプリを更新してください",
+  "libRunning": "動作中",
+  "libNotAttached": "選択した {version} を読み込めませんでした",
+  "libRunningUnknown": "特定できません",
+  "libCore": "コア {version}"
 }

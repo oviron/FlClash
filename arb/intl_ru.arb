@@ -717,5 +717,9 @@
     }
   },
   "transferSuccess": "Данные перенесены",
-  "backupFromNewerApp": "Копия сделана более новой версией приложения: сначала обновите это"
+  "backupFromNewerApp": "Копия сделана более новой версией приложения: сначала обновите это",
+  "libRunning": "Работает",
+  "libNotAttached": "Выбранное {version} не подключилось",
+  "libRunningUnknown": "Не удалось определить",
+  "libCore": "Ядро {version}"
 }

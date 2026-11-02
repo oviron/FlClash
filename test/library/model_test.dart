@@ -63,4 +63,40 @@ void main() {
       expect(lib.sizeBytes, 36000000);
     });
   });
+
+  group('RunningCore', () {
+    RunningCore rc(String? selected, List<String> cores) =>
+        RunningCore.fromMap({'selected': selected, 'cores': cores});
+
+    test('the selected copy alone is the running core', () {
+      final r = rc('/f/libs/mihomo-v0.3.13-oviron.1', ['selected']);
+      expect(r.source, RunningCoreSource.selected);
+      expect(r.selectionFailed, isFalse);
+    });
+
+    test('a selected copy next to the APK copy did not attach', () {
+      final r = rc('/f/libs/mihomo-v0.3.12-oviron.1', ['selected', 'bundled']);
+      expect(r.source, RunningCoreSource.bundled);
+      expect(r.selectionFailed, isTrue);
+    });
+
+    test('the bundled default is no failure', () {
+      final r = rc(null, ['bundled']);
+      expect(r.source, RunningCoreSource.bundled);
+      expect(r.selectionFailed, isFalse);
+    });
+
+    test('an unmapped or foreign core is unknown', () {
+      expect(rc('/f/libs/mihomo-v1', []).source, RunningCoreSource.unknown);
+      expect(rc(null, ['/other']).source, RunningCoreSource.unknown);
+      expect(rc('/f/libs/mihomo-v1', ['/other']).selectionFailed, isTrue);
+    });
+
+    test('version comes from the install dir name', () {
+      expect(
+        libVersionFromDir('/data/user/0/x/files/libs/mihomo-v0.3.12-oviron.1'),
+        'v0.3.12-oviron.1',
+      );
+    });
+  });
 }

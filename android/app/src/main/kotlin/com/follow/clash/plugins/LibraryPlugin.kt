@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import com.follow.clash.AarInstaller
 import com.follow.clash.BuildConfig
+import com.follow.clash.Service
 import com.follow.clash.common.ActiveLibs
 import com.follow.clash.common.Components
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -31,6 +32,7 @@ private object LibraryMethod {
     const val SET_ACTIVE = "setActive"
     const val CLEAR_ACTIVE = "clearActive"
     const val DELETE_INSTALLED = "deleteInstalled"
+    const val RUNNING_CORE = "runningCore"
 }
 
 class LibraryPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
@@ -87,6 +89,11 @@ class LibraryPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             }
 
             LibraryMethod.INSTALL_FROM_AAR -> handleInstall(call, result)
+
+            LibraryMethod.RUNNING_CORE -> scope.launch {
+                val info = Service.loadedCore()
+                withContext(Dispatchers.Main) { result.success(info) }
+            }
 
             LibraryMethod.DELETE_INSTALLED -> {
                 val ok = runCatching { File(call.argument<String>("dir")!!).deleteRecursively() }

@@ -5887,6 +5887,41 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Running`
+  String get libRunning {
+    return Intl.message('Running', name: 'libRunning', desc: '', args: []);
+  }
+
+  /// `Selected {version} did not attach`
+  String libNotAttached(Object version) {
+    return Intl.message(
+      'Selected $version did not attach',
+      name: 'libNotAttached',
+      desc: '',
+      args: [version],
+    );
+  }
+
+  /// `Cannot tell`
+  String get libRunningUnknown {
+    return Intl.message(
+      'Cannot tell',
+      name: 'libRunningUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Core {version}`
+  String libCore(Object version) {
+    return Intl.message(
+      'Core $version',
+      name: 'libCore',
+      desc: '',
+      args: [version],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

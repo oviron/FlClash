@@ -237,6 +237,8 @@ class RemoteService : Service(),
             GlobalState.log("requestStop: killing :remote for library swap")
             Process.killProcess(Process.myPid())
         }
+
+        override fun getLoadedCore(): String = LoadedCore.describe(this@RemoteService)
     }
 
     override fun onBind(intent: Intent?): IBinder {

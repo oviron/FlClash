@@ -11,6 +11,18 @@ String _coreTitle(String label) => 'mihomo';
 
 String _sizeLabel(int bytes) => '${(bytes / 1048576).toStringAsFixed(1)} MB';
 
+String runningCoreLabel(RunningCore running, String? bundled) =>
+    switch (running.source) {
+      RunningCoreSource.selected => libVersionFromDir(
+        running.selectedDir ?? '',
+      ),
+      RunningCoreSource.bundled =>
+        bundled != null && bundled.isNotEmpty
+            ? '${appLocalizations.libBundledShort} · v$bundled'
+            : appLocalizations.libBundled,
+      RunningCoreSource.unknown => appLocalizations.libRunningUnknown,
+    };
+
 class LibraryVersionView extends ConsumerWidget {
   const LibraryVersionView({super.key});
 
@@ -91,6 +103,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
     final installedVersions = installed.map((e) => e.version).toSet();
     final bundled =
         (ref.watch(libraryBundledVersionsProvider).value ?? const {})[label];
+    final running = ref.watch(runningCoreProvider).value;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +114,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
           title: Text(appLocalizations.libActive),
           subtitle: Text(
             active != null
-                ? _versionFromDir(active)
+                ? libVersionFromDir(active)
                 : (bundled != null && bundled.isNotEmpty
                       ? '${appLocalizations.libBundledShort} · v$bundled'
                       : appLocalizations.libBundled),
@@ -121,6 +134,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
                   child: Text(appLocalizations.libReset),
                 ),
         ),
+        if (running != null) _runningTile(running, bundled),
         if (installed.isNotEmpty) ...[
           const Divider(height: 0),
           ListHeader(title: appLocalizations.libInstalled),
@@ -159,6 +173,32 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
           ),
         ),
       ],
+    );
+  }
+
+  // What :remote really runs; the selection alone does not say it.
+  Widget _runningTile(RunningCore running, String? bundled) {
+    final failed = running.selectionFailed;
+    final error = Theme.of(context).colorScheme.error;
+    return ListItem(
+      leading: Icon(
+        failed ? Icons.error_outline : Icons.memory,
+        color: failed ? error : null,
+      ),
+      title: Text(appLocalizations.libRunning),
+      subtitle: Text.rich(
+        TextSpan(
+          text: runningCoreLabel(running, bundled),
+          children: [
+            if (failed)
+              TextSpan(
+                text:
+                    '\n${appLocalizations.libNotAttached(libVersionFromDir(running.selectedDir ?? ''))}',
+                style: TextStyle(color: error),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -262,10 +302,4 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
             ),
     );
   }
-}
-
-String _versionFromDir(String dir) {
-  final name = dir.split('/').last;
-  final sep = name.indexOf('-v');
-  return sep > 0 ? 'v${name.substring(sep + 2)}' : name;
 }
