@@ -1,3 +1,13 @@
+## v0.18.0
+
+- A core version picked under Library version now really runs. Until now a downloaded core loaded, but the core built into the app kept serving every connection. This needs libmihomo-android 0.3.13 or later; an older download is reported as not attached
+
+- Library version shows the core that runs next to the selected one. With a downloaded core in use the dashboard names it, and warns when the selected core did not attach
+
+- Switching the core version no longer kills the VPN: the new core is initialized and the tunnel comes back if it was on
+
+- Core: libmihomo-android 0.3.13 with mihomo v1.19.33
+
 ## v0.17.0
 
 The first stable release since v0.16.0. The highlights are below; the rc sections that follow list every change.
