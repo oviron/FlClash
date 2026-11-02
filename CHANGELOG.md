@@ -1,3 +1,7 @@
+## v0.18.1
+
+- A downloaded core that fails to load is no longer swapped for the built-in one in silence. Library version and the dashboard say which version failed, when and why, until you pick a core again or close the note. This covers a broken file, a core that no longer fits the app after an update, and a core whose files are gone
+
 ## v0.18.0
 
 - A core version picked under Library version now really runs. Until now a downloaded core loaded, but the core built into the app kept serving every connection. This needs libmihomo-android 0.3.13 or later; an older download is reported as not attached
