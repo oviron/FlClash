@@ -1,7 +1,10 @@
+import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/library/library_plugin.dart';
 import 'package:fl_clash/library/model.dart';
 import 'package:fl_clash/library/releases_client.dart';
 import 'package:fl_clash/library/swap.dart';
+import 'package:fl_clash/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -24,6 +27,15 @@ final installedLibrariesProvider = FutureProvider<List<InstalledLibrary>>(
 final activeLibraryDirsProvider = FutureProvider<Map<String, String?>>(
   (ref) => LibraryPlugin.instance.activeDirs(),
 );
+
+// Re-read on each connect: a swap or a crash brings up a new :remote.
+final runningCoreProvider = FutureProvider<RunningCore?>((ref) async {
+  final connected = ref.watch(
+    coreStatusProvider.select((s) => s == CoreStatus.connected),
+  );
+  if (!connected) return null;
+  return LibraryPlugin.instance.runningCore();
+});
 
 final libraryReleasesProvider =
     FutureProvider.family<List<LibraryRelease>, String>(
@@ -51,6 +63,8 @@ class LibraryController extends Notifier<void> {
     ref.invalidate(installedLibrariesProvider);
   }
 
+  // Throws when the new :remote does not run the selected core, so the
+  // picker reports it instead of showing the selection as done.
   Future<void> switchTo(
     InstalledLibrary lib, {
     required bool wasRunning,
@@ -63,6 +77,11 @@ class LibraryController extends Notifier<void> {
     await gcInstalledLibraries(lib.label);
     ref.invalidate(installedLibrariesProvider);
     ref.invalidate(activeLibraryDirsProvider);
+    ref.invalidate(runningCoreProvider);
+    final running = await ref.read(runningCoreProvider.future);
+    if (running?.source != RunningCoreSource.selected) {
+      throw appLocalizations.libNotAttached(libVersionFromDir(lib.dir));
+    }
   }
 
   Future<void> resetToBundled(String label, {required bool wasRunning}) async {
@@ -72,6 +91,7 @@ class LibraryController extends Notifier<void> {
       wasRunning: wasRunning,
     );
     ref.invalidate(activeLibraryDirsProvider);
+    ref.invalidate(runningCoreProvider);
   }
 
   Future<void> delete(InstalledLibrary lib) async {

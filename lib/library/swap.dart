@@ -8,7 +8,7 @@ import 'package:fl_clash/plugins/service.dart';
 // .so is loaded by a fresh onCreate. [dir] null means reset to the APK-bundled
 // default (clears the active pointer). When [wasRunning] the VPN is gracefully
 // stopped before the kill (so no foreground tunnel is orphaned) and restarted
-// after the rebind. swapInProgress suppresses the kill's disconnect-as-crash.
+// with the new core. swapInProgress suppresses the kill's disconnect-as-crash.
 Future<void> applyLibrarySelection({
   required String label,
   required String? dir,
@@ -16,26 +16,27 @@ Future<void> applyLibrarySelection({
 }) async {
   final svc = service;
   if (svc == null) return;
+  if (dir == null) {
+    await LibraryPlugin.instance.clearActive(label);
+  } else {
+    await LibraryPlugin.instance.setActive(label, dir);
+  }
+  if (wasRunning) {
+    await appController.updateStatus(false);
+  }
+  // Only the deliberate kill reads as intentional: a crash of the new core
+  // while it starts must still reach the crash handling.
   svc.swapInProgress = true;
   try {
-    if (dir == null) {
-      await LibraryPlugin.instance.clearActive(label);
-    } else {
-      await LibraryPlugin.instance.setActive(label, dir);
-    }
-    if (wasRunning) {
-      await appController.updateStatus(false);
-    }
     await svc.requestStop();
     await Future<void>.delayed(const Duration(milliseconds: 500));
-    // Rebind to a fresh :remote; init() awaits the new connection internally.
-    await svc.init();
-    if (wasRunning) {
-      await appController.updateStatus(true);
-    }
   } finally {
     svc.swapInProgress = false;
   }
+  // The fresh :remote holds no core state: a plain rebind left initClash
+  // unsent and every setupConfig answered "not initialized". Reconnect and
+  // init it the way a core restart does, which also restarts the tunnel.
+  await appController.restartCore(wasRunning);
 }
 
 // Keeps the [keep] newest installed versions per label plus the active one;

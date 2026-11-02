@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/library/model.dart';
 import 'package:fl_clash/plugins/method_names.dart';
@@ -81,6 +83,15 @@ class LibraryPlugin {
 
   Future<void> clearActive(String label) =>
       _channel.invokeMethod(LibraryMethod.clearActive, {'label': label});
+
+  // Null when :remote did not answer.
+  Future<RunningCore?> runningCore() async {
+    final raw = await _channel.invokeMethod<String>(LibraryMethod.runningCore);
+    if (raw == null || raw.isEmpty) return null;
+    return RunningCore.fromMap(
+      (json.decode(raw) as Map).cast<String, dynamic>(),
+    );
+  }
 
   Future<bool> deleteInstalled(String dir) async =>
       await _channel.invokeMethod<bool>(LibraryMethod.deleteInstalled, {

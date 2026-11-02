@@ -17,4 +17,5 @@ interface IRemoteInterface {
     void setEventListener(in IEventInterface event);
     long getRunTime();
     void requestStop();
+    String getLoadedCore();
 }

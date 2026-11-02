@@ -717,5 +717,9 @@
     }
   },
   "transferSuccess": "数据已迁移",
-  "backupFromNewerApp": "该备份来自更新版本的应用，请先更新本应用"
+  "backupFromNewerApp": "该备份来自更新版本的应用，请先更新本应用",
+  "libRunning": "运行中",
+  "libNotAttached": "所选 {version} 未能加载",
+  "libRunningUnknown": "无法确定",
+  "libCore": "内核 {version}"
 }

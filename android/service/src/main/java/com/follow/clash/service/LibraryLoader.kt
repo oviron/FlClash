@@ -9,6 +9,11 @@ import java.io.File
 object LibraryLoader {
     private var attempted: Boolean = false
 
+    // The active dir the core was loaded from; null when it came from the APK.
+    @Volatile
+    var loadedFrom: String? = null
+        private set
+
     @Synchronized
     fun load(context: Context) {
         if (attempted) return
@@ -18,6 +23,7 @@ object LibraryLoader {
         val dir = active ?: context.applicationInfo.nativeLibraryDir
         Clash.load(dir)
         if (Clash.isLoaded()) {
+            loadedFrom = active
             attempted = true
             return
         }

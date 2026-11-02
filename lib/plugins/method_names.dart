@@ -26,6 +26,7 @@ abstract final class LibraryMethod {
   static const setActive = 'setActive';
   static const clearActive = 'clearActive';
   static const deleteInstalled = 'deleteInstalled';
+  static const runningCore = 'runningCore';
 }
 
 abstract final class NetworkRulesMethod {

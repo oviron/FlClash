@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'widgets/widgets.dart' as dash;
 import 'widgets/hero.dart';
 import 'widgets/quickstart_verify.dart';
+import 'widgets/running_core.dart';
 
 GridItem _buildDashboardItem(DashboardWidget kind) => GridItem(
   key: ValueKey(kind),
@@ -308,6 +309,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                     children: [
                       const DashboardHero(),
                       const QuickStartVerifyOverlay(),
+                      const RunningCoreNote(),
                       const SizedBox(height: 10),
                       DashboardDetailsSection(
                         openNotifier: _detailsOpenNotifier,

@@ -187,4 +187,7 @@ object Service {
     suspend fun requestStop() {
         runCatching { delegate.useService { it.requestStop() } }
     }
+
+    // LoadedCore JSON from :remote; null when it did not answer.
+    suspend fun loadedCore(): String? = delegate.useService { it.loadedCore }.getOrNull()
 }

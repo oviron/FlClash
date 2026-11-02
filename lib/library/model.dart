@@ -52,3 +52,39 @@ class InstalledLibrary {
     sizeBytes: (m['sizeBytes'] as num?)?.toInt() ?? 0,
   );
 }
+
+// Where the core that answers JNI calls in :remote comes from (LoadedCore.kt).
+enum RunningCoreSource { selected, bundled, unknown }
+
+class RunningCore {
+  final String? selectedDir; // dir the loader used; null = the APK copy
+  final List<String>
+  cores; // per mapped libclash.so: selected, bundled or a dir
+
+  const RunningCore({required this.selectedDir, required this.cores});
+
+  factory RunningCore.fromMap(Map<String, dynamic> m) => RunningCore(
+    selectedDir: m['selected'] as String?,
+    cores: (m['cores'] as List? ?? const []).map((e) => '$e').toList(),
+  );
+
+  // Two mapped copies mean the selected libclash.so has no DT_SONAME: it
+  // loaded, but libmihomo-jni.so bound to the APK copy by name.
+  RunningCoreSource get source {
+    if (cores.contains('bundled')) return RunningCoreSource.bundled;
+    if (cores.length == 1 && cores.single == 'selected') {
+      return RunningCoreSource.selected;
+    }
+    return RunningCoreSource.unknown;
+  }
+
+  bool get selectionFailed =>
+      selectedDir != null && source != RunningCoreSource.selected;
+}
+
+// filesDir/libs/<label>-v<version> → v<version>.
+String libVersionFromDir(String dir) {
+  final name = dir.split('/').last;
+  final sep = name.indexOf('-v');
+  return sep > 0 ? 'v${name.substring(sep + 2)}' : name;
+}
