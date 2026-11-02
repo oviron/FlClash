@@ -17,7 +17,17 @@ object LibraryLoader {
     @Synchronized
     fun load(context: Context) {
         if (attempted) return
-        val active = ActiveLibs.dirFor(context, ActiveLibs.MIHOMO, ActiveLibs.MIHOMO_SO)
+        val label = ActiveLibs.MIHOMO
+        val active = ActiveLibs.dirFor(context, label, ActiveLibs.MIHOMO_SO)
+        if (active == null) {
+            // A selected dir that lost a file (deleted, storage cleared) would otherwise be
+            // skipped without a word while the APK copy runs.
+            ActiveLibs.pointerFor(context, label)?.let { dir ->
+                val missing = ActiveLibs.missingSo(dir, ActiveLibs.MIHOMO_SO)
+                ActiveLibs.markFailed(context, label, dir, "missing ${missing.joinToString()}")
+                Logger.e("LibraryLoader", "active mihomo dir incomplete; pointer cleared")
+            }
+        }
         // Target 37 refuses to System.load a writable .so; installs before that were writable.
         active?.let { dir -> ActiveLibs.MIHOMO_SO.forEach { File(dir, it).setReadOnly() } }
         val dir = active ?: context.applicationInfo.nativeLibraryDir
@@ -32,9 +42,16 @@ object LibraryLoader {
         // linker caches by soname). Clear the pointer so the next launch loads bundled
         // cleanly. attempted stays false so a transient bundled failure can still retry.
         if (active != null) {
-            ActiveLibs.setActive(context, ActiveLibs.MIHOMO, null)
+            ActiveLibs.markFailed(context, label, active, loadFailureReason())
             Logger.e("LibraryLoader", "active mihomo dir failed to load; pointer cleared")
         }
         throw IllegalStateException("Clash.load failed (dir=$dir)")
+    }
+
+    // Clash keeps why load() failed; assertReady() hands it out as the cause.
+    private fun loadFailureReason(): String {
+        val error = runCatching { Clash.assertReady() }.exceptionOrNull() ?: return "unknown"
+        val cause = error.cause ?: error
+        return cause.message ?: cause.javaClass.simpleName
     }
 }

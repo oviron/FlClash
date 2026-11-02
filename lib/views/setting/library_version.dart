@@ -23,6 +23,25 @@ String runningCoreLabel(RunningCore running, String? bundled) =>
       RunningCoreSource.unknown => appLocalizations.libRunningUnknown,
     };
 
+// Why the selected core is not the one running, plus when and why it failed
+// to load (time first: the reason can be long); null when nothing is wrong.
+({String title, String? detail})? runningCoreProblem(RunningCore running) {
+  if (running.selectionFailed) {
+    return (
+      title: appLocalizations.libNotAttached(
+        libVersionFromDir(running.selectedDir ?? ''),
+      ),
+      detail: null,
+    );
+  }
+  final failure = running.loadFailure;
+  if (failure == null) return null;
+  return (
+    title: appLocalizations.libLoadFailed(failure.version),
+    detail: [?failure.at?.lastUpdateTimeDesc, failure.reason].join(' · '),
+  );
+}
+
 class LibraryVersionView extends ConsumerWidget {
   const LibraryVersionView({super.key});
 
@@ -134,7 +153,7 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
                   child: Text(appLocalizations.libReset),
                 ),
         ),
-        if (running != null) _runningTile(running, bundled),
+        if (running != null) _runningTile(running, bundled, controller),
         if (installed.isNotEmpty) ...[
           const Divider(height: 0),
           ListHeader(title: appLocalizations.libInstalled),
@@ -177,28 +196,38 @@ class _CoreSectionState extends ConsumerState<_CoreSection> {
   }
 
   // What :remote really runs; the selection alone does not say it.
-  Widget _runningTile(RunningCore running, String? bundled) {
-    final failed = running.selectionFailed;
+  Widget _runningTile(
+    RunningCore running,
+    String? bundled,
+    LibraryController controller,
+  ) {
+    final problem = runningCoreProblem(running);
     final error = Theme.of(context).colorScheme.error;
     return ListItem(
       leading: Icon(
-        failed ? Icons.error_outline : Icons.memory,
-        color: failed ? error : null,
+        problem != null ? Icons.error_outline : Icons.memory,
+        color: problem != null ? error : null,
       ),
       title: Text(appLocalizations.libRunning),
       subtitle: Text.rich(
         TextSpan(
           text: runningCoreLabel(running, bundled),
           children: [
-            if (failed)
+            if (problem != null)
               TextSpan(
-                text:
-                    '\n${appLocalizations.libNotAttached(libVersionFromDir(running.selectedDir ?? ''))}',
+                text: '\n${[problem.title, ?problem.detail].join('\n')}',
                 style: TextStyle(color: error),
               ),
           ],
         ),
       ),
+      trailing: running.loadFailure == null
+          ? null
+          : IconButton(
+              icon: const Icon(Icons.close),
+              tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+              onPressed: () => controller.dismissLoadFailure(widget.label),
+            ),
     );
   }
 

@@ -56,17 +56,49 @@ class InstalledLibrary {
 // Where the core that answers JNI calls in :remote comes from (LoadedCore.kt).
 enum RunningCoreSource { selected, bundled, unknown }
 
+// A selected core :remote could not load: it dropped the selection and ran the
+// APK copy. Kept until the user picks a core again or dismisses it.
+class CoreLoadFailure {
+  final String dir;
+  final String reason;
+  final DateTime? at;
+
+  const CoreLoadFailure({required this.dir, required this.reason, this.at});
+
+  factory CoreLoadFailure.fromMap(Map<String, dynamic> m) {
+    final at = (m['at'] as num?)?.toInt();
+    return CoreLoadFailure(
+      dir: m['dir'] as String? ?? '',
+      reason: m['reason'] as String? ?? '',
+      at: at == null ? null : DateTime.fromMillisecondsSinceEpoch(at),
+    );
+  }
+
+  String get version => libVersionFromDir(dir);
+}
+
 class RunningCore {
   final String? selectedDir; // dir the loader used; null = the APK copy
   final List<String>
   cores; // per mapped libclash.so: selected, bundled or a dir
+  final CoreLoadFailure? loadFailure;
 
-  const RunningCore({required this.selectedDir, required this.cores});
+  const RunningCore({
+    required this.selectedDir,
+    required this.cores,
+    this.loadFailure,
+  });
 
-  factory RunningCore.fromMap(Map<String, dynamic> m) => RunningCore(
-    selectedDir: m['selected'] as String?,
-    cores: (m['cores'] as List? ?? const []).map((e) => '$e').toList(),
-  );
+  factory RunningCore.fromMap(Map<String, dynamic> m) {
+    final failed = m['failed'];
+    return RunningCore(
+      selectedDir: m['selected'] as String?,
+      cores: (m['cores'] as List? ?? const []).map((e) => '$e').toList(),
+      loadFailure: failed is Map
+          ? CoreLoadFailure.fromMap(failed.cast<String, dynamic>())
+          : null,
+    );
+  }
 
   // Two mapped copies mean the selected libclash.so has no DT_SONAME: it
   // loaded, but libmihomo-jni.so bound to the APK copy by name.

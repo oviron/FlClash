@@ -721,5 +721,6 @@
   "libRunning": "Работает",
   "libNotAttached": "Выбранное {version} не подключилось",
   "libRunningUnknown": "Не удалось определить",
-  "libCore": "Ядро {version}"
+  "libCore": "Ядро {version}",
+  "libLoadFailed": "Выбранное {version} не загрузилось"
 }

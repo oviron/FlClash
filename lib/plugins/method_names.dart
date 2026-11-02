@@ -25,6 +25,7 @@ abstract final class LibraryMethod {
   static const installFromAar = 'installFromAar';
   static const setActive = 'setActive';
   static const clearActive = 'clearActive';
+  static const clearLoadFailure = 'clearLoadFailure';
   static const deleteInstalled = 'deleteInstalled';
   static const runningCore = 'runningCore';
 }

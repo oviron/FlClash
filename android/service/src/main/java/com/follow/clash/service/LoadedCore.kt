@@ -1,6 +1,7 @@
 package com.follow.clash.service
 
 import android.content.Context
+import com.follow.clash.common.ActiveLibs
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -12,7 +13,8 @@ object LoadedCore {
     private const val CORE_SO = "libclash.so"
 
     // {"selected": dir the loader used or null for the APK copy,
-    //  "cores": "selected" | "bundled" | other dir, per mapped libclash.so}
+    //  "cores": "selected" | "bundled" | other dir, per mapped libclash.so,
+    //  "failed": {"dir", "reason", "at"} of a selection that failed to load, or null}
     fun describe(context: Context): String {
         val selected = LibraryLoader.loadedFrom
         val roles = buildMap {
@@ -23,6 +25,7 @@ object LoadedCore {
         return JSONObject()
             .put("selected", selected ?: JSONObject.NULL)
             .put("cores", JSONArray(cores))
+            .put("failed", ActiveLibs.failure(context, ActiveLibs.MIHOMO) ?: JSONObject.NULL)
             .toString()
     }
 

@@ -80,7 +80,10 @@ class LibraryController extends Notifier<void> {
     ref.invalidate(runningCoreProvider);
     final running = await ref.read(runningCoreProvider.future);
     if (running?.source != RunningCoreSource.selected) {
-      throw appLocalizations.libNotAttached(libVersionFromDir(lib.dir));
+      final failure = running?.loadFailure;
+      throw failure != null
+          ? '${appLocalizations.libLoadFailed(failure.version)}: ${failure.reason}'
+          : appLocalizations.libNotAttached(libVersionFromDir(lib.dir));
     }
   }
 
@@ -91,6 +94,11 @@ class LibraryController extends Notifier<void> {
       wasRunning: wasRunning,
     );
     ref.invalidate(activeLibraryDirsProvider);
+    ref.invalidate(runningCoreProvider);
+  }
+
+  Future<void> dismissLoadFailure(String label) async {
+    await LibraryPlugin.instance.clearLoadFailure(label);
     ref.invalidate(runningCoreProvider);
   }
 

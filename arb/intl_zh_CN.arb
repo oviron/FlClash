@@ -721,5 +721,6 @@
   "libRunning": "运行中",
   "libNotAttached": "所选 {version} 未能加载",
   "libRunningUnknown": "无法确定",
-  "libCore": "内核 {version}"
+  "libCore": "内核 {version}",
+  "libLoadFailed": "所选 {version} 加载失败"
 }

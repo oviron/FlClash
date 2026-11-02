@@ -5922,6 +5922,16 @@ class AppLocalizations {
       args: [version],
     );
   }
+
+  /// `Selected {version} failed to load`
+  String libLoadFailed(Object version) {
+    return Intl.message(
+      'Selected $version failed to load',
+      name: 'libLoadFailed',
+      desc: '',
+      args: [version],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
