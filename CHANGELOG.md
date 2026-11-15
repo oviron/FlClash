@@ -1,3 +1,7 @@
+## v0.18.2
+
+- Core: libmihomo-android 0.3.14 with mihomo v1.19.34. The `firefox` client fingerprint now looks like Firefox 148 with a post-quantum key share instead of Firefox 120, and `safari` like Safari 26.3. TCP Fast Open works again, and data an HTTP proxy sends right after accepting a connection is no longer lost
+
 ## v0.18.1
 
 - A downloaded core that fails to load is no longer swapped for the built-in one in silence. Library version and the dashboard say which version failed, when and why, until you pick a core again or close the note. This covers a broken file, a core that no longer fits the app after an update, and a core whose files are gone
